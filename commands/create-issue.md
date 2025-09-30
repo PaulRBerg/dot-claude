@@ -42,14 +42,17 @@ From remaining $ARGUMENTS, create:
 <details><summary>Toggle to see affected files</summary>
 <p>
 
-https://github.com/{owner}/{repo}/blob/main/{path}
+- https://github.com/{owner}/{repo}/blob/main/{path1}
+- https://github.com/{owner}/{repo}/blob/main/{path2}
+- https://github.com/{owner}/{repo}/blob/main/{path3}
 
 </p>
 </details>
 ```
 
 File links:
-- Use full GitHub URLs with proper owner/repo/path
+- **MUST** use full GitHub URLs: `https://github.com/{owner}/{repo}/blob/main/{path}`
+- **NEVER** use relative paths (e.g., `src/file.ts`)
 - List one per line if multiple files
 - Use "TBD" if none specified
 
