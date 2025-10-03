@@ -1,4 +1,5 @@
 ---
+argument-hint: [--draft] [base=X] [review by Y] [title "Z"]
 description: Create a GitHub pull request with semantic change analysis
 ---
 

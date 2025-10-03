@@ -23,11 +23,11 @@ Modular configuration system using `@` syntax for composable behavioral instruct
 @tools/JUST.md
 ```
 
-Context files are organized by concern (languages, tools, MCP servers) and imported via `@filename.md` references. Base instructions cascade through specialized modules, creating layered behavioral policies without duplication.
+Context files are organized by concern (languages, tools, etc.) and imported via `@filename.md` references. Base instructions cascade through specialized modules, creating layered behavioral policies without duplication.
 
 ## Commands
 
-Custom slash commands in `commands/*.md` for Git workflows, project automation, and code generation.
+[Slash commands](https://docs.claude.com/en/docs/claude-code/slash-commands) are defined in `commands/*.md`.
 
 Commands use semantic analysis to understand code changes rather than relying on filenames. They feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers), and stateless execution without interactive prompts.
 
