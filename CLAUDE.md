@@ -1,4 +1,4 @@
-# Base Instructions
+# Instructions
 
 @context/BASE.md
 

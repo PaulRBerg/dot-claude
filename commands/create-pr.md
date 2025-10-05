@@ -9,7 +9,6 @@ description: Create a GitHub pull request with semantic change analysis
 - Remote status: !`git status -b --porcelain | head -1 || echo "No remote tracking"`
 - Recent commits: !`git log --oneline -5 || echo "No commits found"`
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
-- Existing PR: !`gh pr list --head $(git branch --show-current 2>/dev/null || echo "main") --json number,url --jq '.[0] | "\(.number)|\(.url)"' 2>/dev/null || echo "none"`
 - Arguments: $ARGUMENTS
 
 ## Your Task
@@ -86,10 +85,15 @@ IDENTIFY reviewers intelligently:
 - Otherwise use git blame to find frequent contributors to changed files
 - Combine with any reviewers specified in arguments
 
-### STEP 4: Handle existing PR
+### STEP 4: Check for existing PR
 
-IF existing PR found in Context (not "none"):
-- PARSE the number and URL
+CHECK for existing PR on current branch:
+```bash
+gh pr list --head $(git branch --show-current) --json number,url --jq '.[0]' 2>/dev/null
+```
+
+IF existing PR found (non-empty result):
+- PARSE the number and URL from result
 - LOG: "PR #X already exists: URL"
 - UPDATE existing PR instead of creating new one:
   ```bash
