@@ -152,34 +152,62 @@ class ClaudePromptTracker:
                 )
 
     def handle_notification(self, data):
-        """Handle Notification event - check for waiting input and send notification"""
+        """Handle Notification event - check for various notification types and send notifications"""
         session_id = data.get("session_id")
         message = data.get("message", "")
+        cwd = data.get("cwd", "")
 
-        if "waiting for your input" in message.lower():
-            cwd = data.get("cwd", "")
+        # Log all notifications for debugging
+        logging.info(f"[NOTIFICATION] session={session_id}, message='{message}'")
 
+        # Determine notification type and subtitle
+        message_lower = message.lower()
+        subtitle = None
+        should_update_db = False
+        should_notify = True
+
+        if "waiting for your input" in message_lower or "waiting for input" in message_lower:
+            subtitle = "Waiting for input"
+            should_update_db = True
+            should_notify = False  # Suppress notification - Stop handler will send "job done"
+        elif "permission" in message_lower:
+            subtitle = "Permission Required"
+        elif "approval" in message_lower or "choose an option" in message_lower:
+            subtitle = "Action Required"
+        else:
+            # For other notifications, use a generic subtitle
+            subtitle = "Notification"
+
+        # Update database for waiting notifications
+        if should_update_db:
             with sqlite3.connect(self.db_path) as conn:
-                # Update lastWaitUserAt for the latest record
+                # Fix: Use subquery instead of ORDER BY/LIMIT in UPDATE
                 conn.execute(
                     """
                     UPDATE prompt
                     SET lastWaitUserAt = CURRENT_TIMESTAMP
-                    WHERE session_id = ?
-                    ORDER BY created_at DESC
-                    LIMIT 1
+                    WHERE id = (
+                        SELECT id FROM prompt
+                        WHERE session_id = ?
+                        ORDER BY created_at DESC
+                        LIMIT 1
+                    )
                 """,
                     (session_id,),
                 )
                 conn.commit()
+            logging.info(f"Updated lastWaitUserAt for session {session_id}")
 
+        # Send notification only if should_notify is True
+        if should_notify:
             self.send_notification(
                 title=os.path.basename(cwd) if cwd else "Claude Task",
-                subtitle="Waiting for input",
+                subtitle=subtitle,
                 cwd=cwd,
             )
-
-            logging.info(f"Waiting notification sent for session {session_id}")
+            logging.info(f"Notification sent for session {session_id}: {subtitle}")
+        else:
+            logging.info(f"Notification suppressed for session {session_id}: {subtitle}")
 
     def calculate_duration_from_db(self, record_id):
         """Calculate duration for a completed record"""
