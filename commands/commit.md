@@ -1,5 +1,5 @@
 ---
-argument-hint: [--short] [--push]
+argument-hint: [--only-this] [--short] [--push]
 description: Create a git commit with semantic analysis
 ---
 
@@ -14,7 +14,14 @@ description: Create a git commit with semantic analysis
 
 ### STEP 1: Handle staging
 
-CHECK current state from Context:
+IF `--only-this` flag is present:
+- IDENTIFY files modified/created in this chat session
+- UNSTAGE all currently staged changes: `git reset`
+- STAGE only the chat-modified files: `git add <file1> <file2> ...`
+- LOG which files were staged from this chat session
+- PROCEED to STEP 2 with these staged changes
+
+OTHERWISE, CHECK current state from Context:
 
 IF no staged changes AND no unstaged changes:
 - ERROR "No changes to commit. Working tree is clean."
@@ -30,6 +37,7 @@ IF staged changes exist:
 ### STEP 2: Parse arguments naturally
 
 Interpret $ARGUMENTS for commit hints and flags:
+- `--only-this` flag → stage and commit only changes from this chat session
 - `--short` flag → single-line commit only (no body)
 - `--push` flag → push to remote after committing
 - Commit type keywords (`feat`, `fix`, `docs`, etc.) → use that type
@@ -37,6 +45,9 @@ Interpret $ARGUMENTS for commit hints and flags:
 - Everything else → context for understanding intent
 
 Examples:
+- `/commit --only-this` → commit only changes from this chat
+- `/commit --only-this --short` → single-line commit of chat changes only
+- `/commit --only-this --push` → commit chat changes and push
 - `/commit --short` → single-line commit
 - `/commit --push` → commit and push to remote
 - `/commit --short --push` → single-line commit and push
