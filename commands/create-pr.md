@@ -1,5 +1,5 @@
 ---
-argument-hint: [--draft] [base=X] [review by Y] [title "Z"]
+argument-hint: [--draft] [--test-plan] [base=X] [review by Y] [title "Z"]
 description: Create a GitHub pull request with semantic change analysis
 ---
 
@@ -34,7 +34,8 @@ CHECK commits to PR:
 ### STEP 2: Parse arguments naturally
 
 Interpret $ARGUMENTS as natural language:
-- "draft" anywhere → draft mode
+- "draft" or "--draft" anywhere → draft mode
+- "test-plan" or "--test-plan" anywhere → include test plan section
 - "to X" or "base=X" → target branch X (default: main)
 - "review by X" or "reviewers=X" → add reviewer(s) X
 - Quoted text → custom title
@@ -43,10 +44,11 @@ Interpret $ARGUMENTS as natural language:
 Examples:
 
 - `/create-pr draft` - Create draft PR
+- `/create-pr --test-plan` - Include test plan section
 - `/create-pr to staging` - Target staging branch
 - `/create-pr review by alice` - Add alice as reviewer
 - `/create-pr "Add user analytics dashboard"` - Custom title
-- `/create-pr draft to develop review by bob` - Combined options
+- `/create-pr draft to develop review by bob --test-plan` - Combined options
 
 ### STEP 3: Semantic change analysis
 
@@ -71,8 +73,11 @@ GENERATE PR content intelligently:
 - **Description**: 2-4 short paragraphs maximum:
   1. What changed and why
   2. Key implementation details worth noting
-  3. Testing/validation approach if relevant
-  4. Any follow-up work or considerations
+  3. Any follow-up work or considerations
+
+- **Test Plan** (only if `--test-plan` flag present):
+  - Add a dedicated "## Test Plan" section describing testing/validation approach
+  - Include manual testing steps, automated test coverage, or validation checklist
 
 DETECT issue references:
 - Extract issue numbers from branch name: `$(git branch --show-current | rg -o '#?\d+' || echo "")`
