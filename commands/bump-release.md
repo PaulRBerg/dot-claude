@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(eza:*), Bash(git:*), Edit, LS, Read, Write
+argument-hint: [--beta] [--dry-run]
 description: Rolls out a new release by updating changelog, bumping version, committing, and tagging
 ---
 
@@ -10,6 +10,7 @@ Support for both regular and beta releases.
 ## Parameters
 
 - `--beta`: Create a beta release with `-beta.X` suffix
+- `--dry-run`: Preview the release without making any changes (no file modifications, commits, or tags)
 
 ## Steps
 
@@ -20,11 +21,13 @@ Support for both regular and beta releases.
 3. Commit the changes with a message like "docs: release <version>"
 4. Create a new git tag by running `git tag -a v<version> -m "<version>"`
 
+**Note**: When `--dry-run` flag is provided, display what would be done without making any actual changes to files, creating commits, or tags.
+
 ## Tasks
 
 ## Process
 
-1. **Check for beta flag** - Determine if this is a beta release (`--beta` parameter)
+1. **Check for flags** - Determine if this is a beta release (`--beta` parameter) and/or dry-run (`--dry-run` parameter)
 2. **Review git history** - Examine commits since the last tagged release
 3. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
 4. **Check version** - Get current version from `package.json`
@@ -73,14 +76,20 @@ In the `CHANGELOG.md` file, generate changelog entries categorizing changes in t
 
 ```bash
 # Create a regular patch/minor/major release
-/prb:bump-release
+/bump-release
+
+# Preview what a regular release would do
+/bump-release --dry-run
 ```
 
 ### Beta Release
 
 ```bash
 # Create a beta release with -beta.X suffix
-/prb:bump-release --beta
+/bump-release --beta
+
+# Preview what a beta release would do
+/bump-release --beta --dry-run
 ```
 
 ## Version Examples
