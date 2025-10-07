@@ -14,7 +14,7 @@ Support for both regular and beta releases.
 
 ## Steps
 
-1. Update the `CHANGELOG.md` file with all changes since the last version release.
+1. Update the `CHANGELOG.md` file with all changes since the last version release (**skip this step for beta releases**).
 2. Bump the version in `package.json`:
    - **Regular release**: Follow semantic versioning (e.g., 1.2.3)
    - **Beta release**: Add `-beta.X` suffix (e.g., 1.2.3-beta.1)
@@ -50,12 +50,12 @@ When `--beta` flag is provided in the $ARGUMENTS
    - If current version is `1.2.3`: Create `1.2.4-beta.1` (increment patch + beta.1)
    - If current version is `1.2.3-beta.1`: Create `1.2.3-beta.2` (increment beta number)
    - If current version is `1.2.3-beta.5`: Create `1.2.3-beta.6` (increment beta number)
-3. **Update changelog** with beta release notes
+3. **Skip CHANGELOG.md update** - Beta releases don't update the changelog
 4. **Commit and tag** with beta version (e.g., `v1.2.4-beta.1`)
 
 ## Output
 
-In the `CHANGELOG.md` file, generate changelog entries categorizing changes in this order:
+For regular releases only, in the `CHANGELOG.md` file, generate changelog entries categorizing changes in this order:
 
 - **Changed** - Changes in existing functionality
 - **Added** - New functionality
@@ -64,11 +64,12 @@ In the `CHANGELOG.md` file, generate changelog entries categorizing changes in t
 
 ## Inclusion Criteria
 
+For regular releases only (changelog generation is skipped for beta releases):
+
 - **Production changes only** - Exclude test changes, CI/CD workflows, and development tooling
 - **Reference pull requests** - Link to PRs when available for context
 - **Net changes only** - Skip commits that revert changes made after the last release
 - **Only dependencies and peerDependencies changes** - Exclude changes to devDependencies
-- **Beta considerations** - For beta releases, include experimental features and breaking changes that are being tested
 
 ## Examples
 
