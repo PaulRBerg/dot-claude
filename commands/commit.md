@@ -1,5 +1,5 @@
 ---
-argument-hint: [--only-this] [--short] [--push]
+argument-hint: [--only-this] [--fast] [--push]
 description: Create a git commit with semantic analysis
 ---
 
@@ -38,7 +38,7 @@ IF staged changes exist:
 
 Interpret $ARGUMENTS for commit hints and flags:
 - `--only-this` flag → stage and commit only changes from this chat session
-- `--short` flag → single-line commit only (no body)
+- `--fast` flag → optimize for speed (simplified analysis, single-line commit, minimal output)
 - `--push` flag → push to remote after committing
 - Commit type keywords (`feat`, `fix`, `docs`, etc.) → use that type
 - Quoted text → use as commit description
@@ -46,16 +46,26 @@ Interpret $ARGUMENTS for commit hints and flags:
 
 Examples:
 - `/commit --only-this` → commit only changes from this chat
-- `/commit --only-this --short` → single-line commit of chat changes only
+- `/commit --only-this --fast` → fast commit of chat changes only
 - `/commit --only-this --push` → commit chat changes and push
-- `/commit --short` → single-line commit
+- `/commit --fast` → quick commit with simplified analysis
 - `/commit --push` → commit and push to remote
-- `/commit --short --push` → single-line commit and push
+- `/commit --fast --push` → fast commit and push
 - `/commit fix auth bug` → type:fix, scope:auth
 - `/commit "add webhook support"` → use as description
-- `/commit docs --short --push` → single-line docs commit and push
+- `/commit docs --fast --push` → fast docs commit and push
 
 ### STEP 3: Semantic change analysis
+
+IF `--fast` flag is present:
+- SCAN changes at surface level only (filenames, basic patterns)
+- CATEGORIZE using simple heuristics (file extensions, paths)
+- SKIP deep code analysis and breaking change detection
+- Use generic but accurate type inference
+- SKIP scope identification (omit scope from message)
+- PROCEED immediately to STEP 4
+
+OTHERWISE, perform thorough analysis:
 
 READ the staged changes from Context:
 - What files changed? What's their purpose in the codebase?
@@ -90,9 +100,10 @@ GENERATE subject line (≤50 characters):
 - No period at end
 - Be specific but concise
 
-IF `--short` flag present:
+IF `--fast` flag present:
 - Use ONLY the subject line
 - No body, no footer
+- SKIP detailed wording refinement
 
 OTHERWISE, for complex changes:
 - ADD body (wrap at 72 characters):
@@ -114,7 +125,11 @@ Or for single-line:
 git commit -m "subject line"
 ```
 
-DISPLAY result:
+IF `--fast` flag present:
+- DISPLAY minimal result: commit hash only
+- SKIP verbose summary
+
+OTHERWISE:
 - Show commit hash and full message
 - Summarize what was committed
 
