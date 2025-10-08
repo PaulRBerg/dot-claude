@@ -28,7 +28,9 @@ Support for both regular and beta releases.
 ## Process
 
 1. **Check for flags** - Determine if this is a beta release (`--beta` parameter) and/or dry-run (`--dry-run` parameter)
-2. **Review git history** - Examine commits since the last tagged release
+2. **Write Changelog** - Examine diffs between the current branch and the previous tag to write Changelog. Then find
+relevant PRs by looking at the commit history and add them to each changelog (when available). Only include changes in
+the source directory
 3. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
 4. **Check version** - Get current version from `package.json`
 5. **Bump version** - If unchanged since last release, increment per Semantic Versioning rules:
@@ -68,7 +70,7 @@ For regular releases only (changelog generation is skipped for beta releases):
 
 - **Production changes only** - Exclude test changes, CI/CD workflows, and development tooling
 - **Reference pull requests** - Link to PRs when available for context
-- **Net changes only** - Skip commits that revert changes made after the last release
+- **Net changes only** - Examine diffs between the current branch and the previous tag to identify changes
 - **Only dependencies and peerDependencies changes** - Exclude changes to devDependencies
 
 ## Examples
