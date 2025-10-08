@@ -1,5 +1,6 @@
 # misc directories
 backups/
+debug/
 file-history/
 ide/
 logs/
