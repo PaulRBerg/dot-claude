@@ -11,6 +11,7 @@ todos/
 
 # misc files
 .claude.json
+.credentials.json
 history.jsonl
 
 # hooks
