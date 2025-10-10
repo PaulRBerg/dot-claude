@@ -99,14 +99,8 @@ gh pr list --head $(git branch --show-current) --json number,url --jq '.[0]' 2>/
 
 IF existing PR found (non-empty result):
 - PARSE the number and URL from result
-- LOG: "PR #X already exists: URL"
-- UPDATE existing PR instead of creating new one:
-  ```bash
-  gh pr edit $PR_NUMBER \
-    --title "$generated_title" \
-    --body "$generated_body"
-  ```
-- EXIT with success message
+- ERROR and exit with: "PR already exists for this branch: $URL"
+- DO NOT create or update anything
 
 ### STEP 5: Create new PR
 
@@ -136,7 +130,7 @@ IF command fails:
 
 ## Notes
 
-- Automatically updates existing PRs instead of creating duplicates
+- Errors if PR already exists for the branch (prevents duplicates)
 - Reads actual code changes to understand purpose, not just filenames
 - Generates concise, meaningful descriptions
 - Handles common errors with specific remediation steps
