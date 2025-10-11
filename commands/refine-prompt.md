@@ -1,7 +1,6 @@
 ---
 argument-hint: <prompt-request>
 description: Optimize prompts for LLMs and append to PROMPT.md
-allowed-tools: Read, Write, Edit, Bash(pwd:*)
 argument-hints: |
   Examples:
     /refine-prompt create a code review prompt focusing on security

@@ -1,5 +1,5 @@
 ---
-name: engineer-typescript
+name: typescript-engineer
 description: Expert TypeScript engineer. Specializes in reading, analyzing, and generating TypeScript code. MUST BE USED for `.ts` and `.tsx` files. Use PROACTIVELY for all TypeScript-related questions and best practices.
 model: inherit
 ---
