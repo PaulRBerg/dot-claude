@@ -1,5 +1,5 @@
 ---
-argument-hint: [--only-this] [--fast] [--push]
+argument-hint: [--only] [--fast] [--push]
 description: Create a git commit with semantic analysis
 ---
 
@@ -14,11 +14,11 @@ description: Create a git commit with semantic analysis
 
 ### STEP 1: Handle staging
 
-IF `--only-this` flag is present:
-- IDENTIFY files modified/created in this chat session
+IF `--only` flag is present:
+- IDENTIFY files modified/created in this chat transcript
 - UNSTAGE all currently staged changes: `git reset`
 - STAGE only the chat-modified files: `git add <file1> <file2> ...`
-- LOG which files were staged from this chat session
+- LOG which files were staged from this chat transcript
 - PROCEED to STEP 2 with these staged changes
 
 OTHERWISE, CHECK current state from Context:
@@ -37,7 +37,7 @@ IF staged changes exist:
 ### STEP 2: Parse arguments naturally
 
 Interpret $ARGUMENTS for commit hints and flags:
-- `--only-this` flag → stage and commit only changes from this chat session
+- `--only` flag → stage and commit only changes from this chat transcript
 - `--fast` flag → optimize for speed (simplified analysis, single-line commit, minimal output)
 - `--push` flag → push to remote after committing
 - Commit type keywords (`feat`, `fix`, `docs`, etc.) → use that type
@@ -45,9 +45,9 @@ Interpret $ARGUMENTS for commit hints and flags:
 - Everything else → context for understanding intent
 
 Examples:
-- `/commit --only-this` → commit only changes from this chat
-- `/commit --only-this --fast` → fast commit of chat changes only
-- `/commit --only-this --push` → commit chat changes and push
+- `/commit --only` → commit only changes from this chat
+- `/commit --only --fast` → fast commit of chat changes only
+- `/commit --only --push` → commit chat changes and push
 - `/commit --fast` → quick commit with simplified analysis
 - `/commit --push` → commit and push to remote
 - `/commit --fast --push` → fast commit and push

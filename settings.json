@@ -13,8 +13,10 @@
       "Bash(cargo:*)",
       "Bash(cat:*)",
       "Bash(cd:*)",
+      "Bash(chezmoi:*)",
       "Bash(chmod:*)",
       "Bash(cp:*)",
+      "Bash(command:*)",
       "Bash(curl:*)",
       "Bash(cut:*)",
       "Bash(echo:*)",
@@ -52,18 +54,16 @@
       "Bash(tar:*)",
       "Bash(timeout:*)",
       "Bash(tree:*)",
+      "Bash(tsx:*)",
       "Bash(touch:*)",
       "Bash(which:*)",
+      "Bash(xargs:*)",
       "Bash(yarn:*)",
       "Glob",
       "Grep",
       "LS",
-      "Read",
-      "SlashCommand(/commit:*)",
-      "SlashCommand(/context)",
-      "SlashCommand(/create-issue:*)",
-      "SlashCommand(/create-pr:*)",
-      "SlashCommand(/docs:*)",
+      "Read(~/.zshrc)",
+      "SlashCommand(*)",
       "Task",
       "TodoWrite",
       "WebFetch",
@@ -101,7 +101,8 @@
       "Bash(usermod:*)",
       "Read(./.env)",
       "Read(./.env.production)"
-    ]
+    ],
+    "additionalDirectories": ["~/.claude", "~/Projects", "~/Sablier", "~/Workspace"]
   },
   "hooks": {
     "Notification": [
@@ -152,8 +153,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bunx -y ccstatusline@latest",
-    "padding": 0
+    "command": "bunx -y ccstatusline@latest"
   },
   "alwaysThinkingEnabled": true
 }

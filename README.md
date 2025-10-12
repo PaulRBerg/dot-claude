@@ -18,18 +18,24 @@ Modular configuration system using `@` syntax for composable behavioral instruct
 
 ```markdown
 # Example: BASE.md
+
 @CRITICAL_THINKING.md
+
 @SENIOR_PROGRAMMER.md
+
 @tools/JUST.md
 ```
 
-Context files are organized by concern (languages, tools, etc.) and imported via `@filename.md` references. Base instructions cascade through specialized modules, creating layered behavioral policies without duplication.
+Context files are organized by concern (languages, tools, etc.) and imported via `@filename.md` references. Base
+instructions cascade through specialized modules, creating layered behavioral policies without duplication.
 
 ## Commands
 
 [Slash commands](https://docs.claude.com/en/docs/claude-code/slash-commands) are defined in `commands/*.md`.
 
-Commands use semantic analysis to understand code changes rather than relying on filenames. They feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers), and stateless execution without interactive prompts.
+Commands use semantic analysis to understand code changes rather than relying on filenames. They feature natural
+argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers), and stateless
+execution without interactive prompts.
 
 ## Hooks
 
@@ -37,9 +43,12 @@ Custom hooks in `hooks/` extend Claude Code with event-driven automation.
 
 ### append-subagents.py
 
-The most critical hook. Appends orchestration instructions when prompts end with `-s` flag, forcing Claude to delegate work to specialized subagents instead of doing everything itself.
+The most critical hook. Appends orchestration instructions when prompts end with `-s` flag, forcing Claude to delegate
+work to specialized subagents instead of doing everything itself.
 
-**Why**: Claude often tries to handle complex tasks directly instead of spawning parallel agents. This hook guarantees orchestration mode by injecting [ORCHESTRATOR.md](hooks/UserPromptSubmit/ORCHESTRATOR.md) which mandates:
+**Why**: Claude often tries to handle complex tasks directly instead of spawning parallel agents. This hook guarantees
+orchestration mode by injecting [ORCHESTRATOR.md](hooks/UserPromptSubmit/ORCHESTRATOR.md) which mandates:
+
 - Parallel delegation when possible (independent subtasks)
 - Single agent for sequential work
 - No direct implementation by orchestrator
@@ -47,7 +56,6 @@ The most critical hook. Appends orchestration instructions when prompts end with
 **Usage**: `Add user analytics dashboard -s` → spawns frontend/backend/database agents in parallel
 
 Other hooks handle notifications (`ccnotify`) and documentation helpers.
-
 
 ### Nice-to-Have Utilities
 
