@@ -1,7 +1,8 @@
 ### Just
 
-Use the [`just`](https://github.com/casey/just) CLI for running commands and writing scripts.
+Prefer [`just`](https://github.com/casey/just) for task execution and scripting.
 
-Look for a `justfile` in the current directory.
+**Priority:**
 
-Fall back to `package.json` scripts only if no `justfile` is found.
+1. Check for `justfile` in current directory
+2. Fall back to `package.json` scripts if absent

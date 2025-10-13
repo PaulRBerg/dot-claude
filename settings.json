@@ -105,7 +105,12 @@
       "Read(./.env)",
       "Read(./.env.production)"
     ],
-    "additionalDirectories": ["~/.claude", "~/Projects", "~/Sablier", "~/Workspace"]
+    "additionalDirectories": [
+      "~/.claude",
+      "~/Projects",
+      "~/Sablier",
+      "~/Workspace"
+    ]
   },
   "hooks": {
     "Notification": [

@@ -1,15 +1,9 @@
 ### Node.js
 
-#### Bun
+#### `ni` utility
 
-Use [Bun](https://bun.sh) as a package manager for Node.js projects.
-
-The only exception to this rule is if the project already uses another package manager.
-
-#### `ni`
-
-While Bun is the underlying, package manager, use the [`ni`](https://github.com/antfu-collective/ni) utility to interact
-with and manage Node.js dependencies. `ni` is a drop-in replacement for `npm`, `yarn`, `pnpm`, `bun`, etc.
+Use the [`ni`](https://github.com/antfu-collective/ni) utility to interact with and manage Node.js dependencies. `ni` is
+a drop-in replacement for `npm`, `yarn`, `pnpm`, `bun`, etc.
 
 | Run this command    | Instead of                           |
 | ------------------- | ------------------------------------ |
