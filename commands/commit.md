@@ -110,9 +110,14 @@ OTHERWISE, for complex changes:
   - Explain WHY the change was made
   - Include important implementation details
   - Separate from subject with blank line
+
+ADD footer sections as needed:
 - IF breaking change:
   - ADD footer: `BREAKING CHANGE: description`
   - Explain impact and migration
+- IF GitHub issues found in transcript:
+  - ADD footer: `Closes #123` (or `Closes #123, #456` for multiple)
+  - Use "Closes" keyword to auto-close issues when merged
 
 ### STEP 5: Create the commit
 
@@ -177,9 +182,31 @@ BREAKING CHANGE: clients must update to JWT authentication. Session
 cookies no longer supported. See migration guide in docs/auth-v2.md
 ```
 
+**With GitHub issue reference:**
+```
+fix(auth): resolve login timeout on slow connections
+
+Increases timeout from 5s to 30s and adds retry logic for network
+failures. Implements exponential backoff for better resilience.
+
+Closes #234
+```
+
+**Multiple issues:**
+```
+feat(api): add rate limiting and improve error handling
+
+Implements token bucket algorithm for rate limiting. Standardizes
+error responses across all endpoints.
+
+Closes #123, #456
+```
+
 ## Notes
 
 - Reads actual code to understand semantic meaning
 - Generates concise, meaningful commit messages
 - Follows conventional commits specification
 - Breaking changes properly flagged in footer
+- Auto-detects GitHub issues from chat transcript and adds "Closes #N" footer
+- Supports multiple issue references (e.g., "Closes #123, #456")

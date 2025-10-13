@@ -42,7 +42,7 @@ This meta-command helps create other commands by:
 - References project documentation
 - Integrates with project MCP tools
 
-**User Command** (`~/.claude/commands/prb/`)
+**User Command** (`~/.claude/commands/`)
 
 - General-purpose utility
 - Reusable across projects
@@ -107,8 +107,7 @@ Embed front-matter for human readers or tooling:
 ```md
 <!--
 name: audit-security
-owner: dev-infra
-tags: security, ci
+argument-hint: [--deep]
 -->
 
 ...prompt text...
