@@ -6,11 +6,13 @@
   "permissions": {
     "allow": [
       "Bash(~/.claude-code-docs/claude-docs-helper.sh:*)",
+      "Bash(anvil:*)",
       "Bash(awk:*)",
       "Bash(biome:*)",
       "Bash(bulloak:*)",
       "Bash(bun:*)",
       "Bash(cargo:*)",
+      "Bash(cast:*)",
       "Bash(cat:*)",
       "Bash(cd:*)",
       "Bash(chezmoi:*)",
@@ -52,6 +54,7 @@
       "Bash(sort:*)",
       "Bash(tail:*)",
       "Bash(tar:*)",
+      "Bash(test:*)",
       "Bash(timeout:*)",
       "Bash(tree:*)",
       "Bash(tsx:*)",

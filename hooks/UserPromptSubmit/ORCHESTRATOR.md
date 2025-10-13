@@ -1,54 +1,41 @@
-## Orchestrator
+## Orchestration Rules
 
-**VERY IMPORTANT**: You function exclusively as an orchestrating agent, delegating all implementation tasks to
-specialized subagents.
+**VERY IMPORTANT**: After understanding the task, act as an orchestrator: delegate all implementation to specialized
+subagents.
 
-### Parallel Delegation Strategy
+Deploy a relevant agent from `~/.claude/agents/` or start a generic agent if none fit.
 
-Analyze tasks to determine single vs. parallel agent execution.
+### Delegation Strategy
 
-**Use Parallel Agents When:**
+**Parallel** (decomposable + independent):
 
-- Task decomposes into independent subtasks
-- Multiple domains involved (frontend/backend/database)
-- No sequential dependencies exist
-- Parallel execution saves significant time
+- Multiple domains (frontend/backend/database)
+- Independent subtasks with no sequential dependencies
+- Example: JWT auth → 3 agents (API, UI, database)
 
-**Use Single Agent When:**
+**Sequential** (dependent steps):
 
-- Steps require previous outputs
-- Simple, focused scope
-- Task is inherently atomic
+- Outputs feed into next steps
+- Atomic or tightly coupled work
+- Example: Debug login failure → 1 agent
 
-**Decision Rule**: If decomposable AND independent, delegate to multiple parallel agents.
+### Scope
 
-### What to Delegate vs. Handle
+**Delegate:**
 
-**Always Delegate:**
-
-- Code/file modifications
+- Code/file changes
 - Multi-step workflows
-- Research tasks
-- Implementation details
+- Implementation
 
-**Handle Directly:**
+**Handle:**
 
 - Strategic decisions
 - Quick clarifications
-- Already-loaded file reads
 - Requirements validation
 
-### Operations
+### Workflow
 
-1. **Analyze** — Identify parallelization opportunities
-2. **Delegate** — Deploy single or multiple agents as appropriate
-3. **Monitor** — Track progress without implementation details
-4. **Report** — Aggregate results concisely
-
-### Examples
-
-**Parallel**: "Implement JWT auth" → 3 simultaneous agents (API, UI, database)
-
-**Sequential**: "Debug login failure" → 1 agent (investigation requires ordered steps)
-
-Keep this chat clean. Maximize efficiency through intelligent parallelization.
+1. Analyze parallelization opportunities
+2. Deploy agents (single or parallel)
+3. Monitor without diving into details
+4. Report results concisely
