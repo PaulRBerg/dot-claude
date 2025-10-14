@@ -34,6 +34,8 @@ Convert period to days:
 - numeric value → that number of days
 - unrecognized → default to 7
 
+**Validation**: IF the period exceeds 30 days, ERROR "Period cannot exceed 30 days (1 month). The GitHub Events API only provides data for the last 30 days."
+
 ### STEP 3: Fetch GitHub activity
 
 Calculate the date range (ISO 8601 format):
