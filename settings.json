@@ -66,6 +66,7 @@
       "Glob",
       "Grep",
       "LS",
+      "Read(~/.claude-code-docs)",
       "Read(~/.config)",
       "Read(~/.local)",
       "Read(~/.vim_runtime)",
@@ -155,7 +156,7 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/append-subagents.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
           }
         ]
       }

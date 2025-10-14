@@ -33,27 +33,46 @@ instructions cascade through specialized modules, creating layered behavioral po
 
 [Slash commands](https://docs.claude.com/en/docs/claude-code/slash-commands) are defined in `commands/*.md`.
 
-Commands use semantic analysis to understand code changes rather than relying on filenames. They feature natural
-argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers), and stateless
-execution without interactive prompts.
+Twelve custom commands cover GitHub workflows (PR/issue management), release automation, code quality validation, and
+activity tracking. Commands use semantic analysis to understand code changes rather than relying on filenames. They
+feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers),
+and stateless execution without interactive prompts.
+
+## Agents
+
+Seven specialized subagents in `agents/` handle domain-specific work: code review, debugging, TypeScript development,
+web3 engineering (frontend/backend), UI/UX design, and tool discovery. Agents are invoked via the `-s` orchestration
+flag or directly through the Task tool.
 
 ## Hooks
 
 Custom hooks in `hooks/` extend Claude Code with event-driven automation.
 
-### append-subagents.py
+### prompt-flags.py
 
-The most critical hook. Appends orchestration instructions when prompts end with `-s` flag, forcing Claude to delegate
-work to specialized subagents instead of doing everything itself.
+General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
+at the end of prompts with no other text after them.
 
-**Why**: Claude often tries to handle complex tasks directly instead of spawning parallel agents. This hook guarantees
-orchestration mode by injecting [ORCHESTRATOR.md](hooks/UserPromptSubmit/ORCHESTRATOR.md) which mandates:
+**Supported flags:**
 
-- Parallel delegation when possible (independent subtasks)
-- Single agent for sequential work
-- No direct implementation by orchestrator
+- **`-s`** (subagent): Injects [ORCHESTRATOR.md](hooks/UserPromptSubmit/ORCHESTRATOR.md) instructions, forcing Claude to
+  delegate work to specialized subagents instead of doing everything itself. Mandates parallel delegation for
+  independent subtasks, single agent for sequential work.
 
-**Usage**: `Add user analytics dashboard -s` → spawns frontend/backend/database agents in parallel
+- **`-c`** (commit): Instructs Claude to execute `/commit` slash command after completing the task.
+
+- **`-t`** (test): Adds testing emphasis context, requiring comprehensive test coverage including unit tests,
+  integration tests, and edge cases.
+
+- **`-d`** (debug): Invokes the debugger subagent for systematic root cause analysis with a 5-step debugging workflow.
+
+**Composability**: Flags combine naturally into complete workflows:
+
+- `implement payment API -s -t -c` → delegate to agents, emphasize tests, commit when done
+- `fix memory leak -d -c` → debug mode, commit fix
+- `add OAuth flow -s -c` → orchestrate implementation, auto-commit
+
+**Order independence**: `-s -c -t` works identically to `-t -c -s`.
 
 Other hooks handle notifications (`ccnotify`) and documentation helpers.
 
