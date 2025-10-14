@@ -66,8 +66,14 @@
       "Glob",
       "Grep",
       "LS",
+      "Read(~/.config)",
+      "Read(~/.local)",
+      "Read(~/.vim_runtime)",
+      "Read(~/.vimrc)",
       "Read(~/.zshrc)",
-      "SlashCommand(*)",
+      "SlashCommand(/commit:*)",
+      "SlashCommand(/docs:*)",
+      "SlashCommand(/update-pr:*)",
       "Task",
       "TodoWrite",
       "WebFetch",
@@ -106,12 +112,7 @@
       "Read(./.env)",
       "Read(./.env.production)"
     ],
-    "additionalDirectories": [
-      "~/.claude",
-      "~/Projects",
-      "~/Sablier",
-      "~/Workspace"
-    ]
+    "additionalDirectories": ["~/.claude", "~/Projects", "~/Sablier", "~/Workspace"]
   },
   "hooks": {
     "Notification": [
