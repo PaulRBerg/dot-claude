@@ -78,10 +78,12 @@ GENERATE updated content intelligently:
   - Example: "feat: add webhook retry mechanism" or "fix: prevent race condition in auth flow"
 
 - **Description** (if description update requested):
-  - 2-4 short paragraphs maximum:
-    1. What changed and why
-    2. Key implementation details worth noting
-    3. Any follow-up work or considerations
+  - Keep it MINIMAL. 3-5 sentences total:
+    1. One sentence: what changed
+    2. One sentence: why it matters
+    3. Optional: one sentence about notable implementation detail or follow-up
+
+  DO NOT write lengthy paragraphs. DO NOT explain every detail. PR descriptions should be scannable.
   - IF additional context provided in args, append it naturally
   - PRESERVE any existing issue references (Closes #X, Related to #X)
 

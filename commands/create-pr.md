@@ -70,10 +70,12 @@ GENERATE PR content intelligently:
   - Example: "feat: add webhook retry mechanism" or "fix: prevent race condition in auth flow"
   - If custom title provided in args, use that instead
 
-- **Description**: 2-4 short paragraphs maximum:
-  1. What changed and why
-  2. Key implementation details worth noting
-  3. Any follow-up work or considerations
+- **Description**: Keep it MINIMAL. 3-5 sentences total:
+  1. One sentence: what changed
+  2. One sentence: why it matters
+  3. Optional: one sentence about notable implementation detail or follow-up
+
+  DO NOT write lengthy paragraphs. DO NOT explain every detail. PR descriptions should be scannable.
 
 - **Test Plan** (only if `--test-plan` flag present):
   - Add a dedicated "## Test Plan" section describing testing/validation approach
