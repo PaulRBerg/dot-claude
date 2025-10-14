@@ -1,7 +1,6 @@
 ---
-allowed-tools: Bash(gh:*)
-argument-hint: [owner/repo|this] [description]
-description: Create a GitHub issue with automatic labeling using standard label set
+argument-hint: [owner/repo] [description]
+description: Create a GitHub issue with automatic labeling
 ---
 
 ## Context
@@ -18,9 +17,11 @@ IF not authenticated: ERROR "Run `gh auth login` first"
 
 ### STEP 2: Parse repository argument
 
-First token in $ARGUMENTS is the repository:
-- IF "this": use current repository (error if not in a repo)
-- ELSE: treat as "owner/repo" format
+Determine repository from $ARGUMENTS:
+- IF the first token matches "owner/repo": use it as repository and remove it from $ARGUMENTS
+- ELSE: infer the current repository from the working directory (error if not in a repo)
+
+Note: If you don't specify a repository, the command will infer the current repository (owner/repo) automatically.
 
 ### STEP 3: Generate title and body
 
@@ -126,7 +127,7 @@ On failure: show specific error and fix
 ## Examples
 
 ```bash
-/create-issue this "Bug in auth flow causing token expiration in src/auth/token.ts"
+/create-issue "Bug in auth flow causing token expiration in src/auth/token.ts"
 /create-issue PaulRBerg/dotfiles "Add zsh configuration for tmux startup"
 /create-issue sablier-labs/command-center "Implement dark mode for frontend dashboard"
 ```
