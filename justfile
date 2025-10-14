@@ -10,10 +10,20 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 claude := require("claude")
 
 # Ni: https://github.com/antfu-collective/ni
+ni := require("ni")
+na := require("na")
 nlx := require("nlx")
 
-# Rsync
-rsync := require("rsync")
+# Modern CLI Tools
+bat := require("bat")
+delta := require("delta")
+eza := require("eza")
+fd := require("fd")
+fzf := require("fzf")
+gh := require("gh")
+jq := require("jq")
+rg := require("rg")
+yq := require("yq")
 
 # ---------------------------------------------------------------------------- #
 #                                   CONSTANTS                                  #
