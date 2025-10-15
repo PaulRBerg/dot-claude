@@ -55,7 +55,7 @@ at the end of prompts with no other text after them.
 
 **Supported flags:**
 
-- **`-s`** (subagent): Injects [ORCHESTRATOR.md](hooks/UserPromptSubmit/ORCHESTRATOR.md) instructions, forcing Claude to
+- **`-s`** (subagent): Injects [SUBAGENTS.md](hooks/UserPromptSubmit/SUBAGENTS.md) instructions, forcing Claude to
   delegate work to specialized subagents instead of doing everything itself. Mandates parallel delegation for
   independent subtasks, single agent for sequential work.
 

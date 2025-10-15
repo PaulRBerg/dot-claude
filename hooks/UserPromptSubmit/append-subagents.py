@@ -13,16 +13,16 @@ def main() -> None:
 
     # Only append if the prompt ends with the -s flag
     if prompt.rstrip().endswith("-s"):
-        # Get the path to ORCHESTRATOR.md relative to this script
+        # Get the path to SUBAGENTS.md relative to this script
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        orchestrator_path = os.path.join(script_dir, "ORCHESTRATOR.md")
+        subagents_path = os.path.join(script_dir, "SUBAGENTS.md")
 
-        # Read the content from ORCHESTRATOR.md
-        with open(orchestrator_path, "r") as f:
-            orchestrator_content = f.read().rstrip()
+        # Read the content from SUBAGENTS.md
+        with open(subagents_path, "r") as f:
+            subagents_content = f.read().rstrip()
 
         # Print the content with a leading newline for separation
-        print(f"\n{orchestrator_content}")
+        print(f"\n{subagents_content}")
 
 
 if __name__ == "__main__":

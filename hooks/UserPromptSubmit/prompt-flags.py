@@ -18,14 +18,14 @@ from typing import Callable, Dict, List, Optional
 
 
 def handle_subagent_flag(script_dir: Path) -> str:
-    """Handle -s flag: Append orchestrator instructions."""
-    orchestrator_path = script_dir / "ORCHESTRATOR.md"
+    """Handle -s flag: Append subagent orchestration instructions."""
+    subagents_path = script_dir / "SUBAGENTS.md"
 
     try:
-        with open(orchestrator_path, "r") as f:
+        with open(subagents_path, "r") as f:
             return f.read().rstrip()
     except FileNotFoundError:
-        print(f"Warning: {orchestrator_path} not found", file=sys.stderr)
+        print(f"Warning: {subagents_path} not found", file=sys.stderr)
         return ""
 
 
