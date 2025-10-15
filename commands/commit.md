@@ -1,5 +1,5 @@
 ---
-argument-hint: [--only] [--fast] [--push]
+argument-hint: [--only] [--fast] [--push] [--stack]
 description: Create a git commit with semantic analysis
 ---
 
@@ -40,6 +40,7 @@ Interpret $ARGUMENTS for commit hints and flags:
 - `--only` flag → stage and commit only changes from this chat transcript
 - `--fast` flag → optimize for speed (simplified analysis, single-line commit, minimal output)
 - `--push` flag → push to remote after committing
+- `--stack` flag → use Graphite CLI (`gt create -m`) instead of git commit
 - Commit type keywords (`feat`, `fix`, `docs`, etc.) → use that type
 - Quoted text → use as commit description
 - Everything else → context for understanding intent
@@ -51,6 +52,8 @@ Examples:
 - `/commit --fast` → quick commit with simplified analysis
 - `/commit --push` → commit and push to remote
 - `/commit --fast --push` → fast commit and push
+- `/commit --stack` → create Graphite stack commit instead of git commit
+- `/commit --stack --push` → create stack commit and push
 - `/commit fix auth bug` → type:fix, scope:auth
 - `/commit "add webhook support"` → use as description
 - `/commit docs --fast --push` → fast docs commit and push
@@ -121,7 +124,18 @@ ADD footer sections as needed:
 
 ### STEP 5: Create the commit
 
-EXECUTE the commit:
+IF `--stack` flag is present:
+- EXECUTE using Graphite CLI:
+  ```bash
+  gt create -m "subject line" -m "body paragraph 1" -m "body paragraph 2"
+  ```
+  Or for single-line:
+  ```bash
+  gt create -m "subject line"
+  ```
+- NOTE: Graphite will create a new commit and manage the stack automatically
+
+OTHERWISE, EXECUTE the standard git commit:
 ```bash
 git commit -m "subject line" -m "body paragraph 1" -m "body paragraph 2"
 ```
@@ -145,8 +159,12 @@ IF commit fails:
 ### STEP 6: Push to remote (if --push flag present)
 
 IF `--push` flag was set:
-- EXECUTE: `git push origin`
-- DISPLAY result showing branch pushed
+- IF `--stack` flag also present:
+  - EXECUTE: `gt stack submit` (submits the entire Graphite stack)
+  - DISPLAY result showing stack submission status
+- OTHERWISE:
+  - EXECUTE: `git push origin`
+  - DISPLAY result showing branch pushed
 - IF push fails:
   - Show the actual error
   - Suggest specific fix (e.g., pull first, set upstream, auth issues)

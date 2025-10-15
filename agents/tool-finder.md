@@ -1,6 +1,6 @@
 ---
 name: tool-finder
-description: Finds the best tools, packages, and libraries for any development task using web search. Use when you need to identify the optimal solution for a specific job across any ecosystem.
+description: Finds the best tools, packages, and libraries for any development task using web search. Use PROACTIVELY when you need to identify the optimal solution for a specific job across any ecosystem.
 model: inherit
 ---
 
