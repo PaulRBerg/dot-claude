@@ -1,70 +1,199 @@
-# Create Command
-
-## Task
-
-You are a command creation specialist for AI agents like Claude Code. Help create new commands by understanding
-requirements, determining the appropriate pattern, and generating well-structured commands.
+---
+argument-hint: [command-description]
+description: Create a new command by analyzing requirements and generating a well-structured command file
+---
 
 ## Context
 
-This meta-command helps create other commands by:
+- Working directory: !`pwd`
+- Existing user commands: !`ls -1 ~/.claude/commands/ 2>/dev/null | head -10 || echo "none"`
+- Existing project commands: !`ls -1 ./.claude/commands/ 2>/dev/null | head -10 || echo "none"`
+- Arguments: $ARGUMENTS
 
-1. Understanding the command's purpose
-2. Determining its category and pattern
-3. Choosing command location (project vs user)
-4. Generating the command file
+## Your Task
 
-## Docs
+### STEP 1: Read command documentation
 
-**CRITICAL**: Read the Claude Code slash command documentation: ~/.claude-code-docs/docs/slash-commands.md
+**CRITICAL**: Read the Claude Code slash command documentation:
 
-**HELPFUL**: Take a look at existing commands in `~/.claude/commands/` to get an idea of the structure and patterns.
+```bash
+cat ~/.claude-code-docs/docs/slash-commands.md
+```
 
-## Interview Process
+IF documentation doesn't exist: WARN "Documentation not found. Proceeding with knowledge of command patterns."
 
-## Phase 1: Understanding what the command should do
+### STEP 2: Understand the command requirements
 
-"Let's create a new command. First, let me see if I understand what the command should do..."
+From $ARGUMENTS, determine:
 
-1. What problem does this command solve?
-2. Who will use it and when?
-3. What's the expected output?
-4. Is it interactive or batch?
+1. **Purpose**: What problem does this command solve?
+2. **Users**: Who will use it and when?
+3. **Output**: What's the expected result?
+4. **Type**: Is it interactive or batch?
+5. **Complexity**: Simple prompt or multi-step workflow?
 
-## Phase 2: Command Location
+IF requirements are unclear or incomplete:
+- ASK clarifying questions:
+  - "What specific problem should this command solve?"
+  - "What inputs does it need?"
+  - "What should the output look like?"
+  - "Are there any similar existing commands I should reference?"
+
+### STEP 3: Determine command location
 
 🎯 **Critical Decision: Where should this command live?**
 
-**Project Command** (`/.claude/commands/`)
-
+**Project Command** (`./.claude/commands/`)
 - Specific to this project's workflow
 - Uses project conventions
 - References project documentation
 - Integrates with project MCP tools
 
 **User Command** (`~/.claude/commands/`)
-
 - General-purpose utility
 - Reusable across projects
 - Personal productivity tool
 - Not project-specific
 
-Ask: "Should this be:
+ANALYZE the command's nature:
 
-1. A project command (specific to this codebase)
-2. A user command (available in all projects)?"
+IF command references project-specific files, workflows, or conventions:
+- RECOMMEND: Project command
+- LOCATION: `./.claude/commands/{command-name}.md`
 
-## Implementation
+IF command is general-purpose or personal productivity:
+- RECOMMEND: User command
+- LOCATION: `~/.claude/commands/{command-name}.md`
 
-## 1. Create the command file
+IF uncertain:
+- ASK: "Should this be a project command (specific to this codebase) or a user command (available in all projects)?"
+
+### STEP 4: Analyze similar commands
+
+READ existing commands for patterns:
+
+```bash
+# Sample 3-5 relevant commands
+ls ~/.claude/commands/ | head -5 | xargs -I {} cat ~/.claude/commands/{}
+```
+
+IDENTIFY common patterns:
+- Front matter format (YAML with `argument-hint`, `description`)
+- Context section with shell outputs
+- STEP-based workflow structure
+- IF/ELSE conditionals for flow control
+- Error handling patterns
+- Examples section
+- Notes section
+
+### STEP 5: Generate command structure
+
+CREATE command file with this structure:
+
+```markdown
+---
+argument-hint: [parameters]
+description: Brief one-line description
+---
+
+## Context
+
+- Relevant data: !`shell command`
+- Arguments: $ARGUMENTS
+
+## Your Task
+
+### STEP 1: Validate prerequisites
+
+CHECK required conditions:
+- IF prerequisite not met: ERROR "Clear error message with fix"
+
+### STEP 2: Parse arguments
+
+Interpret $ARGUMENTS:
+- Extract flags and parameters
+- Validate inputs
+- Set defaults
+
+### STEP 3: [Main logic]
+
+Describe the core workflow:
+- IF condition: action
+- ELSE: alternative action
+- Use clear imperatives: CHECK, EXECUTE, DISPLAY, etc.
+
+### STEP 4: [Secondary logic]
+
+Continue step-by-step flow...
+
+### STEP N: Display results
+
+Show output to user:
+- Success indicators
+- Error messages with fixes
+- Next steps
 
 ## Examples
 
-### Simple, no parameters
+[Concrete usage examples]
 
-`./.claude/commands/audit-security.md`
+## Notes
 
-```md
+[Implementation details, caveats, references]
+```
+
+### STEP 6: Create the command file
+
+WRITE the command to the chosen location:
+
+IF location is user commands:
+```bash
+cat > ~/.claude/commands/{command-name}.md
+```
+
+IF location is project commands:
+```bash
+mkdir -p ./.claude/commands/
+cat > ./.claude/commands/{command-name}.md
+```
+
+DISPLAY:
+```
+✓ Created command: {location}/{command-name}.md
+```
+
+### STEP 7: Summarize and test
+
+DISPLAY command summary:
+
+```
+### Command Created
+
+- Location: {chosen location}
+- Name: {command-name}
+- Type: {specialized/generic}
+
+### Usage
+
+/{prefix}:{command-name} {example-args}
+
+Example:
+/{prefix}:{command-name} {concrete-example}
+
+### Next Steps
+
+1. Test the command: /{prefix}:{command-name}
+2. Refine based on usage
+3. Add to command documentation if needed
+```
+
+SUGGEST testing the command immediately
+
+## Command Pattern Reference
+
+### Simple (no parameters)
+
+```markdown
 Audit this repository for security vulnerabilities:
 
 1. Identify common CWE patterns in the code.
@@ -72,65 +201,39 @@ Audit this repository for security vulnerabilities:
 3. Output findings as a Markdown checklist.
 ```
 
-To run it:
-
-```bash
-claude > /project:audit-security
-```
+Usage: `/project:audit-security`
 
 ### Parameterized
 
-`./.claude/commands/fix-issue.md`
+```markdown
+Fix issue #$ARGUMENTS.
 
-```md
-Fix issue #$ARGUMENTS.\
 Steps:
-
 1. Read the ticket description.
 2. Locate the relevant code.
 3. Implement a minimal fix with tests.
-4. Output a concise PR body with changelog notes.
 ```
 
-Invoke with an argument:
+Usage: `/project:fix-issue 417`
 
-```bash
-claude > /project:fix-issue 417
+Note: `$ARGUMENTS` is replaced by `417` at runtime.
+
+### With Context Commands
+
+```markdown
+## Context
+
+- Current branch: !`git branch --show-current`
+- Git status: !`git status --short`
 ```
 
-`$ARGUMENTS` is replaced by `417` at runtime.
+Note: Commands prefixed with `!` are executed before the prompt is sent.
 
-## 2. Add metadata
+## Notes
 
-Embed front-matter for human readers or tooling:
-
-```md
-<!--
-name: audit-security
-argument-hint: [--deep]
--->
-
-...prompt text...
-```
-
-## Final Output
-
-After gathering all information:
-
-### Command Created
-
-- Location: {chosen location}
-- Name: {command-name}
-- Category: {category}
-- Pattern: {specialized/generic}
-
-### Usage Instructions
-
-- Command: `/{prefix}:{name}`
-- Example: {example usage}
-
-### Next Steps
-
-- Test the command
-- Refine based on usage
-- Add to command documentation
+- This is a meta-command that creates other commands
+- All commands should follow the STEP-based structure
+- Use clear imperatives: CHECK, IF, EXECUTE, DISPLAY, ERROR
+- Include front matter for tooling and discoverability
+- Context section should provide relevant state with shell commands
+- Keep descriptions minimal (3-5 sentences) unless complexity demands more
