@@ -23,7 +23,33 @@ Determine repository from $ARGUMENTS:
 
 Note: If you don't specify a repository, the command will infer the current repository (owner/repo) automatically.
 
-### STEP 3: Generate title and body
+### STEP 3: Check label permissions
+
+Check if the authenticated user has permission to add labels:
+
+```bash
+gh api /repos/$repository/collaborators/$(gh api user -q .login)/permission -q .role_name
+```
+
+The user needs at least `triage` permission to add labels. Valid roles with label permissions: `triage`, `write`, `maintain`, `admin`.
+
+IF role is `read` or permission check fails:
+- **WARNING**: "You don't have permission to add labels to issues in $repository"
+- **SKIP STEP 4** (do not apply labels)
+- Continue with issue creation without labels
+
+### STEP 4: Apply labels
+
+**ONLY if user has triage+ permission** (from STEP 3):
+
+From content analysis, determine:
+- **Type**: Primary category (bug, feature, docs, etc.)
+- **Work**: Complexity via Cynefin (clear, complicated, complex, chaotic)
+- **Priority**: Urgency (0=critical to 3=nice-to-have)
+- **Effort**: Size (low, medium, high, epic)
+- **Scope**: Domain area (only for sablier-labs/command-center)
+
+### STEP 5: Generate title and body
 
 From remaining $ARGUMENTS, create:
 - **Title**: Clear, concise summary (5-10 words)
@@ -57,23 +83,23 @@ File links:
 - List one per line if multiple files
 - Use "TBD" if none specified
 
-### STEP 4: Apply labels
+### STEP 6: Create the issue
 
-From content analysis, determine:
-- **Type**: Primary category (bug, feature, docs, etc.)
-- **Work**: Complexity via Cynefin (clear, complicated, complex, chaotic)
-- **Priority**: Urgency (0=critical to 3=nice-to-have)
-- **Effort**: Size (low, medium, high, epic)
-- **Scope**: Domain area (only for sablier-labs/command-center)
-
-### STEP 5: Create the issue
-
+**IF user has label permission**:
 ```bash
 gh issue create \
   --repo "$repository" \
   --title "$title" \
   --body "$body" \
   --label "label1,label2,label3"
+```
+
+**IF user lacks label permission**:
+```bash
+gh issue create \
+  --repo "$repository" \
+  --title "$title" \
+  --body "$body"
 ```
 
 Display: "✓ Created issue: $URL"
