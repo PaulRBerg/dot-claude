@@ -46,6 +46,13 @@ Check against actual codebase:
 - Check that process flows are accurate
 - Validate dependencies and execution order
 
+**Linting configuration:**
+- Locate lint-staged config file (`.lintstagedrc.js`, `.lintstagedrc.json`, `lint-staged` in `package.json`)
+- Extract lint commands for each file pattern
+- Compare against linting instructions in `CLAUDE.md` (if present)
+- Verify commands match (same tools, same flags, same order)
+- Check file patterns align with documented workflows
+
 ### STEP 3: Report findings
 
 For EACH discrepancy found, report:
@@ -74,6 +81,7 @@ For each file, verify:
 - [ ] Cross-references between docs are consistent
 - [ ] Examples match actual patterns in code
 - [ ] Version numbers and dependencies are current
+- [ ] Linting instructions match lint-staged config
 
 ## Notes
 
