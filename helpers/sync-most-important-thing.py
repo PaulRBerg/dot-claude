@@ -6,7 +6,6 @@ Usage:
     python sync-most-important-thing.py
 """
 
-import os
 import re
 import sys
 from pathlib import Path
@@ -66,23 +65,25 @@ def insert_section_after_first_heading(content: str, section: str) -> str:
         return section + "\n\n" + content
 
     # Check if there's content between first heading and first ## heading
-    after_first_heading = content[heading_match.end():]
+    after_first_heading = content[heading_match.end() :]
     next_h2_match = re.search(r"^##\s", after_first_heading, re.MULTILINE)
 
     if next_h2_match:
         # There's content before the next ## heading - preserve it
         intro_content_end = heading_match.end() + next_h2_match.start()
-        intro_content = content[heading_match.end():intro_content_end]
+        intro_content = content[heading_match.end() : intro_content_end]
 
         # Insert section after intro content
         # Strip trailing whitespace from intro
         intro_content = intro_content.rstrip() + "\n\n"
 
-        return (content[:heading_match.end()] +
-                intro_content +
-                section +
-                "\n" +
-                after_first_heading[next_h2_match.start():])
+        return (
+            content[: heading_match.end()]
+            + intro_content
+            + section
+            + "\n"
+            + after_first_heading[next_h2_match.start() :]
+        )
     else:
         # No ## heading found, insert after first heading
         pos = heading_match.end()
@@ -97,7 +98,9 @@ def insert_section_after_first_heading(content: str, section: str) -> str:
         return content[:pos] + section + after_first_heading
 
 
-def update_file(file_path: Path, new_section: str, section_title: str) -> tuple[bool, str]:
+def update_file(
+    file_path: Path, new_section: str, section_title: str
+) -> tuple[bool, str]:
     """
     Update a file by replacing its section with new_section.
     Returns (modified, result_message) tuple.
@@ -124,19 +127,19 @@ def update_file(file_path: Path, new_section: str, section_title: str) -> tuple[
             if not heading_match:
                 return False, "⚠️  No heading"
 
-            after_heading = content[heading_match.end():]
+            after_heading = content[heading_match.end() :]
             first_h2_match = re.search(r"^##\s", after_heading, re.MULTILINE)
 
             if first_h2_match:
                 # Insert before first ## section
                 insert_pos = heading_match.end() + first_h2_match.start()
-                intro_text = content[heading_match.end():insert_pos].rstrip() + "\n\n"
+                intro_text = content[heading_match.end() : insert_pos].rstrip() + "\n\n"
                 new_section_clean = new_section.rstrip() + "\n\n"
                 new_content = (
-                    content[:heading_match.end()] +
-                    intro_text +
-                    new_section_clean +
-                    content[insert_pos:]
+                    content[: heading_match.end()]
+                    + intro_text
+                    + new_section_clean
+                    + content[insert_pos:]
                 )
             else:
                 # No ## sections exist, append at end
