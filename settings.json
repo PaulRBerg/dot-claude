@@ -16,6 +16,7 @@
       "Bash(cd:*)",
       "Bash(chezmoi:*)",
       "Bash(chmod:*)",
+      "Bash(COMMAND:*)",
       "Bash(command:*)",
       "Bash(cp:*)",
       "Bash(curl:*)",
@@ -24,10 +25,12 @@
       "Bash(eza:*)",
       "Bash(fd:*)",
       "Bash(find:*)",
+      "Bash(for:*)",
       "Bash(forge:*)",
       "Bash(gdate:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
+      "Bash(gita:*)",
       "Bash(grep:*)",
       "Bash(head:*)",
       "Bash(jq:*)",
@@ -66,13 +69,10 @@
       "Glob",
       "Grep",
       "LS",
-      "Read(~/.claude-code-docs)",
-      "Read(~/.config)",
-      "Read(~/.local)",
-      "Read(~/.vim_runtime)",
       "Read(~/.vimrc)",
       "Read(~/.zshrc)",
       "SlashCommand(/commit:*)",
+      "SlashCommand(/create-pr:*)",
       "SlashCommand(/docs:*)",
       "SlashCommand(/update-pr:*)",
       "Task",
@@ -113,7 +113,17 @@
       "Read(./.env)",
       "Read(./.env.production)"
     ],
-    "additionalDirectories": ["~/.claude", "~/Projects", "~/Sablier", "~/Workspace"]
+    "additionalDirectories": [
+      "~/.claude",
+      "~/.claude-code-docs",
+      "~/.config",
+      "~/.local",
+      "~/.vim_runtime",
+      "~/.zsh",
+      "~/Projects",
+      "~/Sablier",
+      "~/Workspace"
+    ]
   },
   "hooks": {
     "Notification": [
@@ -166,5 +176,5 @@
     "type": "command",
     "command": "bunx -y ccstatusline@latest"
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": false
 }

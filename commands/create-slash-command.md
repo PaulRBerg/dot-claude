@@ -98,7 +98,7 @@ description: Brief one-line description
 
 ## Context
 
-- Relevant data: !`shell command`
+- Relevant data: !`COMMAND`
 - Arguments: $ARGUMENTS
 
 ## Your Task
