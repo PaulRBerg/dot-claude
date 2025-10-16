@@ -4,6 +4,7 @@ debug/
 file-history/
 ide/
 logs/
+plugins/
 projects/
 shell-snapshots/
 statsig/

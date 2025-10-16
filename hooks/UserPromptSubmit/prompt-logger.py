@@ -9,7 +9,6 @@ import json
 import subprocess
 import sys
 from datetime import datetime
-from pathlib import Path
 
 
 def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
@@ -45,7 +44,7 @@ tags: claude-code prompt
             capture_output=True,
             text=True,
             check=True,
-            timeout=5
+            timeout=5,
         )
     except subprocess.TimeoutExpired:
         print("Warning: nb add timed out", file=sys.stderr)

@@ -1,3 +1,7 @@
 # directories
 agents/
 commands/
+plugins/
+
+# files
+.claude/settings.local.json

@@ -78,3 +78,21 @@ alias rc := ruff-check
 ruff-write:
     ruff check --fix . && ruff format .
 alias rw := ruff-write
+
+# ---------------------------------------------------------------------------- #
+#                                 FULL CHECKS                                  #
+# ---------------------------------------------------------------------------- #
+
+# Run all code checks
+[group("checks")]
+full-check:
+    just prettier-check
+    just ruff-check
+alias fc := full-check
+
+# Run all code fixes
+[group("checks")]
+full-write:
+    just prettier-write
+    just ruff-write
+alias fw := full-write
