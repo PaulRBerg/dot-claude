@@ -155,6 +155,15 @@ def main() -> None:
     if not prompt:
         sys.exit(0)  # No prompt to log
 
+    # Filter out short prompts (< 25 characters)
+    if len(prompt) < 25:
+        sys.exit(0)
+
+    # Filter out simple slash command invocations
+    stripped = prompt.strip()
+    if stripped.startswith("/") and " " not in stripped:
+        sys.exit(0)  # Simple command without arguments
+
     session_id = input_data.get("session_id", "unknown")
     cwd = input_data.get("cwd", "unknown")
 
