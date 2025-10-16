@@ -39,6 +39,7 @@
       "Bash(lsof:*)",
       "Bash(mkdir:*)",
       "Bash(na:*)",
+      "Bash(nb:*)",
       "Bash(ni:*)",
       "Bash(nlx:*)",
       "Bash(node:*)",
@@ -167,6 +168,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/prompt-logger.py"
           }
         ]
       }
@@ -176,5 +181,5 @@
     "type": "command",
     "command": "bunx -y ccstatusline@latest"
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": true
 }
