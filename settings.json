@@ -167,11 +167,11 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/log-prompts.py"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/prompt-logger.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
           }
         ]
       }
