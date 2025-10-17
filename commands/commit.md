@@ -1,230 +1,134 @@
 ---
-argument-hint: [--only] [--fast] [--push] [--stack]
-description: Create a git commit with semantic analysis
+argument-hint: [--only] [--thorough] [--quick] [--push] [--stack]
+description: Create a git commit with smart heuristic analysis
 ---
 
 ## Context
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short --branch`
-- Staged changes: !`git diff --cached`
+- Staged changes: !`git diff --cached --stat`
 - Arguments: $ARGUMENTS
 
-## Your Task
+## Task
 
 ### STEP 1: Handle staging
 
-IF `--only` flag is present:
-- IDENTIFY files modified/created in this chat transcript
-- UNSTAGE all currently staged changes: `git reset`
-- STAGE only the chat-modified files: `git add <file1> <file2> ...`
-- LOG which files were staged from this chat transcript
-- PROCEED to STEP 2 with these staged changes
-
-OTHERWISE, CHECK current state from Context:
-
-IF no staged changes AND no unstaged changes:
-- ERROR "No changes to commit. Working tree is clean."
-
-IF no staged changes BUT unstaged changes exist:
-- IDENTIFY modified/new files from git status
-- STAGE them automatically: `git add -A`
-- LOG what was staged for transparency
-
-IF staged changes exist:
-- PROCEED with those changes
-
-### STEP 2: Parse arguments naturally
-
-Interpret $ARGUMENTS for commit hints and flags:
-- `--only` flag → stage and commit only changes from this chat transcript
-- `--fast` flag → optimize for speed (simplified analysis, single-line commit, minimal output)
-- `--push` flag → push to remote after committing
-- `--stack` flag → use Graphite CLI (`gt create -m`) instead of git commit
-- Commit type keywords (`feat`, `fix`, `docs`, etc.) → use that type
-- Quoted text → use as commit description
-- Everything else → context for understanding intent
-
-Examples:
-- `/commit --only` → commit only changes from this chat
-- `/commit --only --fast` → fast commit of chat changes only
-- `/commit --only --push` → commit chat changes and push
-- `/commit --fast` → quick commit with simplified analysis
-- `/commit --push` → commit and push to remote
-- `/commit --fast --push` → fast commit and push
-- `/commit --stack` → create Graphite stack commit instead of git commit
-- `/commit --stack --push` → create stack commit and push
-- `/commit fix auth bug` → type:fix, scope:auth
-- `/commit "add webhook support"` → use as description
-- `/commit docs --fast --push` → fast docs commit and push
-
-### STEP 3: Semantic change analysis
-
-IF `--fast` flag is present:
-- SCAN changes at surface level only (filenames, basic patterns)
-- CATEGORIZE using simple heuristics (file extensions, paths)
-- SKIP deep code analysis and breaking change detection
-- Use generic but accurate type inference
-- SKIP scope identification (omit scope from message)
-- PROCEED immediately to STEP 4
-
-OTHERWISE, perform thorough analysis:
-
-READ the staged changes from Context:
-- What files changed? What's their purpose in the codebase?
-- What's the actual code doing differently?
-- Is this adding functionality, fixing bugs, or refactoring?
-- Any breaking changes or API modifications?
-- Look at the actual code changes, not just filenames
-
-CATEGORIZE using conventional commit types:
-- `feat` - New feature or functionality
-- `fix` - Bug fix or issue resolution
-- `docs` - Documentation only
-- `style` - Code style/formatting (no logic change)
-- `refactor` - Code restructuring (no behavior change)
-- `test` - Adding or modifying tests
-- `chore` - Maintenance (deps, build, config)
-- `ci` - CI/CD changes
-- `perf` - Performance improvements
-- `revert` - Reverting previous commits
-
-IDENTIFY scope:
-- Component, module, or area affected
-- Examples: `auth`, `api`, `ui`, `core`, `config`, `deps`
-- Omit scope if change spans multiple areas
-
-### STEP 4: Compose commit message
-
-GENERATE subject line (≤50 characters):
-- Format: `type(scope): description` or `type: description`
-- Use imperative mood: "add" not "added" or "adds"
-- Start with lowercase
-- No period at end
-- Be specific but concise
-
-IF `--fast` flag present:
-- Use ONLY the subject line
-- No body, no footer
-- SKIP detailed wording refinement
-
-OTHERWISE, for complex changes:
-- ADD body (wrap at 72 characters):
-  - Explain WHY the change was made
-  - Include important implementation details
-  - Separate from subject with blank line
-
-ADD footer sections as needed:
-- IF breaking change:
-  - ADD footer: `BREAKING CHANGE: description`
-  - Explain impact and migration
-- IF GitHub issues found in transcript:
-  - ADD footer: `Closes #123` (or `Closes #123, #456` for multiple)
-  - Use "Closes" keyword to auto-close issues when merged
-
-### STEP 5: Create the commit
-
-IF `--stack` flag is present:
-- EXECUTE using Graphite CLI:
-  ```bash
-  gt create -m "subject line" -m "body paragraph 1" -m "body paragraph 2"
-  ```
-  Or for single-line:
-  ```bash
-  gt create -m "subject line"
-  ```
-- NOTE: Graphite will create a new commit and manage the stack automatically
-
-OTHERWISE, EXECUTE the standard git commit:
-```bash
-git commit -m "subject line" -m "body paragraph 1" -m "body paragraph 2"
-```
-Or for single-line:
-```bash
-git commit -m "subject line"
-```
-
-IF `--fast` flag present:
-- DISPLAY minimal result: commit hash only
-- SKIP verbose summary
+IF `--only`: unstage all (`git reset`), stage only chat-modified files, log them
 
 OTHERWISE:
-- Show commit hash and full message
-- Summarize what was committed
+- No changes at all → error "No changes to commit"
+- Unstaged changes exist → auto-stage with `git add -A`, log what was staged
+- Already staged → proceed
 
-IF commit fails:
-- Show the actual error
-- Suggest specific fix based on error type
+### STEP 2: Parse arguments
 
-### STEP 6: Push to remote (if --push flag present)
+Flags:
+- `--only` → commit only chat-modified files
+- `--quick` → fastest (filename-only, generic messages)
+- `--thorough` → slowest (deep code analysis, breaking changes, scope)
+- `--push` → push after commit
+- `--stack` → use `gt create` instead of `git commit`
+- Type keywords (`feat`, `fix`, `docs`) → use that type
+- Quoted text → use as description
 
-IF `--push` flag was set:
-- IF `--stack` flag also present:
-  - EXECUTE: `gt stack submit` (submits the entire Graphite stack)
-  - DISPLAY result showing stack submission status
-- OTHERWISE:
-  - EXECUTE: `git push origin`
-  - DISPLAY result showing branch pushed
-- IF push fails:
-  - Show the actual error
-  - Suggest specific fix (e.g., pull first, set upstream, auth issues)
+### STEP 3: Analyze changes
+
+**IF `--quick`:**
+- Categorize by extension only (.md→docs, .test.→test)
+- Generic type, no validation, single-line
+
+**ELSE IF `--thorough`:**
+- Request full diff: `git diff --cached`
+- Read code, detect breaking changes
+- Identify scope (component/module)
+
+**ELSE (default):**
+- Use --stat from context (paths/filenames only)
+- Pattern-match on paths and file types
+- Omit scope unless obvious
+- No deep code reading
+
+**Conventional types:** feat, fix, docs, style, refactor, test, chore, ci, perf, revert
+
+### STEP 4: Compose message
+
+Subject line (≤50 chars): `type(scope): description` or `type: description`
+- Imperative mood ("add" not "added")
+- Lowercase, no period
+- Specific but concise
+
+**IF `--quick`:** subject only, minimal refinement, generic descriptions
+**ELSE IF default:** subject only, quick refinement, accurate descriptions
+**ELSE IF `--thorough`:** add body (wrap 72 chars, explain WHY)
+
+Footers (thorough mode only):
+- Breaking change: `BREAKING CHANGE: description` + migration notes
+- GitHub issues: `Closes #123` or `Closes #123, #456`
+
+### STEP 5: Commit
+
+**IF `--stack`:** use `gt create -m "subject" -m "body"`
+**ELSE:** use `git commit -m "subject" -m "body"`
+
+Output:
+- `--quick`: hash only
+- Default: hash + subject + one-line summary
+- `--thorough`: hash + full message + summary
+
+If failed: show error + suggest fix
+
+### STEP 6: Push (if --push)
+
+**IF `--push` + `--stack`:** run `gt stack submit`
+**ELSE IF `--push`:** run `git push origin`
+
+If failed: show error + suggest fix (pull first, set upstream, auth)
 
 ## Examples
 
 **Subject lines:**
-- `feat(auth): add OAuth2 login support`
-- `fix(api): resolve null pointer in user endpoint`
-- `docs: update installation instructions`
-- `chore(deps): bump lodash to 4.17.21`
-- `refactor(core): extract user validation logic`
-- `perf(db): add index on user_id column`
-- `test: add integration tests for payment flow`
+```
+feat(auth): add OAuth2 login support
+fix(api): resolve null pointer in user endpoint
+docs: update installation instructions
+chore(deps): bump lodash to 4.17.21
+```
 
-**With body:**
+**With body (thorough mode):**
 ```
 feat(webhooks): add retry mechanism for failed deliveries
 
-Implements exponential backoff with max 5 retries. Failed webhooks
-are logged to separate table for debugging. Retry intervals: 1m, 5m,
-15m, 1h, 6h.
+Implements exponential backoff with max 5 retries. Retry intervals:
+1m, 5m, 15m, 1h, 6h.
 ```
 
 **Breaking change:**
 ```
 feat(api): migrate to v2 authentication
 
-Updates auth flow to use JWT instead of session cookies for better
-scalability and mobile support.
-
-BREAKING CHANGE: clients must update to JWT authentication. Session
-cookies no longer supported. See migration guide in docs/auth-v2.md
+BREAKING CHANGE: clients must use JWT. Session cookies removed.
+See docs/auth-v2.md for migration.
 ```
 
-**With GitHub issue reference:**
+**With issue:**
 ```
 fix(auth): resolve login timeout on slow connections
-
-Increases timeout from 5s to 30s and adds retry logic for network
-failures. Implements exponential backoff for better resilience.
 
 Closes #234
 ```
 
-**Multiple issues:**
-```
-feat(api): add rate limiting and improve error handling
-
-Implements token bucket algorithm for rate limiting. Standardizes
-error responses across all endpoints.
-
-Closes #123, #456
-```
-
 ## Notes
 
-- Reads actual code to understand semantic meaning
+**Performance modes:**
+- Default: Fast, pattern-based heuristics using `--stat` output only (no deep code reading)
+- `--quick`: Fastest mode with minimal validation (filename-only analysis)
+- `--thorough`: Deep semantic analysis with full code reading and breaking change detection
+
+**Features:**
 - Generates concise, meaningful commit messages
 - Follows conventional commits specification
-- Breaking changes properly flagged in footer
+- Breaking changes properly flagged in footer (thorough mode)
 - Auto-detects GitHub issues from chat transcript and adds "Closes #N" footer
 - Supports multiple issue references (e.g., "Closes #123, #456")
+- Optimized for speed by default while maintaining good accuracy
