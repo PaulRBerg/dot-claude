@@ -15,13 +15,18 @@ SEARCH_DIRS=(
   ~/Sablier
   ~/Workspace/templates
 )
+
+# Directories to exclude from syncing (path patterns)
+EXCLUDED_DIRS=(
+  ~/Workspace/cc
+)
 ```
 
 SEARCH for git repositories in the target directories:
 
 ```bash
 # Find all .git directories recursively (excluding common bloat dirs)
-fd -H '.git$' --type d \
+repos=$(fd -H '.git$' --type d \
   --exclude node_modules \
   --exclude vendor \
   --exclude .cache \
@@ -29,7 +34,14 @@ fd -H '.git$' --type d \
   --exclude .pnpm-store \
   --exclude lib \
   --exclude repos \
-  "${SEARCH_DIRS[@]}" 2>/dev/null | sed 's/\.git$//'
+  "${SEARCH_DIRS[@]}" 2>/dev/null | sed 's/\.git$//')
+
+# Filter out excluded directories
+for excluded in "${EXCLUDED_DIRS[@]}"; do
+  repos=$(echo "$repos" | grep -v "^${excluded/#\~/$HOME}")
+done
+
+echo "$repos"
 ```
 
 IF no repositories found:
@@ -134,6 +146,7 @@ Repository Sync Summary
 
 - Uses `fd` for fast directory traversal
 - Explicitly excludes `node_modules`, `vendor`, `.cache`, `.npm`, `.pnpm-store`, `lib`, `repos` for performance
+- Filters out directories listed in `EXCLUDED_DIRS` array (configurable at top of command)
 - Skips submodules (they have `.git` files, not directories) and dependency repos
 - Fetches latest from origin before pulling
 - Respects working tree status (won't pull with uncommitted changes)

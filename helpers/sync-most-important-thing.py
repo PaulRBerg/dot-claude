@@ -14,9 +14,11 @@ from pathlib import Path
 HOME = Path.home()
 TEMPLATE_FILE = HOME / "Workspace/Templates/next-template/CLAUDE.md"
 TARGET_FILES = [
-    HOME / "Sablier/indexers/CLAUDE.md",
-    HOME / "Sablier/ui/interfaces/CLAUDE.md",
+    HOME / "Projects/prb-pulse/CLAUDE.md",
     HOME / "Sablier/business/accounting/CLAUDE.md",
+    HOME / "Sablier/indexers/CLAUDE.md",
+    HOME / "Sablier/frontend/gh-searcher/CLAUDE.md",
+    HOME / "Sablier/frontend/interfaces/CLAUDE.md",
 ]
 SECTION_TITLE = "## Most Important Thing"
 
