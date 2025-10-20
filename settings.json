@@ -5,6 +5,7 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
+      "Bash(COMMAND:*)",
       "Bash(anvil:*)",
       "Bash(awk:*)",
       "Bash(biome:*)",
@@ -16,7 +17,6 @@
       "Bash(cd:*)",
       "Bash(chezmoi:*)",
       "Bash(chmod:*)",
-      "Bash(COMMAND:*)",
       "Bash(command:*)",
       "Bash(cp:*)",
       "Bash(curl:*)",
