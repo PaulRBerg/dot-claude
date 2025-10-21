@@ -18,6 +18,7 @@ TARGET_FILES = [
     HOME / "Sablier/business/accounting/CLAUDE.md",
     HOME / "Sablier/indexers/CLAUDE.md",
     HOME / "Sablier/frontend/gh-searcher/CLAUDE.md",
+    HOME / "Sablier/frontend/indexers/CLAUDE.md",
     HOME / "Sablier/frontend/interfaces/CLAUDE.md",
 ]
 SECTION_TITLE = "## Most Important Thing"

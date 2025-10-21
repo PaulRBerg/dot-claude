@@ -29,8 +29,9 @@ Support for both regular and beta releases.
 
 1. **Check for flags** - Determine if this is a beta release (`--beta` parameter) and/or dry-run (`--dry-run` parameter)
 2. **Write Changelog** - Examine diffs between the current branch and the previous tag to write Changelog. Then find
-relevant PRs by looking at the commit history and add them to each changelog (when available). Only include changes in
-the source directory
+relevant PRs by looking at the commit history and add them to each changelog (when available). If `package.json` contains
+a `files` field, only include changes within those specified files/directories. If no `files` field exists, include all
+changes except test changes, CI/CD workflows, and development tooling
 3. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
 4. **Check version** - Get current version from `package.json`
 5. **Bump version** - If unchanged since last release, increment per Semantic Versioning rules:
@@ -68,7 +69,8 @@ For regular releases only, in the `CHANGELOG.md` file, generate changelog entrie
 
 For regular releases only (changelog generation is skipped for beta releases):
 
-- **Production changes only** - Exclude test changes, CI/CD workflows, and development tooling
+- **Files field constraint** - If `package.json` contains a `files` field, only include changes to files/directories specified in that array. All other codebase changes should be excluded from the CHANGELOG
+- **Production changes only** - When no `files` field exists, exclude test changes, CI/CD workflows, and development tooling
 - **Reference pull requests** - Link to PRs when available for context
 - **Net changes only** - Examine diffs between the current branch and the previous tag to identify changes
 - **Only dependencies and peerDependencies changes** - Exclude changes to devDependencies
