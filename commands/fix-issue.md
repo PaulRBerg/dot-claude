@@ -21,6 +21,11 @@ IF not in a repository: ERROR "Must be run from within a git repository"
 
 IF issue details show error: ERROR "Could not fetch issue #$ARGUMENTS. Verify the issue exists and you have access."
 
+IF current branch is `main` or `master`: SUGGEST creating a feature branch first:
+- Recommend: `git checkout -b fix/issue-$ARGUMENTS` or similar descriptive name
+- Explain: Working on a branch allows for PR workflow and keeps main clean
+- Ask if user wants to proceed on current branch or create a new one
+
 ### STEP 2: Analyze the issue
 
 From the issue details above:
