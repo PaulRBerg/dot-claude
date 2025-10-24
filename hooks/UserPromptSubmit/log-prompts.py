@@ -71,7 +71,7 @@ def ensure_notebook_exists(notebook_name: str) -> bool:
         return True
 
     except subprocess.TimeoutExpired:
-        print(f"Warning: nb notebooks check/create timed out", file=sys.stderr)
+        print("Warning: nb notebooks check/create timed out", file=sys.stderr)
         return False
     except subprocess.CalledProcessError as e:
         print(
@@ -113,7 +113,7 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
 session_id: {session_id}
 timestamp: {timestamp.isoformat()}
 cwd: {cwd}
-tags: claude-code prompt
+tags: claude
 ---
 
 # Prompt: {timestamp.strftime("%Y-%m-%d %H:%M:%S")}
