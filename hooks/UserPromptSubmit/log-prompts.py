@@ -10,38 +10,42 @@ import json
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
-def cwd_to_notebook_name(cwd: str, segments: int = 2) -> str:
-    """Convert cwd path to safe nb notebook name.
+def cwd_to_notebook_name(cwd: str) -> str:
+    """Convert cwd path to nested nb notebook path.
 
     Args:
         cwd: Current working directory path
-        segments: Number of path segments to include (default: 2)
 
     Returns:
-        Sanitized notebook name with 'claude-' prefix
+        Nested notebook path like 'claude/Sablier/sdk' that mirrors
+        the directory structure under ~/.nb/
     """
     path = Path(cwd)
-    # Extract last N segments
-    parts = path.parts[-segments:] if len(path.parts) >= segments else path.parts
+    home = Path.home()
 
-    # Join and sanitize: lowercase, replace special chars with hyphens
-    name = "-".join(parts)
-    name = re.sub(r"[^a-zA-Z0-9-]", "-", name.lower())
-    # Remove consecutive hyphens and trim
-    name = re.sub(r"-+", "-", name).strip("-")
+    # Strip home directory prefix if present
+    try:
+        relative_path = path.relative_to(home)
+    except ValueError:
+        # If path is not under home, use the full path
+        relative_path = path
 
-    return f"claude-{name}"
+    # Prepend 'claude/' to create nested structure
+    notebook_path = Path("claude") / relative_path
+
+    # Convert to string with forward slashes (nb uses / as separator)
+    return str(notebook_path).replace("\\", "/")
 
 
 def ensure_notebook_exists(notebook_name: str) -> bool:
     """Ensure nb notebook exists, create if missing.
 
     Args:
-        notebook_name: Name of the notebook to check/create
+        notebook_name: Path to the notebook to check/create (e.g., 'claude/Sablier/sdk')
 
     Returns:
         True if notebook exists or was created successfully
@@ -95,7 +99,7 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
         session_id: Unique session identifier
         cwd: Current working directory when prompt was submitted
     """
-    timestamp = datetime.now()
+    timestamp = datetime.now(timezone.utc)
 
     # Generate notebook name from project path
     notebook_name = cwd_to_notebook_name(cwd)
@@ -117,6 +121,8 @@ tags: claude
 ---
 
 # Prompt: {timestamp.strftime("%Y-%m-%d %H:%M:%S")}
+
+---
 
 {prompt}
 """
