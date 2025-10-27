@@ -14,15 +14,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def cwd_to_notebook_name(cwd: str) -> str:
-    """Convert cwd path to nested nb notebook path.
+def get_notebook_folder_path(cwd: str) -> str:
+    """Convert cwd to folder path within the claude notebook.
 
     Args:
         cwd: Current working directory path
 
     Returns:
-        Nested notebook path like 'claude/Sablier/sdk' that mirrors
-        the directory structure under ~/.nb/
+        Folder path like 'Sablier/sdk' that mirrors the directory
+        structure relative to home directory
     """
     path = Path(cwd)
     home = Path.home()
@@ -31,21 +31,18 @@ def cwd_to_notebook_name(cwd: str) -> str:
     try:
         relative_path = path.relative_to(home)
     except ValueError:
-        # If path is not under home, use the full path
+        # If path is not under home, use the full path as folder name
         relative_path = path
 
-    # Prepend 'claude/' to create nested structure
-    notebook_path = Path("claude") / relative_path
-
     # Convert to string with forward slashes (nb uses / as separator)
-    return str(notebook_path).replace("\\", "/")
+    return str(relative_path).replace("\\", "/")
 
 
-def ensure_notebook_exists(notebook_name: str) -> bool:
+def ensure_notebook_exists(notebook_name: str = "claude") -> bool:
     """Ensure nb notebook exists, create if missing.
 
     Args:
-        notebook_name: Path to the notebook to check/create (e.g., 'claude/Sablier/sdk')
+        notebook_name: Name of the notebook to check/create (default: 'claude')
 
     Returns:
         True if notebook exists or was created successfully
@@ -101,16 +98,16 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
     """
     timestamp = datetime.now(timezone.utc)
 
-    # Generate notebook name from project path
-    notebook_name = cwd_to_notebook_name(cwd)
-
-    # Ensure notebook exists
-    if not ensure_notebook_exists(notebook_name):
+    # Ensure claude notebook exists
+    if not ensure_notebook_exists():
         print(
-            f"Warning: Could not ensure notebook {notebook_name} exists",
+            "Warning: Could not ensure claude notebook exists",
             file=sys.stderr,
         )
         return
+
+    # Get folder path within claude notebook
+    folder_path = get_notebook_folder_path(cwd)
 
     # Format entry with YAML frontmatter
     entry = f"""---
@@ -130,10 +127,13 @@ tags: claude
     # Use timestamp-based filename for chronological sorting
     filename = timestamp.strftime("%Y%m%d_%H%M%S") + ".md"
 
+    # Construct full path: claude:Sablier/sdk/20251025_143000.md
+    note_path = f"{folder_path}/{filename}"
+
     try:
-        # Add to project-specific notebook using nb add
+        # Add to claude notebook with folder path
         subprocess.run(
-            ["nb", f"{notebook_name}:add", filename, "--content", entry],
+            ["nb", "add", f"claude:{note_path}", "--content", entry],
             capture_output=True,
             text=True,
             check=True,

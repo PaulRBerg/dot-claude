@@ -66,6 +66,7 @@
       "Bash(which:*)",
       "Bash(xargs:*)",
       "Bash(yarn:*)",
+      "Bash(~/.claude/hooks:*)",
       "Bash(~/.claude-code-docs/claude-docs-helper.sh:*)",
       "Glob",
       "Grep",

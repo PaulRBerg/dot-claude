@@ -82,7 +82,7 @@ File links:
 - **Link text** should be the relative file path (e.g., `src/file.ts`, `docusaurus.config.ts`)
 - **URL** must be the full GitHub URL
 - List one per line if multiple files
-- Use "TBD" if none specified
+- **OMIT the entire "## Files Affected" section** if no files are specified (e.g., for feature requests or planning issues)
 
 ### STEP 6: Create the issue
 

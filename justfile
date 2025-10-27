@@ -33,6 +33,7 @@ yq := require("yq")
 # ---------------------------------------------------------------------------- #
 
 CLAUDE_DIR := "$HOME/.claude"
+GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
 
 # ---------------------------------------------------------------------------- #
 #                                    SCRIPTS                                   #
@@ -41,47 +42,6 @@ CLAUDE_DIR := "$HOME/.claude"
 # Show available commands
 default:
     @just --list
-
-# ---------------------------------------------------------------------------- #
-#                                   PRETTIER                                   #
-# ---------------------------------------------------------------------------- #
-
-# Check Prettier formatting
-[group("checks")]
-prettier-check:
-    nlx prettier --check "**/*.{json,jsonc,md,yaml,yml}"
-alias pc := prettier-check
-
-# Format using Prettier
-[group("checks")]
-prettier-write:
-    nlx prettier --write "**/*.{json,jsonc,md,yaml,yml}"
-alias pw := prettier-write
-
-# ---------------------------------------------------------------------------- #
-#                                    PYTHON                                    #
-# ---------------------------------------------------------------------------- #
-
-# Sync the Most Important Thing section across projects
-[group("checks")]
-sync-mit:
-    python -u helpers/sync-most-important-thing.py
-
-# Check Python files
-[group("checks")]
-ruff-check:
-    ruff check .
-alias rc := ruff-check
-
-# Format Python files
-[group("checks")]
-ruff-write:
-    ruff check --fix . && ruff format .
-alias rw := ruff-write
-
-# ---------------------------------------------------------------------------- #
-#                                 FULL CHECKS                                  #
-# ---------------------------------------------------------------------------- #
 
 # Run all code checks
 [group("checks")]
@@ -96,3 +56,33 @@ full-write:
     just prettier-write
     just ruff-write
 alias fw := full-write
+
+
+# Check Prettier formatting
+[group("checks")]
+prettier-check +globs=GLOBS_PRETTIER:
+    na prettier --check --cache {{ globs }}
+alias pc := prettier-check
+
+# Format using Prettier
+[group("checks")]
+prettier-write +globs=GLOBS_PRETTIER:
+    na prettier --write --cache {{ globs }}
+alias pw := prettier-write
+
+# Check Python files
+[group("checks")]
+ruff-check:
+    ruff check .
+alias rc := ruff-check
+
+# Format Python files
+[group("checks")]
+ruff-write:
+    ruff check --fix . && ruff format .
+alias rw := ruff-write
+
+# Sync the Most Important Thing section across projects
+[group("checks")]
+sync-mit:
+    python -u helpers/sync-most-important-thing.py
