@@ -23,24 +23,21 @@ Determine repository from $ARGUMENTS:
 
 Note: If you don't specify a repository, the command will infer the current repository (owner/repo) automatically.
 
-### STEP 3: Check label permissions
+### STEP 3: Check if labels should be applied
 
-Check if the authenticated user has permission to add labels:
+Extract the owner from the repository (the part before the `/`).
 
-```bash
-gh api /repos/$repository/collaborators/$(gh api user -q .login)/permission -q .role_name
-```
+IF owner is `PaulRBerg` OR `sablier-labs`:
+- **APPLY LABELS**: The user has permission to add labels
+- Continue to STEP 4
 
-The user needs at least `triage` permission to add labels. Valid roles with label permissions: `triage`, `write`, `maintain`, `admin`.
-
-IF role is `read` or permission check fails:
-- **WARNING**: "You don't have permission to add labels to issues in $repository"
-- **SKIP STEP 4** (do not apply labels)
-- Continue with issue creation without labels
+ELSE:
+- **SKIP LABELS**: Do not apply labels for this repository
+- Skip STEP 4 and go directly to STEP 5
 
 ### STEP 4: Apply labels
 
-**ONLY if user has triage+ permission** (from STEP 3):
+**ONLY if owner is PaulRBerg or sablier-labs** (from STEP 3):
 
 From content analysis, determine:
 - **Type**: Primary category (bug, feature, docs, etc.)
@@ -86,7 +83,7 @@ File links:
 
 ### STEP 6: Create the issue
 
-**IF user has label permission**:
+**IF owner is PaulRBerg or sablier-labs**:
 ```bash
 gh issue create \
   --repo "$repository" \
@@ -95,7 +92,7 @@ gh issue create \
   --label "label1,label2,label3"
 ```
 
-**IF user lacks label permission**:
+**IF owner is neither PaulRBerg nor sablier-labs**:
 ```bash
 gh issue create \
   --repo "$repository" \

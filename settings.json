@@ -122,9 +122,9 @@
       "~/.local",
       "~/.vim_runtime",
       "~/.zsh",
-      "~/Projects",
-      "~/Sablier",
-      "~/Workspace"
+      "~/projects",
+      "~/sablier",
+      "~/work"
     ]
   },
   "hooks": {
