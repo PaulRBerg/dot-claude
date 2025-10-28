@@ -35,7 +35,10 @@ def get_notebook_folder_path(cwd: str) -> str:
         relative_path = path
 
     # Convert to string with forward slashes (nb uses / as separator)
-    return str(relative_path).replace("\\", "/")
+    path_str = str(relative_path).replace("\\", "/")
+    # Strip leading dots from each component to avoid hidden folders in nb
+    components = [part.lstrip(".") or part for part in path_str.split("/")]
+    return "/".join(components)
 
 
 def ensure_notebook_exists(notebook_name: str = "claude") -> bool:

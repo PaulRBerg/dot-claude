@@ -120,6 +120,7 @@
       "~/.claude-code-docs",
       "~/.config",
       "~/.local",
+      "~/.nb",
       "~/.vim_runtime",
       "~/.zsh",
       "~/projects",
