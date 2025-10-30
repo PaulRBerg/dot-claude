@@ -23,21 +23,39 @@ Determine repository from $ARGUMENTS:
 
 Note: If you don't specify a repository, the command will infer the current repository (owner/repo) automatically.
 
-### STEP 3: Check if labels should be applied
+### STEP 3: Check for issue templates
+
+Check if the repository has issue templates:
+```bash
+gh api repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE --jq '.[].name' 2>/dev/null
+```
+
+IF markdown templates (*.md) are found:
+- **SELECT TEMPLATE**: Infer which template best matches the user's intent from $ARGUMENTS
+  - Common patterns: `bug_report.md`, `feature_request.md`, `enhancement.md`, `question.md`, etc.
+  - Consider keywords in user's description (bug, feature, docs, etc.)
+- **USE TEMPLATE**: Fetch and populate the selected template structure for the issue body
+- Continue to STEP 4
+
+ELSE:
+- **USE DEFAULT TEMPLATE**: No templates found, use default structure (see STEP 6)
+- Continue to STEP 4
+
+### STEP 4: Check if labels should be applied
 
 Extract the owner from the repository (the part before the `/`).
 
 IF owner is `PaulRBerg` OR `sablier-labs`:
 - **APPLY LABELS**: The user has permission to add labels
-- Continue to STEP 4
+- Continue to STEP 5
 
 ELSE:
 - **SKIP LABELS**: Do not apply labels for this repository
-- Skip STEP 4 and go directly to STEP 5
+- Skip STEP 5 and go directly to STEP 6
 
-### STEP 4: Apply labels
+### STEP 5: Apply labels
 
-**ONLY if owner is PaulRBerg or sablier-labs** (from STEP 3):
+**ONLY if owner is PaulRBerg or sablier-labs** (from STEP 4):
 
 From content analysis, determine:
 - **Type**: Primary category (bug, feature, docs, etc.)
@@ -46,11 +64,11 @@ From content analysis, determine:
 - **Effort**: Size (low, medium, high, epic)
 - **Scope**: Domain area (only for sablier-labs/command-center)
 
-### STEP 5: Generate title and body
+### STEP 6: Generate title and body
 
 From remaining $ARGUMENTS, create:
 - **Title**: Clear, concise summary (5-10 words)
-- **Body**: Use this template:
+- **Body**: Use the selected template from STEP 3 if available, otherwise use this default template:
 
 ```
 ## Problem
@@ -81,7 +99,7 @@ File links:
 - List one per line if multiple files
 - **OMIT the entire "## Files Affected" section** if no files are specified (e.g., for feature requests or planning issues)
 
-### STEP 6: Create the issue
+### STEP 7: Create the issue
 
 **IF owner is PaulRBerg or sablier-labs**:
 ```bash

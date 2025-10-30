@@ -18,8 +18,9 @@ Support for both regular and beta releases.
 2. Bump the version in `package.json`:
    - **Regular release**: Follow semantic versioning (e.g., 1.2.3)
    - **Beta release**: Add `-beta.X` suffix (e.g., 1.2.3-beta.1)
-3. Commit the changes with a message like "docs: release <version>"
-4. Create a new git tag by running `git tag -a v<version> -m "<version>"`
+3. **Format files** - If a `justfile` exists in the repository, run `just full-write` to ensure `CHANGELOG.md` and `package.json` are properly formatted
+4. Commit the changes with a message like "docs: release <version>"
+5. Create a new git tag by running `git tag -a v<version> -m "<version>"`
 
 **Note**: When `--dry-run` flag is provided, display what would be done without making any actual changes to files, creating commits, or tags.
 
