@@ -38,11 +38,19 @@ activity tracking. Commands use semantic analysis to understand code changes rat
 feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers),
 and stateless execution without interactive prompts.
 
+## Skills
+
+[Claude Skills](https://docs.claude.com/en/docs/claude-code/skills) in `skills/` auto-activate based on context:
+
+- **typescript**: TypeScript engineering practices and patterns for `.ts`/`.tsx` files
+- **web3-frontend**: Secure wallet interactions and production-grade dApp development with Viem/Wagmi
+- **ui-ux-design**: Interface design, wireframes, and design system creation
+
+Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file types, technologies, or domain concepts.
+
 ## Agents
 
-Seven specialized subagents in `agents/` handle domain-specific work: code review, debugging, TypeScript development,
-web3 engineering (frontend/backend), UI/UX design, and tool discovery. Agents are invoked via the `-s` orchestration
-flag or directly through the Task tool.
+Four specialized subagents in `agents/` handle domain-specific work: code review, debugging, web3 backend engineering, and tool discovery. Agents are invoked via the `-s` orchestration flag or directly through the Task tool.
 
 ## Hooks
 
