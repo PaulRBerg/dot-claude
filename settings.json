@@ -184,5 +184,8 @@
     "type": "command",
     "command": "bunx -y ccstatusline@latest"
   },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true
+  },
   "alwaysThinkingEnabled": true
 }

@@ -1,4 +1,5 @@
-# misc directories
+# directories
+.ruff-cache/
 backups/
 debug/
 file-history/
@@ -10,12 +11,10 @@ shell-snapshots/
 statsig/
 todos/
 
-# misc files
+# files
+*.log*
 .claude.json
 .credentials.json
 .update.lock
+ccnotify.db
 history.jsonl
-
-# hooks
-hooks/ccnotify/ccnotify.db
-hooks/ccnotify/*.log*
