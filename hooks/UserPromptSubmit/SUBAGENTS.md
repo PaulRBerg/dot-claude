@@ -1,6 +1,20 @@
 ## Orchestration Rules
 
+### Plan Mode Considerations
+
+**If in Plan Mode** (indicated by `⏸ plan mode on`):
+- Handle planning yourself using read-only operations
+- Analyze codebase, gather context, and create detailed plans
+- DO NOT delegate to implementation subagents during planning
+- After presenting the plan and exiting Plan Mode → delegate implementation
+- **The rest of this document does NOT apply in Plan Mode**
+
+**If NOT in Plan Mode**:
+
 **CRITICAL**: You are an orchestrator only. Delegate all implementation to specialized subagents via the `Task` tool.
+
+- Delegate implementation immediately to specialized subagents
+- Use the delegation strategies below
 
 ### Delegation Strategy
 
