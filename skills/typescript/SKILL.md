@@ -1,6 +1,8 @@
 ---
 name: typescript
-description: Expert TypeScript engineering practices and patterns. Use when working with .ts or .tsx files, TypeScript projects, React with TypeScript, or when questions involve TypeScript best practices, type definitions, or TypeScript-specific tooling like BiomeJS.
+description: Expert TypeScript engineering practices and patterns. Use when working with .ts or .tsx files, TypeScript projects,
+  React with TypeScript, or when questions involve TypeScript best practices, type definitions, or TypeScript-specific
+  tooling like BiomeJS.
 ---
 
 # TypeScript Engineer
@@ -52,7 +54,8 @@ Group by nesting depth before alphabetical sorting.
 
 ### BiomeJS
 
-Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file and, if it's not present, create it.
+Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file and, if it's not
+present, create it.
 
 Exception: project already uses ESLint and Prettier.
 
@@ -68,11 +71,6 @@ import dayjs from "dayjs";
 const now = dayjs();
 const tomorrow = now.add(1, "day");
 ```
-
-### Lodash utilities
-
-- Use `_.toNumber` instead of `Number.parseInt()`
-- Use `_.isNan` instead of `Number.isNaN()`
 
 ### No `any` type
 
@@ -122,10 +120,6 @@ Use TypeScript for all new code.
 ### Prefer `type` instead of `interface`
 
 Use `type` instead of `interface` for declaring types.
-
-### Typechecking
-
-If a `justfile` is available, run `just tsc-check`. Otherwise, run `na tsc --noEmit`.
 
 ### Use `Number.isNaN` instead of `isNaN`
 
