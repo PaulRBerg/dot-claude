@@ -7,6 +7,7 @@ ide/
 logs/
 plugins/
 projects/
+session-env/
 shell-snapshots/
 statsig/
 todos/
