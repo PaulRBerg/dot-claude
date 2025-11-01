@@ -1,0 +1,163 @@
+{
+  "dry-refactor": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "refactor",
+        "duplication",
+        "duplicate",
+        "dry",
+        "don't repeat yourself",
+        "extract function",
+        "extract method",
+        "extract class",
+        "code smell",
+        "repeated code",
+        "similar patterns",
+        "common functionality",
+        "reusable",
+        "abstraction"
+      ],
+      "intentPatterns": [
+        "(remove|eliminate|reduce).*?(duplication|repetition)",
+        "(extract|refactor|consolidate).*?(function|method|class|logic)",
+        "(dry|clean).*?(up|code)",
+        "(reuse|share).*?(code|logic|functionality)"
+      ]
+    }
+  },
+  "skill-creator": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "skill",
+        "skill-rules",
+        "skill-rules.json",
+        "trigger",
+        "hook",
+        "UserPromptSubmit",
+        "PreToolUse",
+        "progressive disclosure",
+        "500-line rule",
+        "frontmatter",
+        "yaml",
+        "enforcement",
+        "guardrail"
+      ],
+      "intentPatterns": [
+        "(create|add|build|make|new).*?skill",
+        "(modify|update|edit|change).*?skill-rules",
+        "(debug|fix|troubleshoot).*?(skill|trigger|activation)",
+        "(understand|learn).*?(hook|skill).*?(system|work|mechanic)"
+      ]
+    },
+    "fileTriggers": {
+      "paths": [
+        ".claude/skills/**/*.md",
+        ".claude/skills/skill-rules.json",
+        ".claude/hooks/**/*.{ts,js}"
+      ]
+    }
+  },
+  "typescript": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "typescript",
+        "tsx",
+        "type",
+        "interface",
+        "biome",
+        "biomejs",
+        "react",
+        "hooks",
+        "dayjs"
+      ],
+      "intentPatterns": [
+        "(write|create|build).*?(typescript|react)",
+        "(fix|debug).*?type.*?(error|issue)",
+        "(refactor|convert).*?typescript"
+      ]
+    },
+    "fileTriggers": {
+      "paths": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/tsconfig.json",
+        "**/biome.jsonc"
+      ]
+    }
+  },
+  "ui-ux-design": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "ui",
+        "ux",
+        "design",
+        "wireframe",
+        "prototype",
+        "design system",
+        "user flow",
+        "user journey",
+        "usability",
+        "interface",
+        "user experience"
+      ],
+      "intentPatterns": [
+        "(create|design|build).*?(ui|interface|wireframe|prototype)",
+        "(improve|optimize|enhance).*?(ux|usability|experience)",
+        "(design|implement).*?system"
+      ]
+    }
+  },
+  "web3-frontend": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "web3",
+        "blockchain",
+        "ethereum",
+        "evm",
+        "smart contract",
+        "viem",
+        "wagmi",
+        "wallet",
+        "dapp",
+        "decentralized",
+        "contract interaction",
+        "transaction"
+      ],
+      "intentPatterns": [
+        "(connect|integrate).*?wallet",
+        "(interact|call).*?contract",
+        "(build|create).*?dapp",
+        "(send|sign).*?transaction"
+      ]
+    },
+    "fileTriggers": {
+      "paths": [
+        "**/wagmi.config.ts",
+        "**/viem.config.ts"
+      ]
+    },
+    "contentPatterns": [
+      "import.*?['\"]viem['\"]",
+      "import.*?['\"]wagmi['\"]",
+      "useContract(Read|Write)",
+      "useWallet",
+      "usePublicClient",
+      "useWalletClient"
+    ]
+  }
+}

@@ -136,7 +136,8 @@ tags: claude
     try:
         # Add to claude notebook with folder path
         subprocess.run(
-            ["nb", "add", f"claude:{note_path}", "--content", entry],
+            ["nb", "add", f"claude:{note_path}"],
+            input=entry,
             capture_output=True,
             text=True,
             check=True,

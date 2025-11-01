@@ -77,7 +77,7 @@
       "Read(/tmp)",
       "Read(~/.vimrc)",
       "Read(~/.zshrc)",
-      "Skill(example-skills:skill-creator)",
+      "Skill(skill-creator)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",
       "Skill(web3-frontend)",
@@ -90,10 +90,8 @@
       "WebFetch",
       "WebSearch",
       "mcp__context7",
-      "mcp__github",
-      "mcp__magic",
-      "mcp__morphllm-fast-apply",
       "mcp__playwright",
+      "mcp__next-devtools",
       "mcp__sequential-thinking",
       "mcp__serena"
     ],
@@ -191,8 +189,6 @@
     "type": "command",
     "command": "bunx -y ccstatusline@latest"
   },
-  "enabledPlugins": {
-    "example-skills@anthropic-agent-skills": true
-  },
+  "enabledPlugins": {},
   "alwaysThinkingEnabled": true
 }
