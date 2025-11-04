@@ -28,6 +28,46 @@
       ]
     }
   },
+  "nb-notes-search": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "nb",
+        "notes",
+        "notebook",
+        "search notes",
+        "find note",
+        "find in notes",
+        "chat log",
+        "conversation",
+        "bookmark",
+        "bookmarks",
+        "todo",
+        "todos",
+        "task",
+        "tasks",
+        "knowledge base",
+        "kb",
+        "recall",
+        "remember",
+        "what did I say",
+        "when did I",
+        "show me notes",
+        "list notes"
+      ],
+      "intentPatterns": [
+        "(find|search|look for|locate).*?(note|notebook|bookmark|chat)",
+        "(what|when|where|how).*?(did I|have I).*?(say|write|note|bookmark)",
+        "(show|list|display).*?(note|bookmark|todo|task)",
+        "(in which|which).*?(chat|conversation|note)",
+        "recall.*?(note|conversation|bookmark)",
+        "remember.*?(saying|writing|noting)",
+        "search.*?(my|for).*?(note|knowledge|bookmark)"
+      ]
+    }
+  },
   "skill-creator": {
     "type": "domain",
     "enforcement": "suggest",
