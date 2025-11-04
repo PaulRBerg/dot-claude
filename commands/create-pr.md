@@ -77,6 +77,21 @@ GENERATE PR content intelligently:
 
   DO NOT write lengthy paragraphs. DO NOT explain every detail. PR descriptions should be scannable.
 
+- **Admonitions**: Add GitHub-style admonitions when appropriate:
+  - `> [!NOTE]` - For context, dependencies, or implementation details reviewers should notice
+  - `> [!TIP]` - For suggestions on testing or reviewing specific aspects
+  - `> [!IMPORTANT]` - For breaking changes, migration requirements, or critical review points
+  - `> [!WARNING]` - For potential risks, edge cases, or areas needing extra scrutiny
+  - `> [!CAUTION]` - For temporary solutions, technical debt, or follow-up work needed
+
+  Keep admonitions concise (1-2 sentences). Place after main description. Example:
+  ```
+  This PR refactors the payment processing pipeline to handle retries.
+
+  > [!IMPORTANT]
+  > Breaking change: `processPayment()` now returns a Promise. Update all callers.
+  ```
+
 - **Test Plan** (only if `--test-plan` flag present):
   - Add a dedicated "## Test Plan" section describing testing/validation approach
   - Include manual testing steps, automated test coverage, or validation checklist

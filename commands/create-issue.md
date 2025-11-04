@@ -92,6 +92,23 @@ From remaining $ARGUMENTS, create:
 </details>
 ```
 
+**Admonitions**: Add GitHub-style admonitions when appropriate:
+- `> [!NOTE]` - For context, dependencies, or implementation details users should notice
+- `> [!TIP]` - For suggestions on testing, workarounds, or best practices
+- `> [!IMPORTANT]` - For breaking changes, required migrations, or critical setup steps
+- `> [!WARNING]` - For potential risks, known issues, or things that could go wrong
+- `> [!CAUTION]` - For deprecated features, temporary solutions, or things to avoid
+
+Place admonitions after the relevant section. Example:
+```
+## Solution
+
+Refactor the authentication module to use JWT tokens.
+
+> [!IMPORTANT]
+> This change requires updating the environment variables. See `.env.example` for new required keys.
+```
+
 File links:
 - **MUST** use markdown format: `[{filename}](https://github.com/{owner}/{repo}/blob/main/{path})`
 - **Link text** should be the relative file path (e.g., `src/file.ts`, `docusaurus.config.ts`)
