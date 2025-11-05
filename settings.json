@@ -35,6 +35,7 @@
       "Bash(gita:*)",
       "Bash(grep:*)",
       "Bash(head:*)",
+      "Bash(identify:*)",
       "Bash(jq:*)",
       "Bash(just:*)",
       "Bash(ls:*)",
@@ -55,6 +56,7 @@
       "Bash(pwd:*)",
       "Bash(qsv:*)",
       "Bash(rg:*)",
+      "Bash(screencapture:*)",
       "Bash(sed:*)",
       "Bash(select:*)",
       "Bash(sort:*)",
@@ -123,6 +125,7 @@
       "Read(./.env.production)"
     ],
     "additionalDirectories": [
+      "/tmp",
       "~/.claude",
       "~/.claude-code-docs",
       "~/.config",
@@ -181,6 +184,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/activate-skills.py"
           }
         ]
       }
