@@ -181,15 +181,15 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/log-prompts.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/prompt-flags.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/prompt_flags.py"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/activate-skills.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py"
           }
         ]
       }

@@ -1,4 +1,4 @@
-"""Tests for activate-skills.py hook."""
+"""Tests for activate_skills.py hook."""
 
 import importlib.util
 import json
@@ -9,8 +9,8 @@ from typing import Dict, List
 
 import pytest
 
-# Import functions from the hook script (with hyphenated name)
-hook_path = Path(__file__).parent / "activate-skills.py"
+# Import functions from the hook script
+hook_path = Path(__file__).parent / "activate_skills.py"
 spec = importlib.util.spec_from_file_location("activate_skills", hook_path)
 activate_skills = importlib.util.module_from_spec(spec)
 sys.modules["activate_skills"] = activate_skills

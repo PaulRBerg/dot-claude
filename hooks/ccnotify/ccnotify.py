@@ -166,10 +166,15 @@ class ClaudePromptTracker:
         should_update_db = False
         should_notify = True
 
-        if "waiting for your input" in message_lower or "waiting for input" in message_lower:
+        if (
+            "waiting for your input" in message_lower
+            or "waiting for input" in message_lower
+        ):
             subtitle = "Waiting for input"
             should_update_db = True
-            should_notify = False  # Suppress notification - Stop handler will send "job done"
+            should_notify = (
+                False  # Suppress notification - Stop handler will send "job done"
+            )
         elif "permission" in message_lower:
             subtitle = "Permission Required"
         elif "approval" in message_lower or "choose an option" in message_lower:
@@ -207,7 +212,9 @@ class ClaudePromptTracker:
             )
             logging.info(f"Notification sent for session {session_id}: {subtitle}")
         else:
-            logging.info(f"Notification suppressed for session {session_id}: {subtitle}")
+            logging.info(
+                f"Notification suppressed for session {session_id}: {subtitle}"
+            )
 
     def calculate_duration_from_db(self, record_id):
         """Calculate duration for a completed record"""
@@ -281,7 +288,7 @@ class ClaudePromptTracker:
             ]
 
             if cwd:
-                cmd.extend(["-execute", f'/usr/local/bin/code "{cwd}"'])
+                cmd.extend(["-execute", f'open -a Warp "{cwd}"'])
 
             subprocess.run(cmd, check=False, capture_output=True)
             logging.info(f"Notification sent: {title} - {subtitle}")

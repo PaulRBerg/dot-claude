@@ -56,7 +56,7 @@ Four specialized subagents in `agents/` handle domain-specific work: code review
 
 Custom hooks in `hooks/` extend Claude Code with event-driven automation.
 
-### prompt-flags.py
+### prompt_flags.py
 
 General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
 at the end of prompts with no other text after them.
