@@ -185,7 +185,7 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/prompt_flags.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py"
           },
           {
             "type": "command",
