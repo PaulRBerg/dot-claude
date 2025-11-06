@@ -53,6 +53,8 @@
       "Bash(pnpm:*)",
       "Bash(prettier:*)",
       "Bash(printf:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
       "Bash(pwd:*)",
       "Bash(qsv:*)",
       "Bash(rg:*)",
