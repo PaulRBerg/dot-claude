@@ -2,6 +2,7 @@
 .ruff-cache/
 backups/
 debug/
+downloads/
 file-history/
 ide/
 logs/

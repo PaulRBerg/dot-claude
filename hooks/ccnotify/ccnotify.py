@@ -285,10 +285,9 @@ class ClaudePromptTracker:
                 title,
                 "-subtitle",
                 f"{subtitle}\n{current_time}",
+                "-activate",
+                "dev.warp.Warp-Stable",
             ]
-
-            if cwd:
-                cmd.extend(["-execute", f'open -a Warp "{cwd}"'])
 
             subprocess.run(cmd, check=False, capture_output=True)
             logging.info(f"Notification sent: {title} - {subtitle}")

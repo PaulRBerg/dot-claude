@@ -36,6 +36,7 @@ Flags:
 
 **IF `--quick`:**
 - Categorize by extension only (.md→docs, .test.→test)
+- AI config changes (CLAUDE.md, AGENTS.md, .claude/, .gemini/, .codex/) → ai
 - Generic type, no validation, single-line
 
 **ELSE IF `--thorough`:**
@@ -46,10 +47,11 @@ Flags:
 **ELSE (default):**
 - Use --stat from context (paths/filenames only)
 - Pattern-match on paths and file types
+- AI config changes (CLAUDE.md, AGENTS.md, .claude/, .gemini/, .codex/) → ai
 - Omit scope unless obvious
 - No deep code reading
 
-**Conventional types:** feat, fix, docs, style, refactor, test, chore, ci, perf, revert
+**Conventional types:** feat, fix, docs, style, refactor, test, chore, ci, perf, revert, ai
 
 ### STEP 4: Compose message
 
@@ -93,6 +95,7 @@ feat(auth): add OAuth2 login support
 fix(api): resolve null pointer in user endpoint
 docs: update installation instructions
 chore(deps): bump lodash to 4.17.21
+ai: update agent configuration for code review
 ```
 
 **With body (thorough mode):**

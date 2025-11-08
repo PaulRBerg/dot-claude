@@ -7,21 +7,37 @@ Usage:
 """
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 # Configuration
 HOME = Path.home()
-TEMPLATE_FILE = HOME / "Workspace/Templates/next-template/CLAUDE.md"
+TEMPLATE_FILE = HOME / "work/templates/next-template/CLAUDE.md"
 TARGET_FILES = [
-    HOME / "Projects/prb-pulse/CLAUDE.md",
-    HOME / "Sablier/business/accounting/CLAUDE.md",
-    HOME / "Sablier/indexers/CLAUDE.md",
-    HOME / "Sablier/frontend/gh-searcher/CLAUDE.md",
-    HOME / "Sablier/frontend/indexers/CLAUDE.md",
-    HOME / "Sablier/frontend/interfaces/CLAUDE.md",
+    HOME / "projects/prb-pulse/CLAUDE.md",
+    HOME / "sablier/backend/indexers/CLAUDE.md",
+    HOME / "sablier/business/accounting/CLAUDE.md",
+    HOME / "sablier/frontend/gh-searcher/CLAUDE.md",
+    HOME / "sablier/frontend/interfaces/CLAUDE.md",
+    HOME / "sablier/frontend/ui/CLAUDE.md",
 ]
+
 SECTION_TITLE = "## Most Important Thing"
+
+
+def has_uncommitted_changes(file_path: Path) -> bool:
+    """Check if file has uncommitted changes in git."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", str(file_path)],
+            capture_output=True,
+            text=True,
+            cwd=file_path.parent,
+        )
+        return bool(result.stdout.strip())
+    except Exception:
+        return False
 
 
 def extract_section(content: str, section_title: str) -> str | None:
@@ -109,7 +125,10 @@ def update_file(
     Returns (modified, result_message) tuple.
     """
     if not file_path.exists():
-        return False, "⚠️  Skipped"
+        return False, "⚠️  File not found"
+
+    if has_uncommitted_changes(file_path):
+        return False, "⚠️  Uncommitted changes"
 
     try:
         content = file_path.read_text()
@@ -128,7 +147,7 @@ def update_file(
             # Section doesn't exist - insert after intro text
             heading_match = re.search(r"^#[^#].*\n", content, re.MULTILINE)
             if not heading_match:
-                return False, "⚠️  No heading"
+                return False, "⚠️  Missing heading"
 
             after_heading = content[heading_match.end() :]
             first_h2_match = re.search(r"^##\s", after_heading, re.MULTILINE)
@@ -170,9 +189,11 @@ def print_table(results: list[tuple[Path, str]]):
     for file_path, result in results:
         try:
             rel_path = file_path.relative_to(HOME)
+            # Show only the project directory, not the CLAUDE.md file
+            display_path = f"~/{rel_path.parent}"
         except ValueError:
-            rel_path = file_path
-        rows.append((str(rel_path), result))
+            display_path = str(file_path.parent)
+        rows.append((display_path, result))
 
     # Calculate column widths
     file_width = max(len(row[0]) for row in rows) + 2
@@ -183,8 +204,8 @@ def print_table(results: list[tuple[Path, str]]):
     print(f"│{'File'.center(file_width)}│{'Result'.center(result_width)}│")
     print(f"├{'─' * file_width}┼{'─' * result_width}┤")
 
-    for file_path, result in rows:
-        print(f"│ {file_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│")
+    for display_path, result in rows:
+        print(f"│ {display_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│")
 
     print(f"└{'─' * file_width}┴{'─' * result_width}┘")
 
