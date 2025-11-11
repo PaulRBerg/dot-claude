@@ -1,6 +1,6 @@
 ---
-argument-hint: [--only] [--thorough] [--quick] [--push] [--stack]
-description: Create a git commit with smart heuristic analysis
+argument-hint: [--all] [--thorough] [--quick] [--push] [--stack]
+description: Create atomic git commits with smart heuristic analysis
 ---
 
 ## Context
@@ -14,17 +14,21 @@ description: Create a git commit with smart heuristic analysis
 
 ### STEP 1: Handle staging
 
-IF `--only`: unstage all (`git reset`), stage only chat-modified files, log them
-
-OTHERWISE:
+IF `--all`:
 - No changes at all → error "No changes to commit"
 - Unstaged changes exist → auto-stage with `git add -A`, log what was staged
 - Already staged → proceed
 
+OTHERWISE (default - atomic commits):
+- Unstage all (`git reset`)
+- Stage only chat-modified files
+- Log which files were staged
+- If no chat-modified files → error "No files modified in this chat"
+
 ### STEP 2: Parse arguments
 
 Flags:
-- `--only` → commit only chat-modified files
+- `--all` → commit all changes (not just chat-modified files)
 - `--quick` → fastest (filename-only, generic messages)
 - `--thorough` → slowest (deep code analysis, breaking changes, scope)
 - `--push` → push after commit
@@ -75,8 +79,8 @@ Footers (thorough mode only):
 
 Output:
 - `--quick`: hash only
-- Default: hash + subject + one-line summary
-- `--thorough`: hash + full message + summary
+- Default: hash + subject + basic summary
+- `--thorough`: hash + full message + detailed summary
 
 If failed: show error + suggest fix
 

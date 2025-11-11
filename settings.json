@@ -109,6 +109,7 @@
       "Bash(doas:*)",
       "Bash(kill -9:*)",
       "Bash(killall:*)",
+      "Bash(git reset --hard:*)",
       "Bash(launchctl:*)",
       "Bash(mkfs:*)",
       "Bash(passwd:*)",
@@ -200,5 +201,5 @@
     "command": "bunx -y ccstatusline@latest"
   },
   "enabledPlugins": {},
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": false
 }
