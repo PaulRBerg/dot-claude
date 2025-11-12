@@ -1,6 +1,6 @@
 ---
 description: Update task documentation before context compaction
-argument-hint: Optional - specific context or tasks to focus on (leave empty for comprehensive update)
+argument-hint: [FOCUS="<context or tasks to highlight>"]
 ---
 
 We're approaching context limits. Please update the development documentation to ensure seamless continuation after context reset.
