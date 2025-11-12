@@ -1,8 +1,10 @@
 {
+  "alwaysThinkingEnabled": true,
+  "includeCoAuthoredBy": false,
+  "enabledPlugins": {},
   "env": {
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
   },
-  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(COMMAND:*)",
@@ -199,7 +201,5 @@
   "statusLine": {
     "type": "command",
     "command": "bunx -y ccstatusline@latest"
-  },
-  "enabledPlugins": {},
-  "alwaysThinkingEnabled": false
+  }
 }

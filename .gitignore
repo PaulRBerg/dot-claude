@@ -1,5 +1,6 @@
 # directories
 .ruff-cache/
+.pytest-cache/
 backups/
 debug/
 downloads/
