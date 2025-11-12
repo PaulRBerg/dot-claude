@@ -1,4 +1,5 @@
 ---
+argument-hint: [update-instructions]
 description: Update an existing GitHub pull request with semantic change analysis
 ---
 

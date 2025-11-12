@@ -1,11 +1,6 @@
 ---
-argument-hint: <prompt-request>
+argument-hint: [PROMPT_REQUEST="<describe the prompt you need refined>"]
 description: Optimize prompts for LLMs and append to PROMPT.md
-argument-hints: |
-  Examples:
-    /refine-prompt create a code review prompt focusing on security
-    /refine-prompt optimize a prompt for extracting structured data
-    /refine-prompt help me write a prompt for summarizing technical docs
 ---
 
 ## Context
