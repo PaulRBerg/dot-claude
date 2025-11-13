@@ -1,4 +1,4 @@
-## Agent Coordination
+## Multi-Agent Coordination
 
 You may be working alongside other AI agents. You must coordinate with them to ensure that the work is done efficiently
 and effectively.
