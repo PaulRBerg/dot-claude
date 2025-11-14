@@ -1,5 +1,5 @@
 ---
-argument-hint: [output-path]
+argument-hint: [--deep] [output-path]
 description: Analyze website screenshots and generate detailed implementation specs
 ---
 
@@ -8,6 +8,7 @@ description: Analyze website screenshots and generate detailed implementation sp
 - Current directory: !`pwd`
 - Target output: !`test -f SPEC.md && echo "SPEC.md exists (will be overwritten)" || echo "Will create new SPEC.md"`
 - Arguments: $ARGUMENTS
+- Thinking mode: !`echo "$ARGUMENTS" | grep -q -i "\-\-deep\|deep" && echo "DEEP (sequential thinking enabled)" || echo "STANDARD (regular analysis)"`
 
 ## Your Task
 
@@ -18,9 +19,11 @@ CHECK for images in conversation history:
 - IF no images found: ERROR "❌ No screenshots detected in conversation. Please paste website screenshots before running this command."
 - IF images found: LOG "✓ Found screenshots ready for analysis"
 
-### STEP 2: Perform ultra-detailed analysis with sequential thinking
+### STEP 2: Perform ultra-detailed analysis
 
-USE the sequential thinking tool (`mcp__sequential-thinking__sequentialthinking`) to analyze each screenshot systematically.
+DETERMINE thinking mode from arguments:
+- IF `$ARGUMENTS` contains "deep" or "--deep": USE sequential thinking tool (`mcp__sequential-thinking__sequentialthinking`)
+- ELSE (STANDARD mode): Perform regular analysis
 
 **Analysis framework - cover ALL of these aspects:**
 
@@ -96,7 +99,7 @@ USE the sequential thinking tool (`mcp__sequential-thinking__sequentialthinking`
     - Interactive element sizes
     - Text readability
 
-**Sequential thinking process:**
+**Analysis process:**
 - Start with high-level layout observations
 - Progressively zoom into details
 - Measure or estimate dimensions
@@ -104,10 +107,14 @@ USE the sequential thinking tool (`mcp__sequential-thinking__sequentialthinking`
 - Note uncertainties or assumptions
 - Cross-reference across multiple screenshots if provided
 
+**DEEP mode only:** Use sequential thinking to systematically work through each aspect above with thorough reasoning.
+**STANDARD mode:** Analyze directly without sequential thinking tool.
+
 ### STEP 3: Generate comprehensive SPEC.md
 
 DETERMINE output path:
-- IF `$ARGUMENTS` provided: USE as custom output path (e.g., `./docs/spec.md`)
+- PARSE arguments to extract output path (ignore --deep/deep flags)
+- IF custom path provided in `$ARGUMENTS`: USE it (e.g., `./docs/spec.md`)
 - ELSE: USE default `./SPEC.md`
 
 **Content structure for SPEC.md:**
@@ -323,9 +330,14 @@ DISPLAY concise summary (NOT the full spec):
 
 ## Examples
 
-**Basic usage (analyze recently pasted screenshot):**
+**Basic usage (standard mode, default output):**
 ```
 /spec-screenshot
+```
+
+**Deep mode (with sequential thinking):**
+```
+/spec-screenshot --deep
 ```
 
 **Custom output path:**
@@ -333,19 +345,27 @@ DISPLAY concise summary (NOT the full spec):
 /spec-screenshot ./docs/landing-page-spec.md
 ```
 
+**Deep mode with custom output path:**
+```
+/spec-screenshot --deep ./docs/landing-page-spec.md
+```
+
 **Multi-screenshot workflow:**
 ```
 1. Paste multiple screenshots (desktop, tablet, mobile)
-2. Run: /spec-screenshot
+2. Run: /spec-screenshot --deep
 3. Review SPEC.md for comprehensive breakdown
 ```
 
 ## Notes
 
-- **Sequential thinking**: This command uses deep analytical reasoning to ensure thoroughness
+- **Thinking modes**:
+  - **STANDARD** (default): Fast analysis with direct reasoning
+  - **DEEP**: Uses sequential thinking tool for thorough, step-by-step analysis (slower but more comprehensive)
 - **Approximations**: All measurements are best-effort approximations; verify during implementation
 - **Image sourcing**: Command explicitly notes which images need to be obtained or created
 - **Overwrite behavior**: Running command multiple times will overwrite existing SPEC.md
 - **Context efficiency**: Only summary shown in chat; full spec written to file
 - **Multi-screenshot support**: Analyzes all images in conversation context
 - **Best results**: Higher resolution screenshots provide more accurate measurements
+- **When to use deep mode**: Complex designs, large component libraries, or when you need extremely thorough analysis
