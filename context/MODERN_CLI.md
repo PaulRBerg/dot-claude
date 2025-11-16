@@ -1,6 +1,6 @@
 ## Modern CLI
 
-Use these modern CLI tools in shell like Bash or Zsh.
+Use these modern CLI tools in shells like Bash.
 
 - **PREFER**: `rg`, `fd`, `bat`, `eza`, `jq`, `yq`, `fzf`, `delta`, `gh`
 - **AVOID (use only if needed)**: `grep`, `find`, `cat`, `ls`, `df`, `top`, `xxd`
@@ -14,22 +14,22 @@ backslashes (`\`) in shell commands. Failure to do so will cause commands to fai
 
 **Common special characters that MUST be escaped include: `(` `)` `[` `]` `{` `}` and spaces.**
 
-### Examples (applies to ALL tools: `bat`, `rg`, `fd`, `eza`, `cat`, `grep`, `ls`, etc.):
+### Examples (applies to ALL tools: `bat`, `rg`, `fd`, `eza`, etc.):
 
 Escaping parentheses in a `(shared)` directory:
 
 ```bash
-bat apps/landing/app/\(shared\)/solutions/content-builders.ts
-rg "pattern" apps/landing/app/\(shared\)/
-fd file.txt apps/landing/app/\(shared\)/
+bat src\(shared\)/Foo.tsx
+rg "pattern" src/\(shared\)/
+fd file.txt src/\(shared\)/
 ```
 
 Escaping brackets in a `[locale]` directory:
 
 ```bash
-bat app/\[locale\]/route.ts
-rg "pattern" app/\[locale\]/
-eza app/\[locale\]/
+bat src/\[locale\]/route.ts
+rg "pattern" src/\[locale\]/
+eza src/\[locale\]/
 ```
 
 Escaping spaces in filenames:
@@ -39,4 +39,4 @@ bat my\ file\ name.txt
 rg "pattern" path/to/my\ file\ name.txt
 ```
 
-Remember: This escaping requirement applies universally to all CLI commands when running in a shell environment.
+**Remember**: This escaping requirement applies to all CLI commands when running in a shell environment.
