@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
-"""Log user prompts to nb notebook for later inspection.
+"""Log user prompts to zk notebook for later inspection.
 
 Captures all user-submitted prompts before Claude processes them and stores
-them in a dedicated nb notebook per project with metadata for easy searching
-and review.
+them in a unified zk notebook at ~/.claude-prompts/ with metadata for easy
+searching and review.
 """
 
 import json
-import re
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Notebook name for storing prompts
-NB_ROOT_DIR = "home"
+# Root directory for all prompt logs
+PROMPTS_DIR = Path.home() / ".claude-prompts"
 
 
-def get_notebook_folder_path(cwd: str) -> str:
-    """Convert cwd to folder path within the claude notebook.
+def get_flattened_project_name(cwd: str) -> str:
+    """Convert cwd to flattened directory name.
 
     Args:
         cwd: Current working directory path
 
     Returns:
-        Folder path like 'Sablier/sdk' that mirrors the directory
-        structure relative to home directory
+        Flattened directory name like 'work-templates-next-template'
+
+    Examples:
+        ~/work/templates/next-template → work-templates-next-template
+        ~/.claude → claude
+        ~/projects/sablier/sdk → projects-sablier-sdk
     """
     path = Path(cwd)
     home = Path.home()
@@ -34,42 +37,65 @@ def get_notebook_folder_path(cwd: str) -> str:
     try:
         relative_path = path.relative_to(home)
     except ValueError:
-        # If path is not under home, use the full path as folder name
+        # If path is not under home, use the full path
         relative_path = path
 
-    # Convert to string with forward slashes (nb uses / as separator)
-    path_str = str(relative_path).replace("\\", "/")
-    # Strip leading dots from each component to avoid hidden folders in nb
+    # Convert to string and replace path separators with hyphens
+    path_str = str(relative_path)
+    # Strip leading dots from each component to avoid hidden folders
     components = [part.lstrip(".") or part for part in path_str.split("/")]
-    return "/".join(components)
+    # Join with hyphens for flat structure
+    return "-".join(components)
 
 
-def ensure_notebook_exists(notebook_name: str = NB_ROOT_DIR) -> bool:
-    """Ensure nb notebook exists, create if missing.
+def get_project_name(cwd: str) -> str:
+    """Extract the project name (last component) from cwd.
 
     Args:
-        notebook_name: Name of the notebook to check/create (default: NB_ROOT_DIR)
+        cwd: Current working directory path
+
+    Returns:
+        Last component of the path (project name)
+
+    Examples:
+        ~/work/templates/next-template → next-template
+        ~/.claude → claude
+        ~/projects/sablier/sdk → sdk
+    """
+    return Path(cwd).name
+
+
+def get_tags_from_flattened_name(flattened_name: str) -> list[str]:
+    """Generate tags from flattened directory name.
+
+    Args:
+        flattened_name: Flattened project name like 'work-templates-next-template'
+
+    Returns:
+        List of tags, one per word in the flattened name
+
+    Examples:
+        work-templates-next-template → ['work', 'templates', 'next', 'template']
+        claude → ['claude']
+    """
+    return flattened_name.split("-")
+
+
+def ensure_zk_notebook_initialized() -> bool:
+    """Ensure unified zk notebook exists at ~/.claude-prompts/.
 
     Returns:
         True if notebook exists or was created successfully
     """
+    zk_dir = PROMPTS_DIR / ".zk"
+
+    if zk_dir.exists():
+        return True
+
     try:
-        # Check if notebook exists
-        result = subprocess.run(
-            ["nb", "notebooks", "--names"],
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=5,
-        )
-        existing_notebooks = result.stdout.strip().split("\n")
-
-        if notebook_name in existing_notebooks:
-            return True
-
-        # Create the notebook
+        # Initialize the notebook
         subprocess.run(
-            ["nb", "notebooks", "add", notebook_name],
+            ["zk", "init", str(PROMPTS_DIR), "--no-input"],
             capture_output=True,
             text=True,
             check=True,
@@ -78,24 +104,24 @@ def ensure_notebook_exists(notebook_name: str = NB_ROOT_DIR) -> bool:
         return True
 
     except subprocess.TimeoutExpired:
-        print("Warning: nb notebooks check/create timed out", file=sys.stderr)
+        print("Warning: zk init timed out", file=sys.stderr)
         return False
     except subprocess.CalledProcessError as e:
         print(
-            f"Warning: Failed to check/create notebook {notebook_name}: {e.stderr}",
+            f"Warning: Failed to initialize zk notebook: {e.stderr}",
             file=sys.stderr,
         )
         return False
     except FileNotFoundError:
-        print("Warning: nb command not found", file=sys.stderr)
+        print("Warning: zk command not found", file=sys.stderr)
         return False
     except Exception as e:
-        print(f"Warning: Unexpected error with notebook: {e}", file=sys.stderr)
+        print(f"Warning: Unexpected error initializing notebook: {e}", file=sys.stderr)
         return False
 
 
-def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
-    """Save prompt to project-specific nb notebook with metadata.
+def log_prompt_to_zk(prompt: str, session_id: str, cwd: str) -> None:
+    """Save prompt to zk notebook with metadata.
 
     Args:
         prompt: The user's prompt text
@@ -104,20 +130,50 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
     """
     timestamp = datetime.now(timezone.utc)
 
-    # Ensure claude notebook exists
-    if not ensure_notebook_exists():
+    # Ensure zk notebook exists
+    if not ensure_zk_notebook_initialized():
         print(
-            "Warning: Could not ensure claude notebook exists",
+            "Warning: Could not ensure zk notebook exists",
             file=sys.stderr,
         )
         return
 
-    # Get folder path within claude notebook
-    folder_path = get_notebook_folder_path(cwd)
+    # Get flattened project directory name
+    flattened_name = get_flattened_project_name(cwd)
+    project_name = get_project_name(cwd)
+    tags = get_tags_from_flattened_name(flattened_name)
 
-    # Format entry as a timestamped section for appending to daily note
+    # Create project subdirectory if needed
+    project_dir = PROMPTS_DIR / flattened_name
+    project_dir.mkdir(parents=True, exist_ok=True)
+
+    # Daily note path
+    date_str = timestamp.strftime("%Y-%m-%d")
+    note_path = project_dir / f"{date_str}.md"
+
+    # Format entry
     time_header = timestamp.strftime("%H:%M:%S")
-    entry = f"""
+
+    if not note_path.exists():
+        # Create new daily file with YAML frontmatter
+        tags_str = ", ".join(tags)
+        content = f"""---
+title: Prompts submitted on {date_str} in project {project_name}
+tags: [{tags_str}]
+created: {timestamp.isoformat()}
+project: {project_name}
+session: {session_id}
+---
+
+## {time_header}
+
+{prompt}
+
+---
+"""
+    else:
+        # Append to existing daily file
+        content = f"""
 ## {time_header}
 
 {prompt}
@@ -125,27 +181,24 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
 ---
 """
 
-    # Use daily filename for grouping all prompts by date
-    filename = timestamp.strftime("%Y-%m-%d") + ".md"
-
-    # Construct full path: home:Sablier/sdk/2025-11-17.md
-    note_path = f"{folder_path}/{filename}"
-
     try:
-        # Append to daily note (creates if doesn't exist)
+        # Write to file (append mode)
+        with open(note_path, "a") as f:
+            f.write(content)
+
+        # Trigger zk re-indexing
         subprocess.run(
-            ["nb", "edit", f"{NB_ROOT_DIR}:{note_path}", "--content", entry],
+            ["zk", "index", "--notebook-dir", str(PROMPTS_DIR)],
             capture_output=True,
             text=True,
-            check=True,
             timeout=5,
         )
+    except IOError as e:
+        print(f"Warning: Failed to write prompt to file: {e}", file=sys.stderr)
     except subprocess.TimeoutExpired:
-        print("Warning: nb edit timed out", file=sys.stderr)
+        print("Warning: zk index timed out", file=sys.stderr)
     except subprocess.CalledProcessError as e:
-        print(f"Warning: Failed to log prompt to nb: {e.stderr}", file=sys.stderr)
-    except FileNotFoundError:
-        print("Warning: nb command not found", file=sys.stderr)
+        print(f"Warning: Failed to index note: {e.stderr}", file=sys.stderr)
     except Exception as e:
         print(f"Warning: Unexpected error logging prompt: {e}", file=sys.stderr)
 
@@ -174,8 +227,8 @@ def main() -> None:
     session_id = input_data.get("session_id", "unknown")
     cwd = input_data.get("cwd", "unknown")
 
-    # Log to nb (errors are handled gracefully inside)
-    log_prompt_to_nb(prompt, session_id, cwd)
+    # Log to zk (errors are handled gracefully inside)
+    log_prompt_to_zk(prompt, session_id, cwd)
 
     # Exit cleanly without output (silent operation)
     sys.exit(0)
