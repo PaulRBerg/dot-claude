@@ -1,102 +1,216 @@
 ---
-name: nb-notes-search
-description: Search and retrieve notes, bookmarks, and knowledge from nb CLI tool. Use when searching notes, finding chat logs, recalling conversations, or querying personal knowledge base. Supports natural language queries like "in which chat did I say X?" or "show me notes about Y".
+name: nb-cli
+description: Comprehensive nb CLI tool support for note-taking, bookmarking, and knowledge management. Use for creating, editing, searching, browsing, and organizing notes. Supports operations like "create a note", "search for X", "open in browser", "add bookmark", and natural language queries.
 ---
 
-# nb Notes Search Skill
+# nb CLI Skill
 
 ## Purpose
 
-This skill helps translate natural language queries into nb commands to search and retrieve notes, bookmarks, chats, and knowledge base content.
+This skill provides comprehensive support for the nb command-line tool, enabling note creation, editing, searching, browsing, bookmarking, and knowledge base management.
 
 **nb** is a command-line note-taking, bookmarking, and knowledge base application that stores everything as plain text in a Git-backed system.
 
 ## When to Use This Skill
 
 Activate when the user:
-- Asks to find or search notes
-- Wants to recall conversations or chat logs
-- Queries "what did I say about X?" or "in which chat did I say Y?"
-- Wants to list bookmarks, todos, or notes by criteria
-- Mentions searching their knowledge base or notes
+- Creates, edits, or deletes notes
+- Searches, finds, or recalls notes and conversations
+- Opens notes in browser or web interface
+- Adds or manages bookmarks
+- Lists, organizes, or browses notes by criteria
+- Queries their knowledge base ("what did I say about X?", "show notes about Y")
+- Manages todos or tasks in nb
 
-## Key nb Commands
+## Basic Operations
 
-### Search Content
+### Create Notes
 
 ```bash
-# Basic search across current notebook
+# Create note with editor
+nb add
+nb a  # shorthand
+
+# Create note with title
+nb add "Note Title"
+
+# Create with content from stdin
+echo "Content" | nb add
+
+# Create in specific notebook
+nb notebook_name:add "Title"
+
+# Add quick note
+nb add --title "Title" --content "Content here"
+```
+
+### Edit Notes
+
+```bash
+# Edit by ID
+nb edit 123
+nb e 123  # shorthand
+
+# Edit by title
+nb edit "Note Title"
+
+# Edit in specific notebook
+nb notebook:123
+nb notebook:edit "Title"
+```
+
+### Show/View Notes
+
+```bash
+# Show by ID
+nb show 123
+nb s 123  # shorthand
+
+# Show by title
+nb show "Note Title"
+
+# Show with pager
+nb show 123 --print
+
+# Show from specific notebook
+nb notebook:show 123
+nb notebook:123  # shorthand
+```
+
+### Delete Notes
+
+```bash
+# Delete by ID (prompts for confirmation)
+nb delete 123
+nb d 123  # shorthand
+
+# Delete by title
+nb delete "Note Title"
+
+# Force delete without confirmation
+nb delete 123 --force
+```
+
+## Browser Interface
+
+nb includes a powerful web interface for browsing and managing notes:
+
+```bash
+# Open interactive web UI
+nb browse
+nb b  # shorthand
+
+# Browse specific note in web UI
+nb browse 123
+
+# Browse specific notebook
+nb browse notebook_name:
+
+# Browse and search
+nb browse --query "search term"
+
+# Open note in external browser
+nb open 123
+
+# Peek at note in terminal browser
+nb peek 123
+```
+
+The browser interface provides:
+- Visual note browsing and navigation
+- Full-text search
+- Tag and notebook filtering
+- Note editing in browser
+- Markdown rendering
+
+## Search & Discovery
+
+### Search
+
+```bash
+# Basic search
 nb search "keyword"
 nb q "keyword"  # shorthand
 
 # Search all notebooks
 nb search "keyword" --all
 
-# Search with tags
-nb search "keyword" --tag tag1,tag2
-
-# Search by type
-nb search "keyword" --type bookmark
-nb search "keyword" --type note
-
-# Boolean search
+# Boolean operators
 nb search "term1" --and "term2"
 nb search "term1" --or "term2"
 nb search "term1" --not "excluded"
 
-# List filenames only (no excerpts)
+# Filter by type or tags
+nb search "keyword" --type bookmark
+nb search "keyword" --tag tag1,tag2
+
+# List filenames only
 nb search "keyword" --list
 ```
 
-### List Items
+### List
 
 ```bash
-# List with excerpts
+# List notes with excerpts
 nb list --excerpt
 
-# List by type
+# Filter by type or tags
 nb list --type bookmark
-nb list --type note
+nb list --tag project-name
+nb list --tags  # show all tags
 
-# List with tags
-nb list --tags
-
-# List specific notebook
-nb claude:list
-nb home:list
+# List from specific notebook
+nb notebook:list
 ```
 
-### Show Notes
+## Bookmarks
+
+### Add Bookmarks
 
 ```bash
-# Show by ID
-nb show 123
+# Add bookmark by URL
+nb <url>
+nb https://example.com
 
-# Show by filename
-nb show example.md
+# Add bookmark with comment
+nb <url> --comment "Description here"
 
-# Show by title (with quotes)
-nb show "My Note Title"
+# Add with tags
+nb <url> --tags tag1,tag2
 
-# Show from specific notebook
-nb claude:show 42
-nb home:42  # shorthand
+# Add to specific notebook
+nb notebook:<url>
 ```
 
-### Bookmarks & Todos
+### Search Bookmarks
 
 ```bash
 # Search bookmarks
 nb bookmark search "topic"
 nb search "topic" --type bookmark
 
+# List all bookmarks
+nb list --type bookmark
+```
+
+## Todos & Tasks
+
+```bash
 # List todos
 nb todos
 nb tasks
-nb tasks open  # open tasks only
+
+# List open tasks only
+nb tasks open
+
+# Add todo
+nb todo add "Task description"
+
+# Mark todo done
+nb todo do 123
 ```
 
-### Notebooks
+## Notebooks
 
 ```bash
 # List all notebooks
@@ -105,160 +219,59 @@ nb notebooks
 # Switch notebook
 nb use notebook_name
 
-# Notebook-specific command
+# Notebook-specific commands
 nb notebook_name:search "query"
+nb notebook_name:add "Note"
 ```
 
-## Common Query Patterns
+## Common Patterns
 
-### "In which chat did I say X?"
-
-This is searching for past conversations or chat logs:
+### Finding Past Conversations
 
 ```bash
-# Search all notebooks for the content
+# Search everywhere: "In which chat did I say X?"
 nb search "X" --all
 
-# If you know it's in the claude notebook
+# Narrow by notebook or tag
 nb claude:search "X"
-
-# If tagged as chat
-nb search "X" --tag chat
-
-# Get just filenames to browse
-nb search "X" --list --all
+nb search "X" --tag chat --list
 ```
 
-### "Show me all notes about Y"
+### Listing by Topic or Type
 
 ```bash
-# Search and list
+# "Show me notes about Y"
 nb search "Y" --list
-
-# If using tags
 nb list --tag Y
 
-# Search all notebooks
-nb search "Y" --all
-```
-
-### "What bookmarks do I have about Z?"
-
-```bash
-# Search bookmarks specifically
-nb bookmark search "Z"
-
-# Or filter by type
+# "What bookmarks about Z?"
 nb search "Z" --type bookmark
-
-# List all bookmarks with tag
-nb list --type bookmark --tag Z
 ```
 
-### "Show my todos" or "What tasks do I have?"
+### Working with Recent Items
 
 ```bash
-# Show all todos
-nb todos
-
-# Show open tasks only
-nb tasks open
-
-# Show todos in specific notebook
-nb claude:todos
-```
-
-### "Find notes from recent conversations"
-
-```bash
-# Search recent items
-nb search "keyword" --limit 10
-
-# List recent notes
+# Recent notes
 nb list --limit 10 --reverse
 
-# Browse recent items
-nb browse
+# Search with limit
+nb search "keyword" --limit 10
 ```
 
-## Translation Strategy
+## Usage Tips
 
-When translating natural language to nb commands:
+**Translation strategy:**
+- Search/find → `nb search` (use `--all` for everywhere)
+- Create/add → `nb add` (URL for bookmarks)
+- View/show → `nb show` or `nb browse`
+- Edit → `nb edit`
+- Filter by type → `--type bookmark|note|todo`
+- Filter by tag → `--tag tagname`
 
-1. **Identify the intent**:
-   - Search/find → `nb search`
-   - List/show all → `nb list`
-   - Specific note → `nb show`
-   - Recall/remember → `nb search --all`
-
-2. **Extract keywords**: Pull out the main search terms from the query
-
-3. **Determine scope**:
-   - "In which chat" → likely needs `--all` to search everywhere
-   - "my bookmarks" → add `--type bookmark`
-   - "about X" → tag or keyword search
-
-4. **Add filters**:
-   - Type: `--type bookmark|note|todo`
-   - Tags: `--tag tagname`
-   - Notebook: `notebook_name:search` or `--all`
-
-5. **Choose output format**:
-   - Want excerpts? → default `nb search`
-   - Just filenames? → add `--list`
-   - Full content? → use `nb show` after finding
-
-## Tips for Effective Searches
-
-- Use `--all` to search across all notebooks when location is uncertain
-- Use `--list` for compact output when you have many results
-- Tags are powerful for organization: filter with `--tag`
-- Regex patterns work in search: `nb search "pattern.*"`
-- Check available notebooks: `nb notebooks`
-- Use `nb q` as shorthand for `nb search`
-- Combine boolean operators: `--and`, `--or`, `--not`
-- Browse interactively: `nb browse` opens web interface
-
-## Example Workflows
-
-### Finding a Past Conversation
-
-```bash
-# Step 1: Search for keywords
-nb search "specific topic" --all
-
-# Step 2: If too many results, narrow down
-nb search "specific topic" --tag chat --list
-
-# Step 3: Open the specific note
-nb show claude:123
-```
-
-### Recalling What You Said About Something
-
-```bash
-# Search your notes
-nb search "something" --all
-
-# Or if you know the notebook
-nb claude:search "something"
-```
-
-### Organizing Related Notes
-
-```bash
-# List all notes with a tag
-nb list --tag project-name
-
-# Search within tagged notes
-nb search "detail" --tag project-name
-```
-
-## Important Notes
-
-- All content is stored as plain text files in `~/.nb/`
-- Each notebook is Git-backed for version control
-- Search is powered by `git grep` (fast and powerful)
-- Tags use `#hashtag` syntax in notes
-- Links use `[[wiki-style]]` syntax
-- Use `nb help <command>` for detailed command help
+**Power features:**
+- Boolean search: `--and`, `--or`, `--not`
+- Regex patterns: `nb search "pattern.*"`
+- Web UI: `nb browse` (interactive browsing)
+- Shortcuts: `nb q` (search), `nb a` (add), `nb e` (edit)
+- Content stored in `~/.nb/` as plain text, Git-backed
+- Tags use `#hashtag`, links use `[[wiki-style]]`
