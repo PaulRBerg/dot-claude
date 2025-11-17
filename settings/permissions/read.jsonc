@@ -1,0 +1,15 @@
+{
+  // Read permissions - allowed and denied file read operations
+  "permissions": {
+    "allow": [
+      "Read(/tmp)",
+      "Read(~/.codex)",
+      "Read(~/.vimrc)",
+      "Read(~/.zshrc)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.production)"
+    ]
+  }
+}

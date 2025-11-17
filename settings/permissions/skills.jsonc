@@ -1,0 +1,14 @@
+{
+  // Claude Code skills
+  "permissions": {
+    "allow": [
+      "Skill(dry-refactor)",
+      "Skill(frontend-design:frontend-design)",
+      "Skill(nb-search)",
+      "Skill(skill-creator)",
+      "Skill(typescript)",
+      "Skill(ui-ux-design)",
+      "Skill(web3-frontend)"
+    ]
+  }
+}

@@ -42,14 +42,6 @@ yq := require("yq")
 
 CLAUDE_DIR := "$HOME/.claude"
 GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
-SETTINGS_FILES := ```
-    arr=(
-        "settings/basics.jsonc"
-        "settings/permissions.jsonc"
-        "settings/hooks.jsonc"
-    )
-    echo "${arr[*]}"
-```
 
 
 # ---------------------------------------------------------------------------- #
@@ -65,10 +57,22 @@ default:
 [script]
 merge-settings:
     cd {{ CLAUDE_DIR }}
-    # Parse JSONC files and merge with jq
-    for file in {{ SETTINGS_FILES }}; do
-        npx -y json5@latest "$file" # Outputs clean JSON to STDOUT
-    done | jq -s 'reduce .[] as $item ({}; . * $item)' > settings.json
+    # Auto-discover and parse all .json/.jsonc files in settings/ (alphabetically sorted)
+    {{ fd }} --type f -e jsonc -e json . settings/ --exclude settings.json | sort | \
+    while read file; do
+        npx -y json5@latest "$file" 2>/dev/null || echo "{}"
+    done | jq -s '
+        # Collect all arrays across files
+        {
+            permissions: {
+                additionalDirectories: ([.[].permissions.additionalDirectories // [] | .[] ] | unique),
+                allow: ([.[].permissions.allow // [] | .[] ] | unique),
+                deny: ([.[].permissions.deny // [] | .[] ] | unique)
+            }
+        } *
+        # Merge non-permissions top-level keys
+        (reduce .[] as $item ({}; . * ($item | del(.permissions))))
+    ' > settings.json
     echo "✓ Merged settings.json from JSONC files"
 alias ms := merge-settings
 

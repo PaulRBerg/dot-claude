@@ -1,0 +1,20 @@
+{
+  // Additional directories that Claude Code can access
+  "permissions": {
+    "additionalDirectories": [
+      "/tmp",
+      "~/.claude",
+      "~/.codex",
+      "~/.claude-code-docs",
+      "~/.claude-prompts",
+      "~/.config",
+      "~/.gemini",
+      "~/.local",
+      "~/.vim_runtime",
+      "~/.zsh",
+      "~/projects",
+      "~/sablier",
+      "~/work"
+    ]
+  }
+}

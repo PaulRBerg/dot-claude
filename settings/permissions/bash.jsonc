@@ -1,22 +1,6 @@
 {
-  // Permissions configuration for Claude Code
-  // Controls which tools, commands, and directories Claude can access
+  // Bash command permissions - allowed and denied shell operations
   "permissions": {
-    "additionalDirectories": [
-      "/tmp",
-      "~/.claude",
-      "~/.codex",
-      "~/.claude-code-docs",
-      "~/.claude-prompts",
-      "~/.config",
-      "~/.gemini",
-      "~/.local",
-      "~/.vim_runtime",
-      "~/.zsh",
-      "~/projects",
-      "~/sablier",
-      "~/work"
-    ],
     "allow": [
       "Bash(COMMAND:*)",
       "Bash(amp:*)",
@@ -24,7 +8,6 @@
       "Bash(awk:*)",
       "Bash(bat:*)",
       "Bash(biome:*)",
-      "Bash(brew:*)",
       "Bash(bulloak:*)",
       "Bash(bun:*)",
       "Bash(cargo:*)",
@@ -70,7 +53,6 @@
       "Bash(prettier:*)",
       "Bash(printf:*)",
       "Bash(pwd:*)",
-      "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(python:*)",
       "Bash(qsv:*)",
@@ -93,34 +75,7 @@
       "Bash(yarn:*)",
       "Bash(zk:*)",
       "Bash(~/.claude-code-docs/claude-docs-helper.sh:*)",
-      "Bash(~/.claude/hooks:*)",
-      "Glob",
-      "Grep",
-      "Read(/tmp)",
-      "Read(~/.codex)",
-      "Read(~/.vimrc)",
-      "Read(~/.zshrc)",
-      "Skill(dry-refactor)",
-      "Skill(frontend-design:frontend-design)",
-      "Skill(nb-search)",
-      "Skill(skill-creator)",
-      "Skill(typescript)",
-      "Skill(ui-ux-design)",
-      "Skill(web3-frontend)",
-      "SlashCommand(/commit:*)",
-      "SlashCommand(/create-issue:*)",
-      "SlashCommand(/create-pr:*)",
-      "SlashCommand(/docs:*)",
-      "SlashCommand(/update-pr:*)",
-      "Task",
-      "TodoWrite",
-      "WebFetch",
-      "WebSearch",
-      "mcp__context7",
-      "mcp__next-devtools",
-      "mcp__playwright",
-      "mcp__sequential-thinking",
-      "mcp__serena"
+      "Bash(~/.claude/hooks:*)"
     ],
     "deny": [
       "Bash(> /dev/sda*)",
@@ -145,9 +100,7 @@
       "Bash(sudo:*)",
       "Bash(systemctl:*)",
       "Bash(userdel:*)",
-      "Bash(usermod:*)",
-      "Read(./.env)",
-      "Read(./.env.production)"
+      "Bash(usermod:*)"
     ]
   }
 }

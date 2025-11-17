@@ -1,0 +1,12 @@
+{
+  // Slash commands
+  "permissions": {
+    "allow": [
+      "SlashCommand(/commit:*)",
+      "SlashCommand(/create-issue:*)",
+      "SlashCommand(/create-pr:*)",
+      "SlashCommand(/docs:*)",
+      "SlashCommand(/update-pr:*)"
+    ]
+  }
+}

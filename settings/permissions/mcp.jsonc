@@ -1,0 +1,12 @@
+{
+  // MCP servers
+  "permissions": {
+    "allow": [
+      "mcp__context7",
+      "mcp__next-devtools",
+      "mcp__playwright",
+      "mcp__sequential-thinking",
+      "mcp__serena"
+    ]
+  }
+}
