@@ -32,6 +32,7 @@ eza := require("eza")
 fd := require("fd")
 fzf := require("fzf")
 gh := require("gh")
+gum := require("gum")
 jq := require("jq")
 rg := require("rg")
 yq := require("yq")
@@ -58,10 +59,11 @@ default:
 merge-settings:
     cd {{ CLAUDE_DIR }}
     # Auto-discover and parse all .json/.jsonc files in settings/ (alphabetically sorted)
+    {{ gum }} spin --spinner dot --title "Merging JSONC settings..." -- bash -c '\
     {{ fd }} --type f -e jsonc -e json . settings/ --exclude settings.json | sort | \
     while read file; do
         npx -y json5@latest "$file" 2>/dev/null || echo "{}"
-    done | jq -s '
+    done | jq -s '\''
         # Collect all arrays across files
         {
             permissions: {
@@ -72,7 +74,7 @@ merge-settings:
         } *
         # Merge non-permissions top-level keys
         (reduce .[] as $item ({}; . * ($item | del(.permissions))))
-    ' > settings.json
+    '\'' > settings.json'
     echo "✓ Merged settings.json from JSONC files"
 alias ms := merge-settings
 
