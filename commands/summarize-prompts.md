@@ -42,9 +42,60 @@ ELSE IF $ARGUMENTS matches single `YYYY-MM-DD` pattern:
 ELSE:
 - ERROR "Invalid date format. Use: YYYY-MM-DD [YYYY-MM-DD] or leave empty for yesterday"
 
-### STEP 2: Discover matching note files
+### STEP 2: Parallelization decision
 
-FOR EACH date in TARGET_DATES:
+Calculate `total_dates = length(TARGET_DATES)`
+
+IF `total_dates == 1`:
+- Proceed with SEQUENTIAL PROCESSING (skip to STEP 3)
+- No agent spawning needed
+
+ELSE IF `total_dates > 1`:
+- Proceed with PARALLEL PROCESSING using Task tool
+- Calculate batch distribution:
+  ```
+  max_agents = 10
+  agent_count = min(total_dates, max_agents)
+  dates_per_agent = ceil(total_dates / agent_count)
+  ```
+- Create batches by splitting TARGET_DATES into `agent_count` groups
+- Each batch should have approximately `dates_per_agent` dates
+- Example distributions:
+  - 5 dates → 5 agents (1 date each)
+  - 15 dates → 5 agents (3 dates each)
+  - 25 dates → 10 agents (2-3 dates each)
+  - 100 dates → 10 agents (10 dates each)
+
+**Spawn agents in parallel:**
+- Use a SINGLE message with MULTIPLE Task tool calls
+- Each Task agent receives:
+  - Subagent type: "general-purpose"
+  - Prompt: Full processing instructions (see STEP 3) + assigned date batch
+  - Expected return: JSON with `{updated_count, skipped_count, processed_files[]}`
+
+Example Task prompt structure:
+```
+Process daily note summaries for dates: [2025-11-10, 2025-11-11, 2025-11-12]
+
+For each date:
+1. Find note files: fd -t f -e md "^${date}\.md$" ~/.claude-prompts/
+2. For each file: [full processing logic from STEP 3]
+3. Track statistics
+
+Return JSON: {"updated": N, "skipped": M, "files": ["path1", "path2"]}
+```
+
+- Proceed to STEP 4 for result aggregation
+
+### STEP 3: Processing logic (sequential OR per-agent)
+
+**NOTE:** This step describes the core processing logic used either:
+- Directly by main command (if total_dates == 1)
+- By each spawned Task agent (if total_dates > 1)
+
+#### 3A. Discover matching note files
+
+FOR EACH date in assigned dates:
 
 FIND all note files matching date pattern:
 ```bash
@@ -57,13 +108,13 @@ fd -t f -e md "^${date}\.md$" ~/.claude-prompts/
 AFTER processing all dates:
 
 IF no files found for any date:
-- Display "No notes found for specified date(s)"
-- EXIT
+- IF sequential: Display "No notes found for specified date(s)" and EXIT
+- IF agent: Return `{"updated": 0, "skipped": 0, "files": []}`
 
 ELSE:
-- Display "Found N note(s) across M date(s)"
+- Continue to file processing
 
-### STEP 3: Process each note file
+#### 3B. Process each note file
 
 FOR EACH matching file:
 
@@ -103,7 +154,40 @@ The user asked several questions about CLI tools and configuration files.
 - Write back to file
 - Log "✓ Added summary to ${file}"
 
-### STEP 4: Display results
+#### 3C. Return results
+
+IF running as agent (parallel mode):
+- Return JSON object:
+  ```json
+  {
+    "updated": <count of files updated>,
+    "skipped": <count of files skipped>,
+    "files": ["path/to/file1.md", "path/to/file2.md"]
+  }
+  ```
+
+IF running sequentially:
+- Track `updated_count` and `skipped_count` internally
+- Proceed to STEP 5
+
+### STEP 4: Aggregate results (parallel mode only)
+
+**NOTE:** This step only applies when agents were spawned (total_dates > 1)
+
+AFTER all Task agents complete:
+- Collect JSON responses from each agent
+- Calculate totals:
+  ```
+  total_updated = sum(agent.updated for all agents)
+  total_skipped = sum(agent.skipped for all agents)
+  all_files = concatenate(agent.files for all agents)
+  ```
+- Determine date range string:
+  - IF TARGET_DATES spans multiple dates: "${first_date} to ${last_date}"
+  - ELSE: "${single_date}"
+- Proceed to STEP 5 with aggregated values
+
+### STEP 5: Display results
 
 Show summary of operations:
 ```
@@ -140,20 +224,45 @@ Processed notes for 2025-11-15:
 - 0 file(s) skipped (already had summaries)
 ```
 
-**Date range:**
+**Date range (parallel processing):**
 ```
 > /summarize-prompts 2025-11-10 2025-11-12
 
-Found 5 note(s) across 3 date(s)
-✓ Added summary to ~/.claude-prompts/claude/2025-11-10.md
-✓ Added summary to ~/.claude-prompts/claude/2025-11-11.md
-✓ Added summary to ~/.claude-prompts/claude/2025-11-12.md
-Skipping ~/.claude-prompts/local-share-chezmoi/2025-11-11.md - summary already exists
-✓ Added summary to ~/.claude-prompts/pad-biome/2025-11-10.md
+Spawning 3 agents to process 3 dates in parallel...
+
+[Agent 1] Processing 2025-11-10...
+[Agent 2] Processing 2025-11-11...
+[Agent 3] Processing 2025-11-12...
+
+[Agent 1] ✓ Added summary to ~/.claude-prompts/claude/2025-11-10.md
+[Agent 1] ✓ Added summary to ~/.claude-prompts/pad-biome/2025-11-10.md
+[Agent 2] ✓ Added summary to ~/.claude-prompts/claude/2025-11-11.md
+[Agent 2] Skipping ~/.claude-prompts/local-share-chezmoi/2025-11-11.md - summary already exists
+[Agent 3] ✓ Added summary to ~/.claude-prompts/claude/2025-11-12.md
+
+All agents completed. Aggregating results...
 
 Processed notes for 2025-11-10 to 2025-11-12:
 - 4 file(s) updated
 - 1 file(s) skipped (already had summaries)
+```
+
+**Large date range (intelligent batching):**
+```
+> /summarize-prompts 2025-10-01 2025-10-31
+
+Processing 31 dates with 10 agents (3-4 dates per agent)...
+
+[Agent 1] Processing dates: 2025-10-01 to 2025-10-04
+[Agent 2] Processing dates: 2025-10-05 to 2025-10-07
+...
+[Agent 10] Processing dates: 2025-10-29 to 2025-10-31
+
+All agents completed. Aggregating results...
+
+Processed notes for 2025-10-01 to 2025-10-31:
+- 42 file(s) updated
+- 8 file(s) skipped (already had summaries)
 ```
 
 **No notes found:**
@@ -164,6 +273,17 @@ No notes found for specified date(s)
 ```
 
 ## Notes
+
+**Parallelization:**
+- Single date or yesterday: processes sequentially (no agent overhead)
+- Date range: spawns Task agents for parallel processing
+- Agent count: min(date_count, 10) — never more than 10 agents
+- Batch distribution: dates evenly split across agents
+  - 3 dates → 3 agents (1 date each)
+  - 15 dates → 5 agents (3 dates each)
+  - 50 dates → 10 agents (5 dates each)
+- Performance: ~3-5x faster for large date ranges (20+ days)
+- All agents spawn in parallel using single message with multiple Task calls
 
 **Date handling:**
 - Uses `gdate` (GNU date) if available, falls back to macOS `date -v` and `date -j`
