@@ -112,39 +112,33 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
     # Get folder path within claude notebook
     folder_path = get_notebook_folder_path(cwd)
 
-    # Format entry with YAML frontmatter
-    entry = f"""---
-session_id: {session_id}
-timestamp: {timestamp.isoformat()}
-cwd: {cwd}
-tags: claude
----
-
-# Prompt: {timestamp.strftime("%Y-%m-%d %H:%M:%S")}
-
----
+    # Format entry as a timestamped section for appending to daily note
+    time_header = timestamp.strftime("%H:%M:%S")
+    entry = f"""
+## {time_header}
 
 {prompt}
+
+---
 """
 
-    # Use timestamp-based filename for chronological sorting
-    filename = timestamp.strftime("%Y%m%d_%H%M%S") + ".md"
+    # Use daily filename for grouping all prompts by date
+    filename = timestamp.strftime("%Y-%m-%d") + ".md"
 
-    # Construct full path: claude:Sablier/sdk/20251025_143000.md
+    # Construct full path: claude:Sablier/sdk/2025-11-17.md
     note_path = f"{folder_path}/{filename}"
 
     try:
-        # Add to claude notebook with folder path
+        # Append to daily note (creates if doesn't exist)
         subprocess.run(
-            ["nb", "add", f"claude:{note_path}"],
-            input=entry,
+            ["nb", "edit", f"claude:{note_path}", "--content", entry],
             capture_output=True,
             text=True,
             check=True,
             timeout=5,
         )
     except subprocess.TimeoutExpired:
-        print("Warning: nb add timed out", file=sys.stderr)
+        print("Warning: nb edit timed out", file=sys.stderr)
     except subprocess.CalledProcessError as e:
         print(f"Warning: Failed to log prompt to nb: {e.stderr}", file=sys.stderr)
     except FileNotFoundError:
