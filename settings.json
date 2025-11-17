@@ -84,6 +84,7 @@
       "Read(~/.zshrc)",
       "Skill(dry-refactor)",
       "Skill(frontend-design:frontend-design)",
+      "Skill(nb-search)",
       "Skill(skill-creator)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",
@@ -204,8 +205,7 @@
     "command": "bunx -y ccstatusline@latest"
   },
   "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
-    "frontend-design@claude-code-plugins": true
+    "code-review@claude-code-plugins": true
   },
   "alwaysThinkingEnabled": true
 }

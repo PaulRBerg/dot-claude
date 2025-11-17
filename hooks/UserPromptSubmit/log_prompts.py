@@ -13,6 +13,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Notebook name for storing prompts
+NB_ROOT_DIR = "home"
+
 
 def get_notebook_folder_path(cwd: str) -> str:
     """Convert cwd to folder path within the claude notebook.
@@ -41,11 +44,11 @@ def get_notebook_folder_path(cwd: str) -> str:
     return "/".join(components)
 
 
-def ensure_notebook_exists(notebook_name: str = "claude") -> bool:
+def ensure_notebook_exists(notebook_name: str = NB_ROOT_DIR) -> bool:
     """Ensure nb notebook exists, create if missing.
 
     Args:
-        notebook_name: Name of the notebook to check/create (default: 'claude')
+        notebook_name: Name of the notebook to check/create (default: NB_ROOT_DIR)
 
     Returns:
         True if notebook exists or was created successfully
@@ -125,13 +128,13 @@ def log_prompt_to_nb(prompt: str, session_id: str, cwd: str) -> None:
     # Use daily filename for grouping all prompts by date
     filename = timestamp.strftime("%Y-%m-%d") + ".md"
 
-    # Construct full path: claude:Sablier/sdk/2025-11-17.md
+    # Construct full path: home:Sablier/sdk/2025-11-17.md
     note_path = f"{folder_path}/{filename}"
 
     try:
         # Append to daily note (creates if doesn't exist)
         subprocess.run(
-            ["nb", "edit", f"claude:{note_path}", "--content", entry],
+            ["nb", "edit", f"{NB_ROOT_DIR}:{note_path}", "--content", entry],
             capture_output=True,
             text=True,
             check=True,
