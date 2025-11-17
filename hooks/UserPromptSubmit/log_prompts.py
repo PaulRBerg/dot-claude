@@ -4,6 +4,8 @@
 Captures all user-submitted prompts before Claude processes them and stores
 them in a unified zk notebook at ~/.claude-prompts/ with metadata for easy
 searching and review.
+
+See https://github.com/zk-org/zk
 """
 
 import json
@@ -159,13 +161,15 @@ def log_prompt_to_zk(prompt: str, session_id: str, cwd: str) -> None:
         tags_str = ", ".join(tags)
         content = f"""---
 title: Prompts submitted on {date_str} in project {project_name}
-tags: [{tags_str}]
-created: {timestamp.isoformat()}
+date: {timestamp.isoformat()}
 project: {project_name}
 session: {session_id}
+tags: [{tags_str}]
 ---
 
 ## {time_header}
+
+_Session ID: {session_id}_
 
 {prompt}
 
@@ -175,6 +179,8 @@ session: {session_id}
         # Append to existing daily file
         content = f"""
 ## {time_header}
+
+_Session ID: {session_id}_
 
 {prompt}
 
