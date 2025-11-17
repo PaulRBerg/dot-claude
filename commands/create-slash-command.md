@@ -226,15 +226,3 @@ Note: `$ARGUMENTS` is replaced by `417` at runtime.
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 ```
-
-Note: Commands prefixed with `!` are executed before the prompt is sent.
-
-## Notes
-
-- This is a meta-command that creates other commands
-- All commands should follow the STEP-based structure
-- Use clear imperatives: CHECK, IF, EXECUTE, DISPLAY, ERROR
-- Include front matter for tooling and discoverability
-- Context section should provide relevant state with shell commands
-- Keep descriptions minimal (3-5 sentences) unless complexity demands more
-- When writing Markdown code snippets in Markdown files, use four backticks (````markdown) instead of three to properly escape nested code blocks

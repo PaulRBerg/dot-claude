@@ -6,6 +6,7 @@
   "permissions": {
     "allow": [
       "Bash(COMMAND:*)",
+      "Bash(amp:*)",
       "Bash(anvil:*)",
       "Bash(awk:*)",
       "Bash(bat:*)",
@@ -43,6 +44,7 @@
       "Bash(mkdir:*)",
       "Bash(na:*)",
       "Bash(nb:*)",
+      "Bash(next:*)",
       "Bash(ni:*)",
       "Bash(nlx:*)",
       "Bash(node:*)",
@@ -53,9 +55,9 @@
       "Bash(pnpm:*)",
       "Bash(prettier:*)",
       "Bash(printf:*)",
-      "Bash(python:*)",
-      "Bash(python3:*)",
       "Bash(pwd:*)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
       "Bash(qsv:*)",
       "Bash(rg:*)",
       "Bash(screencapture:*)",
