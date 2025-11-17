@@ -2,6 +2,7 @@
   // Additional directories that Claude Code can access
   "permissions": {
     "additionalDirectories": [
+      "/etc/nix",
       "/tmp",
       "~/.claude",
       "~/.codex",

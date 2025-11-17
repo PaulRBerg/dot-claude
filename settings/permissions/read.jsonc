@@ -1,9 +1,8 @@
 {
   // Read permissions - allowed and denied file read operations
+  // NOTE: to add directories, use the additional-dirs.jsonc file
   "permissions": {
     "allow": [
-      "Read(/tmp)",
-      "Read(~/.codex)",
       "Read(~/.vimrc)",
       "Read(~/.zshrc)"
     ],
