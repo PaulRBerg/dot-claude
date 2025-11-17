@@ -1,0 +1,59 @@
+{
+  // Hooks configuration for Claude Code
+  // These hooks execute in response to events during Claude Code's operation
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}
