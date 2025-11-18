@@ -213,6 +213,42 @@ Requires ccnotify to be installed separately.
 
 Quick documentation lookups via [claude-code-docs](https://github.com/ericbuess/claude-code-docs). Provides `claude-docs-helper.sh` for local doc searches.
 
+## Utilities
+
+Shell utilities for Claude Code workflows are provided in `utils.sh`. These utilities are optional but can improve your command-line experience with Claude Code.
+
+**Key Functions:**
+
+- **`ccc [args]`** - Streamlined git commit using `/commit` command with automatic cleanup. Defaults to `--all` if no args provided. Uses `gum` spinner if available.
+- **`ccbump [args]`** - Quick release bumping using `/bump-release` command with `gum` spinner integration.
+- **`claude [args]`** - Enhanced CLI wrapper that auto-loads `.mcp.json` if present in current directory. Adds `gum` spinner for `-p` flag operations.
+- **`claude_allow_bash <tool>`** - Add Bash tool permissions to settings (e.g., `claude_allow_bash curl`)
+- **`claude_allow_read <path>`** - Add directory read permissions to settings (e.g., `claude_allow_read ~/projects`)
+
+**Aliases:**
+
+- Navigation: `cd_claude`, `cd_codex`, `cd_gemini`
+- Editing: `edit_claude`, `edit_codex`, `edit_gemini`
+- Quick access: `codex --dangerously-bypass-approvals-and-sandbox`, `gemini --yolo`
+
+**Usage:**
+
+Source in your shell configuration (zsh-specific):
+
+```zsh
+# In ~/.zshrc
+source ~/.claude/utils.sh
+```
+
+Then use functions directly:
+
+```bash
+ccc                     # Commit all changes
+ccc --quick            # Quick commit mode
+ccbump --beta          # Bump to beta release
+claude_allow_bash npm  # Add npm to allowed Bash tools
+```
+
 ## License
 
 This project is licensed under MIT.
