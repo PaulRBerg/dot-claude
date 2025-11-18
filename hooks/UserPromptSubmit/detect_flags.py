@@ -59,6 +59,16 @@ def handle_debug_flag(script_dir: Path) -> str:
     )
 
 
+def handle_no_lint_flag(script_dir: Path) -> str:
+    """Handle -n flag: Disable linting and type-checking."""
+    return (
+        "IMPORTANT: Do not lint or type-check your code changes. "
+        "Skip running any validation tools (linters, type checkers, formatters, etc.). "
+        "Even if other instructions mention code quality checks, ignore them for this task. "
+        "Prioritize implementation speed over correctness."
+    )
+
+
 # ============================================================================
 # FLAG REGISTRY
 # ============================================================================
@@ -69,6 +79,7 @@ RECOGNIZED_FLAGS: Dict[str, Callable[[Path], str]] = {
     "c": handle_commit_flag,
     "t": handle_test_flag,
     "d": handle_debug_flag,
+    "n": handle_no_lint_flag,
 }
 
 
