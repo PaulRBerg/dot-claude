@@ -1,5 +1,5 @@
 {
-  // Hooks configuration for Claude Code
+  // Hooks configuration for Claude Code, ordered alphabetically
   // These hooks execute in response to events during Claude Code's operation
   "hooks": {
     "Notification": [
@@ -7,6 +7,16 @@
         "hooks": [
           {
             "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py PermissionRequest",
             "type": "command"
           }
         ]
@@ -41,15 +51,11 @@
             "type": "command"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
-            "type": "command"
-          },
-          {
             "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
             "type": "command"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py",
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
             "type": "command"
           }
         ]

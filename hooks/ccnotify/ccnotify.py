@@ -216,6 +216,33 @@ class ClaudePromptTracker:
                 f"Notification suppressed for session {session_id}: {subtitle}"
             )
 
+    def handle_permission_request(self, data):
+        """Handle PermissionRequest event - notify when permission is requested"""
+        session_id = data.get("session_id")
+        tool_name = data.get("tool_name", "Unknown")
+        tool_input = data.get("tool_input", {})
+        cwd = data.get("cwd", "")
+
+        # Extract relevant info from tool_input based on tool type
+        if tool_name == "Read":
+            resource = tool_input.get("file_path", "unknown file")
+        elif tool_name == "Bash":
+            resource = tool_input.get("command", "unknown command")[:50]
+        elif tool_name == "Write":
+            resource = tool_input.get("file_path", "unknown file")
+        elif tool_name == "Edit":
+            resource = tool_input.get("file_path", "unknown file")
+        else:
+            resource = str(tool_input)[:50]
+
+        self.send_notification(
+            title=os.path.basename(cwd) if cwd else "Claude Task",
+            subtitle=f"Permission: {tool_name} - {resource}",
+            cwd=cwd,
+        )
+
+        logging.info(f"Permission request for {tool_name}: {resource}")
+
     def calculate_duration_from_db(self, record_id):
         """Calculate duration for a completed record"""
         with sqlite3.connect(self.db_path) as conn:
@@ -303,6 +330,7 @@ def validate_input_data(data, expected_event_name):
         "UserPromptSubmit": ["session_id", "prompt", "cwd", "hook_event_name"],
         "Stop": ["session_id", "hook_event_name"],
         "Notification": ["session_id", "message", "hook_event_name"],
+        "PermissionRequest": ["session_id", "tool_name", "hook_event_name"],
     }
 
     if expected_event_name not in required_fields:
@@ -337,7 +365,7 @@ def main():
             return
 
         expected_event_name = sys.argv[1]
-        valid_events = ["UserPromptSubmit", "Stop", "Notification"]
+        valid_events = ["UserPromptSubmit", "Stop", "Notification", "PermissionRequest"]
 
         if expected_event_name not in valid_events:
             logging.error(f"Invalid hook type: {expected_event_name}")
@@ -363,6 +391,8 @@ def main():
             tracker.handle_stop(data)
         elif expected_event_name == "Notification":
             tracker.handle_notification(data)
+        elif expected_event_name == "PermissionRequest":
+            tracker.handle_permission_request(data)
 
     except json.JSONDecodeError as e:
         logging.error(f"JSON decode error: {e}")
