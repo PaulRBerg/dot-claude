@@ -80,4 +80,9 @@ class AdminUser extends BaseUser { }
 
 ## Best Practices
 
-- Refactor after green tests · One refactoring at a time · Commit frequently · Name for intent not implementation · Consider performance · Review abstractions with team
+- Refactor after green tests
+- One refactoring at a time
+- Commit frequently
+- Name for intent not implementation
+- Consider performance
+- Review abstractions with team
