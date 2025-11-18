@@ -78,9 +78,15 @@ merge-settings:
     echo "✓ Merged settings.json from JSONC files"
 alias ms := merge-settings
 
-# Sync the Most Important Thing section across projects
-sync-mit:
-    python -u helpers/sync-most-important-thing.py
+# Sync a section from template across projects (default: ## Lint Rules)
+sync-section section="":
+    #!/usr/bin/env bash
+    if [ -z "{{ section }}" ]; then
+        python -u helpers/sync-context-section.py
+    else
+        python -u helpers/sync-context-section.py --section "{{ section }}"
+    fi
+alias ss := sync-section
 
 # ---------------------------------------------------------------------------- #
 #                                    CHECKS                                    #

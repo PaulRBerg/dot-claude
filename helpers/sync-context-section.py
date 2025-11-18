@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-Sync the '## Most Important Thing' section from next-template to Sablier projects.
+Sync a markdown section from next-template to Sablier projects.
 
 Usage:
-    python sync-most-important-thing.py
+    python sync-context-section.py [--section "## Section Name"]
+
+Default section: ## Lint Rules
 """
 
+import argparse
 import re
 import subprocess
 import sys
@@ -22,8 +25,6 @@ TARGET_FILES = [
     HOME / "sablier/frontend/interfaces/CLAUDE.md",
     HOME / "sablier/frontend/ui/CLAUDE.md",
 ]
-
-SECTION_TITLE = "## Most Important Thing"
 
 
 def has_uncommitted_changes(file_path: Path) -> bool:
@@ -210,20 +211,20 @@ def print_table(results: list[tuple[Path, str]]):
     print(f"└{'─' * file_width}┴{'─' * result_width}┘")
 
 
-def main():
+def main(section_title: str):
     # Extract section from template
     if not TEMPLATE_FILE.exists():
         print(f"❌ Template file not found: {TEMPLATE_FILE}", file=sys.stderr)
         sys.exit(1)
 
     template_content = TEMPLATE_FILE.read_text()
-    section = extract_section(template_content, SECTION_TITLE)
+    section = extract_section(template_content, section_title)
 
     if not section:
-        print(f"❌ Section '{SECTION_TITLE}' not found in template", file=sys.stderr)
+        print(f"❌ Section '{section_title}' not found in template", file=sys.stderr)
         sys.exit(1)
 
-    print(f"📋 Extracted '{SECTION_TITLE}' section from template")
+    print(f"📋 Extracted '{section_title}' section from template")
     print(f"   ({len(section)} characters)\n")
 
     # Update each target file and collect results
@@ -231,7 +232,7 @@ def main():
     updated_count = 0
 
     for target in TARGET_FILES:
-        modified, result_msg = update_file(target, section, SECTION_TITLE)
+        modified, result_msg = update_file(target, section, section_title)
         results.append((target, result_msg))
         if modified:
             updated_count += 1
@@ -243,4 +244,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Sync a markdown section from next-template to Sablier projects."
+    )
+    parser.add_argument(
+        "--section",
+        type=str,
+        default="## Lint Rules",
+        help='Section name to sync (e.g., "## Lint Rules"). Default: ## Lint Rules',
+    )
+    args = parser.parse_args()
+    main(args.section)
