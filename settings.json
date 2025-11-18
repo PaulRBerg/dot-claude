@@ -1,9 +1,21 @@
 {
-  "env": {
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
-  },
-  "includeCoAuthoredBy": false,
   "permissions": {
+    "additionalDirectories": [
+      "/etc/nix",
+      "/tmp",
+      "~/.claude",
+      "~/.claude-code-docs",
+      "~/.claude-prompts",
+      "~/.codex",
+      "~/.config",
+      "~/.gemini",
+      "~/.local",
+      "~/.vim_runtime",
+      "~/.zsh",
+      "~/projects",
+      "~/sablier",
+      "~/work"
+    ],
     "allow": [
       "Bash(COMMAND:*)",
       "Bash(amp:*)",
@@ -46,6 +58,7 @@
       "Bash(na:*)",
       "Bash(next:*)",
       "Bash(ni:*)",
+      "Bash(nix:*)",
       "Bash(nlx:*)",
       "Bash(node:*)",
       "Bash(npm:*)",
@@ -81,8 +94,6 @@
       "Bash(~/.claude/hooks:*)",
       "Glob",
       "Grep",
-      "Read(/tmp)",
-      "Read(~/.codex)",
       "Read(~/.vimrc)",
       "Read(~/.zshrc)",
       "Skill(dry-refactor)",
@@ -133,51 +144,59 @@
       "Bash(usermod:*)",
       "Read(./.env)",
       "Read(./.env.production)"
-    ],
-    "additionalDirectories": [
-      "/tmp",
-      "~/.claude",
-      "~/.claude-code-docs",
-      "~/.claude-prompts",
-      "~/.codex",
-      "~/.config",
-      "~/.gemini",
-      "~/.local",
-      "~/.vim_runtime",
-      "~/.zsh",
-      "~/projects",
-      "~/sablier",
-      "~/work"
     ]
+  },
+  "alwaysThinkingEnabled": true,
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true,
+    "playwright-skill@playwright-skill": true
+  },
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
+  },
+  "includeCoAuthoredBy": false,
+  "statusLine": {
+    "command": "bunx -y ccstatusline@latest",
+    "type": "command"
   },
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification"
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py PermissionRequest",
+            "type": "command"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Read",
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Read"
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop"
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop",
+            "type": "command"
           }
         ]
       }
@@ -186,32 +205,19 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit"
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
+            "type": "command"
           }
         ]
       }
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bunx -y ccstatusline@latest"
-  },
-  "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
-    "playwright-skill@playwright-skill": true
-  },
-  "alwaysThinkingEnabled": true
+  }
 }

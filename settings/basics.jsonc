@@ -3,7 +3,8 @@
   // General settings, environment variables, and UI customization
   "alwaysThinkingEnabled": true,
   "enabledPlugins": {
-    "code-review@claude-code-plugins": true
+    "code-review@claude-code-plugins": true,
+    "playwright-skill@playwright-skill": true
   },
   "env": {
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
