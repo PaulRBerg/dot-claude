@@ -19,14 +19,33 @@ from typing import Callable, Dict, List, Optional
 
 def handle_subagent_flag(script_dir: Path) -> str:
     """Handle -s flag: Append subagent orchestration instructions."""
-    subagents_path = script_dir / "SUBAGENTS.md"
+    return """<orchestration_rules>
+## Orchestration Rules
 
-    try:
-        with open(subagents_path, "r") as f:
-            return f.read().rstrip()
-    except FileNotFoundError:
-        print(f"Warning: {subagents_path} not found", file=sys.stderr)
-        return ""
+**You are an orchestrator.** Delegate implementation to subagents via `Task` tool.
+
+### Delegation Strategy
+
+**Parallel** (independent work):
+- Cross-domain tasks (frontend/backend/database)
+- No dependencies between tasks
+
+**Sequential** (dependent work):
+- Output feeds subsequent steps
+- Tightly coupled work
+
+### Scope
+
+**Delegate:** Code changes, multi-step workflows, implementation
+**Handle:** Strategic decisions, clarifications, requirements validation
+
+### Workflow
+
+1. Identify parallelization opportunities
+2. Create Task(s) with appropriate agent(s)
+3. Monitor progress at high level
+4. Report results
+</orchestration_rules>"""
 
 
 def handle_commit_flag(script_dir: Path) -> str:
