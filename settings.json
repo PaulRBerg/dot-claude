@@ -1,20 +1,9 @@
 {
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
-    "additionalDirectories": [
-      "/tmp",
-      "~/.claude",
-      "~/.claude-code-docs",
-      "~/.claude-prompts",
-      "~/.codex",
-      "~/.config",
-      "~/.gemini",
-      "~/.local",
-      "~/.vim_runtime",
-      "~/.zsh",
-      "~/projects",
-      "~/sablier",
-      "~/work"
-    ],
     "allow": [
       "Bash(COMMAND:*)",
       "Bash(amp:*)",
@@ -144,48 +133,51 @@
       "Bash(usermod:*)",
       "Read(./.env)",
       "Read(./.env.production)"
+    ],
+    "additionalDirectories": [
+      "/tmp",
+      "~/.claude",
+      "~/.claude-code-docs",
+      "~/.claude-prompts",
+      "~/.codex",
+      "~/.config",
+      "~/.gemini",
+      "~/.local",
+      "~/.vim_runtime",
+      "~/.zsh",
+      "~/projects",
+      "~/sablier",
+      "~/work"
     ]
-  },
-  "alwaysThinkingEnabled": true,
-  "enabledPlugins": {
-    "code-review@claude-code-plugins": true
-  },
-  "env": {
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
-  },
-  "includeCoAuthoredBy": false,
-  "statusLine": {
-    "command": "bunx -y ccstatusline@latest",
-    "type": "command"
   },
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
+        "matcher": "Read",
         "hooks": [
           {
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
           }
-        ],
-        "matcher": "Read"
+        ]
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop"
           }
         ]
       }
@@ -194,23 +186,31 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/activate_skills.py"
           }
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bunx -y ccstatusline@latest"
+  },
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true
+  },
+  "alwaysThinkingEnabled": true
 }
