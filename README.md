@@ -4,11 +4,26 @@ PRB's `.claude` directory.
 
 ## Settings
 
-[settings.json](settings.json#L1) configures permissions, hooks, and environment:
+Configuration uses a **modular architecture** (Nov 2024 restructure): human-editable JSONC files in `settings/` automatically merge into `settings.json` via Husky + lint-staged on every commit.
 
-- **Permissions**:
-  - Pre-approved commands (e.g. `git`, `grep`, etc.) and tools (MCP servers, file ops) run without confirmation.
-  - Destructive operations (`sudo`, `rm -rf`, system files) are blocked.
+**Structure:**
+- `settings/basics.jsonc` - UI preferences, environment variables, plugins
+- `settings/hooks.jsonc` - Event-driven automation hooks
+- `settings/permissions/` - 7 granular permission modules:
+  - `additional-dirs.jsonc` - Directory access (18 paths including `/tmp`, `~/projects`)
+  - `bash.jsonc` - Shell command allow/deny lists (60+ approved, 14 blocked)
+  - `commands.jsonc` - Pre-approved slash commands
+  - `mcp.jsonc` - MCP server permissions
+  - `read.jsonc` - File read permissions
+  - `skills.jsonc` - Claude Skills permissions
+  - `tools.jsonc` - Built-in tool permissions
+
+**Editing:** Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or manually via `just merge-settings`.
+
+**Rationale:** Separation of concerns improves maintainability. Modular files support comments and focused editing. Alphabetical merge order ensures deterministic, conflict-free composition.
+
+**Key configurations:**
+- **Permissions**: Pre-approved commands (`git`, `grep`, etc.) and tools run without confirmation. Destructive operations (`sudo`, `rm -rf`, system files) are blocked.
 - **Hooks**: Event-driven automation, see the [docs](https://docs.claude.com/en/docs/claude-code/hooks) for more info.
 - **Status Line**: Custom status via `ccstatusline`
 
@@ -25,14 +40,84 @@ Modular configuration system using `@` syntax for composable behavioral instruct
 Context files are organized by concern and imported via `@filename.md` references. Base instructions cascade through
 specialized modules, creating layered behavioral policies without duplication.
 
+## Usage
+
+### Installation
+
+Clone or copy this repository to `~/.claude`:
+
+```bash
+git clone <repository-url> ~/.claude
+cd ~/.claude
+```
+
+### Required Dependencies
+
+**Core Tools:**
+- **Python 3.12+** - Hooks use stdlib only, no external packages required
+- **Node.js** - For Husky/lint-staged automation (`npm install`)
+- **Just** - Command runner for build scripts (`brew install just`)
+
+**Modern CLI Tools** (critical for settings merge and general usage):
+- `fd` - Fast file finder (critical for settings merge)
+- `jq` - JSON processor (critical for settings merge)
+- `gum` - UI components for spinners
+- `rg` (ripgrep) - Fast search
+- `eza` - Modern ls replacement
+- `bat` - Modern cat replacement
+- `delta` - Git diff viewer
+- `fzf` - Fuzzy finder
+- `gh` - GitHub CLI
+- `yq` - YAML processor
+- `ruff` - Python linter/formatter
+
+**Setup:**
+
+```bash
+npm install          # Install Node dependencies (Husky, lint-staged)
+just test           # Verify hooks work correctly
+```
+
+### Optional Dependencies
+
+**Utilities** (gracefully degrade if unavailable):
+
+- **[ccnotify](https://github.com/dazuiba/CCNotify)** - Desktop notifications for Claude Code events (UserPromptSubmit, PermissionRequest, Stop). Uses SQLite for session tracking.
+- **[ccstatusline](https://github.com/sirmalloc/ccstatusline)** - Custom status line display. Runs via `npx` on-demand, no local installation required.
+- **[claude-code-docs](https://github.com/ericbuess/claude-code-docs)** - Local mirror of Claude Code documentation from Anthropic. Provides `claude-docs-helper.sh` for quick doc lookups.
+- **[zk](https://github.com/zk-org/zk)** - Zettelkasten note-taking system. Required for `log_prompts` hook. Install via `brew install zk`, then initialize `~/.claude-prompts/` as a zk notebook.
+
+**Optional Features:**
+
+- **log_prompts hook** - Logs conversation prompts to zk notebook at `~/.claude-prompts/`. Requires `zk` CLI and initialized notebook. Exits gracefully if prerequisites missing.
+- **MCP servers** - Configured in `.mcp.json`, can be enabled/disabled in `settings/permissions/mcp.jsonc`
+
+### Configuration
+
+**Editing settings:**
+- Modify `settings/**/*.jsonc` files (human-editable with comments)
+- Never edit `settings.json` directly (auto-generated)
+- Changes auto-merge via lint-staged on commit
+- Manual merge: `just merge-settings` or `just ms`
+
+**Testing:**
+```bash
+just test           # Run all tests
+just test-hooks     # Run hook tests specifically
+pytest hooks/ -v    # Direct pytest invocation
+```
+
 ## Commands
 
 [Slash commands](https://docs.claude.com/en/docs/claude-code/slash-commands) are defined in `commands/*.md`.
 
-Twelve custom commands cover GitHub workflows (PR/issue management), release automation, code quality validation, and
-activity tracking. Commands use semantic analysis to understand code changes rather than relying on filenames. They
-feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers),
-and stateless execution without interactive prompts.
+Nineteen custom commands cover GitHub workflows (PR/issue management), release automation, code quality validation, task management, and activity tracking. Commands use semantic analysis to understand code changes rather than relying on filenames. They feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers), and stateless execution without interactive prompts.
+
+**Examples:**
+- `/commit` - Create atomic git commits with smart heuristic analysis
+- `/create-pr` - Create GitHub pull requests with semantic change analysis
+- `/fix-issue <number>` - Fetch, analyze, fix, and commit GitHub issue resolutions
+- `/bump-release` - Roll out new releases with changelog updates and version bumping
 
 ## Skills
 
@@ -41,20 +126,40 @@ and stateless execution without interactive prompts.
 - **typescript**: TypeScript engineering practices and patterns for `.ts`/`.tsx` files
 - **web3-frontend**: Secure wallet interactions and production-grade dApp development with Viem/Wagmi
 - **ui-ux-design**: Interface design, wireframes, and design system creation
+- **skill-creator**: Create and manage Claude Code skills following best practices
+- **dry-refactor**: DRY refactoring patterns and techniques
 
-Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file
-types, technologies, or domain concepts.
+Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file types, technologies, or domain concepts. Configuration in `skills/skill-rules.json` defines activation triggers and priorities.
 
 ## Agents
 
 Four specialized subagents in `agents/` handle domain-specific work: code review, debugging, web3 backend engineering,
 and tool discovery. Agents are invoked via the `-s` orchestration flag or directly through the Task tool.
 
+## MCP Servers
+
+Three Model Context Protocol servers configured in `.mcp.json` extend Claude's capabilities:
+
+**Active Servers:**
+
+- **[context7](https://github.com/upstash/context7-mcp)** (`@upstash/context7-mcp`) - Fetches up-to-date library documentation and code examples. Resolves package names to Context7-compatible IDs and retrieves relevant docs on demand.
+
+- **[serena](https://github.com/JetBrains-Research/serena)** (`serena` via uvx) - IDE assistant with semantic code navigation. Provides symbol-based search, referencing, editing, and memory management for token-efficient codebase exploration.
+
+- **[sequential-thinking](https://github.com/modelcontextprotocol/servers)** (`@modelcontextprotocol/server-sequential-thinking`) - Chain-of-thought reasoning tool for complex problem-solving. Supports dynamic thought adjustment, revision, and branching.
+
+**Enabled Plugins:**
+
+- **code-review** (`code-review@claude-code-plugins`) - Code review automation
+- **playwright-skill** (`playwright-skill@playwright-skill`) - Browser automation and testing
+
+**Configuration:** Enable/disable servers in `settings/permissions/mcp.jsonc`.
+
 ## Hooks
 
-Custom hooks in `hooks/` extend Claude Code with event-driven automation.
+Five custom hooks in `hooks/` extend Claude Code with event-driven automation:
 
-### detect_flags.py
+### 1. detect_flags.py (UserPromptSubmit)
 
 General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
 at the end of prompts with no other text after them.
@@ -72,6 +177,8 @@ at the end of prompts with no other text after them.
 
 - **`-d`** (debug): Invokes the debugger subagent for systematic root cause analysis with a 5-step debugging workflow.
 
+- **`-n`** (no-lint): Skip linting and type-checking during development.
+
 **Composability**: Flags combine naturally into complete workflows:
 
 - `implement payment API -s -t -c` → delegate to agents, emphasize tests, commit when done
@@ -80,16 +187,31 @@ at the end of prompts with no other text after them.
 
 **Order independence**: `-s -c -t` works identically to `-t -c -s`.
 
-Other hooks handle notifications (`ccnotify`) and documentation helpers.
+### 2. activate_skills.py (UserPromptSubmit)
 
-### Nice-to-Have Utilities
+Analyzes user prompts and suggests relevant skills based on keywords, intent patterns, file patterns, and content patterns. Configuration in `skills/skill-rules.json` defines trigger conditions and priority levels (critical, high, medium, low).
 
-Some nice-to-have utilities:
+### 3. log_prompts.py (UserPromptSubmit) - Optional
 
-- **[ccnotify](https://github.com/dazuiba/CCNotify)**: Custom notifications for Claude Code
-- **[ccstatusline](https://github.com/sirmalloc/ccstatusline)**: Custom status line for Claude Code
-- **[claude-code-docs](https://github.com/ericbuess/claude-code-docs)**: Local mirror of Claude Code documentation from
-  Anthropic
+Logs conversation prompts to a [zk](https://github.com/zk-org/zk) notebook at `~/.claude-prompts/`. Requires:
+- `zk` CLI installed (`brew install zk`)
+- `~/.claude-prompts/` initialized as a zk notebook
+
+Exits gracefully if prerequisites are missing.
+
+### 4. ccnotify (All Events) - Optional
+
+Desktop notifications for Claude Code events via [CCNotify](https://github.com/dazuiba/CCNotify). Tracks sessions in SQLite database. Monitors:
+- UserPromptSubmit
+- PermissionRequest
+- Notification
+- Stop
+
+Requires ccnotify to be installed separately.
+
+### 5. claude-code-docs Helper (PreToolUse:Read) - Optional
+
+Quick documentation lookups via [claude-code-docs](https://github.com/ericbuess/claude-code-docs). Provides `claude-docs-helper.sh` for local doc searches.
 
 ## License
 
