@@ -1,0 +1,16 @@
+{
+  "name": "@prb/dot-claude",
+  "description": "PRB's .claude directory.",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "json5": "^2.2.3",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.6.2"
+  }
+}

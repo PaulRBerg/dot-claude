@@ -17,17 +17,13 @@ PRB's `.claude` directory.
 Modular configuration system using `@` syntax for composable behavioral instructions:
 
 ```markdown
-# Example: BASE.md
+@context/CRITICAL_THINKING.md
 
-@CRITICAL_THINKING.md
-
-@SENIOR_PROGRAMMER.md
-
-@tools/JUST.md
+@context/SENIOR_PROGRAMMER.md
 ```
 
-Context files are organized by concern (languages, tools, etc.) and imported via `@filename.md` references. Base
-instructions cascade through specialized modules, creating layered behavioral policies without duplication.
+Context files are organized by concern and imported via `@filename.md` references. Base instructions cascade through
+specialized modules, creating layered behavioral policies without duplication.
 
 ## Commands
 
@@ -46,11 +42,13 @@ and stateless execution without interactive prompts.
 - **web3-frontend**: Secure wallet interactions and production-grade dApp development with Viem/Wagmi
 - **ui-ux-design**: Interface design, wireframes, and design system creation
 
-Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file types, technologies, or domain concepts.
+Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file
+types, technologies, or domain concepts.
 
 ## Agents
 
-Four specialized subagents in `agents/` handle domain-specific work: code review, debugging, web3 backend engineering, and tool discovery. Agents are invoked via the `-s` orchestration flag or directly through the Task tool.
+Four specialized subagents in `agents/` handle domain-specific work: code review, debugging, web3 backend engineering,
+and tool discovery. Agents are invoked via the `-s` orchestration flag or directly through the Task tool.
 
 ## Hooks
 
