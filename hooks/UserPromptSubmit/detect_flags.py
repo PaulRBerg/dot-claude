@@ -82,10 +82,32 @@ RECOGNIZED_FLAGS: Dict[str, Callable[[Path], str]] = {
     "n": handle_no_lint_flag,
 }
 
+# Map flag letter to XML tag name
+FLAG_TAG_NAMES: Dict[str, str] = {
+    "s": "subagent_instructions",
+    "c": "commit_instructions",
+    "t": "test_instructions",
+    "d": "debug_instructions",
+    "n": "no_lint_instructions",
+}
+
 
 # ============================================================================
 # CORE LOGIC
 # ============================================================================
+
+
+def wrap_in_xml_tag(tag_name: str, content: str) -> str:
+    """Wrap content in XML tags.
+
+    Args:
+        tag_name: The XML tag name (without angle brackets)
+        content: The content to wrap
+
+    Returns:
+        Content wrapped in <tag_name>content</tag_name> format
+    """
+    return f"<{tag_name}>\n{content}\n</{tag_name}>"
 
 
 def parse_trailing_flags(prompt: str) -> Optional[tuple[str, List[str]]]:
@@ -121,7 +143,7 @@ def validate_flags(flags: List[str]) -> bool:
 
 
 def execute_flag_handlers(flags: List[str], script_dir: Path) -> List[str]:
-    """Execute handlers for each flag and return context pieces."""
+    """Execute handlers for each flag and return XML-wrapped context pieces."""
     contexts = []
 
     for flag in flags:
@@ -129,7 +151,9 @@ def execute_flag_handlers(flags: List[str], script_dir: Path) -> List[str]:
         if handler:
             context = handler(script_dir)
             if context:  # Only add non-empty context
-                contexts.append(context)
+                tag_name = FLAG_TAG_NAMES.get(flag, "additional_instructions")
+                wrapped_context = wrap_in_xml_tag(tag_name, context)
+                contexts.append(wrapped_context)
 
     return contexts
 
@@ -140,13 +164,14 @@ def build_output_context(
     """Build the final context string to add to the prompt."""
     parts = []
 
-    # Note which flags were processed
+    # Build and wrap metadata
     flags_str = " ".join(f"-{flag}" for flag in flags)
-    parts.append(f"Note: Processed flags {flags_str}")
-    parts.append(f"Your actual task (without flags): {clean_prompt}")
+    metadata = f"Note: Processed flags {flags_str}\nYour actual task (without flags): {clean_prompt}"
+    wrapped_metadata = wrap_in_xml_tag("flag_metadata", metadata)
+    parts.append(wrapped_metadata)
     parts.append("")  # Blank line separator
 
-    # Add all flag-generated contexts
+    # Add all flag-generated contexts (already XML-wrapped)
     parts.extend(flag_contexts)
 
     return "\n".join(parts)

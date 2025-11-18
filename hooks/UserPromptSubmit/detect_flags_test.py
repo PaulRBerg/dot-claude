@@ -134,6 +134,37 @@ class TestValidateFlags:
 
 
 # ============================================================================
+# Test wrap_in_xml_tag
+# ============================================================================
+
+
+class TestWrapInXmlTag:
+    """Test the wrap_in_xml_tag function."""
+
+    def test_simple_tag(self):
+        """Test wrapping content with a simple tag."""
+        result = detect_flags.wrap_in_xml_tag("test", "content")
+        assert result == "<test>\ncontent\n</test>"
+
+    def test_multiline_content(self):
+        """Test wrapping multiline content."""
+        content = "line 1\nline 2\nline 3"
+        result = detect_flags.wrap_in_xml_tag("instructions", content)
+        assert result == "<instructions>\nline 1\nline 2\nline 3\n</instructions>"
+
+    def test_empty_content(self):
+        """Test wrapping empty content."""
+        result = detect_flags.wrap_in_xml_tag("empty", "")
+        assert result == "<empty>\n\n</empty>"
+
+    def test_content_with_special_characters(self):
+        """Test wrapping content with special characters."""
+        content = "IMPORTANT: Use the /commit command"
+        result = detect_flags.wrap_in_xml_tag("commit_instructions", content)
+        assert result == "<commit_instructions>\nIMPORTANT: Use the /commit command\n</commit_instructions>"
+
+
+# ============================================================================
 # Test individual flag handlers
 # ============================================================================
 
@@ -203,6 +234,8 @@ class TestExecuteFlagHandlers:
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
 
         assert len(contexts) == 1
+        assert "<commit_instructions>" in contexts[0]
+        assert "</commit_instructions>" in contexts[0]
         assert "/commit" in contexts[0]
 
     def test_multiple_flags(self, tmp_path):
@@ -211,8 +244,8 @@ class TestExecuteFlagHandlers:
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
 
         assert len(contexts) == 2
-        assert any("/commit" in ctx for ctx in contexts)
-        assert any("test coverage" in ctx for ctx in contexts)
+        assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
+        assert any("<test_instructions>" in ctx and "test coverage" in ctx for ctx in contexts)
 
     def test_all_flags(self, tmp_path):
         """Test executing all flag handlers."""
@@ -224,11 +257,11 @@ class TestExecuteFlagHandlers:
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
 
         assert len(contexts) == 5
-        assert any("Subagent content" in ctx for ctx in contexts)
-        assert any("/commit" in ctx for ctx in contexts)
-        assert any("test coverage" in ctx for ctx in contexts)
-        assert any("debugger subagent" in ctx for ctx in contexts)
-        assert any("Do not lint" in ctx for ctx in contexts)
+        assert any("<subagent_instructions>" in ctx and "Subagent content" in ctx for ctx in contexts)
+        assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
+        assert any("<test_instructions>" in ctx and "test coverage" in ctx for ctx in contexts)
+        assert any("<debug_instructions>" in ctx and "debugger subagent" in ctx for ctx in contexts)
+        assert any("<no_lint_instructions>" in ctx and "Do not lint" in ctx for ctx in contexts)
 
     def test_missing_subagents_file(self, tmp_path):
         """Test that missing SUBAGENTS.md doesn't break execution."""
@@ -237,6 +270,7 @@ class TestExecuteFlagHandlers:
 
         # Only commit context should be returned (subagent returns empty)
         assert len(contexts) == 1
+        assert "<commit_instructions>" in contexts[0]
         assert "/commit" in contexts[0]
 
     def test_empty_flags(self, tmp_path):
@@ -244,6 +278,19 @@ class TestExecuteFlagHandlers:
         flags = []
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
         assert contexts == []
+
+    def test_xml_wrapping_structure(self, tmp_path):
+        """Test that all contexts are properly XML-wrapped."""
+        flags = ["c", "t", "d"]
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+
+        for ctx in contexts:
+            # Each context should start with < and end with >
+            assert ctx.startswith("<")
+            assert ctx.endswith(">")
+            # Each should have both opening and closing tags
+            assert ctx.count("<") >= 2  # At least opening and closing
+            assert ctx.count(">") >= 2
 
 
 # ============================================================================
@@ -258,26 +305,33 @@ class TestBuildOutputContext:
         """Test building output with single flag and context."""
         flags = ["c"]
         clean_prompt = "my task"
-        flag_contexts = ["Commit instruction"]
+        flag_contexts = ["<commit_instructions>Commit instruction</commit_instructions>"]
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
 
+        assert "<flag_metadata>" in result
+        assert "</flag_metadata>" in result
         assert "Processed flags -c" in result
         assert "Your actual task (without flags): my task" in result
-        assert "Commit instruction" in result
+        assert "<commit_instructions>Commit instruction</commit_instructions>" in result
 
     def test_multiple_flags_multiple_contexts(self):
         """Test building output with multiple flags and contexts."""
         flags = ["c", "t"]
         clean_prompt = "my task"
-        flag_contexts = ["Commit instruction", "Test instruction"]
+        flag_contexts = [
+            "<commit_instructions>Commit instruction</commit_instructions>",
+            "<test_instructions>Test instruction</test_instructions>"
+        ]
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
 
+        assert "<flag_metadata>" in result
         assert "Processed flags -c -t" in result
         assert "Your actual task (without flags): my task" in result
-        assert "Commit instruction" in result
-        assert "Test instruction" in result
+        assert "</flag_metadata>" in result
+        assert "<commit_instructions>Commit instruction</commit_instructions>" in result
+        assert "<test_instructions>Test instruction</test_instructions>" in result
 
     def test_empty_contexts(self):
         """Test building output with flags but no contexts."""
@@ -287,22 +341,44 @@ class TestBuildOutputContext:
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
 
+        assert "<flag_metadata>" in result
         assert "Processed flags -c" in result
         assert "Your actual task (without flags): my task" in result
+        assert "</flag_metadata>" in result
 
     def test_output_formatting(self):
-        """Test that output is properly formatted with newlines."""
+        """Test that output is properly formatted with newlines and XML structure."""
         flags = ["c", "t"]
         clean_prompt = "my task"
-        flag_contexts = ["Context 1", "Context 2"]
+        flag_contexts = [
+            "<commit_instructions>Context 1</commit_instructions>",
+            "<test_instructions>Context 2</test_instructions>"
+        ]
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
 
         lines = result.split("\n")
-        assert len(lines) >= 4  # At least: flags note, task, blank line, contexts
-        assert lines[0].startswith("Note: Processed flags")
-        assert lines[1].startswith("Your actual task")
-        assert lines[2] == ""  # Blank line separator
+        # Should have: <flag_metadata>, Note:, Your actual task:, </flag_metadata>, blank line, contexts
+        assert "<flag_metadata>" in lines[0]
+        assert "Note: Processed flags" in result
+        assert "Your actual task" in result
+        assert "</flag_metadata>" in result
+
+    def test_metadata_wrapping(self):
+        """Test that metadata is properly wrapped in XML tags."""
+        flags = ["c"]
+        clean_prompt = "implement feature"
+        flag_contexts = ["<commit_instructions>Test</commit_instructions>"]
+
+        result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
+
+        # Extract the metadata section
+        assert result.startswith("<flag_metadata>")
+        metadata_end = result.index("</flag_metadata>")
+        metadata_section = result[:metadata_end + len("</flag_metadata>")]
+
+        assert "Note: Processed flags -c" in metadata_section
+        assert "Your actual task (without flags): implement feature" in metadata_section
 
 
 # ============================================================================
@@ -330,8 +406,14 @@ class TestMain:
         output = json.loads(stdout_mock.getvalue())
         assert "hookSpecificOutput" in output
         assert output["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
-        assert "/commit" in output["hookSpecificOutput"]["additionalContext"]
-        assert "my task" in output["hookSpecificOutput"]["additionalContext"]
+
+        context = output["hookSpecificOutput"]["additionalContext"]
+        assert "<flag_metadata>" in context
+        assert "</flag_metadata>" in context
+        assert "<commit_instructions>" in context
+        assert "</commit_instructions>" in context
+        assert "/commit" in context
+        assert "my task" in context
 
     def test_valid_multiple_flags(self, monkeypatch):
         """Test main with multiple valid flags."""
@@ -354,11 +436,19 @@ class TestMain:
 
         output = json.loads(stdout_mock.getvalue())
         context = output["hookSpecificOutput"]["additionalContext"]
+        assert "<flag_metadata>" in context
         assert "Processed flags -s -c -t" in context
         assert "my task" in context
+        assert "</flag_metadata>" in context
+        assert "<subagent_instructions>" in context
         assert "Subagent instructions from test" in context
+        assert "</subagent_instructions>" in context
+        assert "<commit_instructions>" in context
         assert "/commit" in context
+        assert "</commit_instructions>" in context
+        assert "<test_instructions>" in context
         assert "test coverage" in context
+        assert "</test_instructions>" in context
 
     def test_no_flags(self, monkeypatch):
         """Test main with no flags in prompt."""
@@ -455,13 +545,25 @@ class TestMain:
         output = json.loads(stdout_mock.getvalue())
         context = output["hookSpecificOutput"]["additionalContext"]
 
-        # Verify all flags are processed
+        # Verify all flags are processed with XML wrapping
+        assert "<flag_metadata>" in context
         assert "Processed flags -s -c -t -d -n" in context
+        assert "</flag_metadata>" in context
+        assert "<subagent_instructions>" in context
         assert "Subagent test content" in context
+        assert "</subagent_instructions>" in context
+        assert "<commit_instructions>" in context
         assert "/commit" in context
+        assert "</commit_instructions>" in context
+        assert "<test_instructions>" in context
         assert "test coverage" in context
+        assert "</test_instructions>" in context
+        assert "<debug_instructions>" in context
         assert "debugger subagent" in context
+        assert "</debug_instructions>" in context
+        assert "<no_lint_instructions>" in context
         assert "Do not lint" in context
+        assert "</no_lint_instructions>" in context
 
     def test_output_json_structure(self, monkeypatch):
         """Test that output JSON has the correct structure."""
@@ -485,3 +587,32 @@ class TestMain:
         assert "additionalContext" in output["hookSpecificOutput"]
         assert output["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
         assert isinstance(output["hookSpecificOutput"]["additionalContext"], str)
+
+    def test_xml_structure_integrity(self, monkeypatch):
+        """Test that the entire XML structure is well-formed."""
+        input_data = {"prompt": "my task -c -t"}
+        stdin_mock = io.StringIO(json.dumps(input_data))
+        stdout_mock = io.StringIO()
+
+        monkeypatch.setattr("sys.stdin", stdin_mock)
+        monkeypatch.setattr("sys.stdout", stdout_mock)
+
+        with pytest.raises(SystemExit) as exc_info:
+            detect_flags.main()
+
+        assert exc_info.value.code == 0
+
+        output = json.loads(stdout_mock.getvalue())
+        context = output["hookSpecificOutput"]["additionalContext"]
+
+        # Verify all opening tags have matching closing tags
+        assert context.count("<flag_metadata>") == context.count("</flag_metadata>") == 1
+        assert context.count("<commit_instructions>") == context.count("</commit_instructions>") == 1
+        assert context.count("<test_instructions>") == context.count("</test_instructions>") == 1
+
+        # Verify flag_metadata comes before instruction tags
+        metadata_start = context.index("<flag_metadata>")
+        metadata_end = context.index("</flag_metadata>")
+        commit_start = context.index("<commit_instructions>")
+
+        assert metadata_start < metadata_end < commit_start
