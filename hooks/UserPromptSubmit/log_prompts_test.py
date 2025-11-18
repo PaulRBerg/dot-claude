@@ -3,11 +3,10 @@
 
 import json
 import subprocess
-import sys
 from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 import pytest
 

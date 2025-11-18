@@ -218,7 +218,6 @@ class ClaudePromptTracker:
 
     def handle_permission_request(self, data):
         """Handle PermissionRequest event - notify when permission is requested"""
-        session_id = data.get("session_id")
         tool_name = data.get("tool_name", "Unknown")
         tool_input = data.get("tool_input", {})
         cwd = data.get("cwd", "")

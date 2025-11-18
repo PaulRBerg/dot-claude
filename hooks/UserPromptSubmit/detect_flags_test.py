@@ -6,7 +6,7 @@ import io
 import json
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open
 
 import pytest
 
