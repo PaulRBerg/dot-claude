@@ -3,6 +3,7 @@
 ### Plan Mode Considerations
 
 **If in Plan Mode** (indicated by `⏸ plan mode on`):
+
 - Handle planning yourself using read-only operations
 - Analyze codebase, gather context, and create detailed plans
 - DO NOT delegate during planning
@@ -10,6 +11,7 @@
 - After exiting Plan Mode → delegate implementation
 
 **If NOT in Plan Mode**:
+
 - **CRITICAL**: You are an orchestrator only. Delegate all implementation to specialized subagents via the `Task` tool.
 - **Delegate immediately** using the strategies below
 

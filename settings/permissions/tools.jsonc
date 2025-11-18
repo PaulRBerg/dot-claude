@@ -1,13 +1,6 @@
 {
   // Built-in tools and standalone utilities
   "permissions": {
-    "allow": [
-      "Glob",
-      "Grep",
-      "Task",
-      "TodoWrite",
-      "WebFetch",
-      "WebSearch"
-    ]
+    "allow": ["Glob", "Grep", "Task", "TodoWrite", "WebFetch", "WebSearch"]
   }
 }
