@@ -9,6 +9,7 @@ See https://github.com/zk-org/zk
 """
 
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -83,47 +84,20 @@ def get_tags_from_flattened_name(flattened_name: str) -> list[str]:
     return flattened_name.split("-")
 
 
-def ensure_zk_notebook_initialized() -> bool:
-    """Ensure unified zk notebook exists at ~/.claude-prompts/.
+def is_zk_notebook_initialized() -> bool:
+    """Check if zk notebook exists at ~/.claude-prompts/.
 
     Returns:
-        True if notebook exists or was created successfully
+        True if notebook exists, False otherwise
     """
     zk_dir = PROMPTS_DIR / ".zk"
-
-    if zk_dir.exists():
-        return True
-
-    try:
-        # Initialize the notebook
-        subprocess.run(
-            ["zk", "init", str(PROMPTS_DIR), "--no-input"],
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=5,
-        )
-        return True
-
-    except subprocess.TimeoutExpired:
-        print("Warning: zk init timed out", file=sys.stderr)
-        return False
-    except subprocess.CalledProcessError as e:
-        print(
-            f"Warning: Failed to initialize zk notebook: {e.stderr}",
-            file=sys.stderr,
-        )
-        return False
-    except FileNotFoundError:
-        print("Warning: zk command not found", file=sys.stderr)
-        return False
-    except Exception as e:
-        print(f"Warning: Unexpected error initializing notebook: {e}", file=sys.stderr)
-        return False
+    return zk_dir.exists()
 
 
 def log_prompt_to_zk(prompt: str, session_id: str, cwd: str) -> None:
     """Save prompt to zk notebook with metadata.
+
+    Assumes zk CLI is installed and ~/.claude-prompts directory exists.
 
     Args:
         prompt: The user's prompt text
@@ -132,13 +106,9 @@ def log_prompt_to_zk(prompt: str, session_id: str, cwd: str) -> None:
     """
     timestamp = datetime.now(timezone.utc)
 
-    # Ensure zk notebook exists
-    if not ensure_zk_notebook_initialized():
-        print(
-            "Warning: Could not ensure zk notebook exists",
-            file=sys.stderr,
-        )
-        return
+    # Check if zk notebook is initialized (no auto-initialization)
+    if not is_zk_notebook_initialized():
+        return  # Silent exit if notebook not initialized
 
     # Get flattened project directory name
     flattened_name = get_flattened_project_name(cwd)
@@ -229,6 +199,14 @@ def main() -> None:
     stripped = prompt.strip()
     if stripped.startswith("/") and " " not in stripped:
         sys.exit(0)  # Simple command without arguments
+
+    # Early exit if prerequisites not met
+    if shutil.which("zk") is None:
+        sys.exit(0)  # zk CLI not installed, exit silently
+
+    prompts_dir = Path.home() / ".claude-prompts"
+    if not prompts_dir.exists():
+        sys.exit(0)  # Directory doesn't exist, exit silently
 
     session_id = input_data.get("session_id", "unknown")
     cwd = input_data.get("cwd", "unknown")
