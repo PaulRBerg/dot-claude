@@ -210,7 +210,8 @@
     "command": "bunx -y ccstatusline@latest"
   },
   "enabledPlugins": {
-    "code-review@claude-code-plugins": true
+    "code-review@claude-code-plugins": true,
+    "playwright-skill@playwright-skill": true
   },
   "alwaysThinkingEnabled": true
 }
