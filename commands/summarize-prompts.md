@@ -29,7 +29,7 @@ ELSE IF $ARGUMENTS contains two dates matching `YYYY-MM-DD YYYY-MM-DD`:
   ```bash
   # Using GNU date (gdate on macOS)
   current="$START_DATE"
-  while [[ "$current" <= "$END_DATE" ]]; do
+  while [[ "$current" < "$END_DATE" || "$current" == "$END_DATE" ]]; do
     dates+=("$current")
     current=$(gdate -d "$current + 1 day" +%Y-%m-%d 2>/dev/null || date -j -v+1d -f "%Y-%m-%d" "$current" +%Y-%m-%d)
   done
