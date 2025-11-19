@@ -12,6 +12,21 @@ allowed-tools: Read, Write, Glob, Grep, Bash(git *:*), Bash(ls:*), Bash(fd:*), B
 - GitHub remote: !`git remote get-url origin 2>/dev/null || echo "no remote"`
 - Arguments: $ARGUMENTS
 
+## Guiding Principles
+
+**README files are for humans, not documentation dumps.**
+
+- **Balanced, not bloated**: Aim for 200-400 lines for most projects. A README should be informative but not overwhelming.
+- **Show, don't tell**: Prefer concise code examples over lengthy prose explanations.
+- **Every section must add value**: Don't include sections just for completeness. If a section would be empty or trivial, skip it.
+- **Readability first**: Use clear headings, proper spacing, and visual hierarchy. Readers should scan and find what they need in under 30 seconds.
+- **Respect the reader's time**: They want to understand what the project does, install it, and use it quickly.
+
+**Target length by mode**:
+- `--minimal`: 100-200 lines
+- Default: 200-400 lines
+- `--thorough`: 400-600 lines (only if the project genuinely needs it)
+
 ## Your Task
 
 ### STEP 1: Validate prerequisites
@@ -19,6 +34,9 @@ allowed-tools: Read, Write, Glob, Grep, Bash(git *:*), Bash(ls:*), Bash(fd:*), B
 CHECK repository state:
 - Run `git rev-parse --show-toplevel` to confirm we're in a git repository
 - IF not a git repo: ERROR "Must be run from within a git repository. Initialize with 'git init' first."
+- Store the repository root path
+
+**IMPORTANT - Scope**: This command operates ONLY on `README.md` at the repository root (the path from `git rev-parse --show-toplevel`). It will NOT touch nested README files in subdirectories or subpackages. If you're in a monorepo and want to update a package-specific README, the user should `cd` to that package directory first and run the command there.
 
 CHECK for README:
 - IF README.md doesn't exist in repo root: Note that we'll create a new README from scratch
@@ -148,6 +166,8 @@ IF `--preserve` flag is set AND README.md exists:
 
 **Generate each section based on mode:**
 
+**REMEMBER**: Keep all sections concise and scannable. Each section should provide immediate value without overwhelming the reader. When in doubt, write less.
+
 **Title + Badges:**
 - Extract project name from package.json, Cargo.toml, or git repo name
 - Add relevant badges based on what exists:
@@ -161,13 +181,13 @@ IF `--preserve` flag is set AND README.md exists:
 - IF `--preserve` AND existing description exists: Keep it
 - ELSE: Extract from package.json/Cargo.toml description field
 - ELSE: Generate brief description (1-2 sentences) from codebase analysis
-- Keep it concise and clear
+- **Keep it concise**: 1-3 sentences maximum. Answer "What does this do?" and move on.
 
 **Features:**
 - IF `--preserve`: Keep existing Features section
-- IF `--thorough`: Generate feature list from code analysis (scan main APIs, exported functions)
+- IF `--thorough`: Generate feature list from code analysis (scan main APIs, exported functions). **Limit to 5-8 key features** - highlight what matters most.
 - IF `--minimal`: Omit this section
-- ELSE (default): Include brief bullet points if easily identifiable
+- ELSE (default): Include 3-5 brief bullet points if easily identifiable. Skip if features are obvious from description.
 
 **Installation:**
 - Detect package manager from lock files:
@@ -186,9 +206,10 @@ IF `--preserve` flag is set AND README.md exists:
 - IF examples/ directory exists: Extract and show example code
 - IF tests exist: Parse test files for usage patterns
 - Show import/require statements for libraries
-- Provide minimal working example (2-5 lines)
-- IF `--thorough`: Show multiple examples covering different features
+- Provide minimal working example (5-15 lines of code)
+- IF `--thorough`: Show 2-3 examples covering different use cases. **Each example should be under 20 lines.**
 - Use proper code blocks with language tags
+- **Brevity matters**: Show the simplest possible working code. Let users explore docs for advanced usage.
 
 **Scripts/Commands:**
 - IF package.json scripts exist: Extract and list them
@@ -204,16 +225,19 @@ IF `--preserve` flag is set AND README.md exists:
 - IF `--minimal`: Omit this section
 - IF `--thorough` OR default mode:
   - Generate tree showing src/, tests/, docs/, etc.
-  - Explain key directories in 1 line each
-  - Keep depth to 2-3 levels max
+  - **Keep it minimal**: Show only 5-10 most important directories/files
+  - Explain key directories in 1 line each (no more than 2-3 explanations total)
+  - Keep depth to 2 levels max (3 only if absolutely necessary)
   - Format as code block with tree structure
+  - **Skip this section entirely** if the structure is obvious (e.g., single src/ directory)
 
 **API Reference:**
 - ONLY if `--thorough` mode
 - Extract exported functions/classes from main entry points
-- Show function signatures
-- Brief description of each
+- Show function signatures with 1-line descriptions
+- **Limit to 8-12 most important APIs** - link to full docs for the rest
 - Skip internal/private APIs
+- **Consider skipping** this section if there's separate API documentation - just link to it instead
 
 **Configuration:**
 - IF config files exist (.env.example, config.yaml, etc.): Document them
@@ -242,7 +266,7 @@ IF `--preserve` flag is set AND README.md exists:
 BUILD complete markdown content:
 
 **Structure:**
-```markdown
+````markdown
 # {project-name}
 
 {badges row}
@@ -274,7 +298,7 @@ BUILD complete markdown content:
 ## 📄 License
 
 {license information}
-```
+````
 
 **Formatting rules:**
 - Use emoji section headers for visual clarity (📦 Install, 🚀 Usage, 📖 Docs, 🤝 Contributing, etc.)
@@ -327,7 +351,7 @@ IF write fails:
 
 SHOW what changed:
 
-```markdown
+````markdown
 ✓ Updated README.md
 
 **Mode**: {minimal/default/thorough/preserve}
@@ -352,7 +376,7 @@ SHOW what changed:
 2. Customize any auto-generated content if needed
 3. Delete backup when satisfied: `rm README.md.backup`
 4. Commit changes: `git add README.md && git commit -m "docs: update README"`
-```
+````
 
 IF errors occurred during generation:
 - List specific issues encountered
@@ -411,7 +435,7 @@ Analyzes codebase and creates complete README from scratch.
 
 **No git operations**: Only updates README.md file, never auto-commits. User reviews and commits manually.
 
-**Monorepo handling**: Operates on README.md in current directory only. Run from repo root for main README, or from package directory for package-specific README.
+**Monorepo handling**: Operates ONLY on README.md at the repository root (via `git rev-parse --show-toplevel`). Never touches nested README files. For package-specific READMEs in a monorepo, `cd` to that package directory and run the command there.
 
 **Edge cases handled**:
 - Non-standard project structures
