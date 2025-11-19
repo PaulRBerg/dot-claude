@@ -4,16 +4,30 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 set unstable
 
 # ---------------------------------------------------------------------------- #
-#                                 DEPENDENCIES                                 #
+#                             PROJECT DEPENDENCIES                             #
 # ---------------------------------------------------------------------------- #
+
+# Bun: https://bun.sh
+bun := require("bun")
 
 # Claude Code
 claude := require("claude")
+
+# Gum: https://github.com/charmbracelet/gum
+gum := require("gum")
+
+# JQ: https://github.com/jqlang/jq
+jq := require("jq")
 
 # Ni: https://github.com/antfu-collective/ni
 ni := require("ni")
 na := require("na")
 nlx := require("nlx")
+
+# Node: https://nodejs.org
+node := require("node")
+npm := require("npm")
+npx := require("npx")
 
 # Ruff: https://github.com/astral-sh/ruff
 ruff := require("ruff")
@@ -22,18 +36,16 @@ ruff := require("ruff")
 uv := require("uv")
 uvx := require("uvx")
 
-# Pytest: https://github.com/pytest-dev/pytest
-pytest := require("pytest")
+# ---------------------------------------------------------------------------- #
+#                                  MODERN CLI                                  #
+# ---------------------------------------------------------------------------- #
 
-# Modern CLI Tools
 bat := require("bat")
 delta := require("delta")
 eza := require("eza")
 fd := require("fd")
 fzf := require("fzf")
 gh := require("gh")
-gum := require("gum")
-jq := require("jq")
 rg := require("rg")
 yq := require("yq")
 

@@ -4,21 +4,24 @@ PRB's `.claude` directory.
 
 ## Settings
 
-Configuration uses a **modular architecture** (Nov 2024 restructure): human-editable JSONC files in `settings/`
-automatically merge into `settings.json` via Husky + lint-staged on every commit.
+I use a **modular architecture** for my Claude Code settings: JSONC files in `settings/*` automatically merge into
+`settings.json` via Husky + lint-staged on every commit. See the `merge-settings` recipe in the `justfile` for more
+details.
 
 **Structure:**
 
-- `settings/basics.jsonc` - UI preferences, environment variables, plugins
-- `settings/hooks.jsonc` - Event-driven automation hooks
-- `settings/permissions/` - 7 granular permission modules:
-  - `additional-dirs.jsonc` - Directory access (18 paths including `/tmp`, `~/projects`)
-  - `bash.jsonc` - Shell command allow/deny lists (60+ approved, 14 blocked)
-  - `commands.jsonc` - Pre-approved slash commands
-  - `mcp.jsonc` - MCP server permissions
-  - `read.jsonc` - File read permissions
-  - `skills.jsonc` - Claude Skills permissions
-  - `tools.jsonc` - Built-in tool permissions
+```
+├── settings/basics.jsonc          # UI preferences, environment variables, plugins
+├── settings/hooks.jsonc           # Event-driven automation hooks
+└── settings/permissions/          # 7 granular permission modules:
+    ├── additional-dirs.jsonc      # Directory access (18 paths including /tmp, ~/projects)
+    ├── bash.jsonc                 # Shell command allow/deny lists (60+ approved, 14 blocked)
+    ├── commands.jsonc             # Pre-approved slash commands
+    ├── mcp.jsonc                  # MCP server permissions
+    ├── read.jsonc                 # File read permissions
+    ├── skills.jsonc               # Claude Skills permissions
+    └── tools.jsonc                # Built-in tool permissions
+```
 
 **Editing:** Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or
 manually via `just merge-settings`.
@@ -65,19 +68,19 @@ cd ~/.claude
 - **Node.js** - For Husky/lint-staged automation (`npm install`)
 - **Just** - Command runner for build scripts (`brew install just`)
 
-**Modern CLI Tools** (critical for settings merge and general usage):
+**Modern CLI Tools**:
 
-- `fd` - Fast file finder (critical for settings merge)
-- `jq` - JSON processor (critical for settings merge)
-- `gum` - UI components for spinners
-- `rg` (ripgrep) - Fast search
-- `eza` - Modern ls replacement
-- `bat` - Modern cat replacement
-- `delta` - Git diff viewer
-- `fzf` - Fuzzy finder
-- `gh` - GitHub CLI
-- `yq` - YAML processor
-- `ruff` - Python linter/formatter
+- [`fd`](https://github.com/sharkdp/fd) - Fast file finder (critical for settings merge)
+- [`jq`](https://github.com/jqlang/jq) - JSON processor (critical for settings merge)
+- [`gum`](https://github.com/charmbracelet/gum) - UI components for spinners
+- [`rg`](https://github.com/BurntSushi/ripgrep) (ripgrep) - Fast search
+- [`eza`](https://github.com/eza-community/eza) - Modern ls replacement
+- [`bat`](https://github.com/sharkdp/bat) - Modern cat replacement
+- [`delta`](https://github.com/dandavison/delta) - Git diff viewer
+- [`fzf`](https://github.com/junegunn/fzf) - Fuzzy finder
+- [`gh`](https://github.com/cli/cli) - GitHub CLI
+- [`yq`](https://github.com/mikefarah/yq) - YAML processor
+- [`ruff`](https://github.com/astral-sh/ruff) - Python linter/formatter
 
 **Setup:**
 
@@ -126,10 +129,10 @@ pytest hooks/ -v    # Direct pytest invocation
 
 [Slash commands](https://docs.claude.com/en/docs/claude-code/slash-commands) are defined in `commands/*.md`.
 
-Nineteen custom commands cover GitHub workflows (PR/issue management), release automation, code quality validation, task
-management, and activity tracking. Commands use semantic analysis to understand code changes rather than relying on
-filenames. They feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes,
-detect reviewers), and stateless execution without interactive prompts.
+The commands cover GitHub workflows (PR/issue management), release automation, code quality validation, task management,
+and activity tracking. Commands use semantic analysis to understand code changes rather than relying on filenames. They
+feature natural argument parsing (`/commit fix auth --short`), smart defaults (auto-stage changes, detect reviewers),
+and stateless execution without interactive prompts.
 
 **Examples:**
 
@@ -151,6 +154,11 @@ detect reviewers), and stateless execution without interactive prompts.
 Skills use imperative voice and trigger-rich descriptions, activating automatically when working with relevant file
 types, technologies, or domain concepts. Configuration in `skills/skill-rules.json` defines activation triggers and
 priorities.
+
+### External Plugins
+
+- **code-review** (`code-review@claude-code-plugins`) - Code review automation
+- **playwright-skill** (`playwright-skill@playwright-skill`) - Browser automation and testing
 
 ## Agents
 
@@ -175,12 +183,49 @@ Three Model Context Protocol servers configured in `.mcp.json` extend Claude's c
   (`@modelcontextprotocol/server-sequential-thinking`) - Chain-of-thought reasoning tool for complex problem-solving.
   Supports dynamic thought adjustment, revision, and branching.
 
-**Enabled Plugins:**
-
-- **code-review** (`code-review@claude-code-plugins`) - Code review automation
-- **playwright-skill** (`playwright-skill@playwright-skill`) - Browser automation and testing
-
 **Configuration:** Enable/disable servers in `settings/permissions/mcp.jsonc`.
+
+## Utilities
+
+> [!NOTE]
+>
+> While it is not required, I highly recommend installing these utilities, especially the `claude` wrapper that runs
+> Claude with the `--dangerously-skip-permissions` flag and loads MCP servers from `.mcp.json` (if present).
+
+Shell utilities for Claude Code workflows are provided in `utils.sh`. These utilities are optional but can improve your
+command-line experience with Claude Code. Add them to your shell configuration (e.g., `~/.zshrc` or `~/.bashrc`).
+
+**Key Functions:**
+
+- **`ccc [args]`** - Streamlined git commit using `/commit` command with automatic cleanup. Defaults to `--all` if no
+  args provided. Uses `gum` spinner if available.
+- **`ccbump [args]`** - Quick release bumping using `/bump-release` command with `gum` spinner integration.
+- **`claude [args]`** - Enhanced CLI wrapper that auto-loads `.mcp.json` if present in current directory. Adds `gum`
+  spinner for `-p` flag operations.
+
+**Aliases:**
+
+- Navigation: `cd_claude`, `cd_codex`, `cd_gemini`
+- Editing: `edit_claude`, `edit_codex`, `edit_gemini`
+
+**Usage:**
+
+Source in your shell configuration (zsh-specific):
+
+```zsh
+# In ~/.zshrc
+source ~/.claude/utils.sh
+```
+
+Then use functions directly:
+
+```bash
+claude                 # Run Claude with `--dangerously-skip-permissions` flag
+ccc                    # Commit all changes
+ccc --quick            # Quick commit mode
+ccbump --beta          # Bump to beta release
+claude_allow_bash npm  # Add npm to allowed Bash tools
+```
 
 ## Hooks
 
@@ -245,45 +290,6 @@ Requires ccnotify to be installed separately.
 
 Quick documentation lookups via [claude-code-docs](https://github.com/ericbuess/claude-code-docs). Provides
 `claude-docs-helper.sh` for local doc searches.
-
-## Utilities
-
-Shell utilities for Claude Code workflows are provided in `utils.sh`. These utilities are optional but can improve your
-command-line experience with Claude Code.
-
-**Key Functions:**
-
-- **`ccc [args]`** - Streamlined git commit using `/commit` command with automatic cleanup. Defaults to `--all` if no
-  args provided. Uses `gum` spinner if available.
-- **`ccbump [args]`** - Quick release bumping using `/bump-release` command with `gum` spinner integration.
-- **`claude [args]`** - Enhanced CLI wrapper that auto-loads `.mcp.json` if present in current directory. Adds `gum`
-  spinner for `-p` flag operations.
-- **`claude_allow_bash <tool>`** - Add Bash tool permissions to settings (e.g., `claude_allow_bash curl`)
-- **`claude_allow_read <path>`** - Add directory read permissions to settings (e.g., `claude_allow_read ~/projects`)
-
-**Aliases:**
-
-- Navigation: `cd_claude`, `cd_codex`, `cd_gemini`
-- Editing: `edit_claude`, `edit_codex`, `edit_gemini`
-- Quick access: `codex --dangerously-bypass-approvals-and-sandbox`, `gemini --yolo`
-
-**Usage:**
-
-Source in your shell configuration (zsh-specific):
-
-```zsh
-# In ~/.zshrc
-source ~/.claude/utils.sh
-```
-
-Then use functions directly:
-
-```bash
-ccc                     # Commit all changes
-ccc --quick            # Quick commit mode
-ccbump --beta          # Bump to beta release
-claude_allow_bash npm  # Add npm to allowed Bash tools
-```
 
 ## License
 
