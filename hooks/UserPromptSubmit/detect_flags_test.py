@@ -6,7 +6,6 @@ import io
 import json
 import sys
 from pathlib import Path
-from unittest.mock import mock_open
 
 import pytest
 
@@ -200,24 +199,15 @@ class TestFlagHandlers:
         assert "type-check" in result
         assert "validation tools" in result
 
-    def test_handle_subagent_flag_with_file(self, tmp_path):
-        """Test subagent flag handler when SUBAGENTS.md exists."""
-        subagents_file = tmp_path / "SUBAGENTS.md"
-        subagents_content = "# Subagent Instructions\nUse subagents wisely."
-        subagents_file.write_text(subagents_content)
-
+    def test_handle_subagent_flag(self, tmp_path):
+        """Test subagent flag handler returns orchestration rules."""
         result = detect_flags.handle_subagent_flag(tmp_path)
-        assert result == subagents_content
+        assert "<orchestration_rules>" in result
+        assert "Orchestration Rules" in result
+        assert "You are an orchestrator" in result
+        assert "Delegation Strategy" in result
+        assert "</orchestration_rules>" in result
 
-    def test_handle_subagent_flag_without_file(self, tmp_path, capsys):
-        """Test subagent flag handler when SUBAGENTS.md is missing."""
-        result = detect_flags.handle_subagent_flag(tmp_path)
-        assert result == ""
-
-        # Check warning message
-        captured = capsys.readouterr()
-        assert "Warning" in captured.err
-        assert "SUBAGENTS.md not found" in captured.err
 
 
 # ============================================================================
@@ -249,29 +239,15 @@ class TestExecuteFlagHandlers:
 
     def test_all_flags(self, tmp_path):
         """Test executing all flag handlers."""
-        # Create SUBAGENTS.md for the -s flag
-        subagents_file = tmp_path / "SUBAGENTS.md"
-        subagents_file.write_text("Subagent content")
-
         flags = ["s", "c", "t", "d", "n"]
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
 
         assert len(contexts) == 5
-        assert any("<subagent_instructions>" in ctx and "Subagent content" in ctx for ctx in contexts)
+        assert any("<subagent_instructions>" in ctx and "Orchestration Rules" in ctx for ctx in contexts)
         assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
         assert any("<test_instructions>" in ctx and "test coverage" in ctx for ctx in contexts)
         assert any("<debug_instructions>" in ctx and "debugger subagent" in ctx for ctx in contexts)
         assert any("<no_lint_instructions>" in ctx and "Do not lint" in ctx for ctx in contexts)
-
-    def test_missing_subagents_file(self, tmp_path):
-        """Test that missing SUBAGENTS.md doesn't break execution."""
-        flags = ["s", "c"]
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
-
-        # Only commit context should be returned (subagent returns empty)
-        assert len(contexts) == 1
-        assert "<commit_instructions>" in contexts[0]
-        assert "/commit" in contexts[0]
 
     def test_empty_flags(self, tmp_path):
         """Test executing with no flags."""
@@ -421,13 +397,8 @@ class TestMain:
         stdin_mock = io.StringIO(json.dumps(input_data))
         stdout_mock = io.StringIO()
 
-        # Mock the file reading for SUBAGENTS.md
-        subagent_content = "Subagent instructions from test"
-        mock_file = mock_open(read_data=subagent_content)
-
         monkeypatch.setattr("sys.stdin", stdin_mock)
         monkeypatch.setattr("sys.stdout", stdout_mock)
-        monkeypatch.setattr("builtins.open", mock_file)
 
         with pytest.raises(SystemExit) as exc_info:
             detect_flags.main()
@@ -441,7 +412,7 @@ class TestMain:
         assert "my task" in context
         assert "</flag_metadata>" in context
         assert "<subagent_instructions>" in context
-        assert "Subagent instructions from test" in context
+        assert "Orchestration Rules" in context
         assert "</subagent_instructions>" in context
         assert "<commit_instructions>" in context
         assert "/commit" in context
@@ -529,13 +500,8 @@ class TestMain:
         stdin_mock = io.StringIO(json.dumps(input_data))
         stdout_mock = io.StringIO()
 
-        # Mock the file reading for SUBAGENTS.md
-        subagent_content = "Subagent test content"
-        mock_file = mock_open(read_data=subagent_content)
-
         monkeypatch.setattr("sys.stdin", stdin_mock)
         monkeypatch.setattr("sys.stdout", stdout_mock)
-        monkeypatch.setattr("builtins.open", mock_file)
 
         with pytest.raises(SystemExit) as exc_info:
             detect_flags.main()
@@ -550,7 +516,7 @@ class TestMain:
         assert "Processed flags -s -c -t -d -n" in context
         assert "</flag_metadata>" in context
         assert "<subagent_instructions>" in context
-        assert "Subagent test content" in context
+        assert "Orchestration Rules" in context
         assert "</subagent_instructions>" in context
         assert "<commit_instructions>" in context
         assert "/commit" in context
