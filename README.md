@@ -64,23 +64,33 @@ cd ~/.claude
 
 **Core Tools:**
 
-- **Python 3.12+** - Hooks use stdlib only, no external packages required
 - **Node.js** - For Husky/lint-staged automation (`npm install`)
 - **Just** - Command runner for build scripts (`brew install just`)
+- **Python 3.12+**
+- [uv](https://github.com/astral-sh/uv) - Python package and project manager
 
 **Modern CLI Tools**:
 
-- [`fd`](https://github.com/sharkdp/fd) - Fast file finder (critical for settings merge)
-- [`jq`](https://github.com/jqlang/jq) - JSON processor (critical for settings merge)
-- [`gum`](https://github.com/charmbracelet/gum) - UI components for spinners
-- [`rg`](https://github.com/BurntSushi/ripgrep) (ripgrep) - Fast search
-- [`eza`](https://github.com/eza-community/eza) - Modern ls replacement
 - [`bat`](https://github.com/sharkdp/bat) - Modern cat replacement
 - [`delta`](https://github.com/dandavison/delta) - Git diff viewer
+- [`eza`](https://github.com/eza-community/eza) - Modern ls replacement
+- [`fd`](https://github.com/sharkdp/fd) - Fast file finder
 - [`fzf`](https://github.com/junegunn/fzf) - Fuzzy finder
 - [`gh`](https://github.com/cli/cli) - GitHub CLI
-- [`yq`](https://github.com/mikefarah/yq) - YAML processor
+- [`gum`](https://github.com/charmbracelet/gum) - UI components for spinners
+- [`jq`](https://github.com/jqlang/jq) - JSON processor
+- [`rg`](https://github.com/BurntSushi/ripgrep) (ripgrep) - Fast search
 - [`ruff`](https://github.com/astral-sh/ruff) - Python linter/formatter
+- [`yq`](https://github.com/mikefarah/yq) - YAML processor
+
+#### One-Line Installer
+
+On macOS, you can install all dependencies using Homebrew:
+
+```bash
+# After installation, follow shell integration steps for fzf
+brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
+```
 
 **Setup:**
 
