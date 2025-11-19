@@ -85,6 +85,7 @@ alias ss := sync-section
 @full-check:
     just prettier-check
     just ruff-check
+    just pyright-check
 alias fc := full-check
 
 # Run all code fixes
@@ -92,6 +93,7 @@ alias fc := full-check
 @full-write:
     just prettier-write
     just ruff-write
+    just pyright-fix
 alias fw := full-write
 
 # Check Prettier formatting
@@ -105,6 +107,18 @@ alias pc := prettier-check
 @prettier-write +globs=GLOBS_PRETTIER:
     na prettier --write --cache {{ globs }}
 alias pw := prettier-write
+
+# Check Python type hints
+[group("checks")]
+@pyright-check:
+    uv run pyright
+alias pyc := pyright-check
+
+# Type check Python files (pyright has no fix mode)
+[group("checks")]
+@pyright-fix:
+    uv run pyright
+alias pyf := pyright-fix
 
 # Check Python files
 [group("checks")]

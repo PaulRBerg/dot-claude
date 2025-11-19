@@ -1,0 +1,9 @@
+{
+  "pythonVersion": "3.12",
+  "include": ["hooks", "helpers"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "reportUnusedImport": "warning",
+  "reportUnusedVariable": "warning",
+  "reportDuplicateImport": "warning"
+}

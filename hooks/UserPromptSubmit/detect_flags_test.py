@@ -12,6 +12,8 @@ import pytest
 # Dynamically import the detect_flags module
 hook_path = Path(__file__).parent / "detect_flags.py"
 spec = importlib.util.spec_from_file_location("detect_flags", hook_path)
+assert spec is not None, "Failed to load module spec"
+assert spec.loader is not None, "Module spec has no loader"
 detect_flags = importlib.util.module_from_spec(spec)
 sys.modules["detect_flags"] = detect_flags
 spec.loader.exec_module(detect_flags)

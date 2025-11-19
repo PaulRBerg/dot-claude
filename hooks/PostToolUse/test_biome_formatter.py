@@ -11,7 +11,7 @@ import os
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 # Add current directory to path to import the module
 sys.path.insert(0, str(Path(__file__).parent))
@@ -24,8 +24,12 @@ class TestExtractFilePath(unittest.TestCase):
 
     def setUp(self):
         """Clear environment before each test."""
-        for key in ["TOOL_INPUT_FILE_PATH", "TOOL_INPUT_RELATIVE_PATH",
-                    "CLAUDE_PROJECT_DIR", "TOOL_CALL"]:
+        for key in [
+            "TOOL_INPUT_FILE_PATH",
+            "TOOL_INPUT_RELATIVE_PATH",
+            "CLAUDE_PROJECT_DIR",
+            "TOOL_CALL",
+        ]:
             os.environ.pop(key, None)
 
     def test_extract_from_tool_input_file_path(self):
@@ -38,8 +42,7 @@ class TestExtractFilePath(unittest.TestCase):
         os.environ["TOOL_INPUT_RELATIVE_PATH"] = "src/component.tsx"
         os.environ["CLAUDE_PROJECT_DIR"] = "/home/user/project"
         self.assertEqual(
-            biome_formatter.extract_file_path(),
-            "/home/user/project/src/component.tsx"
+            biome_formatter.extract_file_path(), "/home/user/project/src/component.tsx"
         )
 
     def test_extract_from_relative_path_without_project_dir(self):
@@ -53,8 +56,7 @@ class TestExtractFilePath(unittest.TestCase):
         os.environ["TOOL_CALL"] = tool_call
         os.environ["CLAUDE_PROJECT_DIR"] = "/home/user/project"
         self.assertEqual(
-            biome_formatter.extract_file_path(),
-            "/home/user/project/lib/utils.ts"
+            biome_formatter.extract_file_path(), "/home/user/project/lib/utils.ts"
         )
 
     def test_extract_from_tool_call_json_without_project_dir(self):
@@ -172,8 +174,12 @@ class TestMain(unittest.TestCase):
 
     def setUp(self):
         """Clear environment before each test."""
-        for key in ["TOOL_INPUT_FILE_PATH", "TOOL_INPUT_RELATIVE_PATH",
-                    "CLAUDE_PROJECT_DIR", "TOOL_CALL"]:
+        for key in [
+            "TOOL_INPUT_FILE_PATH",
+            "TOOL_INPUT_RELATIVE_PATH",
+            "CLAUDE_PROJECT_DIR",
+            "TOOL_CALL",
+        ]:
             os.environ.pop(key, None)
 
     @patch("biome_formatter.run_biome")
@@ -249,8 +255,12 @@ class TestEndToEndScenarios(unittest.TestCase):
 
     def setUp(self):
         """Clear environment before each test."""
-        for key in ["TOOL_INPUT_FILE_PATH", "TOOL_INPUT_RELATIVE_PATH",
-                    "CLAUDE_PROJECT_DIR", "TOOL_CALL"]:
+        for key in [
+            "TOOL_INPUT_FILE_PATH",
+            "TOOL_INPUT_RELATIVE_PATH",
+            "CLAUDE_PROJECT_DIR",
+            "TOOL_CALL",
+        ]:
             os.environ.pop(key, None)
 
     @patch("biome_formatter.subprocess.run")
@@ -280,11 +290,13 @@ class TestEndToEndScenarios(unittest.TestCase):
     @patch("biome_formatter.Path.is_file", return_value=True)
     def test_serena_tool_call_json_workflow(self, mock_is_file, mock_run):
         """Simulate Serena tool with TOOL_CALL JSON."""
-        tool_call = json.dumps({
-            "name_path": "MyClass/myMethod",
-            "relative_path": "src/class.tsx",
-            "body": "// new code"
-        })
+        tool_call = json.dumps(
+            {
+                "name_path": "MyClass/myMethod",
+                "relative_path": "src/class.tsx",
+                "body": "// new code",
+            }
+        )
         os.environ["TOOL_CALL"] = tool_call
         os.environ["CLAUDE_PROJECT_DIR"] = "/project"
 

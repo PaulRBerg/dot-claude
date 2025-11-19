@@ -1,4 +1,6 @@
 # directories
+.serena/
+.venv/
 agents/
 commands/
 plugins/

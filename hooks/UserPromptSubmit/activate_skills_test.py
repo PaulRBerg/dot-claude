@@ -12,6 +12,8 @@ import pytest
 # Import functions from the hook script
 hook_path = Path(__file__).parent / "activate_skills.py"
 spec = importlib.util.spec_from_file_location("activate_skills", hook_path)
+assert spec is not None, "Failed to load module spec"
+assert spec.loader is not None, "Module spec has no loader"
 activate_skills = importlib.util.module_from_spec(spec)
 sys.modules["activate_skills"] = activate_skills
 spec.loader.exec_module(activate_skills)

@@ -120,7 +120,7 @@ class ClaudePromptTracker:
 
             row = cursor.fetchone()
             if row:
-                record_id, created_at, cwd = row
+                record_id, _created_at, cwd = row
 
                 # Update completion time
                 conn.execute(

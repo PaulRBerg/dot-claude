@@ -1,9 +1,9 @@
 [project]
   dependencies = []
-  description = "PRB's .claude directory."
+  description = "Root .claude directory."
   name = "dot-claude"
   requires-python = ">=3.12"
   version = "1.0.0"
 
 [dependency-groups]
-  dev = ["pytest"]
+  dev = ["pytest", "pyright"]

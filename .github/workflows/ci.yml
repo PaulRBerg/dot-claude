@@ -1,0 +1,51 @@
+name: "CI"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v5"
+
+      - name: "Setup Just"
+        uses: "extractions/setup-just@v2"
+
+      - name: "Setup Bun"
+        uses: "oven-sh/setup-bun@v2"
+        with:
+          bun-version: "latest"
+
+      - name: "Install Node dependencies"
+        run: "bun install"
+
+      - name: "Setup Python and uv"
+        uses: "astral-sh/setup-uv@v5"
+        with:
+          enable-cache: true
+
+      - name: "Install Python dependencies"
+        run: "uv sync --all-extras --dev"
+
+      - name: "Run code checks"
+        run: "just full-check"
+
+      - name: "Run Python type checking"
+        run: "just pyright-check"
+
+      - name: "Run tests"
+        run: "just test"
+
+      - name: "Add summary"
+        run: |
+          echo "## CI result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
