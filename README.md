@@ -81,6 +81,11 @@ cd ~/.claude
 - [`gh`](https://github.com/cli/cli) - GitHub CLI
 - [`yq`](https://github.com/mikefarah/yq) - YAML processor
 - [`ruff`](https://github.com/astral-sh/ruff) - Python linter/formatter
+- [`uv`](https://github.com/astral-sh/uv) - Python package manager
+
+```bash
+brew install fd jq gum rg eza bat delta fzf gh yq ruff uv # After installation, follow shell integration steps for fzf
+```
 
 **Setup:**
 
