@@ -65,6 +65,7 @@
       "Bash(stat:*)",
       "Bash(tail:*)",
       "Bash(tar:*)",
+      "Bash(terminal-notifier:*)",
       "Bash(test:*)",
       "Bash(time:*)",
       "Bash(timeout:*)",

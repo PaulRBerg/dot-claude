@@ -39,13 +39,10 @@ jobs:
       - name: "Run code checks"
         run: "just full-check"
 
-      - name: "Run Python type checking"
-        run: "just pyright-check"
-
       - name: "Run tests"
         run: "just test"
 
       - name: "Add summary"
-        run: |
+        run: | # shell
           echo "## CI result" >> $GITHUB_STEP_SUMMARY
           echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
