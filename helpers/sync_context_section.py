@@ -3,7 +3,7 @@
 Sync a markdown section from next-template to Sablier projects.
 
 Usage:
-    python sync-context-section.py [--section "## Section Name"]
+    uv run sync_context_section.py [--section "## Section Name"]
 
 Default section: ## Lint Rules
 """
@@ -18,12 +18,11 @@ from pathlib import Path
 HOME = Path.home()
 TEMPLATE_FILE = HOME / "work/templates/next-template/CLAUDE.md"
 TARGET_FILES = [
-    HOME / "projects/prb-pulse/CLAUDE.md",
     HOME / "sablier/backend/indexers/CLAUDE.md",
     HOME / "sablier/business/accounting/CLAUDE.md",
     HOME / "sablier/frontend/gh-searcher/CLAUDE.md",
-    HOME / "sablier/frontend/interfaces/CLAUDE.md",
-    HOME / "sablier/frontend/ui/CLAUDE.md",
+    HOME / "sablier/new-ui/CLAUDE.md",
+    HOME / "sablier/old-ui/CLAUDE.md",
 ]
 
 
@@ -206,7 +205,9 @@ def print_table(results: list[tuple[Path, str]]):
     print(f"├{'─' * file_width}┼{'─' * result_width}┤")
 
     for display_path, result in rows:
-        print(f"│ {display_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│")
+        print(
+            f"│ {display_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│"
+        )
 
     print(f"└{'─' * file_width}┴{'─' * result_width}┘")
 
@@ -244,14 +245,19 @@ def main(section_title: str):
 
 
 if __name__ == "__main__":
+    DEFAULT_SECTION = "## Lint Rules"
+
     parser = argparse.ArgumentParser(
         description="Sync a markdown section from next-template to Sablier projects."
     )
     parser.add_argument(
         "--section",
         type=str,
-        default="## Lint Rules",
-        help='Section name to sync (e.g., "## Lint Rules"). Default: ## Lint Rules',
+        default=DEFAULT_SECTION,
+        help=f'Section name to sync (e.g., "## Lint Rules"). Default: {DEFAULT_SECTION}',
     )
     args = parser.parse_args()
-    main(args.section)
+
+    # Use default if section is empty string
+    section = args.section if args.section else DEFAULT_SECTION
+    main(section)

@@ -67,37 +67,13 @@ default:
 
 # Merge JSONC settings files into settings.json
 [group("settings")]
-[script]
-merge-settings:
-    cd {{ CLAUDE_DIR }}
-    # Auto-discover and parse all .json/.jsonc files in settings/ (alphabetically sorted)
-    {{ gum }} spin --spinner dot --title "Merging JSONC settings..." -- bash -c '\
-    {{ fd }} --type f -e jsonc -e json . settings/ --exclude settings.json | sort | \
-    while read file; do
-        npx -y json5@latest "$file" 2>/dev/null || echo "{}"
-    done | jq -s '\''
-        # Collect all arrays across files
-        {
-            permissions: {
-                additionalDirectories: ([.[].permissions.additionalDirectories // [] | .[] ] | unique),
-                allow: ([.[].permissions.allow // [] | .[] ] | unique),
-                deny: ([.[].permissions.deny // [] | .[] ] | unique)
-            }
-        } *
-        # Merge non-permissions top-level keys
-        (reduce .[] as $item ({}; . * ($item | del(.permissions))))
-    '\'' > settings.json'
-    echo "✓ Merged settings.json from JSONC files"
+@merge-settings:
+    gum spin --spinner dot --title "Merging JSONC settings..." -- bash -c './helpers/merge-settings.sh'
 alias ms := merge-settings
 
 # Sync a section from template across projects (default: ## Lint Rules)
 sync-section section="":
-    #!/usr/bin/env bash
-    if [ -z "{{ section }}" ]; then
-        python -u helpers/sync-context-section.py
-    else
-        python -u helpers/sync-context-section.py --section "{{ section }}"
-    fi
+    uv run -u helpers/sync_context_section.py --section "{{ section }}"
 alias ss := sync-section
 
 # ---------------------------------------------------------------------------- #
