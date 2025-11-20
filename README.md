@@ -4,24 +4,9 @@ PRB's `.claude` directory.
 
 ## Settings
 
-I use a **modular architecture** for my Claude Code settings: JSONC files in `settings/*` automatically merge into
+I use a **modular architecture** for my Claude Code settings: all JSONC files in `settings/*` automatically merge into
 `settings.json` via Husky + lint-staged on every commit. See the `merge-settings` recipe in the `justfile` for more
 details.
-
-**Structure:**
-
-```
-├── settings/basics.jsonc          # UI preferences, environment variables, plugins
-├── settings/hooks.jsonc           # Event-driven automation hooks
-└── settings/permissions/          # 7 granular permission modules:
-    ├── additional-dirs.jsonc      # Directory access (18 paths including /tmp, ~/projects)
-    ├── bash.jsonc                 # Shell command allow/deny lists (60+ approved, 14 blocked)
-    ├── commands.jsonc             # Pre-approved slash commands
-    ├── mcp.jsonc                  # MCP server permissions
-    ├── read.jsonc                 # File read permissions
-    ├── skills.jsonc               # Claude Skills permissions
-    └── tools.jsonc                # Built-in tool permissions
-```
 
 **Editing:** Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or
 manually via `just merge-settings`.
@@ -83,12 +68,20 @@ cd ~/.claude
 - [`ruff`](https://github.com/astral-sh/ruff) - Python linter/formatter
 - [`yq`](https://github.com/mikefarah/yq) - YAML processor
 
-#### One-Line Installer
+### Installation
+
+#### Python
+
+```bash
+uv sync --all-extras --dev  # Install all extras and development dependencies
+```
+
+#### CLI
 
 On macOS, you can install all dependencies using Homebrew:
 
 ```bash
-# After installation, follow shell integration steps for fzf
+# Required
 brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
 ```
 
@@ -103,12 +96,11 @@ just test           # Verify hooks work correctly
 
 **Utilities** (gracefully degrade if unavailable):
 
-- **[ccnotify](https://github.com/dazuiba/CCNotify)** - Desktop notifications for Claude Code events (UserPromptSubmit,
-  PermissionRequest, Stop). Uses SQLite for session tracking.
-- **[ccstatusline](https://github.com/sirmalloc/ccstatusline)** - Custom status line display. Runs via `npx` on-demand,
-  no local installation required.
 - **[claude-code-docs](https://github.com/ericbuess/claude-code-docs)** - Local mirror of Claude Code documentation from
   Anthropic. Provides `claude-docs-helper.sh` for quick doc lookups.
+- **[ccnotify](https://github.com/dazuiba/CCNotify)** - macOS notifications for Claude Code events (`UserPromptSubmit`,
+  `PermissionRequest`, `Stop`). Uses SQLite for session tracking.
+  [terminal-notifier](https://github.com/julienXX/terminal-notifier): `brew install terminal-notifier`
 - **[zk](https://github.com/zk-org/zk)** - Zettelkasten note-taking system. Required for `log_prompts` hook. Install via
   `brew install zk`, then initialize `~/.claude-prompts/` as a zk notebook.
 
@@ -116,7 +108,7 @@ just test           # Verify hooks work correctly
 
 - **log_prompts hook** - Logs conversation prompts to zk notebook at `~/.claude-prompts/`. Requires `zk` CLI and
   initialized notebook. Exits gracefully if prerequisites missing.
-- **MCP servers** - Configured in `.mcp.json`, can be enabled/disabled in `settings/permissions/mcp.jsonc`
+- **MCP servers** - Configured in `.mcp.json`
 
 ### Configuration
 
@@ -167,8 +159,10 @@ priorities.
 
 ### External Plugins
 
-- **code-review** (`code-review@claude-code-plugins`) - Code review automation
-- **playwright-skill** (`playwright-skill@playwright-skill`) - Browser automation and testing
+- **[code-review](https://github.com/claude-code-plugins/code-review)** (`code-review@claude-code-plugins`) - Code
+  review automation
+- **[playwright-skill](https://github.com/playwright-skill/playwright-skill)** (`playwright-skill@playwright-skill`) -
+  Browser automation and testing
 
 ## Agents
 
@@ -185,9 +179,8 @@ Three Model Context Protocol servers configured in `.mcp.json` extend Claude's c
   documentation and code examples. Resolves package names to Context7-compatible IDs and retrieves relevant docs on
   demand.
 
-- **[serena](https://github.com/JetBrains-Research/serena)** (`serena` via uvx) - IDE assistant with semantic code
-  navigation. Provides symbol-based search, referencing, editing, and memory management for token-efficient codebase
-  exploration.
+- **[serena](https://github.com/oraios/serena)** (`serena` via uvx) - IDE assistant with semantic code navigation.
+  Provides symbol-based search, referencing, editing, and memory management for token-efficient codebase exploration.
 
 - **[sequential-thinking](https://github.com/modelcontextprotocol/servers)**
   (`@modelcontextprotocol/server-sequential-thinking`) - Chain-of-thought reasoning tool for complex problem-solving.
@@ -200,7 +193,8 @@ Three Model Context Protocol servers configured in `.mcp.json` extend Claude's c
 > [!NOTE]
 >
 > While it is not required, I highly recommend installing these utilities, especially the `claude` wrapper that runs
-> Claude with the `--dangerously-skip-permissions` flag and loads MCP servers from `.mcp.json` (if present).
+> Claude with the `--dangerously-skip-permissions` flag and loads MCP servers from `.mcp.json` (if present). See this
+> this [GitHub issue](https://github.com/anthropics/claude-code/issues/3321).
 
 Shell utilities for Claude Code workflows are provided in `utils.sh`. These utilities are optional but can improve your
 command-line experience with Claude Code. Add them to your shell configuration (e.g., `~/.zshrc` or `~/.bashrc`).
@@ -294,7 +288,10 @@ SQLite database. Monitors:
 - Notification
 - Stop
 
-Requires ccnotify to be installed separately.
+**Prerequisites:**
+
+- [terminal-notifier](https://github.com/julienXX/terminal-notifier) (macOS): `brew install terminal-notifier`
+- Gracefully degrades if terminal-notifier is unavailable (logs warning instead of failing)
 
 ### 5. claude-code-docs Helper (PreToolUse:Read) - Optional
 
