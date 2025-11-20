@@ -80,6 +80,7 @@
       "Bash(stat:*)",
       "Bash(tail:*)",
       "Bash(tar:*)",
+      "Bash(terminal-notifier:*)",
       "Bash(test:*)",
       "Bash(time:*)",
       "Bash(timeout:*)",
@@ -97,8 +98,8 @@
       "Read(~/.vimrc)",
       "Read(~/.zshrc)",
       "Skill(dry-refactor)",
-      "Skill(frontend-design:frontend-design)",
       "Skill(nb-search)",
+      "Skill(playwright-skill:playwright-skill)",
       "Skill(skill-creator)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",
@@ -114,7 +115,6 @@
       "WebSearch",
       "mcp__context7",
       "mcp__next-devtools",
-      "mcp__playwright",
       "mcp__sequential-thinking",
       "mcp__serena"
     ],
@@ -156,7 +156,7 @@
   },
   "includeCoAuthoredBy": false,
   "statusLine": {
-    "command": "bunx -y ccstatusline@latest",
+    "command": "npx -y ccstatusline@latest",
     "type": "command"
   },
   "hooks": {

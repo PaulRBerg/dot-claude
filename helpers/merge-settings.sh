@@ -60,6 +60,7 @@ process.argv.slice(1).forEach(file => {
 # The merge strategy is:
 #   1. Collect all permission arrays from all files and deduplicate
 #   2. Merge all other top-level keys (later values override earlier ones)
+#   3. Exclude the $schema field from the final output
 merged_json=$(echo "$parsed_json" | jq -s '
     # First, build the permissions object by collecting arrays from all files
     {
@@ -77,6 +78,8 @@ merged_json=$(echo "$parsed_json" | jq -s '
     # Then merge all non-permissions top-level keys from all files
     # Later files override earlier files for conflicting keys
     (reduce .[] as $item ({}; . * ($item | del(.permissions))))
+    # Remove the $schema field from the final output
+    | del(."$schema")
 ')
 
 # ---------------------------------------------------------------------------- #

@@ -12,7 +12,7 @@
   },
   "includeCoAuthoredBy": false,
   "statusLine": {
-    "command": "bunx -y ccstatusline@latest",
+    "command": "npx -y ccstatusline@latest",
     "type": "command"
   }
 }
