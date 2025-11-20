@@ -3,7 +3,7 @@
  */
 export default {
   'settings/**/*.{json,jsonc}': [
-    "just merge-settings",
+    "bash helpers/merge-settings.sh",
     "git add settings.json",
   ],
 };
