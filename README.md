@@ -36,6 +36,12 @@ specialized modules, creating layered behavioral policies without duplication.
 
 ## Usage
 
+### Prerequisites
+
+- **Node.js** - For Husky/lint-staged automation (`npm install`)
+- **Just** - Command runner for build scripts (`brew install just`)
+- **Python 3.12+** and [uv](https://github.com/astral-sh/uv) - Python package and project manager
+
 ### Installation
 
 Clone or copy this repository to `~/.claude`:
@@ -45,16 +51,14 @@ git clone <repository-url> ~/.claude
 cd ~/.claude
 ```
 
-### Required Dependencies
+Then, install the dependencies:
 
-**Core Tools:**
+```bash
+bun install                # Install Node dependencies (Husky, lint-staged)
+uv sync --all-extras --dev # Install Python dependencies
+```
 
-- **Node.js** - For Husky/lint-staged automation (`npm install`)
-- **Just** - Command runner for build scripts (`brew install just`)
-- **Python 3.12+**
-- [uv](https://github.com/astral-sh/uv) - Python package and project manager
-
-**Modern CLI Tools**:
+### CLI Dependencies
 
 - [`bat`](https://github.com/sharkdp/bat) - Modern cat replacement
 - [`delta`](https://github.com/dandavison/delta) - Git diff viewer
@@ -68,28 +72,11 @@ cd ~/.claude
 - [`ruff`](https://github.com/astral-sh/ruff) - Python linter/formatter
 - [`yq`](https://github.com/mikefarah/yq) - YAML processor
 
-### Installation
-
-#### Python
-
-```bash
-uv sync --all-extras --dev  # Install all extras and development dependencies
-```
-
-#### CLI
-
 On macOS, you can install all dependencies using Homebrew:
 
 ```bash
 # Required
 brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
-```
-
-**Setup:**
-
-```bash
-npm install          # Install Node dependencies (Husky, lint-staged)
-just test           # Verify hooks work correctly
 ```
 
 ### Optional Dependencies
@@ -124,7 +111,6 @@ just test           # Verify hooks work correctly
 ```bash
 just test           # Run all tests
 just test-hooks     # Run hook tests specifically
-pytest hooks/ -v    # Direct pytest invocation
 ```
 
 ## Commands
