@@ -76,17 +76,6 @@ const tomorrow = now.add(1, "day");
 
 Never use the `any` type.
 
-### No double negation (`!!`)
-
-Do not use the double negation (`!!`) operator. Instead, use the `Boolean` constructor.
-
-**Example:**
-
-```typescript
-const x = !!y; // bad
-const x = Boolean(y); // good
-```
-
 ### No return value in `forEach` callbacks
 
 Never return a value from a `forEach` callback.
