@@ -5,7 +5,7 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "husky && bash helpers/merge-settings.sh"
+    "prepare": "test \"$CI\" = 'true' || (husky && bash helpers/merge-settings.sh)"
   },
   "devDependencies": {
     "husky": "^9.1.7",

@@ -130,10 +130,9 @@ def log_prompt_to_zk(prompt: str, session_id: str, cwd: str) -> None:
         # Create new daily file with YAML frontmatter
         tags_str = ", ".join(tags)
         content = f"""---
-title: Prompts submitted on {date_str} in project {project_name}
+title: {date_str}
 date: {timestamp.isoformat()}
 project: {project_name}
-session: {session_id}
 tags: [{tags_str}]
 ---
 
