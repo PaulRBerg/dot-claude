@@ -182,11 +182,11 @@ class TestLogPromptToZk:
             call.args[0] for call in mock_file().write.call_args_list
         )
         assert "---" in written_content
-        assert "title: Prompts submitted on 2025-11-17 in project next-template" in written_content
-        assert "tags: [work, templates, next, template]" in written_content
+        assert "title: 2025-11-17" in written_content
         assert "date: 2025-11-17T16:34:59.597061+00:00" in written_content
         assert "project: next-template" in written_content
-        assert "session: session-123" in written_content
+        assert "tags: [work, templates, next, template]" in written_content
+        assert "_Session ID: session-123_" in written_content
         assert "## 16:34:59" in written_content
         assert "Test prompt content" in written_content
 
