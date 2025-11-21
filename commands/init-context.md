@@ -16,9 +16,9 @@ description: Generate project-specific CLAUDE.md file with custom context
 ### STEP 1: Validate arguments
 
 CHECK arguments:
-- IF `$ARGUMENTS` is empty: ERROR "Usage: /create-agent-context <context-description>"
-  - Example: `/create-agent-context TypeScript monorepo with strict type safety and functional patterns`
-  - Example: `/create-agent-context Foundry smart contract project with security-first mindset`
+- IF `$ARGUMENTS` is empty: ERROR "Usage: /init-context <context-description>"
+  - Example: `/init-context TypeScript monorepo with strict type safety and functional patterns`
+  - Example: `/init-context Foundry smart contract project with security-first mindset`
 
 ### STEP 2: Check existing CLAUDE.md
 
