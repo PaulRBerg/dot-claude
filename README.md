@@ -1,6 +1,29 @@
 # Claude Code config
 
+[![CI](https://github.com/PaulRBerg/dot-claude/actions/workflows/ci.yml/badge.svg)](https://github.com/PaulRBerg/dot-claude/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-Configured-DE7356)](https://github.com/anthropics/claude-code)
+
 PRB's `.claude` directory.
+
+## Quick Start
+
+Get up and running in 3 steps:
+
+```bash
+# 1. Clone to ~/.claude
+git clone git@github.com:PaulRBerg/dot-claude.git ~/.claude
+cd ~/.claude
+
+# 2. Install dependencies
+bun install          # Node dependencies (Husky, lint-staged)
+uv sync --all-extras # Python dependencies
+
+# 3. Try it out
+ccc                  # Make your first commit with the claude wrapper
+```
+
+See [Installation](#installation) for detailed setup and [Configuration](#configuration) for customization.
 
 ## Settings
 
@@ -18,7 +41,7 @@ Alphabetical merge order ensures deterministic, conflict-free composition.
 
 - **Permissions**: Pre-approved commands (`git`, `grep`, etc.) and tools run without confirmation. Destructive
   operations (`sudo`, `rm -rf`, system files) are blocked.
-- **Hooks**: Event-driven automation, see the [docs](https://docs.claude.com/en/docs/claude-code/hooks) for more info.
+- **Hooks**: Event-driven automation, see the [hooks documentation](hooks/README.md) for details.
 - **Status Line**: Custom status via `ccstatusline`
 
 ## Context
@@ -34,7 +57,7 @@ Modular configuration system using `@` syntax for composable behavioral instruct
 Context files are organized by concern and imported via `@filename.md` references. Base instructions cascade through
 specialized modules, creating layered behavioral policies without duplication.
 
-## Usage
+## Installation
 
 ### Prerequisites
 
@@ -42,16 +65,16 @@ specialized modules, creating layered behavioral policies without duplication.
 - **Just** - Command runner for build scripts (`brew install just`)
 - **Python 3.12+** and [uv](https://github.com/astral-sh/uv) - Python package and project manager
 
-### Installation
+### Clone Repository
 
 Clone or copy this repository to `~/.claude`:
 
 ```bash
-git clone <repository-url> ~/.claude
+git clone git@github.com:PaulRBerg/dot-claude.git ~/.claude
 cd ~/.claude
 ```
 
-Then, install the dependencies:
+### Install Dependencies
 
 ```bash
 bun install          # Install Node dependencies (Husky, lint-staged)
@@ -103,21 +126,59 @@ gh auth login
   initialized notebook. Exits gracefully if prerequisites missing.
 - **MCP servers** - Configured in `.mcp.json`
 
-### Configuration
+### Verify Installation
 
-**Editing settings:**
+Test your setup:
+
+```bash
+# Test justfile commands
+just full-check      # Run all code checks
+
+# Test hooks
+just test-hooks      # Run hook tests
+
+# Try the claude wrapper (if you sourced utils.sh)
+ccc                  # Create a commit with automatic staging
+```
+
+## Configuration
+
+### Flag System
+
+Use flags at the end of prompts to trigger specific behaviors:
+
+| Flag | Purpose                             | Example                   |
+| ---- | ----------------------------------- | ------------------------- |
+| `-s` | Delegate to specialized subagents   | `refactor auth system -s` |
+| `-c` | Auto-commit after task completion   | `fix bug -c`              |
+| `-t` | Emphasize comprehensive testing     | `add feature -t`          |
+| `-d` | Debug mode with root cause analysis | `fix memory leak -d`      |
+| `-n` | Skip linting and type-checking      | `prototype feature -n`    |
+
+Flags are composable: `implement API -s -t -c` delegates to agents, emphasizes tests, and commits when done.
+
+### Justfile Commands
+
+| Command               | Alias | Description                                   |
+| --------------------- | ----- | --------------------------------------------- |
+| `just merge_settings` | `ms`  | Merge JSONC settings into settings.json       |
+| `just sync-section`   | `ss`  | Sync section from template across projects    |
+| `just full-check`     | `fc`  | Run all code checks (Prettier, Ruff, Pyright) |
+| `just full-write`     | `fw`  | Run all code fixes                            |
+| `just prettier-check` | `pc`  | Check Prettier formatting                     |
+| `just prettier-write` | `pw`  | Format with Prettier                          |
+| `just pyright-check`  | `pyc` | Check Python type hints                       |
+| `just ruff-check`     | `rc`  | Check Python files                            |
+| `just ruff-write`     | `rw`  | Format Python files                           |
+| `just test`           | `t`   | Run all tests                                 |
+| `just test-hooks`     | `th`  | Run pytest tests for hooks                    |
+
+### Editing Settings
 
 - Modify `settings/**/*.jsonc` files (human-editable with comments)
 - Never edit `settings.json` directly (auto-generated)
 - Changes auto-merge via lint-staged on commit
 - Manual merge: `just merge_settings` or `just ms`
-
-**Testing:**
-
-```bash
-just test           # Run all tests
-just test-hooks     # Run hook tests specifically
-```
 
 ## Commands
 
@@ -227,68 +288,46 @@ claude_allow_bash npm  # Add npm to allowed Bash tools
 
 Five custom hooks in `hooks/` extend Claude Code with event-driven automation:
 
-### 1. detect_flags.py (UserPromptSubmit)
+- **detect_flags.py** - Parse flags from prompts (`-s`, `-c`, `-t`, `-d`, `-n`) to trigger behaviors
+- **activate_skills.py** - Auto-suggest skills based on context and prompt analysis
+- **log_prompts.py** - Log conversations to zk notebook (optional)
+- **ccnotify** - Desktop notifications for events (optional)
+- **claude-code-docs** - Quick documentation lookups (optional)
 
-General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
-at the end of prompts with no other text after them.
+**See [hooks/README.md](hooks/README.md) for detailed documentation**, including:
 
-**Supported flags:**
+- Flag descriptions and composability
+- Skill activation rules
+- Optional dependency setup (zk, terminal-notifier, claude-code-docs)
+- Hook development and testing
+- Troubleshooting
 
-- **`-s`** (subagent): Injects [SUBAGENTS.md](hooks/UserPromptSubmit/SUBAGENTS.md) instructions, forcing Claude to
-  delegate work to specialized subagents instead of doing everything itself. Mandates parallel delegation for
-  independent subtasks, single agent for sequential work.
+## Development
 
-- **`-c`** (commit): Instructs Claude to execute `/commit` slash command after completing the task.
+### Testing
 
-- **`-t`** (test): Adds testing emphasis context, requiring comprehensive test coverage including unit tests,
-  integration tests, and edge cases.
+Run tests with pytest:
 
-- **`-d`** (debug): Invokes the debugger subagent for systematic root cause analysis with a 5-step debugging workflow.
+```bash
+just test           # Run all tests
+just test-hooks     # Run hook tests specifically
+```
 
-- **`-n`** (no-lint): Skip linting and type-checking during development.
+### Code Quality
 
-**Composability**: Flags combine naturally into complete workflows:
+```bash
+just full-check     # Run all checks (Prettier, Ruff, Pyright)
+just full-write     # Run all fixes (format code)
+```
 
-- `implement payment API -s -t -c` → delegate to agents, emphasize tests, commit when done
-- `fix memory leak -d -c` → debug mode, commit fix
-- `add OAuth flow -s -c` → orchestrate implementation, auto-commit
+### CI/CD
 
-**Order independence**: `-s -c -t` works identically to `-t -c -s`.
+GitHub Actions workflow (`.github/workflows/ci.yml`) runs on PR and push to main:
 
-### 2. activate_skills.py (UserPromptSubmit)
-
-Analyzes user prompts and suggests relevant skills based on keywords, intent patterns, file patterns, and content
-patterns. Configuration in `skills/skill-rules.json` defines trigger conditions and priority levels (critical, high,
-medium, low).
-
-### 3. log_prompts.py (UserPromptSubmit) - Optional
-
-Logs conversation prompts to a [zk](https://github.com/zk-org/zk) notebook at `~/.claude-prompts/`. Requires:
-
-- `zk` CLI installed (`brew install zk`)
-- `~/.claude-prompts/` initialized as a zk notebook
-
-Exits gracefully if prerequisites are missing.
-
-### 4. ccnotify (All Events) - Optional
-
-Desktop notifications for Claude Code events via [CCNotify](https://github.com/dazuiba/CCNotify). Tracks sessions in
-SQLite database. Monitors:
-
-- UserPromptSubmit
-- PermissionRequest
-- Notification
-- Stop
-
-**Prerequisites:**
-
-- [terminal-notifier](https://github.com/julienXX/terminal-notifier) (macOS): `brew install terminal-notifier`
-- Gracefully degrades if terminal-notifier is unavailable (logs warning instead of failing)
-
-### 5. claude-code-docs Helper (PreToolUse:Read) - Optional
-
-Quick documentation lookups via [claude-code-docs](https://github.com/ericbuess/claude-code-docs). Provides
-`claude-docs-helper.sh` for local doc searches.
+1. Setup: Just, Bun, Python/uv
+2. Install dependencies
+3. Run `just full-check` (Prettier, Ruff, Pyright)
+4. Run `just test` (pytest)
 
 ## License
 

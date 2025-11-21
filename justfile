@@ -35,9 +35,9 @@ default:
 
 # Merge JSONC settings files into settings.json
 [group("settings")]
-@merge_settings:
+@merge-settings:
     gum spin --spinner dot --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
-alias ms := merge_settings
+alias ms := merge-settings
 
 # Sync a section from template across projects (default: ## Lint Rules)
 sync-section section="":
