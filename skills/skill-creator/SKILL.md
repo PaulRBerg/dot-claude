@@ -25,6 +25,22 @@ Automatically activates when you mention:
 
 ---
 
+## Flag-Based Behavior
+
+The skill-creator supports the `--rules` flag to control whether `skill-rules.json` is modified:
+
+- **No flag**: Create/modify only the SKILL.md file and reference files
+- **`--rules` flag**: Create/modify SKILL.md AND add/update entry in skill-rules.json
+
+**Examples:**
+- `"create a new pdf skill"` → Only creates SKILL.md
+- `"create a new pdf skill --rules"` → Creates SKILL.md AND adds to skill-rules.json
+- `"update the typescript skill --rules"` → Updates SKILL.md AND updates skill-rules.json entry
+
+**Important**: Always check for the `--rules` flag in the user's prompt before modifying skill-rules.json.
+
+---
+
 ## System Overview
 
 ### Two-Hook Architecture
@@ -138,7 +154,15 @@ The actual guidance, documentation, patterns, examples
 - ✅ **Examples**: Real code examples
 - ✅ **Structure**: Clear headings, lists, code blocks
 
-### Step 2: Add to skill-rules.json
+### Step 2: Add to skill-rules.json (Optional - only if `--rules` flag provided)
+
+**IMPORTANT**: Only modify `skill-rules.json` if the user explicitly provides the `--rules` flag in their prompt.
+
+**Check for flag**:
+- If user's prompt contains `--rules`: Proceed with adding/updating skill-rules.json entry
+- If no `--rules` flag: **Skip this step entirely** - do NOT modify skill-rules.json
+
+**When `--rules` flag IS provided:**
 
 See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
 
@@ -268,10 +292,14 @@ export SKIP_ERROR_REMINDER=true
 
 ## Testing Checklist
 
-When creating a new skill, verify:
-
+**Core Requirements (Always):**
 - [ ] Skill file created in `.claude/skills/{name}/SKILL.md`
 - [ ] Proper frontmatter with name and description
+- [ ] **SKILL.md under 500 lines** ⭐
+- [ ] Reference files created if needed
+- [ ] Table of contents added to files > 100 lines
+
+**Additional Checks (Only if `--rules` flag provided):**
 - [ ] Entry added to `skill-rules.json`
 - [ ] Keywords tested with real prompts
 - [ ] Intent patterns tested with variations
@@ -284,9 +312,6 @@ When creating a new skill, verify:
 - [ ] No false negatives in testing
 - [ ] Performance is acceptable (<100ms or <200ms)
 - [ ] JSON syntax validated: `jq . skill-rules.json`
-- [ ] **SKILL.md under 500 lines** ⭐
-- [ ] Reference files created if needed
-- [ ] Table of contents added to files > 100 lines
 
 ---
 
@@ -347,13 +372,16 @@ Future enhancements and ideas:
 
 ## Quick Reference Summary
 
-### Create New Skill (5 Steps)
+### Create New Skill
 
+**Core Steps (Always):**
 1. Create `.claude/skills/{name}/SKILL.md` with frontmatter
-2. Add entry to `.claude/skills/skill-rules.json`
-3. Test with `npx tsx` commands
-4. Refine patterns based on testing
-5. Keep SKILL.md under 500 lines
+2. Keep SKILL.md under 500 lines
+
+**Additional Steps (Only if `--rules` flag provided):**
+3. Add entry to `.claude/skills/skill-rules.json`
+4. Test with `npx tsx` commands
+5. Refine patterns based on testing
 
 ### Trigger Types
 
