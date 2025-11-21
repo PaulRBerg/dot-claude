@@ -63,7 +63,6 @@ alias fc := full-check
 @full-write:
     just _run-with-status prettier-write
     just _run-with-status ruff-write
-    just _run-with-status pyright-fix
     echo ""
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
@@ -85,12 +84,6 @@ alias pw := prettier-write
 @pyright-check:
     uv run pyright
 alias pyc := pyright-check
-
-# Type check Python files (pyright has no fix mode)
-[group("checks")]
-@pyright-fix:
-    uv run pyright
-alias pyf := pyright-fix
 
 # Check Python files
 [group("checks")]

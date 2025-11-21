@@ -79,6 +79,12 @@ On macOS, you can install all dependencies using Homebrew:
 brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
 ```
 
+After installing `gh` for the first time, authenticate with GitHub:
+
+```bash
+gh auth login
+```
+
 ### Optional Dependencies
 
 **Utilities** (gracefully degrade if unavailable):

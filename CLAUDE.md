@@ -1,6 +1,6 @@
-# Instructions
+# Rules
 
-AI agents must follow these instructions.
+AI agents must follow these rules.
 
 @context/AGENT_COORDINATION.md
 

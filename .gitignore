@@ -1,12 +1,16 @@
 # directories
-.ruff-cache/
+.claude/
 .pytest-cache/
+.ruff-cache/
+.serena/
+.venv
 backups/
 debug/
 downloads/
 file-history/
 ide/
 logs/
+plans/
 plugins/
 projects/
 session-env/
@@ -21,3 +25,6 @@ todos/
 .update.lock
 ccnotify.db
 history.jsonl
+PROMPT.md
+SPEC.md
+TODO.md
