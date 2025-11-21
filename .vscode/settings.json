@@ -5,6 +5,9 @@
   "[md][yaml][yml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
   "files.associations": {
     ".claude.json": "plaintext"
   },

@@ -5,11 +5,11 @@ PRB's `.claude` directory.
 ## Settings
 
 I use a **modular architecture** for my Claude Code settings: all JSONC files in `settings/*` automatically merge into
-`settings.json` via Husky + lint-staged on every commit. See the `merge-settings` recipe in the `justfile` for more
+`settings.json` via Husky + lint-staged on every commit. See the `merge_settings` recipe in the `justfile` for more
 details.
 
 **Editing:** Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or
-manually via `just merge-settings`.
+manually via `just merge_settings`.
 
 **Rationale:** Separation of concerns improves maintainability. Modular files support comments and focused editing.
 Alphabetical merge order ensures deterministic, conflict-free composition.
@@ -54,8 +54,8 @@ cd ~/.claude
 Then, install the dependencies:
 
 ```bash
-bun install                # Install Node dependencies (Husky, lint-staged)
-uv sync --all-extras --dev # Install Python dependencies
+bun install          # Install Node dependencies (Husky, lint-staged)
+uv sync --all-extras # Install Python dependencies
 ```
 
 ### CLI Dependencies
@@ -104,7 +104,7 @@ brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
 - Modify `settings/**/*.jsonc` files (human-editable with comments)
 - Never edit `settings.json` directly (auto-generated)
 - Changes auto-merge via lint-staged on commit
-- Manual merge: `just merge-settings` or `just ms`
+- Manual merge: `just merge_settings` or `just ms`
 
 **Testing:**
 

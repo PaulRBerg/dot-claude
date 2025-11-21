@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# merge-settings.sh
+# merge_settings.sh
 #
 # Merges multiple JSONC settings files from the settings/ directory into a single
 # settings.json file. This script handles:
@@ -8,7 +8,7 @@
 # - Collecting and deduplicating permission arrays across all files
 # - Merging non-permission top-level keys from all files
 #
-# Usage: merge-settings.sh
+# Usage: merge_settings.sh
 
 set -euo pipefail
 

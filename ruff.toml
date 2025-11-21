@@ -1,0 +1,14 @@
+# https://docs.astral.sh/ruff/configuration/
+indent-width = 4
+line-length = 100
+target-version = "py312"
+
+include = ["pyproject.toml", "helpers/**/*.py", "hooks/**/*.py"]
+
+[format]
+  docstring-code-format = true
+  docstring-code-line-length = "dynamic"
+  indent-style = "space"
+  line-ending = "auto"
+  quote-style = "double"
+  skip-magic-trailing-comma = false
