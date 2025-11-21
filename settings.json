@@ -10,7 +10,6 @@
       "~/.config",
       "~/.gemini",
       "~/.local",
-      "~/.vim_runtime",
       "~/.zsh",
       "~/projects",
       "~/sablier",
@@ -142,8 +141,9 @@
       "Bash(systemctl:*)",
       "Bash(userdel:*)",
       "Bash(usermod:*)",
-      "Read(./.env)",
-      "Read(./.env.production)"
+      "Read(.env)",
+      "Read(.env.production)",
+      "Read(~/.ssh)"
     ]
   },
   "alwaysThinkingEnabled": true,
