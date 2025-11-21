@@ -10,51 +10,19 @@ set unstable
 # Bun: https://bun.sh
 bun := require("bun")
 
-# Claude Code
-claude := require("claude")
-
-# Gum: https://github.com/charmbracelet/gum
-gum := require("gum")
-
-# JQ: https://github.com/jqlang/jq
-jq := require("jq")
-
-# Ni: https://github.com/antfu-collective/ni
-ni := require("ni")
-na := require("na")
-nlx := require("nlx")
-
-# Node: https://nodejs.org
-node := require("node")
-npm := require("npm")
-npx := require("npx")
-
-# Ruff: https://github.com/astral-sh/ruff
-ruff := require("ruff")
-
 # UV: https://github.com/astral-sh/uv
 uv := require("uv")
-uvx := require("uvx")
-
-# ---------------------------------------------------------------------------- #
-#                                  MODERN CLI                                  #
-# ---------------------------------------------------------------------------- #
-
-bat := require("bat")
-delta := require("delta")
-eza := require("eza")
-fd := require("fd")
-fzf := require("fzf")
-gh := require("gh")
-rg := require("rg")
-yq := require("yq")
 
 # ---------------------------------------------------------------------------- #
 #                                   CONSTANTS                                  #
 # ---------------------------------------------------------------------------- #
 
-CLAUDE_DIR := "$HOME/.claude"
 GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
+
+# ANSI color codes for formatted output
+CYAN := '\033[0;36m'
+GREEN := '\033[0;32m'
+NORMAL := '\033[0m'
 
 
 # ---------------------------------------------------------------------------- #
@@ -83,29 +51,33 @@ alias ss := sync-section
 # Run all code checks
 [group("checks")]
 @full-check:
-    just prettier-check
-    just ruff-check
-    just pyright-check
+    just _run-with-status prettier-check
+    just _run-with-status ruff-check
+    just _run-with-status pyright-check
+    echo ""
+    echo -e '{{ GREEN }}All code checks passed!{{ NORMAL }}'
 alias fc := full-check
 
 # Run all code fixes
 [group("checks")]
 @full-write:
-    just prettier-write
-    just ruff-write
-    just pyright-fix
+    just _run-with-status prettier-write
+    just _run-with-status ruff-write
+    just _run-with-status pyright-fix
+    echo ""
+    echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
 
 # Check Prettier formatting
 [group("checks")]
 @prettier-check +globs=GLOBS_PRETTIER:
-    na prettier --check --cache {{ globs }}
+    bun prettier --check --cache {{ globs }}
 alias pc := prettier-check
 
 # Format using Prettier
 [group("checks")]
 @prettier-write +globs=GLOBS_PRETTIER:
-    na prettier --write --cache {{ globs }}
+    bun prettier --write --cache {{ globs }}
 alias pw := prettier-write
 
 # Check Python type hints
@@ -123,14 +95,14 @@ alias pyf := pyright-fix
 # Check Python files
 [group("checks")]
 @ruff-check:
-    ruff check .
+    uv run ruff check .
 alias rc := ruff-check
 
 # Format Python files
 [group("checks")]
 @ruff-write:
-    ruff check --fix .
-    ruff format .
+    uv run ruff check --fix .
+    uv run ruff format .
 alias rw := ruff-write
 
 # ---------------------------------------------------------------------------- #
@@ -148,3 +120,16 @@ alias t := test
 @test-hooks:
     pytest hooks/ -v
 alias th := test-hooks
+
+# ---------------------------------------------------------------------------- #
+#                                   UTILITIES                                  #
+# ---------------------------------------------------------------------------- #
+
+# Private recipe to run a check with formatted output
+[no-cd]
+@_run-with-status recipe:
+    echo ""
+    echo -e '{{ CYAN }}→ Running {{ recipe }}...{{ NORMAL }}'
+    just {{ recipe }}
+    echo -e '{{ GREEN }}✓ {{ recipe }} completed{{ NORMAL }}'
+alias rws := _run-with-status
