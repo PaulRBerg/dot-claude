@@ -1,22 +1,20 @@
 ---
 name: typescript
-description: Expert TypeScript engineering practices and patterns. Use when working with .ts or .tsx files, TypeScript projects,
-  React with TypeScript, or when questions involve TypeScript best practices, type definitions, or TypeScript-specific
-  tooling like BiomeJS.
+description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "set up BiomeJS", "use dayjs", mentions .ts or .tsx files, TypeScript projects, React with TypeScript, or asks about TypeScript best practices, type definitions, or TypeScript-specific tooling like BiomeJS.
 ---
 
-# TypeScript Engineer
-
-Apply these TypeScript engineering practices when working with TypeScript and React TypeScript projects.
+# TypeScript Skill
 
 ## General Principles
 
-- Be terse
-- Anticipate needs—suggest solutions the user hasn't considered
-- Treat the user as an expert
-- Be precise and exhaustive
+Apply these principles when working with TypeScript:
+
+- Be terse and concise
+- Anticipate needs and suggest solutions not yet considered
+- Assume expert-level understanding
+- Be precise and exhaustive in implementations
 - Lead with the answer; add explanations only as needed
-- Embrace new tools and contrarian ideas, not just best practices
+- Embrace new tools and contrarian ideas, not just conventional best practices
 - Speculate freely, but clearly label speculation
 
 ## TypeScript Rules
@@ -32,34 +30,13 @@ Maintain alphabetical order for better readability and consistency:
 - **Type definitions** - Arrange fields alphabetically
 - **Class properties** - Order by property name
 
-#### Exceptions
+### Biome
 
-##### Nesting depth
-
-Group by nesting depth before alphabetical sorting.
-
-**Example:**
-
-```json
-{
-  "id": "12345", // depth 0 - comes first alphabetically
-  "name": "Sample Item", // depth 0 - comes second alphabetically
-  "details": {
-    // depth 1 - comes last despite "d" < "i"
-    "description": "...",
-    "status": "active"
-  }
-}
-```
-
-### BiomeJS
-
-Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file and, if it's not
-present, create it.
+Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file and, if it's not present, create it.
 
 Exception: project already uses ESLint and Prettier.
 
-### Dayjs for date and time calculations
+### dayjs for date and time calculations
 
 Use the `dayjs` library for date calculations. Avoid using the native JavaScript Date object.
 
@@ -76,9 +53,7 @@ const tomorrow = now.add(1, "day");
 
 Never use the `any` type.
 
-### No return value in `forEach` callbacks
-
-Never return a value from a `forEach` callback.
+### Never return a value in `forEach` callbacks
 
 **Example:**
 
@@ -118,15 +93,3 @@ Use `type` instead of `interface` for declaring types.
 const x = Number.isNaN(y); // good
 const x = isNaN(y); // bad
 ```
-
-## TypeScript React Rules
-
-### Hooks
-
-Use React hooks to manage state and side effects.
-
-Use the context7 MCP to fetch the latest documentation for React.
-
-### Cursor Pointer
-
-When adding a clickable component, apply the `cursor-pointer` Tailwind class to the element.
