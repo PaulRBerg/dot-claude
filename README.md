@@ -104,8 +104,8 @@ bumping).
 
 ### Skills
 
-Auto-activating skills in `skills/`: **typescript**, **web3-frontend**, **ui-ux-design**, **skill-creator**,
-**dry-refactor**. See `skills/skill-rules.json` for activation triggers.
+Auto-activating skills in `skills/`: **typescript**, **web3-frontend**, **ui-ux-design**, **dry-refactor**. See
+`skills/skill-rules.json` for activation triggers.
 
 External plugins: **code-review**, **playwright-skill**.
 

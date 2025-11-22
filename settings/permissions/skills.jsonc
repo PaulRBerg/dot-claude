@@ -5,7 +5,6 @@
     "allow": [
       "Skill(claude-code-plugins:code-review)",
       "Skill(dry-refactor)",
-      "Skill(skill-creator)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",

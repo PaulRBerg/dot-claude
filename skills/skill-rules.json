@@ -68,41 +68,6 @@
       ]
     }
   },
-  "skill-creator": {
-    "type": "domain",
-    "enforcement": "suggest",
-    "priority": "high",
-    "promptTriggers": {
-      "keywords": [
-        "skill",
-        "skill-rules",
-        "skill-rules.json",
-        "trigger",
-        "hook",
-        "UserPromptSubmit",
-        "PreToolUse",
-        "progressive disclosure",
-        "500-line rule",
-        "frontmatter",
-        "yaml",
-        "enforcement",
-        "guardrail"
-      ],
-      "intentPatterns": [
-        "(create|add|build|make|new).*?skill",
-        "(modify|update|edit|change).*?skill-rules",
-        "(debug|fix|troubleshoot).*?(skill|trigger|activation)",
-        "(understand|learn).*?(hook|skill).*?(system|work|mechanic)"
-      ]
-    },
-    "fileTriggers": {
-      "paths": [
-        ".claude/skills/**/*.md",
-        ".claude/skills/skill-rules.json",
-        ".claude/hooks/**/*.{ts,js}"
-      ]
-    }
-  },
   "typescript": {
     "type": "domain",
     "enforcement": "suggest",

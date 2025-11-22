@@ -1,20 +1,9 @@
 {
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
-    "additionalDirectories": [
-      "/etc/nix",
-      "/tmp",
-      "~/.claude",
-      "~/.claude-code-docs",
-      "~/.claude-prompts",
-      "~/.codex",
-      "~/.config",
-      "~/.gemini",
-      "~/.local",
-      "~/.zsh",
-      "~/projects",
-      "~/sablier",
-      "~/work"
-    ],
     "allow": [
       "Bash(COMMAND:*)",
       "Bash(ai-notify:*)",
@@ -113,7 +102,6 @@
       "Skill(claude-code-plugins:code-review)",
       "Skill(dry-refactor)",
       "Skill(playwright-skill:playwright-skill)",
-      "Skill(skill-creator)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",
       "Skill(web3-frontend)",
@@ -158,28 +146,30 @@
       "Read(.env)",
       "Read(.env.production)",
       "Read(~/.ssh)"
+    ],
+    "additionalDirectories": [
+      "/etc/nix",
+      "/tmp",
+      "~/.claude",
+      "~/.claude-code-docs",
+      "~/.claude-prompts",
+      "~/.codex",
+      "~/.config",
+      "~/.gemini",
+      "~/.local",
+      "~/.zsh",
+      "~/projects",
+      "~/sablier",
+      "~/work"
     ]
-  },
-  "alwaysThinkingEnabled": true,
-  "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
-    "playwright-skill@playwright-skill": true
-  },
-  "env": {
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
-  },
-  "includeCoAuthoredBy": false,
-  "statusLine": {
-    "command": "npx -y ccstatusline@latest",
-    "type": "command"
   },
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
-            "command": "ai-notify event notification",
-            "type": "command"
+            "type": "command",
+            "command": "ai-notify event notification"
           }
         ]
       }
@@ -188,29 +178,29 @@
       {
         "hooks": [
           {
-            "command": "ai-notify event permission-request",
-            "type": "command"
+            "type": "command",
+            "command": "ai-notify event permission-request"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
+        "matcher": "Read",
         "hooks": [
           {
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
           }
-        ],
-        "matcher": "Read"
+        ]
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "command": "ai-notify event stop",
-            "type": "command"
+            "type": "command",
+            "command": "ai-notify event stop"
           }
         ]
       }
@@ -219,19 +209,30 @@
       {
         "hooks": [
           {
-            "command": "ai-notify event user-prompt-submit",
-            "type": "command"
+            "type": "command",
+            "command": "ai-notify event user-prompt-submit"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
-            "type": "command"
+            "type": "command",
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py"
           }
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest"
+  },
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true,
+    "playwright-skill@playwright-skill": true,
+    "plugin-dev@claude-code-plugins": true,
+    "hookify@claude-code-plugins": true
+  },
+  "alwaysThinkingEnabled": true
 }
