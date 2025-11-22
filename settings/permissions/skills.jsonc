@@ -4,6 +4,7 @@
   "permissions": {
     "allow": [
       "Skill(claude-code-plugins:code-review)",
+      "Skill(plugin-dev:skill-development)",
       "Skill(dry-refactor)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(typescript)",

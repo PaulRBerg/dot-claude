@@ -1,6 +1,6 @@
 ---
 name: web3-frontend
-description: Expert frontend web3 engineering for secure wallet interactions and production-grade dApps. Use when working with web3, blockchain, EVM, Ethereum, smart contracts, Viem, Wagmi, wallet connections, or building decentralized applications (dApps).
+description: This skill should be used when the user asks to "build a dApp", "integrate wallet connection", "interact with smart contracts", "use Viem", "use Wagmi", or mentions web3, blockchain, EVM, Ethereum, or decentralized applications.
 ---
 
 # Web3 Frontend Engineer
@@ -9,44 +9,44 @@ Apply these principles when building battle-tested EVM dApps that interact with 
 
 ## Core Architecture Principles
 
-- **Type Safety First**: Every contract interaction must be fully typed. No `any` types, no runtime surprises.
+- **Type Safety First**: Fully type every contract interaction. Avoid `any` types to prevent runtime surprises.
 - **Defensive Programming**: Assume every RPC will fail, every wallet will disconnect, and every transaction will revert.
-- **Gas Optimization**: Users pay for your inefficiency. Batch reads, minimize writes, use multicall when sensible.
-- **Security Paranoia**: Validate addresses, sanitize inputs, protect against reentrancy on the frontend.
+- **Gas Optimization**: Batch reads, minimize writes, and use multicall when sensible. Users pay for inefficiency.
+- **Security Paranoia**: Validate addresses, sanitize inputs, and protect against reentrancy on the frontend.
 
 ## Tech Stack & Rationale
 
 ### Viem (NOT ethers.js)
 
-Primary blockchain interface. Superior to ethers because:
+Use Viem as the primary blockchain interface. Prefer it over ethers for:
 
 - Type-safe contract interactions out of the box
 - Better error messages that actually help debugging
 - Smaller bundle size (~40% reduction)
-- Built-in utilities prevent common mistakes (checksummed addresses, unit conversions)
+- Built-in utilities that prevent common mistakes (checksummed addresses, unit conversions)
 
-Critical patterns:
+Apply these critical patterns:
 
-- Always use `publicClient` for reads, `walletClient` for writes
+- Use `publicClient` for reads, `walletClient` for writes
 - Implement retry logic with exponential backoff for RPC calls
-- Use `watchContractEvent` for real-time updates, not polling
+- Use `watchContractEvent` for real-time updates instead of polling
 
 Documentation: https://viem.sh/llms.txt
 
 ### Wagmi
 
-Wallet connection and reactive blockchain state. Key patterns:
+Use Wagmi for wallet connection and reactive blockchain state. Apply these key patterns:
 
 - Use `usePrepareContractWrite` + `useContractWrite` for transaction UX
 - Implement proper loading states: preparing, confirming, processing, success/error
 - Cache aggressively with React Query integration
-- Handle chain switching gracefully - don't break the UI
+- Handle chain switching gracefully without breaking the UI
 
 Documentation: https://wagmi.sh/react/getting-started
 
 ### React Query (via Wagmi)
 
-- Set `staleTime` appropriately - block data shouldn't refetch every second
+- Set `staleTime` appropriately to avoid refetching block data every second
 - Use optimistic updates for transaction states
 - Implement proper error boundaries for failed queries
 
@@ -59,9 +59,9 @@ Documentation: https://wagmi.sh/react/getting-started
 
 2. **Error Handling**
 
-   - User-friendly error messages (not "execution reverted")
-   - Actionable recovery steps
-   - Fallback UI states for all error conditions
+   - Provide user-friendly error messages instead of "execution reverted"
+   - Include actionable recovery steps
+   - Implement fallback UI states for all error conditions
 
 ## Context7 Usage
 

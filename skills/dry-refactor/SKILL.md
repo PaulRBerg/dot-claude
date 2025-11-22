@@ -1,8 +1,6 @@
 ---
 name: dry-refactor
-description:
-  Expert code refactoring to eliminate duplication using DRY principles. Use when code has repetition, similar patterns,
-  duplicate logic, or when extracting common functionality into reusable abstractions.
+description: This skill should be used when the user asks to "refactor duplicate code", "apply DRY principles", "eliminate code repetition", "extract common functionality", or mentions code duplication, similar patterns, repeated logic, or reusable abstractions.
 ---
 
 # DRY Refactoring
@@ -59,30 +57,30 @@ class AdminUser extends BaseUser { }
 
 ## Detection
 
-**Code Smells**: Numbered variables (`data1`, `data2`), parallel function names (`handleXClick`), near-identical code differing only in constants, repeated validation/error handling, parallel class structures, large switches in multiple places, repeated null checks, magic numbers
+**Code Smells**: Look for numbered variables (`data1`, `data2`), parallel function names (`handleXClick`), near-identical code differing only in constants, repeated validation/error handling, parallel class structures, large switches in multiple places, repeated null checks, magic numbers
 
 **Rule of Three**: Wait for 3+ occurrences before abstracting
 
 ## When NOT to DRY
 
-- **Coincidental similarity** - Different domains/business rules that happen to look alike (will diverge)
-- **Premature abstraction** - Pattern isn't clear yet; early abstraction often guesses wrong
-- **Single use** - Appears 1-2 times, unlikely to grow
-- **Test clarity** - Readable test setup beats DRY
-- **Over-engineering** - Don't abstract every 2-3 line similarity
+- **Coincidental similarity** - Avoid abstracting different domains/business rules that happen to look alike (will diverge)
+- **Premature abstraction** - Wait until pattern is clear; early abstraction often guesses wrong
+- **Single use** - Skip abstraction when code appears 1-2 times and is unlikely to grow
+- **Test clarity** - Prefer readable test setup over DRY
+- **Over-engineering** - Avoid abstracting every 2-3 line similarity
 
 ## Patterns
 
-- **Configuration over code** - Data structures eliminate conditionals
-- **Template Method** - Base defines skeleton, subclasses vary steps
-- **Dependency Injection** - Parameterize dependencies
-- **Builder** - Complex object construction
+- **Configuration over code** - Use data structures to eliminate conditionals
+- **Template Method** - Define skeleton in base, vary steps in subclasses
+- **Dependency Injection** - Parameterize dependencies to reduce coupling
+- **Builder** - Construct complex objects incrementally
 
 ## Best Practices
 
-- Refactor after green tests
-- One refactoring at a time
-- Commit frequently
-- Name for intent not implementation
-- Consider performance
-- Review abstractions with team
+- Refactor only after tests pass (green)
+- Apply one refactoring at a time
+- Commit changes frequently
+- Name abstractions for intent, not implementation
+- Consider performance impact of abstractions
+- Review abstractions with team before finalizing
