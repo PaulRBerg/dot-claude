@@ -49,8 +49,8 @@ class TestGetFlattenedProjectName:
         """Test path outside home directory uses full path."""
         with patch("log_prompts.Path.home", return_value=Path("/Users/prb")):
             result = log_prompts.get_flattened_project_name("/tmp/test/project")
-            # Paths starting with / will have leading hyphen due to split behavior
-            assert result == "-tmp-test-project"
+            # Empty strings from leading slashes are filtered out
+            assert result == "tmp-test-project"
 
     def test_home_directory_itself(self):
         """Test home directory itself returns dot."""
@@ -140,6 +140,7 @@ class TestLogPromptToZk:
     """Test log_prompt_to_zk() function."""
 
     @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
+    @patch("log_prompts.Path.home", return_value=Path("/Users/prb"))
     @patch("log_prompts.is_zk_notebook_initialized")
     @patch("subprocess.run")
     @patch("builtins.open", new_callable=mock_open)
@@ -152,6 +153,7 @@ class TestLogPromptToZk:
         mock_file,
         mock_subprocess,
         mock_ensure_init,
+        mock_home,
     ):
         """Test creating new daily file with YAML frontmatter."""
         mock_ensure_init.return_value = True
@@ -341,9 +343,13 @@ class TestMain:
     """Test main() entry point."""
 
     @patch("log_prompts.log_prompt_to_zk")
+    @patch("pathlib.Path.exists")
+    @patch("shutil.which")
     @patch("sys.stdin", new_callable=StringIO)
-    def test_valid_json_input(self, mock_stdin, mock_log):
+    def test_valid_json_input(self, mock_stdin, mock_which, mock_exists, mock_log):
         """Test processing valid JSON input."""
+        mock_which.return_value = "/usr/local/bin/zk"
+        mock_exists.return_value = True
         input_data = {
             "prompt": "This is a test prompt that is long enough to not be filtered",
             "session_id": "test-session",
@@ -414,9 +420,13 @@ class TestMain:
         mock_log.assert_not_called()
 
     @patch("log_prompts.log_prompt_to_zk")
+    @patch("pathlib.Path.exists")
+    @patch("shutil.which")
     @patch("sys.stdin", new_callable=StringIO)
-    def test_slash_command_with_args_not_filtered(self, mock_stdin, mock_log):
+    def test_slash_command_with_args_not_filtered(self, mock_stdin, mock_which, mock_exists, mock_log):
         """Test that slash commands with arguments are NOT filtered."""
+        mock_which.return_value = "/usr/local/bin/zk"
+        mock_exists.return_value = True
         input_data = {
             "prompt": "/commit --all This is a commit message",
             "session_id": "test",
@@ -432,9 +442,13 @@ class TestMain:
         mock_log.assert_called_once()
 
     @patch("log_prompts.log_prompt_to_zk")
+    @patch("pathlib.Path.exists")
+    @patch("shutil.which")
     @patch("sys.stdin", new_callable=StringIO)
-    def test_missing_session_id_uses_default(self, mock_stdin, mock_log):
+    def test_missing_session_id_uses_default(self, mock_stdin, mock_which, mock_exists, mock_log):
         """Test that missing session_id uses 'unknown'."""
+        mock_which.return_value = "/usr/local/bin/zk"
+        mock_exists.return_value = True
         input_data = {
             "prompt": "This is a test prompt with no session_id field present here",
             "cwd": "/Users/prb",
@@ -450,9 +464,13 @@ class TestMain:
         assert mock_log.call_args[0][1] == "unknown"
 
     @patch("log_prompts.log_prompt_to_zk")
+    @patch("pathlib.Path.exists")
+    @patch("shutil.which")
     @patch("sys.stdin", new_callable=StringIO)
-    def test_missing_cwd_uses_default(self, mock_stdin, mock_log):
+    def test_missing_cwd_uses_default(self, mock_stdin, mock_which, mock_exists, mock_log):
         """Test that missing cwd uses 'unknown'."""
+        mock_which.return_value = "/usr/local/bin/zk"
+        mock_exists.return_value = True
         input_data = {
             "prompt": "This is a test prompt with no cwd field present in json input",
             "session_id": "test",

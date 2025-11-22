@@ -46,7 +46,7 @@ def get_flattened_project_name(cwd: str) -> str:
     # Convert to string and replace path separators with hyphens
     path_str = str(relative_path)
     # Strip leading dots from each component to avoid hidden folders
-    components = [part.lstrip(".") or part for part in path_str.split("/")]
+    components = [part.lstrip(".") or part for part in path_str.split("/") if part]
     # Join with hyphens for flat structure
     return "-".join(components)
 
