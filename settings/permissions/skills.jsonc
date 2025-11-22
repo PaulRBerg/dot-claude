@@ -3,8 +3,8 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "Skill(claude-code-plugins:code-review)",
       "Skill(dry-refactor)",
-      "Skill(nb-search)",
       "Skill(skill-creator)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(typescript)",
