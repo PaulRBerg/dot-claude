@@ -15,11 +15,10 @@ Five custom hooks provide event-driven automation across different Claude Code e
 
 ## Hook Events
 
-Hooks can respond to these events:
+Hooks can respond to events like these:
 
 - **UserPromptSubmit** - User submits a prompt
 - **PreToolUse** - Before a tool is executed
-- **PostToolUse** - After a tool is executed
 - **PermissionRequest** - Permission requested for an action
 - **Notification** - Claude sends a notification
 - **Stop** - Session ends or is interrupted

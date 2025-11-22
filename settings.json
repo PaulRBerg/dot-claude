@@ -164,7 +164,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/cc-notifier/events/notification.py",
+            "command": "~/.claude/hooks/cc_notifier/events/notification.py",
             "type": "command"
           }
         ]
@@ -174,7 +174,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/cc-notifier/events/permission.py",
+            "command": "~/.claude/hooks/cc_notifier/events/permission.py",
             "type": "command"
           }
         ]
@@ -195,7 +195,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/cc-notifier/events/stop.py",
+            "command": "~/.claude/hooks/cc_notifier/events/stop.py",
             "type": "command"
           }
         ]
@@ -205,7 +205,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/cc-notifier/events/user_prompt.py",
+            "command": "~/.claude/hooks/cc_notifier/events/user_prompt.py",
             "type": "command"
           },
           {

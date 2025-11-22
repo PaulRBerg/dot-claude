@@ -1,4 +1,5 @@
 # directories
+__pycache__/
 .claude/
 .egg-info/
 .pytest-cache/
@@ -9,6 +10,7 @@ backups/
 debug/
 downloads/
 file-history/
+htmlcov/
 ide/
 logs/
 plans/
@@ -20,6 +22,7 @@ statsig/
 todos/
 
 # files
+*.coverage
 *.log*
 .claude.json
 .credentials.json
