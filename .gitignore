@@ -1,7 +1,6 @@
 # directories
 __pycache__/
 .claude/
-.egg-info/
 .pytest-cache/
 .ruff-cache/
 .serena/
@@ -27,7 +26,6 @@ todos/
 .claude.json
 .credentials.json
 .update.lock
-ccnotify.db
 history.jsonl
 PROMPT.md
 SPEC.md

@@ -33,6 +33,11 @@ NORMAL := '\033[0m'
 default:
     @just --list
 
+# Install dependencies
+install:
+    bun install
+    uv sync --all-extras --dev
+
 # Merge JSONC settings files into settings.json
 [group("settings")]
 @merge-settings:
@@ -76,7 +81,7 @@ alias pc := prettier-check
 # Format using Prettier
 [group("checks")]
 @prettier-write +globs=GLOBS_PRETTIER:
-    bun prettier --write --cache {{ globs }}
+    bun prettier --write --cache --log-level warn {{ globs }}
 alias pw := prettier-write
 
 # Check Python type hints
@@ -113,20 +118,6 @@ alias t := test
 @test-hooks:
     uv run pytest hooks/ -v
 alias th := test-hooks
-
-# ---------------------------------------------------------------------------- #
-#                                     TOOLS                                    #
-# ---------------------------------------------------------------------------- #
-
-# Install cc-notifier CLI as a uv tool
-[group("tools")]
-@install-cc-notifier:
-    echo -e '{{ CYAN }}Installing cc-notifier as a uv tool...{{ NORMAL }}'
-    uv tool install --force --editable .
-    echo -e '{{ GREEN }}✓ cc-notifier installed to ~/.local/bin/cc-notifier{{ NORMAL }}'
-    echo ""
-    echo "Usage: cc-notifier --help"
-alias icc := install-cc-notifier
 
 # ---------------------------------------------------------------------------- #
 #                                   UTILITIES                                  #

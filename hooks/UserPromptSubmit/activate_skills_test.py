@@ -276,9 +276,7 @@ class TestLoadSkillRules:
         captured = capsys.readouterr()
         assert "Warning: Failed to load global skill-rules.json" in captured.err
 
-    def test_invalid_json_project_keeps_global(
-        self, tmp_path: Path, monkeypatch, capsys
-    ):
+    def test_invalid_json_project_keeps_global(self, tmp_path: Path, monkeypatch, capsys):
         """Test that valid global rules are kept when project file is invalid."""
         # Create proper directory structure
         home_dir = tmp_path / "home"
@@ -322,9 +320,7 @@ class TestFindMatches:
         assert matches[0]["skill"] == "notes"
         assert matches[0]["classification"] == "intent"
 
-    def test_both_keyword_and_intent_match(
-        self, sample_skill_rules: Dict[str, SkillRule]
-    ):
+    def test_both_keyword_and_intent_match(self, sample_skill_rules: Dict[str, SkillRule]):
         """Test matching by both keywords and intent."""
         matches = find_matches("create typescript application", sample_skill_rules)
         assert len(matches) == 1

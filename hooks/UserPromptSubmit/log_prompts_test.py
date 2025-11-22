@@ -40,9 +40,7 @@ class TestGetFlattenedProjectName:
     def test_multiple_hidden_directories(self):
         """Test multiple hidden directories with leading dots."""
         with patch("log_prompts.Path.home", return_value=Path("/Users/prb")):
-            result = log_prompts.get_flattened_project_name(
-                "/Users/prb/.config/.local/share"
-            )
+            result = log_prompts.get_flattened_project_name("/Users/prb/.config/.local/share")
             assert result == "config-local-share"
 
     def test_path_outside_home_directory(self):
@@ -97,9 +95,7 @@ class TestGetTagsFromFlattenedName:
 
     def test_multi_word_flattened_name(self):
         """Test generating tags from multi-word flattened name."""
-        result = log_prompts.get_tags_from_flattened_name(
-            "work-templates-next-template"
-        )
+        result = log_prompts.get_tags_from_flattened_name("work-templates-next-template")
         assert result == ["work", "templates", "next", "template"]
 
     def test_single_word_flattened_name(self):
@@ -180,9 +176,7 @@ class TestLogPromptToZk:
         assert call_args[0][1] == "a"
 
         # Verify content written includes frontmatter
-        written_content = "".join(
-            call.args[0] for call in mock_file().write.call_args_list
-        )
+        written_content = "".join(call.args[0] for call in mock_file().write.call_args_list)
         assert "---" in written_content
         assert "title: 2025-11-17" in written_content
         assert "date: 2025-11-17T16:34:59.597061+00:00" in written_content
@@ -226,9 +220,7 @@ class TestLogPromptToZk:
             )
 
         # Verify content written does NOT include frontmatter
-        written_content = "".join(
-            call.args[0] for call in mock_file().write.call_args_list
-        )
+        written_content = "".join(call.args[0] for call in mock_file().write.call_args_list)
         # Should start with newline and time header, no frontmatter
         assert written_content.startswith("\n## 17:45:30")
         assert "---" in written_content  # Separator only
@@ -243,9 +235,7 @@ class TestLogPromptToZk:
         mock_ensure_init.return_value = False
 
         # Should return early without writing anything
-        log_prompts.log_prompt_to_zk(
-            "Test prompt", "session-123", "/Users/prb/projects"
-        )
+        log_prompts.log_prompt_to_zk("Test prompt", "session-123", "/Users/prb/projects")
 
         # No further mocking needed - function should exit early
         mock_ensure_init.assert_called_once()
@@ -255,9 +245,7 @@ class TestLogPromptToZk:
     @patch("builtins.open")
     @patch("pathlib.Path.mkdir")
     @patch("pathlib.Path.exists")
-    def test_file_write_error(
-        self, mock_exists, mock_mkdir, mock_file, mock_ensure_init
-    ):
+    def test_file_write_error(self, mock_exists, mock_mkdir, mock_file, mock_ensure_init):
         """Test handling of file write errors."""
         mock_ensure_init.return_value = True
         mock_exists.return_value = False
@@ -269,9 +257,7 @@ class TestLogPromptToZk:
             mock_datetime.timezone = timezone
 
             # Should not raise exception, just log warning
-            log_prompts.log_prompt_to_zk(
-                "Test prompt", "session-123", "/Users/prb/projects"
-            )
+            log_prompts.log_prompt_to_zk("Test prompt", "session-123", "/Users/prb/projects")
 
     @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
     @patch("log_prompts.is_zk_notebook_initialized")
@@ -298,9 +284,7 @@ class TestLogPromptToZk:
             mock_datetime.timezone = timezone
 
             # Should not raise exception, just log warning
-            log_prompts.log_prompt_to_zk(
-                "Test prompt", "session-123", "/Users/prb/projects"
-            )
+            log_prompts.log_prompt_to_zk("Test prompt", "session-123", "/Users/prb/projects")
 
         # File should still be written even if index fails
         mock_file().write.assert_called()
@@ -423,7 +407,9 @@ class TestMain:
     @patch("pathlib.Path.exists")
     @patch("shutil.which")
     @patch("sys.stdin", new_callable=StringIO)
-    def test_slash_command_with_args_not_filtered(self, mock_stdin, mock_which, mock_exists, mock_log):
+    def test_slash_command_with_args_not_filtered(
+        self, mock_stdin, mock_which, mock_exists, mock_log
+    ):
         """Test that slash commands with arguments are NOT filtered."""
         mock_which.return_value = "/usr/local/bin/zk"
         mock_exists.return_value = True

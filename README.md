@@ -114,9 +114,8 @@ gh auth login
 
 - **[claude-code-docs](https://github.com/ericbuess/claude-code-docs)** - Local mirror of Claude Code documentation from
   Anthropic. Provides `claude-docs-helper.sh` for quick doc lookups.
-- **[ccnotify](https://github.com/dazuiba/CCNotify)** - macOS notifications for Claude Code events (`UserPromptSubmit`,
-  `PermissionRequest`, `Stop`). Uses SQLite for session tracking.
-  [terminal-notifier](https://github.com/julienXX/terminal-notifier): `brew install terminal-notifier`
+- **[ai-notify](https://github.com/PaulRBerg/ai-notify)** - Desktop notifications for Claude Code events
+  (`UserPromptSubmit`, `PermissionRequest`, `Notification`, `Stop`). See repository for installation instructions.
 - **[zk](https://github.com/zk-org/zk)** - Zettelkasten note-taking system. Required for `log_prompts` hook. Install via
   `brew install zk`, then initialize `~/.claude-prompts/` as a zk notebook.
 
@@ -286,15 +285,7 @@ claude_allow_bash npm  # Add npm to allowed Bash tools
 
 ## Hooks
 
-Five custom hooks in `hooks/` extend Claude Code with event-driven automation:
-
-- **detect_flags.py** - Parse flags from prompts (`-s`, `-c`, `-t`, `-d`, `-n`) to trigger behaviors
-- **activate_skills.py** - Auto-suggest skills based on context and prompt analysis
-- **log_prompts.py** - Log conversations to zk notebook (optional)
-- **ccnotify** - Desktop notifications for events (optional)
-- **claude-code-docs** - Quick documentation lookups (optional)
-
-**See [hooks/README.md](hooks/README.md) for detailed documentation**, including:
+**See [hooks/README.md](./hooks/README.md) for detailed documentation**, including:
 
 - Flag descriptions and composability
 - Skill activation rules

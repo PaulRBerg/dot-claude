@@ -50,9 +50,7 @@ def load_skill_rules(cwd: Path) -> Dict[str, SkillRule]:
             with global_path.open() as f:
                 rules.update(json.load(f))
         except (json.JSONDecodeError, OSError) as e:
-            print(
-                f"Warning: Failed to load global skill-rules.json: {e}", file=sys.stderr
-            )
+            print(f"Warning: Failed to load global skill-rules.json: {e}", file=sys.stderr)
 
     # Load and merge project rules (takes priority)
     if project_path.exists():

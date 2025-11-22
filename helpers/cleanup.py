@@ -56,9 +56,7 @@ def clean_claude_json():
                 if isinstance(data["projects"][proj_id], dict):
                     if "history" in data["projects"][proj_id]:
                         # Calculate size of this history
-                        hist_size = len(
-                            json.dumps(data["projects"][proj_id]["history"])
-                        )
+                        hist_size = len(json.dumps(data["projects"][proj_id]["history"]))
                         history_size_total += hist_size
                         history_count += 1
 

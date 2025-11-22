@@ -7,10 +7,10 @@ events during execution.
 
 Five custom hooks provide event-driven automation across different Claude Code events:
 
+- **ai-notify** - Desktop notifications for events (All events, optional)
 - **detect_flags.py** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
 - **activate_skills.py** - Auto-suggest skills based on context (UserPromptSubmit)
 - **log_prompts.py** - Log conversations to zk notebook (UserPromptSubmit, optional)
-- **ccnotify** - Desktop notifications for events (All events, optional)
 - **claude-code-docs** - Quick documentation lookups (PreToolUse:Read, optional)
 
 ## Hook Events
@@ -23,7 +23,30 @@ Hooks can respond to events like these:
 - **Notification** - Claude sends a notification
 - **Stop** - Session ends or is interrupted
 
-## 1. detect_flags.py (UserPromptSubmit)
+## 1. ai-notify (All Events) - Optional
+
+Desktop notifications for Claude Code events via [ai-notify](https://github.com/PaulRBerg/ai-notify).
+
+### Monitored Events
+
+- **UserPromptSubmit** - When you submit a prompt
+- **PermissionRequest** - When Claude requests permission
+- **Notification** - When Claude sends a notification
+- **Stop** - When session ends or is interrupted
+
+### Prerequisites
+
+See [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for installation instructions.
+
+### Features
+
+- Desktop notifications for important events
+- Configurable notification preferences
+- Works system-wide across all Claude Code sessions
+
+See the [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for setup instructions and configuration options.
+
+## 2. detect_flags.py (UserPromptSubmit)
 
 General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
 at the end of prompts with no other text after them.
@@ -72,7 +95,7 @@ claude "fix memory leak in cache -d -c"
 claude "prototype new feature -n"
 ```
 
-## 2. activate_skills.py (UserPromptSubmit)
+## 3. activate_skills.py (UserPromptSubmit)
 
 Analyzes user prompts and suggests relevant skills based on keywords, intent patterns, file patterns, and content
 patterns.
@@ -97,7 +120,7 @@ Configuration in `skills/skill-rules.json` defines:
 
 If you mention "TypeScript refactoring" or work with `.ts` files, the hook suggests activating the `typescript` skill.
 
-## 3. log_prompts.py (UserPromptSubmit) - Optional
+## 4. log_prompts.py (UserPromptSubmit) - Optional
 
 Logs conversation prompts to a [zk](https://github.com/zk-org/zk) notebook at `~/.claude-prompts/` for tracking and
 analysis.
@@ -129,39 +152,6 @@ brew install zk
 mkdir -p ~/.claude-prompts
 cd ~/.claude-prompts
 zk init
-```
-
-## 4. ccnotify (All Events) - Optional
-
-Desktop notifications for Claude Code events via [CCNotify](https://github.com/dazuiba/CCNotify). Tracks sessions in
-SQLite database.
-
-### Monitored Events
-
-- **UserPromptSubmit** - When you submit a prompt
-- **PermissionRequest** - When Claude requests permission
-- **Notification** - When Claude sends a notification
-- **Stop** - When session ends or is interrupted
-
-### Prerequisites
-
-- [terminal-notifier](https://github.com/julienXX/terminal-notifier) (macOS): `brew install terminal-notifier`
-- Gracefully degrades if terminal-notifier is unavailable (logs warning instead of failing)
-
-### Features
-
-- Desktop notifications for important events
-- SQLite session tracking
-- Configurable notification preferences
-- Works system-wide across all Claude Code sessions
-
-### Setup
-
-```bash
-# Install terminal-notifier
-brew install terminal-notifier
-
-# ccnotify will automatically set up on first use
 ```
 
 ## 5. claude-code-docs Helper (PreToolUse:Read) - Optional
@@ -221,15 +211,15 @@ chmod +x hooks/**/*.sh
 
 ### Optional Dependencies Missing
 
-Hooks with optional dependencies (zk, terminal-notifier, claude-code-docs) gracefully degrade if dependencies are
-unavailable. Check installation:
+Hooks with optional dependencies (zk, ai-notify, claude-code-docs) gracefully degrade if dependencies are unavailable.
+Check installation:
 
 ```bash
 # Check zk
 which zk
 
-# Check terminal-notifier
-which terminal-notifier
+# Check ai-notify
+which ai-notify
 
 # Check claude-code-docs
 ls -la ~/.claude-code-docs
@@ -237,9 +227,8 @@ ls -la ~/.claude-code-docs
 
 ## Resources
 
+- [ai-notify](https://github.com/PaulRBerg/ai-notify)
 - [Claude Code Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks) - Official Anthropic
   documentation
 - [zk - Zettelkasten CLI](https://github.com/zk-org/zk)
-- [CCNotify](https://github.com/dazuiba/CCNotify)
 - [claude-code-docs](https://github.com/ericbuess/claude-code-docs)
-- [terminal-notifier](https://github.com/julienXX/terminal-notifier)

@@ -177,15 +177,15 @@ def execute_flag_handlers(flags: List[str], script_dir: Path) -> List[str]:
     return contexts
 
 
-def build_output_context(
-    flags: List[str], clean_prompt: str, flag_contexts: List[str]
-) -> str:
+def build_output_context(flags: List[str], clean_prompt: str, flag_contexts: List[str]) -> str:
     """Build the final context string to add to the prompt."""
     parts = []
 
     # Build and wrap metadata
     flags_str = " ".join(f"-{flag}" for flag in flags)
-    metadata = f"Note: Processed flags {flags_str}\nYour actual task (without flags): {clean_prompt}"
+    metadata = (
+        f"Note: Processed flags {flags_str}\nYour actual task (without flags): {clean_prompt}"
+    )
     wrapped_metadata = wrap_in_xml_tag("flag_metadata", metadata)
     parts.append(wrapped_metadata)
     parts.append("")  # Blank line separator

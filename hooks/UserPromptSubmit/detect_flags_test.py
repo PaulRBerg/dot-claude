@@ -162,7 +162,10 @@ class TestWrapInXmlTag:
         """Test wrapping content with special characters."""
         content = "IMPORTANT: Use the /commit command"
         result = detect_flags.wrap_in_xml_tag("commit_instructions", content)
-        assert result == "<commit_instructions>\nIMPORTANT: Use the /commit command\n</commit_instructions>"
+        assert (
+            result
+            == "<commit_instructions>\nIMPORTANT: Use the /commit command\n</commit_instructions>"
+        )
 
 
 # ============================================================================
@@ -211,7 +214,6 @@ class TestFlagHandlers:
         assert "</orchestration_rules>" in result
 
 
-
 # ============================================================================
 # Test execute_flag_handlers
 # ============================================================================
@@ -245,7 +247,9 @@ class TestExecuteFlagHandlers:
         contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
 
         assert len(contexts) == 5
-        assert any("<subagent_instructions>" in ctx and "Orchestration Rules" in ctx for ctx in contexts)
+        assert any(
+            "<subagent_instructions>" in ctx and "Orchestration Rules" in ctx for ctx in contexts
+        )
         assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
         assert any("<test_instructions>" in ctx and "test coverage" in ctx for ctx in contexts)
         assert any("<debug_instructions>" in ctx and "debugger subagent" in ctx for ctx in contexts)
@@ -299,7 +303,7 @@ class TestBuildOutputContext:
         clean_prompt = "my task"
         flag_contexts = [
             "<commit_instructions>Commit instruction</commit_instructions>",
-            "<test_instructions>Test instruction</test_instructions>"
+            "<test_instructions>Test instruction</test_instructions>",
         ]
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
@@ -330,7 +334,7 @@ class TestBuildOutputContext:
         clean_prompt = "my task"
         flag_contexts = [
             "<commit_instructions>Context 1</commit_instructions>",
-            "<test_instructions>Context 2</test_instructions>"
+            "<test_instructions>Context 2</test_instructions>",
         ]
 
         result = detect_flags.build_output_context(flags, clean_prompt, flag_contexts)
@@ -353,7 +357,7 @@ class TestBuildOutputContext:
         # Extract the metadata section
         assert result.startswith("<flag_metadata>")
         metadata_end = result.index("</flag_metadata>")
-        metadata_section = result[:metadata_end + len("</flag_metadata>")]
+        metadata_section = result[: metadata_end + len("</flag_metadata>")]
 
         assert "Note: Processed flags -c" in metadata_section
         assert "Your actual task (without flags): implement feature" in metadata_section
@@ -575,7 +579,9 @@ class TestMain:
 
         # Verify all opening tags have matching closing tags
         assert context.count("<flag_metadata>") == context.count("</flag_metadata>") == 1
-        assert context.count("<commit_instructions>") == context.count("</commit_instructions>") == 1
+        assert (
+            context.count("<commit_instructions>") == context.count("</commit_instructions>") == 1
+        )
         assert context.count("<test_instructions>") == context.count("</test_instructions>") == 1
 
         # Verify flag_metadata comes before instruction tags

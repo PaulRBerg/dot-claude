@@ -117,9 +117,7 @@ def insert_section_after_first_heading(content: str, section: str) -> str:
         return content[:pos] + section + after_first_heading
 
 
-def update_file(
-    file_path: Path, new_section: str, section_title: str
-) -> tuple[bool, str]:
+def update_file(file_path: Path, new_section: str, section_title: str) -> tuple[bool, str]:
     """
     Update a file by replacing its section with new_section.
     Returns (modified, result_message) tuple.
@@ -205,9 +203,7 @@ def print_table(results: list[tuple[Path, str]]):
     print(f"├{'─' * file_width}┼{'─' * result_width}┤")
 
     for display_path, result in rows:
-        print(
-            f"│ {display_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│"
-        )
+        print(f"│ {display_path.ljust(file_width - 1)}│ {result.ljust(result_width - 1)}│")
 
     print(f"└{'─' * file_width}┴{'─' * result_width}┘")
 
