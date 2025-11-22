@@ -15,13 +15,17 @@
       "Bash(done:*)",
       "Bash(echo:*)",
       "Bash(for:*)",
+      "Bash(ln:*)",
+      "Bash(kill:*)",
       "Bash(printf:*)",
+      "Bash(ps:*)",
       "Bash(pwd:*)",
       "Bash(select:*)",
       "Bash(test:*)",
       "Bash(time:*)",
       "Bash(timeout:*)",
       "Bash(which:*)",
+      "Bash(while:*)",
       "Bash(xargs:*)",
 
       // Custom Scripts
@@ -44,6 +48,8 @@
       "Bash(tail:*)",
       "Bash(touch:*)",
       "Bash(tree:*)",
+      "Bash(unzip:*)",
+      "Bash(zip:*)",
 
       // Git & Version Control
       "Bash(gh:*)",
