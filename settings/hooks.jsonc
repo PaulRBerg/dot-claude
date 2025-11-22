@@ -7,7 +7,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Notification",
+            "command": "~/.claude/hooks/cc-notifier/events/notification.py",
             "type": "command"
           }
         ]
@@ -17,7 +17,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py PermissionRequest",
+            "command": "~/.claude/hooks/cc-notifier/events/permission.py",
             "type": "command"
           }
         ]
@@ -38,7 +38,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py Stop",
+            "command": "~/.claude/hooks/cc-notifier/events/stop.py",
             "type": "command"
           }
         ]
@@ -48,7 +48,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/ccnotify/ccnotify.py UserPromptSubmit",
+            "command": "~/.claude/hooks/cc-notifier/events/user_prompt.py",
             "type": "command"
           },
           {
