@@ -1,0 +1,2 @@
+[console_scripts]
+cc-notifier = hooks.cc_notifier.cli:cli

@@ -8,13 +8,13 @@ Sends desktop notifications when Claude requests permissions.
 import sys
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add ~/.claude to path for hooks.cc_notifier imports
+sys.path.insert(0, str(Path.home() / ".claude"))
 
 from loguru import logger
 
-from notifier import MacNotifier
-from utils import read_stdin_json, setup_logging, validate_input
+from hooks.cc_notifier.notifier import MacNotifier
+from hooks.cc_notifier.utils import read_stdin_json, setup_logging, validate_input
 
 
 def main() -> None:

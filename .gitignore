@@ -1,5 +1,6 @@
 # directories
 .claude/
+.egg-info/
 .pytest-cache/
 .ruff-cache/
 .serena/

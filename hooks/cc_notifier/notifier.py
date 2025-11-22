@@ -8,7 +8,7 @@ from typing import Optional
 from loguru import logger
 from notifypy import Notify
 
-from config import Config
+from hooks.cc_notifier.config import Config
 
 
 class MacNotifier:

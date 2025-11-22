@@ -5,9 +5,10 @@ Configuration and constants for cc-notifier.
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
+from hooks.cc_notifier.config_loader import get_config, DEFAULT_CONFIG_DIR, DEFAULT_EXPORT_DIR
 
 # Paths
-HOOK_DIR = Path.home() / ".claude" / "hooks" / "cc-notifier"
+HOOK_DIR = Path.home() / ".claude" / "hooks" / "cc_notifier"
 DB_PATH = HOOK_DIR / "cc-notifier.db"
 LOG_PATH = HOOK_DIR / "cc-notifier.log"
 
@@ -86,6 +87,21 @@ WHERE session_id = ?
 ORDER BY created_at DESC
 LIMIT 1
 """
+
+# Runtime configuration constants (loaded from YAML config)
+_runtime_config = None
+
+
+def get_runtime_config():
+    """Get runtime configuration from YAML file with caching."""
+    global _runtime_config
+    if _runtime_config is None:
+        _runtime_config = get_config()
+    return _runtime_config
+
+
+# Export directory for data backups
+EXPORT_DIR = DEFAULT_EXPORT_DIR
 
 
 class Config(BaseSettings):

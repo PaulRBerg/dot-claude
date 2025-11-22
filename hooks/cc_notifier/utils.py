@@ -9,7 +9,7 @@ from typing import Any, Optional
 from loguru import logger
 from pydantic import BaseModel, Field, field_validator
 
-from config import Config
+from hooks.cc_notifier.config import Config
 
 
 class BaseEventData(BaseModel):

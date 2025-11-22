@@ -115,6 +115,20 @@ alias t := test
 alias th := test-hooks
 
 # ---------------------------------------------------------------------------- #
+#                                     TOOLS                                    #
+# ---------------------------------------------------------------------------- #
+
+# Install cc-notifier CLI as a uv tool
+[group("tools")]
+@install-cc-notifier:
+    echo -e '{{ CYAN }}Installing cc-notifier as a uv tool...{{ NORMAL }}'
+    uv tool install --force --editable .
+    echo -e '{{ GREEN }}✓ cc-notifier installed to ~/.local/bin/cc-notifier{{ NORMAL }}'
+    echo ""
+    echo "Usage: cc-notifier --help"
+alias icc := install-cc-notifier
+
+# ---------------------------------------------------------------------------- #
 #                                   UTILITIES                                  #
 # ---------------------------------------------------------------------------- #
 

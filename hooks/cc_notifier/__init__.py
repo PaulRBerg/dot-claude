@@ -7,10 +7,10 @@ Tracks Claude Code session activity and sends macOS notifications for key events
 __version__ = "2.0.0"
 __author__ = "Claude Code User"
 
-from config import Config
-from database import SessionTracker
-from notifier import MacNotifier
-from utils import format_duration, setup_logging, validate_input, read_stdin_json
+from hooks.cc_notifier.config import Config
+from hooks.cc_notifier.database import SessionTracker
+from hooks.cc_notifier.notifier import MacNotifier
+from hooks.cc_notifier.utils import format_duration, setup_logging, validate_input, read_stdin_json
 
 __all__ = [
     "Config",
