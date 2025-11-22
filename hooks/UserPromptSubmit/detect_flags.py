@@ -19,33 +19,15 @@ from typing import Callable, Dict, List, Optional
 
 def handle_subagent_flag(script_dir: Path) -> str:
     """Handle -s flag: Append subagent orchestration instructions."""
-    return """<orchestration_rules>
-## Orchestration Rules
+    return """<subagent_delegation>
+After you come up with the implementation plan, consider how to split the work among parallel subagents using the Task tool:
 
-**You are an orchestrator.** Delegate implementation to subagents via `Task` tool.
+- If the work can be fully parallelized (independent tasks with no dependencies), spawn multiple subagents in a single message with multiple Task tool calls
+- If the work must be done sequentially (each step depends on the previous), spawn a single subagent for the entire workflow
+- If you need to do some sequential work first before parallelizing, start with a subagent for that sequential portion, then spawn parallel subagents for the independent work afterwards
 
-### Delegation Strategy
-
-**Parallel** (independent work):
-- Cross-domain tasks (frontend/backend/database)
-- No dependencies between tasks
-
-**Sequential** (dependent work):
-- Output feeds subsequent steps
-- Tightly coupled work
-
-### Scope
-
-**Delegate:** Code changes, multi-step workflows, implementation
-**Handle:** Strategic decisions, clarifications, requirements validation
-
-### Workflow
-
-1. Identify parallelization opportunities
-2. Create Task(s) with appropriate agent(s)
-3. Monitor progress at high level
-4. Report results
-</orchestration_rules>"""
+Delegate implementation details to subagents. Your role is to orchestrate, not implement directly.
+</subagent_delegation>"""
 
 
 def handle_commit_flag(script_dir: Path) -> str:
@@ -103,7 +85,7 @@ RECOGNIZED_FLAGS: Dict[str, Callable[[Path], str]] = {
 
 # Map flag letter to XML tag name
 FLAG_TAG_NAMES: Dict[str, str] = {
-    "s": "subagent_instructions",
+    "s": "subagent_delegation",
     "c": "commit_instructions",
     "t": "test_instructions",
     "d": "debug_instructions",
