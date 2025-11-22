@@ -3,12 +3,60 @@ Utility functions for cc-notifier.
 """
 
 import json
-import logging
 import sys
-from logging.handlers import RotatingFileHandler
-from typing import Any
+from typing import Any, Optional
 
-from config import Config, LOG_BACKUP_COUNT, LOG_DATE_FORMAT, LOG_FORMAT, LOG_MAX_BYTES
+from loguru import logger
+from pydantic import BaseModel, Field, field_validator
+
+from config import Config
+
+
+class BaseEventData(BaseModel):
+    """Base model for event input data with common validation."""
+
+    session_id: str = Field(..., min_length=1, max_length=255)
+    cwd: str = Field(...)
+
+    @field_validator("cwd")
+    @classmethod
+    def validate_cwd(cls, v: str) -> str:
+        """Validate cwd for path traversal and sensitive paths."""
+        if ".." in v:
+            raise ValueError("Path traversal detected in cwd")
+
+        # Warn about sensitive paths
+        sensitive_paths = [".env", ".git/", "credentials", "secrets", "password"]
+        cwd_lower = v.lower()
+        for sensitive in sensitive_paths:
+            if sensitive in cwd_lower:
+                logger.warning(f"Sensitive path detected: {v}")
+
+        return v
+
+
+class UserPromptData(BaseEventData):
+    """Input data for UserPromptSubmit event."""
+
+    prompt: Optional[str] = None
+
+
+class StopEventData(BaseEventData):
+    """Input data for Stop event."""
+
+    pass
+
+
+class PermissionRequestData(BaseEventData):
+    """Input data for PermissionRequest event."""
+
+    tool_input: Optional[dict[str, Any]] = None
+
+
+class NotificationData(BaseEventData):
+    """Input data for Notification event."""
+
+    message: Optional[str] = None
 
 
 def format_duration(seconds: int) -> str:
@@ -47,35 +95,24 @@ def format_duration(seconds: int) -> str:
     return f"{hours}h{remaining_minutes}m"
 
 
-def setup_logging(name: str = "cc-notifier") -> logging.Logger:
+def setup_logging() -> None:
     """
-    Set up logging with rotation.
+    Set up logging with rotation using loguru.
 
-    Args:
-        name: Logger name
-
-    Returns:
-        Configured logger instance
+    Configures loguru to write to the configured log file with rotation.
     """
     config = Config()
     config.ensure_directories()
 
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-
-    # Remove existing handlers to avoid duplicates
-    logger.handlers.clear()
-
-    # File handler with rotation
-    handler = RotatingFileHandler(
+    # Remove default handler and add file handler with rotation
+    logger.remove()  # Remove default handler
+    logger.add(
         config.log_path,
-        maxBytes=LOG_MAX_BYTES,
-        backupCount=LOG_BACKUP_COUNT,
+        rotation="10 MB",
+        retention=5,
+        format="{time:YYYY-MM-DD HH:mm:ss} - {name} - {level} - {message}",
+        level="INFO",
     )
-    handler.setFormatter(logging.Formatter(LOG_FORMAT, LOG_DATE_FORMAT))
-    logger.addHandler(handler)
-
-    return logger
 
 
 def validate_input(data: dict[str, Any]) -> None:
@@ -106,7 +143,7 @@ def validate_input(data: dict[str, Any]) -> None:
         cwd_lower = str(data["cwd"]).lower()
         for sensitive in sensitive_paths:
             if sensitive in cwd_lower:
-                logging.warning(f"Sensitive path detected: {data['cwd']}")
+                logger.warning(f"Sensitive path detected: {data['cwd']}")
 
 
 def read_stdin_json() -> dict[str, Any]:
@@ -126,3 +163,23 @@ def read_stdin_json() -> dict[str, Any]:
         raise ValueError(f"Failed to parse JSON from stdin: {e}")
     except Exception as e:
         raise ValueError(f"Failed to read stdin: {e}")
+
+
+def parse_event_data(data: dict[str, Any], model_class: type[BaseModel]) -> BaseModel:
+    """
+    Parse and validate event data using a Pydantic model.
+
+    Args:
+        data: Raw input data dictionary
+        model_class: Pydantic model class to validate against
+
+    Returns:
+        Validated Pydantic model instance
+
+    Raises:
+        ValueError: If validation fails
+    """
+    try:
+        return model_class.model_validate(data)
+    except Exception as e:
+        raise ValueError(f"Input validation failed: {e}")

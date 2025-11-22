@@ -1,52 +1,47 @@
 """
-Notification layer for macOS terminal-notifier integration.
+Notification layer using notify-py for cross-platform notifications.
 """
 
-import logging
-import subprocess
 from pathlib import Path
 from typing import Optional
+
+from loguru import logger
+from notifypy import Notify
 
 from config import Config
 
 
 class MacNotifier:
-    """Sends macOS desktop notifications using terminal-notifier."""
+    """Sends desktop notifications using notify-py (cross-platform)."""
 
     def __init__(self, config: Optional[Config] = None):
         """
-        Initialize Mac notifier.
+        Initialize notifier.
 
         Args:
             config: Configuration instance (creates default if None)
         """
         self.config = config or Config()
-        self.logger = logging.getLogger("cc-notifier.notifier")
+        self._notification = Notify()
         self._available: Optional[bool] = None
 
     def check_available(self) -> bool:
         """
-        Check if terminal-notifier is available.
+        Check if notifications are available on this platform.
 
         Returns:
-            True if terminal-notifier is installed and executable
+            True if notifications are supported
         """
         if self._available is not None:
             return self._available
 
         try:
-            result = subprocess.run(
-                ["which", "terminal-notifier"],
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-            self._available = result.returncode == 0
-            if not self._available:
-                self.logger.warning("terminal-notifier not found, notifications disabled")
-            return self._available
+            # notify-py handles platform detection automatically
+            # Just check if we can create a notification object
+            self._available = True
+            return True
         except Exception as e:
-            self.logger.warning(f"Failed to check terminal-notifier: {e}")
+            logger.warning(f"Notifications not available: {e}")
             self._available = False
             return False
 
@@ -64,50 +59,31 @@ class MacNotifier:
             title: Notification title (e.g., project name)
             subtitle: Notification subtitle (e.g., event details)
             message: Optional notification message body
-            sound: Optional sound name (defaults to config setting)
+            sound: Optional sound name (unused in notify-py)
 
         Returns:
             True if notification was sent successfully
         """
         if not self.check_available():
-            self.logger.debug("Skipping notification (terminal-notifier not available)")
+            logger.debug("Skipping notification (not available on this platform)")
             return False
 
         try:
-            cmd = [
-                "terminal-notifier",
-                "-title", title,
-                "-subtitle", subtitle,
-                "-sound", sound or self.config.notification_sound,
-                "-activate", self.config.notification_app_bundle,
-            ]
+            # Create a new notification for each send
+            notification = Notify()
+            notification.title = title
+            notification.message = f"{subtitle}\n{message}" if message else subtitle
+            notification.application_name = self.config.notification_app_bundle
 
-            if message:
-                cmd.extend(["-message", message])
+            # Send the notification
+            notification.send(block=False)
 
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
+            logger.info(f"Sent notification: {title} - {subtitle}")
+            return True
 
-            if result.returncode == 0:
-                self.logger.info(f"Sent notification: {title} - {subtitle}")
-                return True
-            else:
-                self.logger.warning(f"Notification failed: {result.stderr}")
-                return False
-
-        except FileNotFoundError:
-            self.logger.warning("terminal-notifier not found")
-            self._available = False
-            return False
-        except subprocess.TimeoutExpired:
-            self.logger.error("Notification timed out")
-            return False
         except Exception as e:
-            self.logger.error(f"Failed to send notification: {e}")
+            logger.error(f"Failed to send notification: {e}")
+            self._available = False
             return False
 
     def notify_job_done(

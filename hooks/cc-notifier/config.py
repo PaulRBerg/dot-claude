@@ -4,6 +4,8 @@ Configuration and constants for cc-notifier.
 
 from pathlib import Path
 
+from pydantic_settings import BaseSettings
+
 # Paths
 HOOK_DIR = Path.home() / ".claude" / "hooks" / "cc-notifier"
 DB_PATH = HOOK_DIR / "cc-notifier.db"
@@ -85,22 +87,20 @@ ORDER BY created_at DESC
 LIMIT 1
 """
 
-# Logging configuration
-LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
-LOG_BACKUP_COUNT = 5
 
+class Config(BaseSettings):
+    """Central configuration class with Pydantic validation."""
 
-class Config:
-    """Central configuration class."""
+    hook_dir: Path = HOOK_DIR
+    db_path: Path = DB_PATH
+    log_path: Path = LOG_PATH
+    notification_sound: str = NOTIFICATION_SOUND
+    notification_app_bundle: str = NOTIFICATION_APP_BUNDLE
 
-    def __init__(self):
-        self.hook_dir = HOOK_DIR
-        self.db_path = DB_PATH
-        self.log_path = LOG_PATH
-        self.notification_sound = NOTIFICATION_SOUND
-        self.notification_app_bundle = NOTIFICATION_APP_BUNDLE
+    model_config = {
+        "env_prefix": "CC_NOTIFIER_",
+        "case_sensitive": False,
+    }
 
     def ensure_directories(self) -> None:
         """Ensure all necessary directories exist."""

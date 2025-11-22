@@ -11,6 +11,8 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from loguru import logger
+
 from database import SessionTracker
 from notifier import MacNotifier
 from utils import format_duration, read_stdin_json, setup_logging, validate_input
@@ -18,7 +20,7 @@ from utils import format_duration, read_stdin_json, setup_logging, validate_inpu
 
 def main() -> None:
     """Handle Stop event."""
-    logger = setup_logging()
+    setup_logging()
 
     try:
         # Read and validate input

@@ -2,10 +2,11 @@
 Database layer for session tracking.
 """
 
-import logging
 import sqlite3
 from contextlib import contextmanager
 from typing import Generator, Optional
+
+from loguru import logger
 
 from config import (
     DB_SCHEMA,
@@ -29,7 +30,6 @@ class SessionTracker:
         """
         self.config = config or Config()
         self.config.ensure_directories()
-        self.logger = logging.getLogger("cc-notifier.database")
         self._init_database()
 
     def _init_database(self) -> None:
@@ -39,7 +39,7 @@ class SessionTracker:
                 conn.executescript(DB_SCHEMA)
                 conn.commit()
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to initialize database: {e}")
+            logger.error(f"Failed to initialize database: {e}")
             raise
 
     @contextmanager
@@ -69,9 +69,9 @@ class SessionTracker:
             with self._get_connection() as conn:
                 conn.execute(SQL_INSERT_PROMPT, (session_id, prompt, cwd))
                 conn.commit()
-                self.logger.info(f"Tracked prompt for session {session_id}")
+                logger.info(f"Tracked prompt for session {session_id}")
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to track prompt: {e}")
+            logger.error(f"Failed to track prompt: {e}")
 
     def mark_stopped(self, session_id: str) -> None:
         """
@@ -85,11 +85,11 @@ class SessionTracker:
                 cursor = conn.execute(SQL_UPDATE_STOPPED, (session_id,))
                 conn.commit()
                 if cursor.rowcount > 0:
-                    self.logger.info(f"Marked session {session_id} as stopped")
+                    logger.info(f"Marked session {session_id} as stopped")
                 else:
-                    self.logger.warning(f"No active session found for {session_id}")
+                    logger.warning(f"No active session found for {session_id}")
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to mark stopped: {e}")
+            logger.error(f"Failed to mark stopped: {e}")
 
     def mark_waiting(self, session_id: str) -> None:
         """
@@ -102,9 +102,9 @@ class SessionTracker:
             with self._get_connection() as conn:
                 conn.execute(SQL_UPDATE_WAITING, (session_id,))
                 conn.commit()
-                self.logger.debug(f"Marked session {session_id} as waiting")
+                logger.debug(f"Marked session {session_id} as waiting")
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to mark waiting: {e}")
+            logger.error(f"Failed to mark waiting: {e}")
 
     def get_job_info(self, session_id: str) -> tuple[Optional[int], Optional[int]]:
         """
@@ -124,7 +124,7 @@ class SessionTracker:
                     return result[0], result[1]
                 return None, None
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to get job info: {e}")
+            logger.error(f"Failed to get job info: {e}")
             return None, None
 
     def get_stats(self) -> dict[str, int]:
@@ -143,5 +143,5 @@ class SessionTracker:
                     "unique_sessions": result[1] if result else 0,
                 }
         except sqlite3.Error as e:
-            self.logger.error(f"Failed to get stats: {e}")
+            logger.error(f"Failed to get stats: {e}")
             return {"total_prompts": 0, "unique_sessions": 0}

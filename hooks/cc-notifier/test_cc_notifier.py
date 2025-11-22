@@ -3,7 +3,6 @@ Basic tests for cc-notifier.
 """
 
 import tempfile
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -155,38 +154,46 @@ class TestMacNotifier:
     def notifier(self):
         return MacNotifier()
 
-    @patch("subprocess.run")
-    def test_check_available_true(self, mock_run, notifier):
-        mock_run.return_value = MagicMock(returncode=0)
+    def test_check_available_true(self, notifier):
+        # notify-py should always be available
         assert notifier.check_available() is True
 
-    @patch("subprocess.run")
-    def test_check_available_false(self, mock_run, notifier):
-        mock_run.return_value = MagicMock(returncode=1)
-        assert notifier.check_available() is False
-
-    @patch("subprocess.run")
-    def test_send_notification_success(self, mock_run, notifier):
+    def test_send_notification_success(self, notifier, mocker):
         notifier._available = True
-        mock_run.return_value = MagicMock(returncode=0, stderr="")
+
+        # Mock the Notify class and its send method
+        mock_notify = mocker.patch("notifier.Notify")
+        mock_notification_instance = mock_notify.return_value
 
         result = notifier.send_notification("Test", "Subtitle")
         assert result is True
 
-        # Verify command structure
-        call_args = mock_run.call_args[0][0]
-        assert call_args[0] == "terminal-notifier"
-        assert "-title" in call_args
-        assert "Test" in call_args
-        assert "-subtitle" in call_args
-        assert "Subtitle" in call_args
+        # Verify notification was configured correctly
+        assert mock_notification_instance.title == "Test"
+        assert "Subtitle" in mock_notification_instance.message
+        mock_notification_instance.send.assert_called_once_with(block=False)
 
-    @patch("subprocess.run")
-    def test_send_notification_unavailable(self, mock_run, notifier):
+    def test_send_notification_with_message(self, notifier, mocker):
+        notifier._available = True
+
+        mock_notify = mocker.patch("notifier.Notify")
+        mock_notification_instance = mock_notify.return_value
+
+        result = notifier.send_notification("Test", "Subtitle", "Body message")
+        assert result is True
+
+        # Verify message includes both subtitle and body
+        assert "Subtitle" in mock_notification_instance.message
+        assert "Body message" in mock_notification_instance.message
+
+    def test_send_notification_unavailable(self, notifier, mocker):
         notifier._available = False
+        mock_notify = mocker.patch("notifier.Notify")
+
         result = notifier.send_notification("Test", "Subtitle")
         assert result is False
-        mock_run.assert_not_called()
+        # Notify should not be instantiated for send when unavailable
+        mock_notify.assert_not_called()
 
     def test_get_project_name(self, notifier):
         assert notifier.get_project_name("/Users/test/my-project") == "my-project"
