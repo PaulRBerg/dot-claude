@@ -69,6 +69,7 @@
       "Bash(lsof:*)",
       "Bash(qsv:*)",
       "Bash(screencapture:*)",
+      "Bash(sqlite3:*)",
       "Bash(terminal-notifier:*)",
       "Bash(zk:*)",
 

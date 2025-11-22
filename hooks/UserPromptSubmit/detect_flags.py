@@ -143,11 +143,15 @@ def validate_flags(flags: List[str]) -> bool:
     return all(flag in RECOGNIZED_FLAGS for flag in flags)
 
 
-def execute_flag_handlers(flags: List[str], script_dir: Path) -> List[str]:
+def execute_flag_handlers(flags: List[str], script_dir: Path, permission_mode: str) -> List[str]:
     """Execute handlers for each flag and return XML-wrapped context pieces."""
     contexts = []
 
     for flag in flags:
+        # Skip -s flag if not in plan mode
+        if flag == "s" and permission_mode != "plan":
+            continue
+
         handler = RECOGNIZED_FLAGS.get(flag)
         if handler:
             context = handler(script_dir)
@@ -204,7 +208,8 @@ def main() -> None:
 
     # Execute flag handlers
     script_dir = Path(__file__).parent
-    flag_contexts = execute_flag_handlers(flags, script_dir)
+    permission_mode = input_data.get("permission_mode", "default")
+    flag_contexts = execute_flag_handlers(flags, script_dir, permission_mode)
 
     # Build final context
     additional_context = build_output_context(flags, clean_prompt, flag_contexts)
