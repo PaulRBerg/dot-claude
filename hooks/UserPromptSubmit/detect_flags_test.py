@@ -205,13 +205,12 @@ class TestFlagHandlers:
         assert "validation tools" in result
 
     def test_handle_subagent_flag(self, tmp_path):
-        """Test subagent flag handler returns orchestration rules."""
+        """Test subagent flag handler returns subagent delegation instructions."""
         result = detect_flags.handle_subagent_flag(tmp_path)
-        assert "<orchestration_rules>" in result
-        assert "Orchestration Rules" in result
-        assert "You are an orchestrator" in result
-        assert "Delegation Strategy" in result
-        assert "</orchestration_rules>" in result
+        assert "<subagent_delegation>" in result
+        assert "implementation plan" in result
+        assert "parallel subagents" in result
+        assert "</subagent_delegation>" in result
 
 
 # ============================================================================
@@ -225,7 +224,7 @@ class TestExecuteFlagHandlers:
     def test_single_flag(self, tmp_path):
         """Test executing a single flag handler."""
         flags = ["c"]
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path, "plan")
 
         assert len(contexts) == 1
         assert "<commit_instructions>" in contexts[0]
@@ -235,7 +234,7 @@ class TestExecuteFlagHandlers:
     def test_multiple_flags(self, tmp_path):
         """Test executing multiple flag handlers."""
         flags = ["c", "t"]
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path, "plan")
 
         assert len(contexts) == 2
         assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
@@ -244,11 +243,11 @@ class TestExecuteFlagHandlers:
     def test_all_flags(self, tmp_path):
         """Test executing all flag handlers."""
         flags = ["s", "c", "t", "d", "n"]
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path, "plan")
 
         assert len(contexts) == 5
         assert any(
-            "<subagent_instructions>" in ctx and "Orchestration Rules" in ctx for ctx in contexts
+            "<subagent_delegation>" in ctx and "parallel subagents" in ctx for ctx in contexts
         )
         assert any("<commit_instructions>" in ctx and "/commit" in ctx for ctx in contexts)
         assert any("<test_instructions>" in ctx and "test coverage" in ctx for ctx in contexts)
@@ -258,13 +257,13 @@ class TestExecuteFlagHandlers:
     def test_empty_flags(self, tmp_path):
         """Test executing with no flags."""
         flags = []
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path, "default")
         assert contexts == []
 
     def test_xml_wrapping_structure(self, tmp_path):
         """Test that all contexts are properly XML-wrapped."""
         flags = ["c", "t", "d"]
-        contexts = detect_flags.execute_flag_handlers(flags, tmp_path)
+        contexts = detect_flags.execute_flag_handlers(flags, tmp_path, "plan")
 
         for ctx in contexts:
             # Each context should start with < and end with >
@@ -399,7 +398,7 @@ class TestMain:
 
     def test_valid_multiple_flags(self, monkeypatch):
         """Test main with multiple valid flags."""
-        input_data = {"prompt": "my task -s -c -t"}
+        input_data = {"prompt": "my task -s -c -t", "permission_mode": "plan"}
         stdin_mock = io.StringIO(json.dumps(input_data))
         stdout_mock = io.StringIO()
 
@@ -417,9 +416,9 @@ class TestMain:
         assert "Processed flags -s -c -t" in context
         assert "my task" in context
         assert "</flag_metadata>" in context
-        assert "<subagent_instructions>" in context
-        assert "Orchestration Rules" in context
-        assert "</subagent_instructions>" in context
+        assert "<subagent_delegation>" in context
+        assert "parallel subagents" in context
+        assert "</subagent_delegation>" in context
         assert "<commit_instructions>" in context
         assert "/commit" in context
         assert "</commit_instructions>" in context
@@ -502,7 +501,7 @@ class TestMain:
 
     def test_all_recognized_flags(self, monkeypatch):
         """Test main with all recognized flags."""
-        input_data = {"prompt": "my task -s -c -t -d -n"}
+        input_data = {"prompt": "my task -s -c -t -d -n", "permission_mode": "plan"}
         stdin_mock = io.StringIO(json.dumps(input_data))
         stdout_mock = io.StringIO()
 
@@ -521,9 +520,9 @@ class TestMain:
         assert "<flag_metadata>" in context
         assert "Processed flags -s -c -t -d -n" in context
         assert "</flag_metadata>" in context
-        assert "<subagent_instructions>" in context
-        assert "Orchestration Rules" in context
-        assert "</subagent_instructions>" in context
+        assert "<subagent_delegation>" in context
+        assert "parallel subagents" in context
+        assert "</subagent_delegation>" in context
         assert "<commit_instructions>" in context
         assert "/commit" in context
         assert "</commit_instructions>" in context
