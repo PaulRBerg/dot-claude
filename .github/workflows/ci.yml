@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -25,22 +25,71 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install Node dependencies
-        run: bun install
-
       - name: Setup Python and uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Install Python dependencies
-        run: uv sync --all-extras --dev
+      - name: Install dependencies
+        run: just install
 
       - name: Run code checks
         run: just full-check
 
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Just
+        uses: extractions/setup-just@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Python and uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: just install
+
       - name: Run tests
-        run: just test
+        run: just test --color=yes -rA --md=pytest-results.md
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: pytest-results.md
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [checks, tests]
+    if: always()
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: pytest-results
 
       - name: Add summary
         run: | #shell
-          echo "## CI result" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+          echo "## CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.checks.result }}" == "success" ]; then
+            echo "| Code checks | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Code checks | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ needs.tests.result }}" == "success" ]; then
+            echo "| Tests | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Tests | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Details" >> $GITHUB_STEP_SUMMARY
+          cat pytest-results.md >> $GITHUB_STEP_SUMMARY

@@ -15,4 +15,6 @@
     "pytest-cov>=6.0.0",
     "pytest-sugar>=1.1.1",
     "pytest-clarity>=1.0.1",
+    "pytest-github-actions-annotate-failures>=0.3.0",
+    "pytest-md>=0.2.0",
 ]
