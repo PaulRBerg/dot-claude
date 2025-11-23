@@ -5,13 +5,12 @@ events during execution.
 
 ## Overview
 
-Five custom hooks provide event-driven automation across different Claude Code events:
+Several hooks provide event-driven automation across different Claude Code events:
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
-- **detect_flags.py** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
+- **ai-flags** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
 - **activate_skills.py** - Auto-suggest skills based on context (UserPromptSubmit)
 - **log_prompts.py** - Log conversations to zk notebook (UserPromptSubmit, optional)
-- **claude-code-docs** - Quick documentation lookups (PreToolUse:Read, optional)
 
 ## Hook Events
 
@@ -46,10 +45,16 @@ See [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for installat
 
 See the [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for setup instructions and configuration options.
 
-## 2. detect_flags.py (UserPromptSubmit)
+## 2. ai-flags (UserPromptSubmit)
 
-General-purpose flag parser that processes trailing flags in prompts to trigger different behaviors. Flags must appear
-at the end of prompts with no other text after them.
+Standalone CLI tool that parses trailing flags from prompts to trigger different behaviors. Distributed as a Python
+package and installed globally via uv. Flags must appear at the end of prompts with no other text after them.
+
+### Prerequisites
+
+- Python 3.12 or higher
+- Installed via uv: `uv tool install ai-flags`
+- See [ai-flags repository](https://github.com/PaulRBerg/ai-flags) for installation instructions
 
 ### Supported Flags
 
@@ -65,6 +70,27 @@ at the end of prompts with no other text after them.
 - **`-d`** (debug): Invokes the debugger subagent for systematic root cause analysis with a 5-step debugging workflow.
 
 - **`-n`** (no-lint): Skip linting and type-checking during development.
+
+### Configuration
+
+Configuration is managed via `~/.config/ai-flags/config.yaml`. Each flag can be enabled/disabled or customized:
+
+```bash
+# View current configuration
+ai-flags config show
+
+# Enable or disable a flag
+ai-flags config set s enabled
+ai-flags config set n disabled
+
+# Edit configuration in your editor
+ai-flags config edit
+
+# Reset to defaults
+ai-flags config reset
+```
+
+Users can override default flag instructions by setting custom `content` in the YAML configuration file.
 
 ### Composability
 
@@ -93,6 +119,21 @@ claude "fix memory leak in cache -d -c"
 
 # Skip linting during rapid development
 claude "prototype new feature -n"
+```
+
+### Testing
+
+Test flag parsing and behavior using the CLI:
+
+```bash
+# Test flag parsing (displays parsed flags and injected context)
+ai-flags handle "implement feature -s -c"
+
+# Test with hook mode (JSON input/output for integration testing)
+echo '{"prompt": "my task -t -c"}' | ai-flags handle
+
+# Verify current configuration
+ai-flags config show
 ```
 
 ## 3. activate_skills.py (UserPromptSubmit)
@@ -154,29 +195,6 @@ cd ~/.claude-prompts
 zk init
 ```
 
-## 5. claude-code-docs Helper (PreToolUse:Read) - Optional
-
-Quick documentation lookups via [claude-code-docs](https://github.com/ericbuess/claude-code-docs). Provides
-`claude-docs-helper.sh` for local doc searches.
-
-### Features
-
-- Local mirror of Claude Code documentation
-- Fast doc lookups without network requests
-- Integrates with Read tool
-- Helpful for offline development
-
-### Setup
-
-```bash
-# Clone claude-code-docs
-git clone https://github.com/ericbuess/claude-code-docs ~/.claude-code-docs
-
-# Update documentation regularly
-cd ~/.claude-code-docs
-git pull
-```
-
 ## Development
 
 ### Testing Hooks
@@ -211,8 +229,7 @@ chmod +x hooks/**/*.sh
 
 ### Optional Dependencies Missing
 
-Hooks with optional dependencies (zk, ai-notify, claude-code-docs) gracefully degrade if dependencies are unavailable.
-Check installation:
+Hooks with optional dependencies (zk, ai-notify) gracefully degrade if dependencies are unavailable. Check installation:
 
 ```bash
 # Check zk
@@ -221,8 +238,6 @@ which zk
 # Check ai-notify
 which ai-notify
 
-# Check claude-code-docs
-ls -la ~/.claude-code-docs
 ```
 
 ## Resources
@@ -231,4 +246,3 @@ ls -la ~/.claude-code-docs
 - [Claude Code Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks) - Official Anthropic
   documentation
 - [zk - Zettelkasten CLI](https://github.com/zk-org/zk)
-- [claude-code-docs](https://github.com/ericbuess/claude-code-docs)
