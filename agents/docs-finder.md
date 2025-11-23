@@ -117,7 +117,7 @@ Provide a concise, actionable summary in this format:
 ✓/✗ llms-full.txt: {url or "Not found"}
 
 ### Context7 Entry
-✓/✗ Available in Context7: {details or "Not indexed"}
+✓/✗ Available in Context7: {library ID if available, or "Not indexed"}
 
 ### GitHub Community Discussions
 ✓/✗ Issues/Discussions about AI docs: {count and notable links, or "None found"}
@@ -125,13 +125,13 @@ Provide a concise, actionable summary in this format:
 ## Direct Resource Links
 [If any AI-friendly resources were found, list them here with direct URLs]
 - llms.txt: {url}
-- Context7: Use `mcp__context7__get-library-docs` with library ID: {id}
+- Context7: Available with library ID: {id}
 - Relevant GitHub discussions: {urls}
 
 ## Recommendations
 [Provide 1-3 actionable recommendations based on findings, such as:]
 - Use llms.txt URL directly with WebFetch
-- Access via Context7 MCP tools for structured docs
+- Use Context7 to access structured documentation
 - Documentation is Markdown-based and LLM-friendly, use WebFetch on {url}
 - No standardized AI docs found - manual exploration required
 - Consider suggesting llms.txt support in issue #{number}
