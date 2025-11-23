@@ -6,6 +6,7 @@
       "Skill(claude-code-plugins:code-review)",
       "Skill(plugin-dev:skill-development)",
       "Skill(dry-refactor)",
+      "Skill(gh-cli)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",

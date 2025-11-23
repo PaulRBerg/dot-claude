@@ -17,6 +17,7 @@
     ],
     "allow": [
       "Bash(COMMAND:*)",
+      "Bash(ai-flags:*)",
       "Bash(ai-notify:*)",
       "Bash(amp:*)",
       "Bash(anvil:*)",
@@ -127,6 +128,7 @@
       "TodoWrite",
       "WebFetch",
       "WebSearch",
+      "Write(/tmp/**)",
       "mcp__context7",
       "mcp__next-devtools",
       "mcp__sequential-thinking",
@@ -158,7 +160,7 @@
       "Bash(usermod:*)",
       "Read(.env)",
       "Read(.env.production)",
-      "Read(~/.ssh)"
+      "Read(~/.ssh/**)"
     ]
   },
   "alwaysThinkingEnabled": true,
@@ -224,7 +226,7 @@
             "type": "command"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
+            "command": "ai-flags handle",
             "type": "command"
           },
           {

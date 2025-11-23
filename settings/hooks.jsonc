@@ -52,7 +52,7 @@
             "type": "command"
           },
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/detect_flags.py",
+            "command": "ai-flags handle",
             "type": "command"
           },
           {
