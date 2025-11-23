@@ -4,6 +4,11 @@
   "permissions": {
     "allow": [
       "Skill(claude-code-plugins:code-review)",
+      "Skill(plugin-dev:agent-development)",
+      "Skill(plugin-dev:command-development)",
+      "Skill(plugin-dev:hook-development)",
+      "Skill(plugin-dev:plugin-settings)",
+      "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
       "Skill(dry-refactor)",
       "Skill(gh-cli)",

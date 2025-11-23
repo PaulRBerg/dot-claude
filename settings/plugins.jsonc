@@ -1,0 +1,12 @@
+{
+  // Basic configuration for Claude Code
+  // General settings, environment variables, and UI customization
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true,
+    "ralph-wiggum@claude-code-plugins": true,
+    "hookify@claude-code-plugins": true,
+    "plugin-dev@claude-code-plugins": true,
+    "playwright-skill@playwright-skill": true
+  }
+}
