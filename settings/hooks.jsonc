@@ -23,17 +23,6 @@
         ]
       }
     ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
-            "type": "command"
-          }
-        ],
-        "matcher": "Read"
-      }
-    ],
     "Stop": [
       {
         "hooks": [

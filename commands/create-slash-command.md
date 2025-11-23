@@ -14,11 +14,9 @@ description: Create a new command by analyzing requirements and generating a wel
 
 ### STEP 1: Read command documentation
 
-**CRITICAL**: Read the Claude Code slash command documentation:
+**CRITICAL**: Read the Claude Code slash command documentation from the official documentation:
 
-```bash
-cat ~/.claude-code-docs/docs/slash-commands.md
-```
+https://code.claude.com/docs/en/claude_code_docs_map.md
 
 IF documentation doesn't exist: WARN "Documentation not found. Proceeding with knowledge of command patterns."
 

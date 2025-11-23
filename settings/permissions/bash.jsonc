@@ -33,7 +33,6 @@
       "Bash(xargs:*)",
 
       // Custom Scripts
-      "Bash(~/.claude-code-docs/claude-docs-helper.sh:*)",
       "Bash(~/.claude/hooks:*)",
 
       // File System
@@ -58,6 +57,7 @@
       // Git & Version Control
       "Bash(gh:*)",
       "Bash(git:*)",
+      "Bash(git-filter-repo:*)",
       "Bash(gita:*)",
 
       // Misc

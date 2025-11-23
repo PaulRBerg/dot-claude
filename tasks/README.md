@@ -217,10 +217,10 @@ To continue:
 
 ### Starting a New Task
 
-1. **Use /create-task slash command:**
+1. **Use /task-create slash command:**
 
    ```
-   /create-task refactor authentication system
+   /task-create refactor authentication system
    ```
 
 2. **Claude creates the three files:**
@@ -255,14 +255,14 @@ No need to explain what you were doing - it's all documented!
 
 ## Integration with Slash Commands
 
-### /create-task
+### /task-create
 
 **Creates:** New task documentation
 
 **Usage:**
 
 ```
-/create-task implement real-time notifications
+/task-create implement real-time notifications
 ```
 
 **Generates:**
@@ -272,14 +272,14 @@ No need to explain what you were doing - it's all documented!
   - implement-real-time-notifications-context.md
   - implement-real-time-notifications-tasks.md
 
-### /update-task
+### /task-update
 
 **Updates:** Existing task documentation before context reset
 
 **Usage:**
 
 ```
-/update-task
+/task-update
 ```
 
 **Updates:**
@@ -370,7 +370,7 @@ If scope changes:
 
 **When user asks to create task documentation:**
 
-1. **Use the /create-task slash command** if available
+1. **Use the /task-create slash command** if available
 2. **Or create manually:**
    - Ask about the task scope
    - Analyze relevant codebase files
@@ -405,7 +405,7 @@ If scope changes:
 
 ## Creating Tasks Manually
 
-If you don't have the /create-task command:
+If you don't have the /task-create command:
 
 **1. Create directory:**
 
