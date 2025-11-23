@@ -1,5 +1,5 @@
 ---
-name: ai-docs-finder
+name: docs-finder
 description: Use this agent to find AI-friendly documentation for libraries. Discovers doc sites, checks for llms.txt files, searches Context7, and queries GitHub issues/discussions about AI docs. Accepts GitHub URLs or org/repo format (e.g., "facebook/react" or "https://github.com/facebook/react").
 model: sonnet
 permissionMode: plan
