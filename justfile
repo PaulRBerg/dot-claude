@@ -116,7 +116,7 @@ alias t := test
 # Run pytest tests
 [group("test")]
 @test-hooks:
-    uv run pytest hooks/ -v
+    uv run pytest hooks/ -vv
 alias th := test-hooks
 
 # ---------------------------------------------------------------------------- #
