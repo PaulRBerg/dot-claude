@@ -114,6 +114,7 @@
       "Read(~/.zshrc)",
       "Skill(claude-code-plugins:code-review)",
       "Skill(dry-refactor)",
+      "Skill(gh-cli)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(plugin-dev:skill-development)",
       "Skill(typescript)",
