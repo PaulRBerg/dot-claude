@@ -124,7 +124,7 @@ def parse_trailing_flags(prompt: str) -> Optional[tuple[str, List[str]]]:
     # Match: anything followed by one or more -X flags at the end
     # Pattern: (.*?) captures main prompt, ((?:-[a-z]\s*)+) captures flags
     pattern = r"^(.*?)\s+((?:-[a-z]\s*)+)$"
-    match = re.match(pattern, prompt.strip())
+    match = re.match(pattern, prompt.strip(), re.DOTALL)
 
     if not match:
         return None

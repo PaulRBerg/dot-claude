@@ -46,6 +46,11 @@ class TestParseTrailingFlags:
             ("  my task -s", ("my task", ["s"])),
             # Complex prompts
             ("complex task with many words -s -c", ("complex task with many words", ["s", "c"])),
+            # Multiline prompts
+            ("first line\nsecond line -s", ("first line\nsecond line", ["s"])),
+            ("line 1\nline 2\nline 3 -s -c", ("line 1\nline 2\nline 3", ["s", "c"])),
+            ("paragraph 1\n\nparagraph 2 -t", ("paragraph 1\n\nparagraph 2", ["t"])),
+            ("lots\n\n\nof\n\n\nnewlines -d -n", ("lots\n\n\nof\n\n\nnewlines", ["d", "n"])),
         ],
     )
     def test_valid_flags(self, prompt, expected):
