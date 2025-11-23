@@ -1,15 +1,10 @@
-# directories
-__pycache__/
+# Directories
 .claude/
-.pytest-cache/
-.ruff-cache/
 .serena/
-.venv
 backups/
 debug/
 downloads/
 file-history/
-htmlcov/
 ide/
 logs/
 plans/
@@ -20,8 +15,7 @@ shell-snapshots/
 statsig/
 todos/
 
-# files
-*.coverage
+# Files
 *.log*
 .claude.json
 .credentials.json
@@ -30,3 +24,14 @@ history.jsonl
 PROMPT.md
 SPEC.md
 TODO.md
+
+# Python Directories
+__pycache__/
+.pytest-cache/
+.ruff-cache/
+.venv
+htmlcov/
+
+# Python Files
+*.coverage
+pytest-results.md
