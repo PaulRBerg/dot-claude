@@ -57,7 +57,7 @@ For each documentation site URL discovered, check these paths:
 - `{doc_url}/.well-known/llms-full.txt`
 - `{doc_url}/ai/llms.txt` (some sites use subdirectories)
 
-Use `curl -I` or WebFetch to check if these files exist (200 status code).
+Use `curl -sI` (silent + head only) or WebFetch to check if these files exist (200 status code).
 
 ### 4. Search GitHub Issues and Discussions
 
@@ -65,10 +65,10 @@ Use `gh` CLI to search for relevant conversations:
 
 ```bash
 # Search issues
-gh search issues "repo:{owner/repo} llms.txt OR AI-friendly OR LLM documentation OR AI context" --limit 20
+gh search issues --repo {owner/repo} "llms.txt OR AI-friendly OR LLM documentation OR AI context" --limit 20
 
 # Search discussions (if repo has discussions enabled)
-gh search issues "repo:{owner/repo} is:discussion llms.txt OR AI documentation OR LLM context" --limit 20
+gh search issues --repo {owner/repo} "is:discussion llms.txt OR AI documentation OR LLM context" --limit 20
 ```
 
 Look for:
@@ -159,6 +159,12 @@ Provide a concise, actionable summary in this format:
 **Ambiguous library names:**
 - If given just "react", ask: "Did you mean facebook/react, or a different repository?"
 - List potential matches if found via search
+
+**gh CLI search failures:**
+- If `gh search issues` returns "Invalid search query", ensure you're using `--repo {owner/repo}` flag, NOT `repo:` in the query string
+- The `repo:` qualifier syntax works in GitHub's web interface but NOT in gh CLI
+- If you get permission errors, the repository may be private or rate-limited
+- Keep `is:discussion` and other qualifiers in the search query string, only move `repo:` to the flag
 
 ## Important Notes
 
