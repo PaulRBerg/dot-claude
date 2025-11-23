@@ -86,6 +86,7 @@
       "Bash(sed:*)",
       "Bash(select:*)",
       "Bash(sort:*)",
+      "Bash(sqlite3:*)",
       "Bash(stat:*)",
       "Bash(tail:*)",
       "Bash(tar:*)",

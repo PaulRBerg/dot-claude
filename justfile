@@ -109,14 +109,14 @@ alias rw := ruff-write
 
 # Run all tests
 [group("test")]
-@test:
-    just test-hooks
+@test *args:
+    just test-hooks {{ args }}
 alias t := test
 
 # Run pytest tests
 [group("test")]
-@test-hooks:
-    uv run pytest hooks/ -vv
+@test-hooks *args:
+    uv run pytest hooks {{ args }}
 alias th := test-hooks
 
 # ---------------------------------------------------------------------------- #

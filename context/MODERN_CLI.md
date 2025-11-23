@@ -7,7 +7,7 @@ Use these modern CLI tools in shells like Bash.
 
 ## IMPORTANT: Special Characters in File Paths
 
-**THIS RULE APPLIES TO ALL CLI TOOLS AND TERMINAL COMMANDS - NOT JUST THE EXAMPLES SHOWN.**
+**This rule applies to all CLI tools and terminal commands - not just the examples shown.**
 
 When file paths contain special characters (like parentheses, spaces, brackets, etc.), you MUST always escape them with
 backslashes (`\`) in shell commands. Failure to do so will cause commands to fail.
@@ -21,15 +21,6 @@ Escaping parentheses in a `(shared)` directory:
 ```bash
 bat src\(shared\)/Foo.tsx
 rg "pattern" src/\(shared\)/
-fd file.txt src/\(shared\)/
-```
-
-Escaping brackets in a `[locale]` directory:
-
-```bash
-bat src/\[locale\]/route.ts
-rg "pattern" src/\[locale\]/
-eza src/\[locale\]/
 ```
 
 Escaping spaces in filenames:
