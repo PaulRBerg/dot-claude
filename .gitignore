@@ -25,6 +25,9 @@ PROMPT.md
 SPEC.md
 TODO.md
 
+# Generated from settings/*.jsonc by helpers/merge_settings.sh
+settings.json
+
 # Python Directories
 __pycache__/
 .pytest-cache/
