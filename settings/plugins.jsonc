@@ -5,7 +5,6 @@
   "enabledPlugins": {
     "code-review@claude-code-plugins": true,
     "ralph-wiggum@claude-code-plugins": true,
-    "hookify@claude-code-plugins": true,
     "plugin-dev@claude-code-plugins": true,
     "playwright-skill@playwright-skill": true
   }
