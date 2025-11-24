@@ -80,6 +80,8 @@ merged_json=$(echo "$parsed_json" | jq -s '
     (reduce .[] as $item ({}; . * ($item | del(.permissions))))
     # Remove the $schema field from the final output
     | del(."$schema")
+    # Sort all object keys alphabetically
+    | walk(if type == "object" then to_entries | sort_by(.key) | from_entries else . end)
 ')
 
 # ---------------------------------------------------------------------------- #
