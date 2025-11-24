@@ -39,9 +39,9 @@ function ccc() {
   # Proceed with commit
   local output
   if command -v gum &>/dev/null; then
-    output=$(gum spin --spinner dot --title "Claude is git committing..." -- claude --print "/commit $*" --output-format json)
+    output=$(gum spin --spinner dot --title "Claude is git committing..." -- claude --model "haiku" --print "/commit $*" --output-format json)
   else
-    output=$(claude --print "/commit $*" --output-format json)
+    output=$(claude --model "haiku" --print "/commit $*" --output-format json)
   fi
 
   # Clean up the conversation history
