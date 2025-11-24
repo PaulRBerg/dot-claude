@@ -1,9 +1,19 @@
 {
-  "env": {
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
-  },
-  "includeCoAuthoredBy": false,
   "permissions": {
+    "additionalDirectories": [
+      "/etc/nix",
+      "/tmp",
+      "~/.claude",
+      "~/.claude-prompts",
+      "~/.codex",
+      "~/.config",
+      "~/.gemini",
+      "~/.local",
+      "~/.zsh",
+      "~/projects",
+      "~/sablier",
+      "~/work"
+    ],
     "allow": [
       "Bash(COMMAND:*)",
       "Bash(ai-flags:*)",
@@ -35,6 +45,7 @@
       "Bash(fzf:*)",
       "Bash(gdate:*)",
       "Bash(gh:*)",
+      "Bash(git-filter-repo:*)",
       "Bash(git:*)",
       "Bash(gita:*)",
       "Bash(grep:*)",
@@ -95,7 +106,6 @@
       "Bash(yarn:*)",
       "Bash(zip:*)",
       "Bash(zk:*)",
-      "Bash(~/.claude-code-docs/claude-docs-helper.sh:*)",
       "Bash(~/.claude/hooks:*)",
       "Glob",
       "Grep",
@@ -105,6 +115,11 @@
       "Skill(dry-refactor)",
       "Skill(gh-cli)",
       "Skill(playwright-skill:playwright-skill)",
+      "Skill(plugin-dev:agent-development)",
+      "Skill(plugin-dev:command-development)",
+      "Skill(plugin-dev:hook-development)",
+      "Skill(plugin-dev:plugin-settings)",
+      "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
       "Skill(typescript)",
       "Skill(ui-ux-design)",
@@ -151,30 +166,24 @@
       "Read(.env)",
       "Read(.env.production)",
       "Read(~/.ssh/**)"
-    ],
-    "additionalDirectories": [
-      "/etc/nix",
-      "/tmp",
-      "~/.claude",
-      "~/.claude-code-docs",
-      "~/.claude-prompts",
-      "~/.codex",
-      "~/.config",
-      "~/.gemini",
-      "~/.local",
-      "~/.zsh",
-      "~/projects",
-      "~/sablier",
-      "~/work"
     ]
+  },
+  "alwaysThinkingEnabled": true,
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0"
+  },
+  "includeCoAuthoredBy": false,
+  "statusLine": {
+    "command": "npx -y ccstatusline@latest",
+    "type": "command"
   },
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "ai-notify event notification"
+            "command": "ai-notify event notification",
+            "type": "command"
           }
         ]
       }
@@ -183,19 +192,8 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "ai-notify event permission-request"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
+            "command": "ai-notify event permission-request",
+            "type": "command"
           }
         ]
       }
@@ -204,8 +202,8 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "ai-notify event stop"
+            "command": "ai-notify event stop",
+            "type": "command"
           }
         ]
       }
@@ -214,24 +212,20 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "ai-notify event user-prompt-submit"
+            "command": "ai-notify event user-prompt-submit",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "ai-flags handle"
+            "command": "ai-flags handle",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py"
+            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
+            "type": "command"
           }
         ]
       }
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "npx -y ccstatusline@latest"
   },
   "enabledPlugins": {
     "code-review@claude-code-plugins": true,
@@ -239,6 +233,5 @@
     "hookify@claude-code-plugins": true,
     "plugin-dev@claude-code-plugins": true,
     "playwright-skill@playwright-skill": true
-  },
-  "alwaysThinkingEnabled": true
+  }
 }
