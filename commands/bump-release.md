@@ -1,5 +1,5 @@
 ---
-argument-hint: [--beta] [--dry-run]
+argument-hint: [VERSION=<semver>] [--beta] [--dry-run]
 description: Rolls out a new release by updating changelog, bumping version, committing, and tagging
 ---
 
@@ -9,6 +9,7 @@ Support for both regular and beta releases.
 
 ## Parameters
 
+- `VERSION`: Optional explicit version to use (e.g., `2.0.0`). When provided, skips automatic version inference
 - `--beta`: Create a beta release with `-beta.X` suffix
 - `--dry-run`: Preview the release without making any changes (no file modifications, commits, or tags)
 
@@ -28,14 +29,14 @@ Support for both regular and beta releases.
 
 ## Process
 
-1. **Check for flags** - Determine if this is a beta release (`--beta` parameter) and/or dry-run (`--dry-run` parameter)
+1. **Check for arguments** - Determine if `VERSION` was provided, if this is a beta release (`--beta`), and/or dry-run (`--dry-run`)
 2. **Write Changelog** - Examine diffs between the current branch and the previous tag to write Changelog. Then find
 relevant PRs by looking at the commit history and add them to each changelog (when available). If `package.json` contains
 a `files` field, only include changes within those specified files/directories. If no `files` field exists, include all
 changes except test changes, CI/CD workflows, and development tooling
 3. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
 4. **Check version** - Get current version from `package.json`
-5. **Bump version** - If unchanged since last release, increment per Semantic Versioning rules:
+5. **Bump version** - If `VERSION` argument provided, use it directly. Otherwise, if unchanged since last release, increment per Semantic Versioning rules:
    - **For regular releases**:
      - **PATCH** (x.x.X) - Bug fixes, documentation updates
      - **MINOR** (x.X.x) - New features, backward-compatible changes
@@ -49,8 +50,10 @@ changes except test changes, CI/CD workflows, and development tooling
 
 When `--beta` flag is provided in the $ARGUMENTS
 
-1. **Parse current version** from `package.json`
-2. **Determine beta version**:
+1. **Check for explicit VERSION** - If `VERSION` provided:
+   - If version already has beta suffix → use as-is
+   - If version has no beta suffix → append `-beta.1`
+2. **Otherwise, parse current version** from `package.json` and **determine beta version**:
    - If current version is `1.2.3`: Create `1.2.4-beta.1` (increment patch + beta.1)
    - If current version is `1.2.3-beta.1`: Create `1.2.3-beta.2` (increment beta number)
    - If current version is `1.2.3-beta.5`: Create `1.2.3-beta.6` (increment beta number)
@@ -98,11 +101,26 @@ For regular releases only (changelog generation is skipped for beta releases):
 /bump-release --beta --dry-run
 ```
 
+### Explicit Version
+
+```bash
+# Specify exact version
+/bump-release VERSION=2.0.0
+
+# Specify exact beta version
+/bump-release VERSION=2.0.0-beta.1
+
+# Combine with flags
+/bump-release VERSION=2.0.0 --dry-run
+```
+
 ## Version Examples
 
-| Current Version | Release Type | New Version     |
-| --------------- | ------------ | --------------- |
-| `1.2.3`         | Regular      | `1.2.4` (patch) |
-| `1.2.3`         | Beta         | `1.2.4-beta.1`  |
-| `1.2.3-beta.1`  | Beta         | `1.2.3-beta.2`  |
-| `1.2.3-beta.5`  | Regular      | `1.2.3`         |
+| Current Version | Release Type      | New Version     |
+| --------------- | ----------------- | --------------- |
+| `1.2.3`         | Regular           | `1.2.4` (patch) |
+| `1.2.3`         | Beta              | `1.2.4-beta.1`  |
+| `1.2.3-beta.1`  | Beta              | `1.2.3-beta.2`  |
+| `1.2.3-beta.5`  | Regular           | `1.2.3`         |
+| `1.2.3`         | `VERSION=2.0.0`   | `2.0.0`         |
+| `1.2.3`         | `VERSION=2.0.0` + Beta | `2.0.0-beta.1` |
