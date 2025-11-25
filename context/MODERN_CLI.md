@@ -29,4 +29,3 @@ Escaping spaces in filenames:
 bat my\ file\ name.txt
 rg "pattern" path/to/my\ file\ name.txt
 ```
-
