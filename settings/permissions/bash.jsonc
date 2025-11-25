@@ -62,6 +62,7 @@
 
       // Misc
       "Bash(amp:*)",
+      "Bash(bc:*)",
       "Bash(chezmoi:*)",
       "Bash(just:*)",
       "Bash(curl:*)",

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# NOTE: This hook is currently unused.
 """UserPromptSubmit hook that suggests skills based on prompt analysis.
 
 Analyzes user prompts against skill-rules.json configuration files (global and

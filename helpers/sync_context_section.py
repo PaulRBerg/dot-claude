@@ -21,8 +21,6 @@ TARGET_FILES = [
     HOME / "sablier/backend/indexers/CLAUDE.md",
     HOME / "sablier/business/accounting/CLAUDE.md",
     HOME / "sablier/frontend/gh-searcher/CLAUDE.md",
-    HOME / "sablier/new-ui/CLAUDE.md",
-    HOME / "sablier/old-ui/CLAUDE.md",
 ]
 
 
