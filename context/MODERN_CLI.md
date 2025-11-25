@@ -5,7 +5,7 @@ Use these modern CLI tools in shells like Bash.
 - **PREFER**: `rg`, `fd`, `bat`, `eza`, `jq`, `yq`, `fzf`, `delta`, `gh`
 - **AVOID (use only if needed)**: `grep`, `find`, `cat`, `ls`, `df`, `top`, `xxd`
 
-## IMPORTANT: Special Characters in File Paths
+## Special Characters in File Paths
 
 **This rule applies to all CLI tools and terminal commands - not just the examples shown.**
 
@@ -30,4 +30,3 @@ bat my\ file\ name.txt
 rg "pattern" path/to/my\ file\ name.txt
 ```
 
-**Remember**: This escaping requirement applies to all CLI commands when running in a shell environment.
