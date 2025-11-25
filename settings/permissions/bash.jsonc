@@ -124,29 +124,43 @@
       "Bash(forge:*)"
     ],
     "deny": [
-      "Bash(> /dev/sda*)",
-      "Bash(> /etc/*)",
+      // Destructive File Operations
       "Bash(chmod -R:*)",
       "Bash(chown -R:*)",
-      "Bash(dd:*)",
-      "Bash(doas:*)",
-      "Bash(kill -9:*)",
-      "Bash(killall:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(launchctl:*)",
-      "Bash(mkfs:*)",
-      "Bash(passwd:*)",
-      "Bash(reboot:*)",
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(rm -rf ~/)",
       "Bash(rm -rf ~/*)",
-      "Bash(shutdown:*)",
+
+      // Dangerous Disk Operations
+      "Bash(> /dev/sda*)",
+      "Bash(> /etc/*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+
+      // Process Management
+      "Bash(kill -9:*)",
+      "Bash(killall:*)",
+
+      // Git & Version Control
+      "Bash(git reset --hard:*)",
+
+      // Node.js
+      "Bash(npm publish:*)",
+
+      // System Administration
+      "Bash(doas:*)",
+      "Bash(launchctl:*)",
+      "Bash(passwd:*)",
       "Bash(su:*)",
       "Bash(sudo:*)",
       "Bash(systemctl:*)",
       "Bash(userdel:*)",
-      "Bash(usermod:*)"
+      "Bash(usermod:*)",
+
+      // System Control
+      "Bash(reboot:*)",
+      "Bash(shutdown:*)"
     ]
   }
 }
