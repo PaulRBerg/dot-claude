@@ -9,7 +9,6 @@ Several hooks provide event-driven automation across different Claude Code event
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
 - **ai-flags** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
-- **activate_skills.py** - Auto-suggest skills based on context (UserPromptSubmit)
 - **log_prompts.py** - Log conversations to zk notebook (UserPromptSubmit, optional)
 
 ## Hook Events
@@ -136,32 +135,7 @@ echo '{"prompt": "my task -t -c"}' | ai-flags handle
 ai-flags config show
 ```
 
-## 3. activate_skills.py (UserPromptSubmit)
-
-Analyzes user prompts and suggests relevant skills based on keywords, intent patterns, file patterns, and content
-patterns.
-
-### Configuration
-
-Configuration in `skills/skill-rules.json` defines:
-
-- **Trigger conditions**: Keywords, intent patterns, file patterns, content patterns
-- **Priority levels**: critical, high, medium, low
-- **Activation rules**: When to suggest or enforce skill activation
-
-### How It Works
-
-1. User submits a prompt
-2. Hook analyzes prompt for skill triggers
-3. Matches against skill-rules.json configuration
-4. Suggests relevant skills based on priority
-5. Claude can activate suggested skills automatically
-
-### Example
-
-If you mention "TypeScript refactoring" or work with `.ts` files, the hook suggests activating the `typescript` skill.
-
-## 4. log_prompts.py (UserPromptSubmit) - Optional
+## 3. log_prompts.py (UserPromptSubmit) - Optional
 
 Logs conversation prompts to a [zk](https://github.com/zk-org/zk) notebook at `~/.claude-prompts/` for tracking and
 analysis.
