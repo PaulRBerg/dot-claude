@@ -1,5 +1,5 @@
 ---
-argument-hint: [ISSUE_REFERENCE=<url|owner/repo#number|#number>]
+argument-hint: [issue-reference]
 description: Display GitHub issue hierarchy with sub-issues
 ---
 

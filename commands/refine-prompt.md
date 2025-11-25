@@ -1,5 +1,5 @@
 ---
-argument-hint: [PROMPT_REQUEST="<describe the prompt you need refined>"]
+argument-hint: [prompt-request]
 description: Optimize prompts for LLMs and append to PROMPT.md
 ---
 

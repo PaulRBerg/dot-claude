@@ -1,5 +1,5 @@
 ---
-argument-hint: [PERIOD=<days|keyword>] [FORMAT=<json|text>] [--transcripts]
+argument-hint: [period] [format] [--transcripts]
 description: Summarize your GitHub and Claude Code activity over a time period
 ---
 

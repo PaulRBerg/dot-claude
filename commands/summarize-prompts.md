@@ -1,5 +1,5 @@
 ---
-argument-hint: [START_DATE=<YYYY-MM-DD>] [END_DATE=<YYYY-MM-DD>]
+argument-hint: [start-date] [end-date]
 description: Generate summaries for recent zk daily notes
 ---
 
@@ -23,7 +23,7 @@ IF $ARGUMENTS is empty:
 - Set TARGET_DATES to single-element array: [yesterday]
 
 ELSE IF $ARGUMENTS contains two dates matching `YYYY-MM-DD YYYY-MM-DD`:
-- Extract START_DATE and END_DATE
+- Extract start-date and end-date
 - Validate both dates are valid format
 - Generate all dates in range (inclusive):
   ```bash

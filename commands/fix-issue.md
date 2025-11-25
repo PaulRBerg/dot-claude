@@ -1,5 +1,5 @@
 ---
-argument-hint: [ISSUE_NUMBER=<id>]
+argument-hint: [issue-number]
 description: Fetch GitHub issue, analyze, fix, and commit with "Closes #N"
 ---
 

@@ -1,5 +1,5 @@
 ---
-argument-hint: [CONTEXT_DESCRIPTION="<context description>"]
+argument-hint: [description]
 description: Generate project-specific CLAUDE.md file with custom context
 ---
 

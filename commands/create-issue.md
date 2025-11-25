@@ -1,5 +1,5 @@
 ---
-argument-hint: [REPOSITORY=<owner/repo>] [DESCRIPTION="<issue summary>"]
+argument-hint: [repository] [description]
 description: Create a GitHub issue with automatic labeling
 ---
 

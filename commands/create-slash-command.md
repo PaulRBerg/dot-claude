@@ -1,5 +1,5 @@
 ---
-argument-hint: [COMMAND_DESCRIPTION="<what the new command should do>"]
+argument-hint: [description]
 description: Create a new command by analyzing requirements and generating a well-structured command file
 ---
 
@@ -90,7 +90,7 @@ CREATE command file with this structure:
 
 ```markdown
 ---
-argument-hint: [PARAMETERS="<comma-separated parameter hints>"]
+argument-hint: [parameters]
 description: Brief one-line description
 ---
 
