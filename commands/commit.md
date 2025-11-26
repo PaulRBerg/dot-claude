@@ -1,5 +1,5 @@
 ---
-argument-hint: [--all] [--thorough] [--quick] [--push] [--stack]
+argument-hint: [--all] [--thorough] [--push] [--stack]
 description: Create atomic git commits with smart heuristic analysis
 model: haiku
 ---
@@ -8,7 +8,7 @@ model: haiku
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short --branch`
-- Staged changes: !`git diff --cached --stat`
+- Staged diff: !`git diff --cached`
 - Arguments: $ARGUMENTS
 
 ## Task
@@ -30,8 +30,7 @@ OTHERWISE (default - atomic commits):
 
 Flags:
 - `--all` → commit all changes (not just chat-modified files)
-- `--quick` → fastest (filename-only, generic messages)
-- `--thorough` → slowest (deep code analysis, breaking changes, scope)
+- `--thorough` → deep code analysis, breaking changes, detailed body
 - `--push` → push after commit
 - `--stack` → use `gt create` instead of `git commit`
 - Type keywords (`feat`, `fix`, `docs`) → use that type
@@ -39,22 +38,29 @@ Flags:
 
 ### STEP 3: Analyze changes
 
-**IF `--quick`:**
-- Categorize by extension only (.md→docs, .test.→test)
-- AI config changes (CLAUDE.md, AGENTS.md, .claude/, .gemini/, .codex/) → ai
-- Generic type, no validation, single-line
+**Default mode:**
+- Read the staged diff from context
+- Determine change type from what the code does:
+  - New functionality → `feat`
+  - Bug fix or error handling → `fix`
+  - Code reorganization without behavior change → `refactor`
+  - Documentation changes → `docs`
+  - Test additions/changes → `test`
+  - Build/CI changes → `ci`
+  - Dependencies → `chore(deps)`
+  - AI config (CLAUDE.md, AGENTS.md, .claude/, .gemini/, .codex/) → `ai`
+- Infer scope only when path makes it obvious:
+  - `src/auth/*` → `auth`
+  - `components/Button/*` → `Button`
+  - Multiple areas or unclear path → omit scope
+- Extract a specific description of what changed (not just which files)
 
-**ELSE IF `--thorough`:**
-- Request full diff: `git diff --cached`
-- Read code, detect breaking changes
-- Identify scope (component/module)
-
-**ELSE (default):**
-- Use --stat from context (paths/filenames only)
-- Pattern-match on paths and file types
-- AI config changes (CLAUDE.md, AGENTS.md, .claude/, .gemini/, .codex/) → ai
-- Omit scope unless obvious
-- No deep code reading
+**IF `--thorough`:**
+- Deep semantic analysis of the code
+- Detect breaking changes
+- Infer scope from code structure even when path isn't clear
+- Add detailed body explaining why the change was made
+- Check for GitHub issues in chat transcript
 
 **Conventional types:** feat, fix, docs, style, refactor, test, chore, ci, perf, revert, ai
 
@@ -63,13 +69,12 @@ Flags:
 Subject line (≤50 chars): `type(scope): description` or `type: description`
 - Imperative mood ("add" not "added")
 - Lowercase, no period
-- Specific but concise
+- Describe what the change does, not which files changed
 
-**IF `--quick`:** subject only, minimal refinement, generic descriptions
-**ELSE IF default:** subject only, quick refinement, accurate descriptions
-**ELSE IF `--thorough`:** add body (wrap 72 chars, explain WHY)
+**Default mode:** Subject only. Brief but specific.
 
-Footers (thorough mode only):
+**IF `--thorough`:**
+- Add body (wrap 72 chars, explain WHY)
 - Breaking change: `BREAKING CHANGE: description` + migration notes
 - GitHub issues: `Closes #123` or `Closes #123, #456`
 
@@ -78,10 +83,7 @@ Footers (thorough mode only):
 **IF `--stack`:** use `gt create -m "subject" -m "body"`
 **ELSE:** use `git commit -m "subject" -m "body"`
 
-Output:
-- `--quick`: hash only
-- Default: hash + subject + basic summary
-- `--thorough`: hash + full message + detailed summary
+Output: hash + subject + brief summary
 
 If failed: show error + suggest fix
 
@@ -97,10 +99,11 @@ If failed: show error + suggest fix (pull first, set upstream, auth)
 **Subject lines:**
 ```
 feat(auth): add OAuth2 login support
-fix(api): resolve null pointer in user endpoint
-docs: update installation instructions
+fix(api): handle null response from user endpoint
+refactor: extract validation logic into shared module
+docs: clarify installation requirements
 chore(deps): bump lodash to 4.17.21
-ai: update agent configuration for code review
+ai: add code review agent configuration
 ```
 
 **With body (thorough mode):**
@@ -125,18 +128,3 @@ fix(auth): resolve login timeout on slow connections
 
 Closes #234
 ```
-
-## Notes
-
-**Performance modes:**
-- Default: Fast, pattern-based heuristics using `--stat` output only (no deep code reading)
-- `--quick`: Fastest mode with minimal validation (filename-only analysis)
-- `--thorough`: Deep semantic analysis with full code reading and breaking change detection
-
-**Features:**
-- Generates concise, meaningful commit messages
-- Follows conventional commits specification
-- Breaking changes properly flagged in footer (thorough mode)
-- Auto-detects GitHub issues from chat transcript and adds "Closes #N" footer
-- Supports multiple issue references (e.g., "Closes #123, #456")
-- Optimized for speed by default while maintaining good accuracy

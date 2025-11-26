@@ -77,9 +77,9 @@ function claude() {
   # Determine the base command
   local base_cmd
   if [[ -f .mcp.json ]]; then
-    base_cmd=(command claude --mcp-config .mcp.json --allow-dangerously-skip-permissions "$@")
+    base_cmd=(command claude --mcp-config .mcp.json --dangerously-skip-permissions "$@")
   else
-    base_cmd=(command claude --allow-dangerously-skip-permissions "$@")
+    base_cmd=(command claude --dangerously-skip-permissions "$@")
   fi
 
   # Execute with or without gum spinner
