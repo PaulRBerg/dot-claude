@@ -172,6 +172,7 @@ const HomePage = Effect.fn("HomePage")(function* (props) {
 3. **Centralize base handlers** - Create `BasePage`, `BaseAction`, `BaseApi` with appropriate middleware
 4. **Error handling** - Use `.catchAll()` for Effect-level errors, middleware `failure` schema for typed errors
 5. **Request caching** - Use `@mcrovero/effect-react-cache` for request-scoped memoization
+6. **Skip React hooks** - Effect-ts doesn't benefit client-side hooks; use Effect for server-side code only
 
 ## Additional Resources
 
