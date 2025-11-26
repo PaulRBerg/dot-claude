@@ -1,5 +1,5 @@
 ---
-argument-hint: [description]
+argument-hint: [description?]
 description: Generate project-specific CLAUDE.md file with custom context
 model: opus
 ---
@@ -14,12 +14,15 @@ model: opus
 
 ## Your Task
 
-### STEP 1: Validate arguments
+### STEP 1: Check arguments
 
-CHECK arguments:
-- IF `$ARGUMENTS` is empty: ERROR "Usage: /init-context <context-description>"
-  - Example: `/init-context TypeScript monorepo with strict type safety and functional patterns`
-  - Example: `/init-context Foundry smart contract project with security-first mindset`
+DETERMINE mode:
+- IF `$ARGUMENTS` is empty: **Automatic inference mode** - derive context from project analysis in STEP 3
+- IF `$ARGUMENTS` is provided: **Guided mode** - use description to focus content generation
+
+Examples of guided mode:
+- `/init-context TypeScript monorepo with strict type safety and functional patterns`
+- `/init-context Foundry smart contract project with security-first mindset`
 
 ### STEP 2: Check existing CLAUDE.md
 
@@ -102,6 +105,7 @@ Common patterns (use only if relevant):
 
 **Intelligent adaptation:**
 
+**Guided mode** (when `$ARGUMENTS` provided):
 Analyze `$ARGUMENTS` for:
 - Keywords → "security", "testing", "monorepo", "contracts"
 - Constraints → "strict", "functional", "minimal", "fast"
@@ -113,6 +117,20 @@ Generate sections that match the intent. If user says "security-first Foundry pr
 - Audit requirements
 - Safe patterns
 - Test coverage requirements
+
+**Automatic inference mode** (when `$ARGUMENTS` empty):
+Derive context entirely from STEP 3 analysis:
+- Primary language/framework → dictates tech stack and code style sections
+- Project type (library, app, contracts, monorepo) → determines architecture patterns
+- Build/test tools detected → commands section
+- Detected patterns (functional, OOP, etc.) → code style recommendations
+- Dependencies and tooling → workflow suggestions
+
+Infer priorities from project signals:
+- `foundry.toml` or security deps → security focus
+- Extensive test setup → testing emphasis
+- Multiple packages → monorepo patterns
+- Strict TypeScript config → type safety focus
 
 ### STEP 5: Write CLAUDE.md
 
