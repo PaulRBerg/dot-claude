@@ -1,6 +1,7 @@
 ---
 argument-hint: [start-date] [end-date]
 description: Generate summaries for recent zk daily notes
+model: sonnet
 ---
 
 ## Context

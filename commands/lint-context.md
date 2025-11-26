@@ -1,5 +1,6 @@
 ---
-description: Validate CLAUDE.md and AGENTS.md files against actual codebase
+description: Lint CLAUDE.md and AGENTS.md files against actual codebase
+model: sonnet
 ---
 
 ## Context

@@ -1,6 +1,7 @@
 ---
 argument-hint: <current-path> <new-name>
 description: Rename work directory and update Claude Code paths
+model: haiku
 ---
 
 ## Context

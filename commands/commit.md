@@ -1,7 +1,7 @@
 ---
 argument-hint: [--all] [--thorough] [--quick] [--push] [--stack]
 description: Create atomic git commits with smart heuristic analysis
-model: claude-haiku-4-5
+model: haiku
 ---
 
 ## Context

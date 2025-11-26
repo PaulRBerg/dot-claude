@@ -1,6 +1,7 @@
 ---
 argument-hint: [prompt-request]
 description: Optimize prompts for LLMs and append to PROMPT.md
+model: opus
 ---
 
 ## Context
