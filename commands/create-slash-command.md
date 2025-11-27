@@ -15,7 +15,7 @@ model: opus
 
 ### STEP 1: Read command documentation
 
-**CRITICAL**: Read the Claude Code slash command documentation from the official documentation:
+Read the Claude Code slash command documentation from the official documentation:
 
 https://code.claude.com/docs/en/claude_code_docs_map.md
 

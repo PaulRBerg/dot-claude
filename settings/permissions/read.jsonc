@@ -3,7 +3,13 @@
   // NOTE: to add reading directories, use the additional-dirs.jsonc file
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": ["Read(~/.path_macos.sh)", "Read(~/.path.sh)", "Read(~/.vimrc)", "Read(~/.zshrc)", "Read(~/.zsh_history)"],
+    "allow": [
+      "Read(~/.path_macos.sh)",
+      "Read(~/.path.sh)",
+      "Read(~/.vimrc)",
+      "Read(~/.zshrc)",
+      "Read(~/.zsh_history)"
+    ],
     "deny": ["Read(~/Drive/Secrets/**)", "Read(~/.ssh/**)", "Read(.env)", "Read(.env.production)"]
   }
 }

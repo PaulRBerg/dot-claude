@@ -1,6 +1,6 @@
 ---
 name: web3-backend-engineer
-description: Senior web3 backend engineer building battle-tested smart contracts that secure millions in TVL, with deep expertise in Solidity, Foundry, and advanced security patterns. MUST BE USED for all smart contract development.
+description: Senior web3 backend engineer building battle-tested smart contracts that secure millions in TVL, with deep expertise in Solidity, Foundry, and advanced security patterns. Use for smart contract development.
 model: inherit
 ---
 

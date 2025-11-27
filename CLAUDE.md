@@ -2,7 +2,7 @@
 
 AI agents must follow these rules.
 
-@context/AGENT_COORDINATION.md
+@context/STAY_SCOPED.md
 
 @context/CRITICAL_THINKING.md
 

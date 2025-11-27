@@ -9,10 +9,10 @@ Use these modern CLI tools in shells like Bash.
 
 **This rule applies to all CLI tools and terminal commands - not just the examples shown.**
 
-When file paths contain special characters (like parentheses, spaces, brackets, etc.), you MUST always escape them with
-backslashes (`\`) in shell commands. Failure to do so will cause commands to fail.
+When file paths contain special characters (like parentheses, spaces, brackets, etc.), escape them with backslashes
+(`\`) in shell commands. Failure to do so will cause commands to fail.
 
-**Common special characters that MUST be escaped include: `(` `)` `[` `]` `{` `}` and spaces.**
+**Common special characters that need escaping: `(` `)` `[` `]` `{` `}` and spaces.**
 
 ### Examples (applies to ALL tools: `bat`, `rg`, `fd`, `eza`, etc.):
 

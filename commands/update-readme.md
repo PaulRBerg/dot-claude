@@ -37,7 +37,7 @@ CHECK repository state:
 - IF not a git repo: ERROR "Must be run from within a git repository. Initialize with 'git init' first."
 - Store the repository root path
 
-**IMPORTANT - Scope**: This command operates ONLY on `README.md` at the repository root (the path from `git rev-parse --show-toplevel`). It will NOT touch nested README files in subdirectories or subpackages. If you're in a monorepo and want to update a package-specific README, the user should `cd` to that package directory first and run the command there.
+**Scope**: This command operates only on `README.md` at the repository root (the path from `git rev-parse --show-toplevel`). It won't touch nested README files in subdirectories or subpackages. If you're in a monorepo and want to update a package-specific README, the user should `cd` to that package directory first and run the command there.
 
 CHECK for README:
 - IF README.md doesn't exist in repo root: Note that we'll create a new README from scratch
@@ -304,7 +304,7 @@ BUILD complete markdown content:
 **Formatting rules:**
 - Use emoji section headers for visual clarity (📦 Install, 🚀 Usage, 📖 Docs, 🤝 Contributing, etc.)
 - Consistent heading levels: ## for main sections, ### for subsections
-- Code blocks MUST have language specifiers (```bash, ```typescript, ```solidity, etc.)
+- Code blocks should have language specifiers (```bash, ```typescript, ```solidity, etc.)
 - Use tables for scripts/commands if there are 5+ items
 - Use admonitions for important notes:
   ```markdown

@@ -42,7 +42,7 @@ Based on the user's request in `$ARGUMENTS`, create an optimized prompt using th
 
 ### STEP 2: Display the optimized prompt
 
-IMPORTANT: You MUST display the complete prompt text in a clearly marked code block. Never just describe the prompt.
+Display the complete prompt text in a clearly marked code block. Don't just describe the prompt.
 
 Format:
 ```

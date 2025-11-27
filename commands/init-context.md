@@ -55,7 +55,7 @@ ANALYZE to understand:
 
 ### STEP 4: Generate CLAUDE.md content
 
-**Writing Style Requirements (CRITICAL):**
+**Writing Style Requirements:**
 - **Terse and direct** - No fluff, straight to point
 - **Expert-to-expert** - Assume high competency
 - **Imperative mood** - Commands ("Use", "Follow", "Avoid")
