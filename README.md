@@ -35,16 +35,8 @@ run `just merge_settings` manually.
 
 ## Context
 
-Modular configuration system using `@` syntax for composable behavioral instructions:
-
-```markdown
-@context/CRITICAL_THINKING.md
-
-@context/SENIOR_PROGRAMMER.md
-```
-
-Context files are organized by concern and imported via `@filename.md` references. Base instructions cascade through
-specialized modules, creating layered behavioral policies without duplication.
+Global instructions live in `CLAUDE.md`. Sections cover communication style, code preferences, scope preservation, git
+safety, and shell escaping rules.
 
 ## Installation
 

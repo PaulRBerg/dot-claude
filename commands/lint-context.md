@@ -10,7 +10,7 @@ model: opus
 
 ## Your Task
 
-Audit all context/documentation files for accuracy against the actual codebase.
+Audit all `CLAUDE.md` and `AGENTS.md` files for accuracy against the actual codebase.
 
 ### STEP 1: For each context file
 
