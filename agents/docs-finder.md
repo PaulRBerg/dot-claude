@@ -1,7 +1,7 @@
 ---
 name: docs-finder
 description: Use this agent to find documentation for libraries and frameworks. Discovers official docs, GitHub resources, tutorials, integration examples, and AI-friendly resources. Handles single or multiple libraries, automatically searching for integration examples when multiple libraries are mentioned.
-model: sonnet
+model: opus
 permissionMode: plan
 skills: gh-cli
 ---

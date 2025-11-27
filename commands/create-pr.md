@@ -1,7 +1,7 @@
 ---
 argument-hint: [base-branch] [reviewers] [title] [--draft] [--test-plan]
 description: Create a GitHub pull request with semantic change analysis
-model: sonnet
+model: opus
 ---
 
 ## Context

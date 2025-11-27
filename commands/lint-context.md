@@ -1,6 +1,6 @@
 ---
 description: Lint CLAUDE.md and AGENTS.md files against actual codebase
-model: sonnet
+model: opus
 ---
 
 ## Context

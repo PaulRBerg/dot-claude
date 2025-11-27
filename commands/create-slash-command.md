@@ -1,7 +1,7 @@
 ---
 argument-hint: [description]
 description: Create a new command by analyzing requirements and generating a well-structured command file
-model: sonnet
+model: opus
 ---
 
 ## Context

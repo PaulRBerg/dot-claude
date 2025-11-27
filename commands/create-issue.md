@@ -1,7 +1,7 @@
 ---
 argument-hint: [repository] [description]
 description: Create a GitHub issue with automatic labeling
-model: sonnet
+model: opus
 ---
 
 ## Context
