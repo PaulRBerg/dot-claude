@@ -1,12 +1,11 @@
 {
-  // Basic configuration for Claude Code
-  // General settings, environment variables, and UI customization
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "enabledPlugins": {
     "claude-opus-4-5-migration@claude-code-plugins": true,
     "code-review@claude-code-plugins": true,
-    "ralph-wiggum@claude-code-plugins": true,
     "playwright-skill@playwright-skill": true,
-    "plugin-dev@claude-code-plugins": true
+    "plugin-dev@claude-code-plugins": true,
+    "ralph-wiggum@claude-code-plugins": true,
+    "sablier@sablier-plugins": true
   }
 }
