@@ -9,6 +9,7 @@
       "~/.codex",
       "~/.claude-prompts",
       "~/.config",
+      "~/.effect",
       "~/.gemini",
       "~/.local",
       "~/.zsh",
