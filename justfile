@@ -4,7 +4,7 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 set unstable
 
 # ---------------------------------------------------------------------------- #
-#                             PROJECT DEPENDENCIES                             #
+#                                 DEPENDENCIES                                 #
 # ---------------------------------------------------------------------------- #
 
 # Bun: https://bun.sh
@@ -18,12 +18,6 @@ uv := require("uv")
 # ---------------------------------------------------------------------------- #
 
 GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
-
-# ANSI color codes for formatted output
-CYAN := '\033[0;36m'
-GREEN := '\033[0;32m'
-NORMAL := '\033[0m'
-
 
 # ---------------------------------------------------------------------------- #
 #                                   COMMANDS                                   #
@@ -124,7 +118,6 @@ alias th := test-hooks
 # ---------------------------------------------------------------------------- #
 
 # Private recipe to run a check with formatted output
-[no-cd]
 @_run-with-status recipe:
     echo ""
     echo -e '{{ CYAN }}→ Running {{ recipe }}...{{ NORMAL }}'
