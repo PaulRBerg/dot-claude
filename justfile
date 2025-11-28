@@ -34,7 +34,7 @@ install:
     just install-utils
 
 # Install CLI utilities (skipped in CI)
-[script]
+[script('bash')]
 install-utils:
     if [[ "$CI" == "true" ]]; then
         echo "Skipping brew install in CI environment"
