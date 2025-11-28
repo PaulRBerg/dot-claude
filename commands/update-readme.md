@@ -1,5 +1,5 @@
 ---
-argument-hint: [--preserve] [--minimal] [--thorough]
+argument-hint: '[--preserve] [--minimal] [--thorough]'
 description: Update README.md based on current codebase structure
 model: opus
 allowed-tools: Read, Write, Glob, Grep, Bash(git *:*), Bash(ls:*), Bash(fd:*), Bash(cat:*)

@@ -1,5 +1,5 @@
 ---
-argument-hint: [repository] [description]
+argument-hint: '[repository] [description]'
 description: Create a GitHub issue with automatic labeling
 model: opus
 ---

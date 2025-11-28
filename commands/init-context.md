@@ -1,5 +1,5 @@
 ---
-argument-hint: [description?]
+argument-hint: '[description?]'
 description: Generate project-specific CLAUDE.md file with custom context
 model: opus
 ---

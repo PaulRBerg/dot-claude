@@ -1,5 +1,5 @@
 ---
-argument-hint: [description]
+argument-hint: '[description]'
 description: Create a new command by analyzing requirements and generating a well-structured command file
 model: opus
 ---
@@ -98,7 +98,7 @@ CREATE command file with this structure:
 
 ```markdown
 ---
-argument-hint: [parameters]
+argument-hint: "[parameters]"
 description: Brief one-line description
 ---
 
