@@ -9,7 +9,6 @@ VERSION="${1:-}"
 DRAFT_FLAG=""
 PRERELEASE_FLAG=""
 BUILD_DIR="dist"
-CHANGELOG_FILE="CHANGELOG.md"
 
 # Parse arguments
 shift || true
@@ -166,13 +165,13 @@ $RELEASE_NOTES
 
 ## Installation
 
-\`\`\`bash
+```bash
 # Install via package manager
 npm install package@$VERSION_NUM
 
 # Or download from releases
 gh release download $VERSION
-\`\`\`
+```
 
 ---
 

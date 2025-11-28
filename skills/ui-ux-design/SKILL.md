@@ -19,10 +19,10 @@ Apply systematic design thinking to create exceptional user experiences.
 ## Design Philosophy
 
 1. Make decisions based on data and user research
-2. Apply progressive disclosure to manage complexity
-3. Build component-based design systems
-4. Design responsively across all viewports
-5. Optimize interfaces for performance
+1. Apply progressive disclosure to manage complexity
+1. Build component-based design systems
+1. Design responsively across all viewports
+1. Optimize interfaces for performance
 
 ## Deliverables
 

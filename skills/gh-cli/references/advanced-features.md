@@ -53,6 +53,7 @@ gh extension upgrade --all
 Manage GitHub Actions secrets and variables.
 
 ### Secrets
+
 ```bash
 # List secrets
 gh secret list
@@ -65,6 +66,7 @@ gh secret set SECRET_NAME < secret.txt
 ```
 
 ### Variables
+
 ```bash
 # List variables
 gh variable list
@@ -76,6 +78,7 @@ gh variable set VAR_NAME --body "value"
 ## SSH and GPG Keys
 
 ### SSH Keys
+
 ```bash
 # List SSH keys
 gh ssh-key list
@@ -85,6 +88,7 @@ gh ssh-key add ~/.ssh/id_ed25519.pub --title "My laptop"
 ```
 
 ### GPG Keys
+
 ```bash
 # List GPG keys
 gh gpg-key list
@@ -147,6 +151,7 @@ gh release verify-asset <file> --repo owner/repo
 ## Advanced Scripting Patterns
 
 ### Using jq with gh
+
 ```bash
 # Extract specific fields from JSON output
 gh pr list --json number,title,author --jq '.[] | select(.author.login=="username")'
@@ -159,6 +164,7 @@ gh pr list --json number --jq '.[].number'
 ```
 
 ### Error Handling in Scripts
+
 ```bash
 # Check if PR exists before operating
 if gh pr view 123 &>/dev/null; then
@@ -169,6 +175,7 @@ fi
 ```
 
 ### Batch Operations
+
 ```bash
 # Add label to multiple issues
 gh issue list --assignee @me --json number --jq '.[].number' | xargs -I {} gh issue edit {} --add-label "in-progress"

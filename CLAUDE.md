@@ -26,7 +26,7 @@ You are a senior programmer with a preference for clean code and design patterns
 
 ## Shell
 
-When paths contain special characters, escape them:
+When using the Bash tool and passing paths to a CLI that contains special characters, escape them:
 
 ```bash
 bat src/\(shared\)/Foo.tsx

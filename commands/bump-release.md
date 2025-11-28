@@ -17,12 +17,12 @@ Support for both regular and beta releases.
 ## Steps
 
 1. Update the `CHANGELOG.md` file with all changes since the last version release (**skip this step for beta releases**).
-2. Bump the version in `package.json`:
+1. Bump the version in `package.json`:
    - **Regular release**: Follow semantic versioning (e.g., 1.2.3)
    - **Beta release**: Add `-beta.X` suffix (e.g., 1.2.3-beta.1)
-3. **Format files** - If a `justfile` exists in the repository, run `just full-write` to ensure `CHANGELOG.md` and `package.json` are properly formatted
-4. Commit the changes with a message like "docs: release <version>"
-5. Create a new git tag by running `git tag -a v<version> -m "<version>"`
+1. **Format files** - If a `justfile` exists in the repository, run `just full-write` to ensure `CHANGELOG.md` and `package.json` are properly formatted
+1. Commit the changes with a message like "docs: release <version>"
+1. Create a new git tag by running `git tag -a v<version> -m "<version>"`
 
 **Note**: When `--dry-run` flag is provided, display what would be done without making any actual changes to files, creating commits, or tags.
 
@@ -31,13 +31,13 @@ Support for both regular and beta releases.
 ## Process
 
 1. **Check for arguments** - Determine if `version` was provided, if this is a beta release (`--beta`), and/or dry-run (`--dry-run`)
-2. **Write Changelog** - Examine diffs between the current branch and the previous tag to write Changelog. Then find
-relevant PRs by looking at the commit history and add them to each changelog (when available). If `package.json` contains
-a `files` field, only include changes within those specified files/directories. If no `files` field exists, include all
-changes except test changes, CI/CD workflows, and development tooling
-3. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
-4. **Check version** - Get current version from `package.json`
-5. **Bump version** - If `version` argument provided, use it directly. Otherwise, if unchanged since last release, increment per Semantic Versioning rules:
+1. **Write Changelog** - Examine diffs between the current branch and the previous tag to write Changelog. Then find
+   relevant PRs by looking at the commit history and add them to each changelog (when available). If `package.json` contains
+   a `files` field, only include changes within those specified files/directories. If no `files` field exists, include all
+   changes except test changes, CI/CD workflows, and development tooling
+1. **Follow format** - Use [Common Changelog](https://common-changelog.org/) specification
+1. **Check version** - Get current version from `package.json`
+1. **Bump version** - If `version` argument provided, use it directly. Otherwise, if unchanged since last release, increment per Semantic Versioning rules:
    - **For regular releases**:
      - **PATCH** (x.x.X) - Bug fixes, documentation updates
      - **MINOR** (x.X.x) - New features, backward-compatible changes
@@ -54,12 +54,12 @@ When `--beta` flag is provided in the $ARGUMENTS
 1. **Check for explicit version** - If `version` provided:
    - If version already has beta suffix → use as-is
    - If version has no beta suffix → append `-beta.1`
-2. **Otherwise, parse current version** from `package.json` and **determine beta version**:
+1. **Otherwise, parse current version** from `package.json` and **determine beta version**:
    - If current version is `1.2.3`: Create `1.2.4-beta.1` (increment patch + beta.1)
    - If current version is `1.2.3-beta.1`: Create `1.2.3-beta.2` (increment beta number)
    - If current version is `1.2.3-beta.5`: Create `1.2.3-beta.6` (increment beta number)
-3. **Skip CHANGELOG.md update** - Beta releases don't update the changelog
-4. **Commit and tag** with beta version (e.g., `v1.2.4-beta.1`)
+1. **Skip CHANGELOG.md update** - Beta releases don't update the changelog
+1. **Commit and tag** with beta version (e.g., `v1.2.4-beta.1`)
 
 ## Output
 
@@ -117,11 +117,11 @@ For regular releases only (changelog generation is skipped for beta releases):
 
 ## Version Examples
 
-| Current Version | Release Type      | New Version     |
-| --------------- | ----------------- | --------------- |
-| `1.2.3`         | Regular           | `1.2.4` (patch) |
-| `1.2.3`         | Beta              | `1.2.4-beta.1`  |
-| `1.2.3-beta.1`  | Beta              | `1.2.3-beta.2`  |
-| `1.2.3-beta.5`  | Regular           | `1.2.3`         |
-| `1.2.3`         | `2.0.0`           | `2.0.0`         |
-| `1.2.3`         | `2.0.0` + Beta    | `2.0.0-beta.1`  |
+| Current Version | Release Type   | New Version     |
+| --------------- | -------------- | --------------- |
+| `1.2.3`         | Regular        | `1.2.4` (patch) |
+| `1.2.3`         | Beta           | `1.2.4-beta.1`  |
+| `1.2.3-beta.1`  | Beta           | `1.2.3-beta.2`  |
+| `1.2.3-beta.5`  | Regular        | `1.2.3`         |
+| `1.2.3`         | `2.0.0`        | `2.0.0`         |
+| `1.2.3`         | `2.0.0` + Beta | `2.0.0-beta.1`  |

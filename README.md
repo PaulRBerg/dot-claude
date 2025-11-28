@@ -16,8 +16,7 @@ git clone git@github.com:PaulRBerg/dot-claude.git ~/.claude
 cd ~/.claude
 
 # 2. Install dependencies
-bun install          # Node dependencies (Husky, lint-staged)
-uv sync --all-extras # Python dependencies
+just install
 
 # 3. Try it out
 ccc                  # Make your first commit with the claude wrapper
@@ -44,7 +43,7 @@ safety, and shell escaping rules.
 
 - **Node.js** - For Husky/lint-staged automation (`npm install`)
 - **Just** - Command runner for build scripts (`brew install just`)
-- **Python 3.12+** and [uv](https://github.com/astral-sh/uv) - Python package and project manager
+- **Python 3.13+** and [uv](https://github.com/astral-sh/uv) - Python package and project manager
 
 ### Clone Repository
 
@@ -58,16 +57,7 @@ cd ~/.claude
 ### Install Dependencies
 
 ```bash
-bun install          # Install Node dependencies (Husky, lint-staged)
-uv sync --all-extras # Install Python dependencies
-```
-
-### CLI Dependencies
-
-Install via Homebrew on macOS:
-
-```bash
-brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
+just install  # Node deps, Python deps, and CLI dependencies
 ```
 
 ### Verify Installation

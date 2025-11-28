@@ -16,11 +16,13 @@ model: haiku
 ### STEP 1: Handle staging
 
 IF `--all`:
+
 - No changes at all → error "No changes to commit"
 - Unstaged changes exist → auto-stage with `git add -A`, log what was staged
 - Already staged → proceed
 
 OTHERWISE (default - atomic commits):
+
 - Unstage all (`git reset`)
 - Stage only chat-modified files
 - Log which files were staged
@@ -29,6 +31,7 @@ OTHERWISE (default - atomic commits):
 ### STEP 2: Parse arguments
 
 Flags:
+
 - `--all` → commit all changes (not just chat-modified files)
 - `--thorough` → deep code analysis, breaking changes, detailed body
 - `--push` → push after commit
@@ -39,6 +42,7 @@ Flags:
 ### STEP 3: Analyze changes
 
 **Default mode:**
+
 - Read the staged diff from context
 - Determine change type from what the code does:
   - New functionality → `feat`
@@ -56,6 +60,7 @@ Flags:
 - Extract a specific description of what changed (not just which files)
 
 **IF `--thorough`:**
+
 - Deep semantic analysis of the code
 - Detect breaking changes
 - Infer scope from code structure even when path isn't clear
@@ -67,6 +72,7 @@ Flags:
 ### STEP 4: Compose message
 
 Subject line (≤50 chars): `type(scope): description` or `type: description`
+
 - Imperative mood ("add" not "added")
 - Lowercase, no period
 - Describe what the change does, not which files changed
@@ -74,6 +80,7 @@ Subject line (≤50 chars): `type(scope): description` or `type: description`
 **Default mode:** Subject only. Brief but specific.
 
 **IF `--thorough`:**
+
 - Add body (wrap 72 chars, explain WHY)
 - Breaking change: `BREAKING CHANGE: description` + migration notes
 - GitHub issues: `Closes #123` or `Closes #123, #456`
@@ -97,6 +104,7 @@ If failed: show error + suggest fix (pull first, set upstream, auth)
 ## Examples
 
 **Subject lines:**
+
 ```
 feat(auth): add OAuth2 login support
 fix(api): handle null response from user endpoint
@@ -107,6 +115,7 @@ ai: add code review agent configuration
 ```
 
 **With body (thorough mode):**
+
 ```
 feat(webhooks): add retry mechanism for failed deliveries
 
@@ -115,6 +124,7 @@ Implements exponential backoff with max 5 retries. Retry intervals:
 ```
 
 **Breaking change:**
+
 ```
 feat(api): migrate to v2 authentication
 
@@ -123,6 +133,7 @@ See docs/auth-v2.md for migration.
 ```
 
 **With issue:**
+
 ```
 fix(auth): resolve login timeout on slow connections
 

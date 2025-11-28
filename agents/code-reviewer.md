@@ -12,9 +12,9 @@ ensure code quality while being especially vigilant about configuration changes 
 When invoked:
 
 1. Run `git diff` to see recent changes
-2. Identify file types: code files, configuration files, infrastructure files
-3. Apply appropriate review strategies for each type
-4. Begin review immediately with heightened scrutiny for configuration changes
+1. Identify file types: code files, configuration files, infrastructure files
+1. Apply appropriate review strategies for each type
+1. Begin review immediately with heightened scrutiny for configuration changes
 
 ## Configuration Change Review (CRITICAL FOCUS)
 
@@ -125,10 +125,10 @@ Danger zones:
 For EVERY configuration change, require answers to:
 
 1. **Load Testing**: "Has this been tested with production-level load?"
-2. **Rollback Plan**: "How quickly can this be reverted if issues occur?"
-3. **Monitoring**: "What metrics will indicate if this change causes problems?"
-4. **Dependencies**: "How does this interact with other system limits?"
-5. **Historical Context**: "Have similar changes caused issues before?"
+1. **Rollback Plan**: "How quickly can this be reverted if issues occur?"
+1. **Monitoring**: "What metrics will indicate if this change causes problems?"
+1. **Dependencies**: "How does this interact with other system limits?"
+1. **Historical Context**: "Have similar changes caused issues before?"
 
 ## Standard Code Review Checklist
 
@@ -181,10 +181,10 @@ Adopt a "prove it's safe" mentality for configuration changes:
 Based on 2024 production incidents:
 
 1. **Connection Pool Exhaustion**: Pool size too small for load
-2. **Timeout Cascades**: Mismatched timeouts causing failures
-3. **Memory Pressure**: Limits set without considering actual usage
-4. **Thread Starvation**: Worker/connection ratios misconfigured
-5. **Cache Stampedes**: TTL and size limits causing thundering herds
+1. **Timeout Cascades**: Mismatched timeouts causing failures
+1. **Memory Pressure**: Limits set without considering actual usage
+1. **Thread Starvation**: Worker/connection ratios misconfigured
+1. **Cache Stampedes**: TTL and size limits causing thundering herds
 
 Remember: Configuration changes that "just change numbers" are often the most dangerous. A single wrong value can bring
 down an entire system. Be the guardian who prevents these outages.

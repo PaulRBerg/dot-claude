@@ -8,28 +8,32 @@ description: This skill should be used when the user asks to "refactor duplicate
 ## Process
 
 1. **Identify** - Exact copies, similar patterns, parallel hierarchies, naming patterns (`data1`/`data2`, `handleXClick`)
-2. **Analyze** - Coupling, cohesion, frequency (Rule of Three: wait for 3+ occurrences), volatility
-3. **Refactor** - Choose technique below, extract incrementally, test after each step
+1. **Analyze** - Coupling, cohesion, frequency (Rule of Three: wait for 3+ occurrences), volatility
+1. **Refactor** - Choose technique below, extract incrementally, test after each step
 
 ## Techniques
 
 **Extract Function** - Same logic in multiple places
+
 ```ts
 getFullName(user: User) => `${user.firstName} ${user.lastName}`
 ```
 
 **Extract Variable** - Repeated expression
+
 ```ts
 const isWorkingAge = user.age >= 18 && user.age < 65;
 ```
 
 **Parameterize** - Code differs only in values
+
 ```ts
 validateField(value: string, pattern: RegExp)
 // Use: validateField(email, EMAIL_REGEX)
 ```
 
 **Extract Class** - Related functions scattered
+
 ```ts
 class UserRewards {
   calculateDiscount(user, amount) { }
@@ -38,18 +42,21 @@ class UserRewards {
 ```
 
 **Polymorphism** - Repeated switch/if-else
+
 ```ts
 interface PaymentProcessor { process(amount: number): void }
 class CreditProcessor implements PaymentProcessor { }
 ```
 
 **Strategy Pattern** - Duplicated algorithm selection
+
 ```ts
 const strategies = { date: byDate, name: byName };
 items.sort(strategies[sortType] ?? byPriority);
 ```
 
 **Pull Up Method** - Identical methods in subclasses
+
 ```ts
 class BaseUser { getDisplayName() { } }
 class AdminUser extends BaseUser { }

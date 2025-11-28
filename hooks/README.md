@@ -188,9 +188,9 @@ just test-hooks
 ### Hook Not Firing
 
 1. Check hook is enabled in `settings/hooks.jsonc`
-2. Verify hook script is executable: `ls -la hooks/*/your-hook`
-3. Check hook output in Claude Code logs
-4. Test hook independently: `python hooks/UserPromptSubmit/your-hook/your-hook.py`
+1. Verify hook script is executable: `ls -la hooks/*/your-hook`
+1. Check hook output in Claude Code logs
+1. Test hook independently: `python hooks/UserPromptSubmit/your-hook/your-hook.py`
 
 ### Permission Errors
 

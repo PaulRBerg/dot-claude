@@ -11,6 +11,7 @@ version: 0.1.0
 Expert guidance for GitHub CLI (gh) operations and workflows. Use this skill for command-line GitHub operations including pull request management, issue tracking, repository operations, workflow automation, and codespace management.
 
 **Key capabilities:**
+
 - Create and manage pull requests from the terminal
 - Track and organize issues efficiently
 - Search across all of GitHub (repos, issues, PRs)
@@ -26,6 +27,7 @@ Expert guidance for GitHub CLI (gh) operations and workflows. Use this skill for
 This skill focuses exclusively on safe, read-only, or reversible GitHub operations. The following commands are **PROHIBITED** and must **NEVER** be used:
 
 **Permanently destructive commands:**
+
 - `gh repo delete` - Repository deletion
 - `gh repo archive` - Repository archival
 - `gh release delete` - Release deletion
@@ -44,6 +46,7 @@ This skill focuses exclusively on safe, read-only, or reversible GitHub operatio
 - Shell commands: `rm -rf` (except for temporary file cleanup)
 
 **Allowed operations:**
+
 - Creating resources (PRs, issues, releases, labels, repos)
 - Viewing and listing (status, logs, information, searches)
 - Updating and editing existing resources
@@ -68,6 +71,7 @@ gh auth setup-git
 ## Pull Requests
 
 ### Creating PRs
+
 ```bash
 # Create PR interactively
 gh pr create
@@ -86,6 +90,7 @@ gh pr create --fill  # Uses commit messages
 ```
 
 ### Viewing PRs
+
 ```bash
 # List PRs
 gh pr list
@@ -107,6 +112,7 @@ gh pr status
 ```
 
 ### Managing PRs
+
 ```bash
 # Checkout PR locally
 gh pr checkout 123
@@ -136,6 +142,7 @@ gh pr update-branch 123
 ```
 
 ### PR Checks
+
 ```bash
 # View PR checks
 gh pr checks 123
@@ -147,6 +154,7 @@ gh pr checks 123 --watch
 ## Issues
 
 ### Creating Issues
+
 ```bash
 # Create issue interactively
 gh issue create
@@ -162,6 +170,7 @@ gh issue create --title "Task" --assignee @me
 ```
 
 ### Viewing Issues
+
 ```bash
 # List issues
 gh issue list
@@ -180,6 +189,7 @@ gh issue view 456 --web
 ```
 
 ### Managing Issues
+
 ```bash
 # Close issue
 gh issue close 456
@@ -202,6 +212,7 @@ gh issue develop 456 --checkout
 ## Repository Operations
 
 ### Repository Info
+
 ```bash
 # View repository
 gh repo view
@@ -220,6 +231,7 @@ gh repo list owner
 ```
 
 ### Repository Management
+
 ```bash
 # Create repository
 gh repo create my-repo --public
@@ -237,6 +249,7 @@ gh repo set-default
 Search across all of GitHub for repositories, issues, and pull requests.
 
 ### Search Repositories
+
 ```bash
 # Search for repositories
 gh search repos "machine learning" --language=python
@@ -246,6 +259,7 @@ gh search repos --stars=">1000" --topic=kubernetes
 ```
 
 ### Search Issues
+
 ```bash
 # Search issues across GitHub
 gh search issues "bug" --label=critical --state=open
@@ -255,6 +269,7 @@ gh search issues -- "memory leak -label:wontfix"
 ```
 
 ### Search Pull Requests
+
 ```bash
 # Search PRs
 gh search prs --author=@me --state=open
@@ -268,12 +283,14 @@ gh search prs "refactor" --created=">2024-01-01"
 Manage repository labels for issue and PR organization.
 
 ### List and View Labels
+
 ```bash
 # List all labels in repository
 gh label list
 ```
 
 ### Create and Edit Labels
+
 ```bash
 # Create new label
 gh label create "priority: high" --color FF0000 --description "High priority items"
@@ -283,6 +300,7 @@ gh label edit "bug" --color FFAA00 --description "Something isn't working"
 ```
 
 ### Clone Labels Between Repos
+
 ```bash
 # Clone labels from another repository
 gh label clone owner/source-repo
@@ -293,6 +311,7 @@ gh label clone owner/source-repo
 Manage GitHub Codespaces directly from the terminal.
 
 ### List and Create Codespaces
+
 ```bash
 # List codespaces
 gh codespace list
@@ -302,6 +321,7 @@ gh codespace create --repo owner/repo
 ```
 
 ### Connect to Codespaces
+
 ```bash
 # SSH into codespace
 gh codespace ssh
@@ -314,6 +334,7 @@ gh codespace jupyter
 ```
 
 ### Manage Codespace Files
+
 ```bash
 # Copy files to/from codespace
 gh codespace cp local-file.txt remote:~/path/
@@ -326,6 +347,7 @@ gh codespace logs
 ## Releases
 
 ### Creating Releases
+
 ```bash
 # Create release
 gh release create v1.0.0
@@ -344,6 +366,7 @@ gh release create v1.0.0 --generate-notes
 ```
 
 ### Managing Releases
+
 ```bash
 # List releases
 gh release list
@@ -394,25 +417,25 @@ gh config set browser firefox
 
 Common gh operations at a glance:
 
-| Operation | Command | Common Flags |
-|-----------|---------|--------------|
-| Create PR | `gh pr create` | `--draft`, `--fill`, `--base`, `--title` |
-| List PRs | `gh pr list` | `--author @me`, `--label`, `--state` |
-| View PR | `gh pr view <number>` | `--web`, `--comments` |
-| Merge PR | `gh pr merge <number>` | `--squash`, `--rebase`, `--delete-branch` |
-| Create issue | `gh issue create` | `--title`, `--body`, `--label` |
-| List issues | `gh issue list` | `--assignee @me`, `--label`, `--state` |
-| View issue | `gh issue view <number>` | `--web`, `--comments` |
-| Clone repo | `gh repo clone <repo>` | `--` (to pass git flags) |
-| Fork repo | `gh repo fork` | `--clone`, `--remote` |
-| View repo | `gh repo view` | `--web` |
-| Create release | `gh release create <tag>` | `--title`, `--notes`, `--draft` |
-| Run workflow | `gh workflow run <name>` | `--ref`, `--field` |
-| Watch run | `gh run watch <id>` | `--exit-status` |
-| Search repos | `gh search repos <query>` | `--language`, `--stars` |
-| Create label | `gh label create <name>` | `--color`, `--description` |
-| Create codespace | `gh codespace create` | `--repo`, `--branch` |
-| SSH to codespace | `gh codespace ssh` | `--codespace` |
+| Operation        | Command                   | Common Flags                              |
+| ---------------- | ------------------------- | ----------------------------------------- |
+| Create PR        | `gh pr create`            | `--draft`, `--fill`, `--base`, `--title`  |
+| List PRs         | `gh pr list`              | `--author @me`, `--label`, `--state`      |
+| View PR          | `gh pr view <number>`     | `--web`, `--comments`                     |
+| Merge PR         | `gh pr merge <number>`    | `--squash`, `--rebase`, `--delete-branch` |
+| Create issue     | `gh issue create`         | `--title`, `--body`, `--label`            |
+| List issues      | `gh issue list`           | `--assignee @me`, `--label`, `--state`    |
+| View issue       | `gh issue view <number>`  | `--web`, `--comments`                     |
+| Clone repo       | `gh repo clone <repo>`    | `--` (to pass git flags)                  |
+| Fork repo        | `gh repo fork`            | `--clone`, `--remote`                     |
+| View repo        | `gh repo view`            | `--web`                                   |
+| Create release   | `gh release create <tag>` | `--title`, `--notes`, `--draft`           |
+| Run workflow     | `gh workflow run <name>`  | `--ref`, `--field`                        |
+| Watch run        | `gh run watch <id>`       | `--exit-status`                           |
+| Search repos     | `gh search repos <query>` | `--language`, `--stars`                   |
+| Create label     | `gh label create <name>`  | `--color`, `--description`                |
+| Create codespace | `gh codespace create`     | `--repo`, `--branch`                      |
+| SSH to codespace | `gh codespace ssh`        | `--codespace`                             |
 
 ## Additional Resources
 
@@ -428,6 +451,7 @@ For detailed patterns and advanced usage, see:
 ### Example Scripts
 
 Practical automation scripts (see `examples/` directory):
+
 - `auto-pr-create.sh` - Automated PR creation workflow
 - `issue-triage.sh` - Bulk issue labeling and assignment
 - `workflow-monitor.sh` - Watch and notify on workflow completion
@@ -443,8 +467,8 @@ Practical automation scripts (see `examples/` directory):
 ## Tips
 
 1. Use `--web` flag to open items in browser for detailed view
-2. Leverage interactive prompts by omitting parameters - most commands support interactive mode
-3. Apply filters with `--author`, `--label`, `--state` to narrow down lists efficiently
-4. Add `--json` flag to enable scriptable output for automation
-5. Use `gh repo create --template` to scaffold from template repositories
-6. Enable auto-merge with `gh pr merge --auto` for PRs that pass checks
+1. Leverage interactive prompts by omitting parameters - most commands support interactive mode
+1. Apply filters with `--author`, `--label`, `--state` to narrow down lists efficiently
+1. Add `--json` flag to enable scriptable output for automation
+1. Use `gh repo create --template` to scaffold from template repositories
+1. Enable auto-merge with `gh pr merge --auto` for PRs that pass checks

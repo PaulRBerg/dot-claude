@@ -8,3 +8,4 @@ skills/
 
 # files
 .claude/settings.local.json
+*.md

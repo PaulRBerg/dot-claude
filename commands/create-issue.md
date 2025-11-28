@@ -19,6 +19,7 @@ IF not authenticated: ERROR "Run `gh auth login` first"
 ### STEP 2: Parse repository argument
 
 Determine repository from $ARGUMENTS:
+
 - IF the first token matches "owner/repo": use it as repository and remove it from $ARGUMENTS
 - ELSE: infer the current repository from the working directory (error if not in a repo)
 
@@ -27,11 +28,13 @@ Note: If you don't specify a repository, the command will infer the current repo
 ### STEP 3: Check for issue templates
 
 Check if the repository has issue templates:
+
 ```bash
 gh api repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE --jq '.[].name' 2>/dev/null
 ```
 
-IF markdown templates (*.md) are found:
+IF markdown templates (\*.md) are found:
+
 - **SELECT TEMPLATE**: Infer which template best matches the user's intent from $ARGUMENTS
   - Common patterns: `bug_report.md`, `feature_request.md`, `enhancement.md`, `question.md`, etc.
   - Consider keywords in user's description (bug, feature, docs, etc.)
@@ -39,6 +42,7 @@ IF markdown templates (*.md) are found:
 - Continue to STEP 4
 
 ELSE:
+
 - **USE DEFAULT TEMPLATE**: No templates found, use default structure (see STEP 6)
 - Continue to STEP 4
 
@@ -47,10 +51,12 @@ ELSE:
 Extract the owner from the repository (the part before the `/`).
 
 IF owner is `PaulRBerg` OR `sablier-labs`:
+
 - **APPLY LABELS**: The user has permission to add labels
 - Continue to STEP 5
 
 ELSE:
+
 - **SKIP LABELS**: Do not apply labels for this repository
 - Skip STEP 5 and go directly to STEP 6
 
@@ -59,6 +65,7 @@ ELSE:
 **ONLY if owner is PaulRBerg or sablier-labs** (from STEP 4):
 
 From content analysis, determine:
+
 - **Type**: Primary category (bug, feature, docs, etc.)
 - **Work**: Complexity via Cynefin (clear, complicated, complex, chaotic)
 - **Priority**: Urgency (0=critical to 3=nice-to-have)
@@ -68,6 +75,7 @@ From content analysis, determine:
 ### STEP 6: Generate title and body
 
 From remaining $ARGUMENTS, create:
+
 - **Title**: Clear, concise summary (5-10 words)
 - **Body**: Use the selected template from STEP 3 if available, otherwise use this default template:
 
@@ -94,6 +102,7 @@ From remaining $ARGUMENTS, create:
 ```
 
 **Admonitions**: Add GitHub-style admonitions when appropriate:
+
 - `> [!NOTE]` - For context, dependencies, or implementation details users should notice
 - `> [!TIP]` - For suggestions on testing, workarounds, or best practices
 - `> [!IMPORTANT]` - For breaking changes, required migrations, or critical setup steps
@@ -101,6 +110,7 @@ From remaining $ARGUMENTS, create:
 - `> [!CAUTION]` - For deprecated features, temporary solutions, or things to avoid
 
 Place admonitions after the relevant section. Example:
+
 ```
 ## Solution
 
@@ -111,6 +121,7 @@ Refactor the authentication module to use JWT tokens.
 ```
 
 File links:
+
 - **MUST** use markdown format: `[{filename}](https://github.com/{owner}/{repo}/blob/main/{path})`
 - **Link text** should be the relative file path (e.g., `src/file.ts`, `docusaurus.config.ts`)
 - **URL** must be the full GitHub URL
@@ -120,6 +131,7 @@ File links:
 ### STEP 7: Create the issue
 
 **IF owner is PaulRBerg or sablier-labs**:
+
 ```bash
 gh issue create \
   --repo "$repository" \
@@ -129,6 +141,7 @@ gh issue create \
 ```
 
 **IF owner is neither PaulRBerg nor sablier-labs**:
+
 ```bash
 gh issue create \
   --repo "$repository" \
@@ -143,6 +156,7 @@ On failure: show specific error and fix
 ## Label Reference
 
 ### Type
+
 - `type: bug` - Something isn't working
 - `type: feature` - New feature or request
 - `type: perf` - Performance or UX improvement
@@ -155,24 +169,28 @@ On failure: show specific error and fix
 - `type: style` - Code style changes
 
 ### Work (Cynefin)
+
 - `work: clear` - Known solution
 - `work: complicated` - Requires analysis but solvable
 - `work: complex` - Experimental, unclear outcome
 - `work: chaotic` - Crisis mode
 
 ### Priority
+
 - `priority: 0` - Critical blocker
 - `priority: 1` - Important
 - `priority: 2` - Standard work
 - `priority: 3` - Nice-to-have
 
 ### Effort
-- `effort: low` - <1 day
+
+- `effort: low` - \<1 day
 - `effort: medium` - 1-3 days
 - `effort: high` - Several days
 - `effort: epic` - Weeks, multiple PRs
 
 ### Scope (sablier-labs/command-center only)
+
 - `scope: frontend`
 - `scope: backend`
 - `scope: evm`

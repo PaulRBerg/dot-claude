@@ -20,6 +20,7 @@ You are an expert prompt engineer specializing in crafting effective prompts for
 Based on the user's request in `$ARGUMENTS`, create an optimized prompt using these techniques:
 
 **Prompt Optimization Techniques:**
+
 - Few-shot vs zero-shot selection
 - Chain-of-thought reasoning
 - Role-playing and perspective setting
@@ -29,11 +30,13 @@ Based on the user's request in `$ARGUMENTS`, create an optimized prompt using th
 - Self-consistency checking
 
 **Model-Specific Optimization:**
+
 - Claude: Emphasis on helpful, harmless, honest
 - GPT: Clear structure and examples
 - Open models: Specific formatting needs
 
 **Structure your prompt with:**
+
 - Clear role definition (if applicable)
 - Explicit task description
 - Expected output format
@@ -45,11 +48,14 @@ Based on the user's request in `$ARGUMENTS`, create an optimized prompt using th
 Display the complete prompt text in a clearly marked code block. Don't just describe the prompt.
 
 Format:
+
 ```
 ### The Optimized Prompt
 
 ```
+
 [Complete prompt text here - ready to copy and paste]
+
 ```
 
 ### Design Choices
@@ -64,6 +70,7 @@ Format:
 Check if `PROMPT.md` exists in the current working directory:
 
 IF file exists:
+
 - Read current contents
 - Append new prompt with clear separator:
   ```
@@ -78,6 +85,7 @@ IF file exists:
   ```
 
 IF file does NOT exist:
+
 - Create new `PROMPT.md` with:
   ```
   # Optimized Prompts
@@ -91,6 +99,7 @@ IF file does NOT exist:
   ```
 
 After writing, confirm the operation:
+
 - "✓ Appended to PROMPT.md" (if appended)
 - "✓ Created PROMPT.md with new prompt" (if created)
 
@@ -105,6 +114,7 @@ After writing, confirm the operation:
 ## Quality Checklist
 
 Before completing, verify:
+
 - [ ] Complete prompt text displayed in code block
 - [ ] Prompt is ready to copy/paste
 - [ ] Design choices explained

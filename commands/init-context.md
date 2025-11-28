@@ -17,19 +17,23 @@ model: opus
 ### STEP 1: Check arguments
 
 DETERMINE mode:
+
 - IF `$ARGUMENTS` is empty: **Automatic inference mode** - derive context from project analysis in STEP 3
 - IF `$ARGUMENTS` is provided: **Guided mode** - use description to focus content generation
 
 Examples of guided mode:
+
 - `/init-context TypeScript monorepo with strict type safety and functional patterns`
 - `/init-context Foundry smart contract project with security-first mindset`
 
 ### STEP 2: Check existing CLAUDE.md
 
 CHECK for existing files:
+
 - Run `test -f CLAUDE.md && echo "root" || test -f .claude/CLAUDE.md && echo "claude" || echo "none"`
 
 IF result is "root" or "claude":
+
 - Read the existing file
 - ASK user: "CLAUDE.md already exists at [location]. Choose action:"
   - **Overwrite** - Replace existing file completely
@@ -40,6 +44,7 @@ IF result is "root" or "claude":
 ### STEP 3: Gather project context
 
 READ available project files (non-blocking - skip if missing):
+
 - `package.json` → stack, scripts, dependencies
 - `README.md` → project overview, purpose
 - `pyproject.toml` or `Cargo.toml` or `go.mod` → language-specific context
@@ -48,6 +53,7 @@ READ available project files (non-blocking - skip if missing):
 - File structure with `fd -t f -d 2` → quick directory layout
 
 ANALYZE to understand:
+
 - Primary language/framework
 - Project type (library, app, contracts, monorepo)
 - Build/test tools
@@ -56,6 +62,7 @@ ANALYZE to understand:
 ### STEP 4: Generate CLAUDE.md content
 
 **Writing Style Requirements:**
+
 - **Terse and direct** - No fluff, straight to point
 - **Expert-to-expert** - Assume high competency
 - **Imperative mood** - Commands ("Use", "Follow", "Avoid")
@@ -72,6 +79,7 @@ ANALYZE to understand:
 Base your structure on `$ARGUMENTS` and project analysis. NO predefined template.
 
 Common patterns (use only if relevant):
+
 - **Tech stack** - Languages, frameworks, tools
 - **Architecture** - Patterns, conventions, structure
 - **Commands** - Build, test, lint, deploy
@@ -107,12 +115,14 @@ Common patterns (use only if relevant):
 
 **Guided mode** (when `$ARGUMENTS` provided):
 Analyze `$ARGUMENTS` for:
+
 - Keywords → "security", "testing", "monorepo", "contracts"
 - Constraints → "strict", "functional", "minimal", "fast"
 - Tools → "Foundry", "Next.js", "React", "Viem"
 - Priorities → What matters most to the user
 
 Generate sections that match the intent. If user says "security-first Foundry project", emphasize:
+
 - Security tools (Slither, tests)
 - Audit requirements
 - Safe patterns
@@ -120,6 +130,7 @@ Generate sections that match the intent. If user says "security-first Foundry pr
 
 **Automatic inference mode** (when `$ARGUMENTS` empty):
 Derive context entirely from STEP 3 analysis:
+
 - Primary language/framework → dictates tech stack and code style sections
 - Project type (library, app, contracts, monorepo) → determines architecture patterns
 - Build/test tools detected → commands section
@@ -127,6 +138,7 @@ Derive context entirely from STEP 3 analysis:
 - Dependencies and tooling → workflow suggestions
 
 Infer priorities from project signals:
+
 - `foundry.toml` or security deps → security focus
 - Extensive test setup → testing emphasis
 - Multiple packages → monorepo patterns
@@ -135,26 +147,31 @@ Infer priorities from project signals:
 ### STEP 5: Write CLAUDE.md
 
 DETERMINE write location:
+
 - **Prefer**: `./CLAUDE.md` (root)
 - **Only if user explicitly requests**: `./.claude/CLAUDE.md`
 
 EXECUTE write operation:
 
 IF user chose "Overwrite" or no existing file:
+
 - Write complete new CLAUDE.md with generated content
 
 IF user chose "Merge":
+
 - Read existing content
 - Append separator: `\n---\n\n# Auto-generated Context\n\n`
 - Append generated content
 - Write combined content
 
 CONFIRM success:
+
 - Display file path
 - Show first 10 lines as preview
 - Success message: `✓ Created CLAUDE.md at ./CLAUDE.md`
 
 IF write fails:
+
 - Check permissions
 - Suggest specific fix
 - DO NOT retry automatically
@@ -162,10 +179,12 @@ IF write fails:
 ### STEP 6: Optional project import suggestions
 
 CHECK for commonly useful files to import:
+
 - README.md exists → Suggest adding `@README.md` to CLAUDE.md
 - package.json exists → Suggest adding `@package.json` for script reference
 
 FORMAT suggestion as:
+
 ```
 💡 Tip: Consider importing project files into CLAUDE.md:
 

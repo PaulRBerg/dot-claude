@@ -17,7 +17,7 @@ uv := require("uv")
 #                                   CONSTANTS                                  #
 # ---------------------------------------------------------------------------- #
 
-GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
+GLOBS_PRETTIER := "\"**/*.{json,jsonc,yaml,yml}\""
 
 # ---------------------------------------------------------------------------- #
 #                                   COMMANDS                                   #
@@ -27,10 +27,11 @@ GLOBS_PRETTIER := "\"**/*.{json,jsonc,md,yaml,yml}\""
 default:
     @just --list
 
-# Install dependencies
+# Install all dependencies for .claude
 install:
     bun install
     uv sync --all-extras --dev
+    brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
 
 # Merge JSONC settings files into settings.json
 [group("settings")]
@@ -50,6 +51,7 @@ alias ss := sync-section
 # Run all code checks
 [group("checks")]
 @full-check:
+    just _run-with-status mdformat-check
     just _run-with-status prettier-check
     just _run-with-status ruff-check
     just _run-with-status pyright-check
@@ -60,11 +62,24 @@ alias fc := full-check
 # Run all code fixes
 [group("checks")]
 @full-write:
+    just _run-with-status mdformat-write
     just _run-with-status prettier-write
     just _run-with-status ruff-write
     echo ""
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
+
+# Check Markdown formatting (exclusions in .mdformat.toml)
+[group("checks")]
+@mdformat-check +paths=".":
+    mdformat --check {{ paths }}
+alias mc := mdformat-check
+
+# Format Markdown files (exclusions in .mdformat.toml)
+[group("checks")]
+@mdformat-write +paths=".":
+    mdformat {{ paths }}
+alias mw := mdformat-write
 
 # Check Prettier formatting
 [group("checks")]

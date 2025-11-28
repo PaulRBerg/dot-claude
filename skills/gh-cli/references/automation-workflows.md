@@ -5,6 +5,7 @@ Common workflow patterns and automation examples using gh CLI.
 ## Common Workflows
 
 ### Code Review Workflow
+
 ```bash
 # List PRs assigned to you
 gh pr list --assignee @me
@@ -22,6 +23,7 @@ gh pr merge 123 --squash
 ```
 
 ### Quick PR Creation
+
 ```bash
 # Create feature branch, make changes, commit
 git checkout -b feature/new-feature
@@ -38,6 +40,7 @@ gh pr view --web
 ```
 
 ### Issue Triage
+
 ```bash
 # List open issues
 gh issue list
@@ -53,6 +56,7 @@ gh issue edit 456 --add-assignee @developer
 ## Advanced Automation Patterns
 
 ### Daily Standup Report
+
 ```bash
 #!/bin/bash
 # Generate daily activity report
@@ -70,6 +74,7 @@ gh issue list --author @me --state closed --search "closed:$(date +%Y-%m-%d)"
 ```
 
 ### Auto-label PRs by Files Changed
+
 ```bash
 #!/bin/bash
 # Auto-label PR based on changed files
@@ -91,6 +96,7 @@ fi
 ```
 
 ### Sync Fork with Upstream
+
 ```bash
 #!/bin/bash
 # Keep fork in sync with upstream
@@ -101,6 +107,7 @@ git merge origin/main
 ```
 
 ### Release Checklist Automation
+
 ```bash
 #!/bin/bash
 # Automated release checklist
@@ -125,6 +132,7 @@ gh release upload "v$VERSION" dist/*
 ```
 
 ### Bulk PR Operations
+
 ```bash
 #!/bin/bash
 # Approve all PRs from dependabot
@@ -134,6 +142,7 @@ gh pr list --author app/dependabot --json number --jq '.[].number' | \
 ```
 
 ### Monitor CI Status
+
 ```bash
 #!/bin/bash
 # Monitor all active PRs for CI failures
@@ -146,6 +155,7 @@ gh pr list --json number,title,statusCheckRollup --jq '.[] |
 ## Notifications and Monitoring
 
 ### Watch for PR Reviews
+
 ```bash
 # Monitor PR for new reviews
 while true; do
@@ -156,6 +166,7 @@ done
 ```
 
 ### Get Notified on Workflow Completion
+
 ```bash
 #!/bin/bash
 # Wait for workflow and send notification
@@ -172,6 +183,7 @@ fi
 ```
 
 ### PR Staleness Check
+
 ```bash
 #!/bin/bash
 # Find stale PRs (no activity in 30 days)
@@ -184,12 +196,14 @@ gh pr list --json number,title,updatedAt --jq '.[] |
 ## Team Collaboration Patterns
 
 ### Assign PR Reviewers by Team
+
 ```bash
 # Auto-assign team members as reviewers
 gh pr create --reviewer team/backend,team/security --assignee @me
 ```
 
 ### Bulk Issue Assignment
+
 ```bash
 # Assign all bugs to triage team
 gh issue list --label bug --json number --jq '.[].number' | \
@@ -197,6 +211,7 @@ gh issue list --label bug --json number --jq '.[].number' | \
 ```
 
 ### Weekly Team Report
+
 ```bash
 #!/bin/bash
 # Generate weekly team activity summary
@@ -216,6 +231,7 @@ gh search issues "team:$TEAM is:closed closed:>=$SINCE" --limit 100
 ## Repository Management
 
 ### Batch Repository Creation
+
 ```bash
 #!/bin/bash
 # Create multiple repositories from template
@@ -229,6 +245,7 @@ done
 ```
 
 ### Clone All Organization Repos
+
 ```bash
 #!/bin/bash
 # Clone all repos from an organization
@@ -239,6 +256,7 @@ gh repo list "$ORG" --limit 1000 --json name --jq '.[].name' | \
 ```
 
 ### Sync Multiple Forks
+
 ```bash
 #!/bin/bash
 # Sync all your forks with upstream

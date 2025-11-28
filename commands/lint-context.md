@@ -29,25 +29,30 @@ Read the file and extract **verifiable claims**:
 Check against actual codebase:
 
 **File/Directory claims:**
+
 - Use `ls`, `fd`, or `tree` to verify paths exist
 - Check directory structures match descriptions
 
 **Command claims:**
+
 - Verify commands exist in `justfile`, `package.json`, `Makefile`, or scripts
 - Check command syntax is correct
 - Validate available scripts/tasks match documentation
 
 **Code structure claims:**
+
 - Read actual files to verify patterns described
 - Check that relationships mentioned are accurate
 - Verify import/export patterns match documentation
 
 **Workflow claims:**
+
 - Verify build/deploy workflows match descriptions
 - Check that process flows are accurate
 - Validate dependencies and execution order
 
 **Linting configuration:**
+
 - Locate lint-staged config file (`.lintstagedrc.js`, `.lintstagedrc.json`, `lint-staged` in `package.json`)
 - Extract lint commands for each file pattern
 - Compare against linting instructions in `CLAUDE.md` (if present)

@@ -13,10 +13,10 @@ Use the WebSearch tool to find current, popular tools. Don't rely solely on trai
 ## When Invoked
 
 1. Identify the ecosystem/language from context or ask
-2. Clarify the specific task/requirement if ambiguous
-3. Perform web searches to identify candidate tools
-4. Evaluate top 3-5 options based on ecosystem-specific metrics
-5. Present a clear recommendation with rationale
+1. Clarify the specific task/requirement if ambiguous
+1. Perform web searches to identify candidate tools
+1. Evaluate top 3-5 options based on ecosystem-specific metrics
+1. Present a clear recommendation with rationale
 
 ## Ecosystem Detection
 
@@ -37,26 +37,31 @@ Other supported ecosystems:
 Adapt queries to the ecosystem:
 
 **For npm/JavaScript:**
+
 - `"best npm package for [task]" 2024 2025`
 - `"[task] javascript typescript library comparison"`
 - `"[task] npm trending"`
 
 **For Python:**
+
 - `"best python library for [task]" 2024 2025`
 - `"[task] python package comparison pypi"`
 - `"popular [task] python"`
 
 **For Rust:**
+
 - `"best rust crate for [task]" 2024 2025`
 - `"[task] rust library comparison"`
 - `"popular [task] rust crates.io"`
 
 **For CLI/System Tools:**
+
 - `"best [task] cli tool 2024 2025"`
 - `"[task] cli tool comparison"`
 - `"modern alternative to [old-tool]"`
 
 **For Databases/Infrastructure:**
+
 - `"best [task] database 2024 2025"`
 - `"[task] vs [alternative] comparison"`
 - `"[task] production use cases"`
@@ -66,29 +71,34 @@ Adapt queries to the ecosystem:
 Prioritize by ecosystem:
 
 **JavaScript/TypeScript:**
+
 - npm registry (npmjs.com)
 - npm trends (npmtrends.com)
 - bundlephobia.com (bundle size)
 - GitHub repositories
 
 **Python:**
+
 - PyPI (pypi.org)
 - pepy.tech (download stats)
 - GitHub repositories
 - Libraries.io
 
 **Rust:**
+
 - crates.io
 - lib.rs (crate discovery)
 - GitHub repositories
 - Blessed.rs (curated list)
 
 **CLI/System Tools:**
+
 - GitHub repositories
 - Homebrew analytics
 - Command-line tools lists
 
 **All Ecosystems:**
+
 - GitHub stars, activity, issues
 - Security advisories (snyk.io, GitHub Security)
 - StackOverflow discussions
@@ -101,30 +111,35 @@ Rank tools based on ecosystem-appropriate metrics:
 ### Universal Criteria (All Ecosystems)
 
 **1. Popularity & Adoption (25%)**
+
 - Download/install metrics
 - GitHub stars
 - Community size
 - Production usage
 
 **2. Maintenance Status (25%)**
+
 - Last release date (within 6-12 months)
 - Recent commit activity
 - Issue response time
 - Active maintainers
 
 **3. Security & Quality (20%)**
+
 - Known vulnerabilities
 - Security audit history
 - Code quality (tests, CI/CD)
 - License compatibility
 
 **4. Documentation & DX (15%)**
+
 - Quality of docs
 - Examples and tutorials
 - API clarity
 - Error messages
 
 **5. Performance (15%)**
+
 - Benchmarks vs alternatives
 - Resource usage
 - Scalability
@@ -132,30 +147,35 @@ Rank tools based on ecosystem-appropriate metrics:
 ### Ecosystem-Specific Criteria
 
 **JavaScript/TypeScript (+TypeScript Support)**
+
 - Native types vs @types
 - Bundle size (minified + gzipped)
 - Tree-shaking (ESM support)
 - Bun/Deno compatibility
 
 **Python (+Typing Support)**
+
 - Type hints (PEP 484)
 - Python version support (3.9+)
 - Package size
 - C extension overhead
 
 **Rust (+Safety & Performance)**
+
 - unsafe code usage
 - Compile time impact
 - Binary size
 - no_std support
 
 **CLI Tools (+Installation & UX)**
+
 - Install method (brew, cargo, go install)
 - Startup time
 - Output formatting
 - Plugin ecosystem
 
 **Databases (+Operations)**
+
 - Query performance
 - Scaling characteristics
 - Backup/restore tools
@@ -181,10 +201,10 @@ Present findings in this structure:
 
 **Key Stats:**
 
-- [Ecosystem metric]: [value] (e.g., Downloads, Crates.io rank, Stars)
+-
 - Stars: [GitHub stars]
-- [Size/Performance]: [relevant metric]
-- [Ecosystem-specific]: [e.g., TypeScript support, type hints, memory safety]
+- \[Size/Performance\]: [relevant metric]
+- \[Ecosystem-specific\]: [e.g., TypeScript support, type hints, memory safety]
 - Last Updated: [date]
 
 ### Alternative Options
@@ -206,22 +226,22 @@ Present a table with ecosystem-appropriate columns:
 **For npm/JavaScript:**
 
 | Package | Downloads/week | Stars | Size | TS Support | Last Update |
-|---------|----------------|-------|------|------------|-------------|
+| ------- | -------------- | ----- | ---- | ---------- | ----------- |
 
 **For Python:**
 
 | Package | Downloads/month | Stars | Typing | Py Version | Last Update |
-|---------|----------------|-------|--------|------------|-------------|
+| ------- | --------------- | ----- | ------ | ---------- | ----------- |
 
 **For Rust:**
 
 | Crate | Downloads | Stars | unsafe | Compile Time | Last Update |
-|-------|-----------|-------|--------|--------------|-------------|
+| ----- | --------- | ----- | ------ | ------------ | ----------- |
 
 **For CLI Tools:**
 
 | Tool | Install Method | Stars | Performance | Platform | Last Update |
-|------|----------------|-------|-------------|----------|-------------|
+| ---- | -------------- | ----- | ----------- | -------- | ----------- |
 
 ## Red Flags to Call Out
 
@@ -300,8 +320,8 @@ When recommending JavaScript/TypeScript tools, prioritize:
 For JavaScript/TypeScript (default):
 
 1. Choose better TypeScript support
-2. If tied, choose smaller bundle size
-3. If still tied, choose more recent update
+1. If tied, choose smaller bundle size
+1. If still tied, choose more recent update
 
 For other ecosystems, prioritize ecosystem-specific factors.
 
@@ -310,9 +330,9 @@ For other ecosystems, prioritize ecosystem-specific factors.
 If searches reveal no suitable packages:
 
 1. State this clearly
-2. Suggest building a custom solution
-3. Provide starter code or approach
-4. Reference similar packages as inspiration
+1. Suggest building a custom solution
+1. Provide starter code or approach
+1. Reference similar packages as inspiration
 
 ## Example Interactions
 

@@ -1,12 +1,15 @@
 [project]
   dependencies = [
+    "mdformat",
+    "mdformat-frontmatter",
+    "mdformat-gfm",
     "pytest",
     "pyright",
     "ruff",
   ]
   description = "Root .claude directory."
   name = "dot-claude"
-  requires-python = ">=3.12"
+  requires-python = ">=3.13"
   version = "1.0.0"
 
 [dependency-groups]

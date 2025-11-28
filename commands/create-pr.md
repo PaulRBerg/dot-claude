@@ -17,17 +17,21 @@ model: opus
 ### STEP 1: Validate prerequisites
 
 CHECK GitHub authentication:
+
 - IF Context shows "not authenticated": ERROR and exit with: "Run `gh auth login` first"
 
 CHECK git repository state:
+
 - Run `git remote get-url origin` to confirm remote exists
 - Run `git rev-parse --show-toplevel` to confirm we're in a repo
 - IF either fails: ERROR and exit with specific issue
 
 UPDATE remote state:
+
 - Run `git fetch origin` silently
 
 CHECK commits to PR:
+
 - Get base branch: `git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo "main"`
 - Count commits ahead: `git rev-list --count origin/$base_branch..HEAD 2>/dev/null`
 - IF 0 commits ahead: ERROR "No commits to create PR from"
@@ -35,6 +39,7 @@ CHECK commits to PR:
 ### STEP 2: Parse arguments naturally
 
 Interpret $ARGUMENTS as natural language:
+
 - "draft" or "--draft" anywhere → draft mode
 - "test-plan" or "--test-plan" anywhere → include test plan section
 - "to X" or "base=X" → target branch X (default: main)
@@ -54,11 +59,13 @@ Examples:
 ### STEP 3: Semantic change analysis
 
 READ the actual changes:
+
 - Run `git diff origin/$base_branch...HEAD` to get full diff
 - Run `git diff --stat origin/$base_branch...HEAD` for summary
 - Run `git log --pretty=format:"%s%n%b" origin/$base_branch...HEAD` for commit messages
 
 ANALYZE semantically what's changing:
+
 - What files are affected? What are their purposes?
 - Are these bug fixes, features, refactors, or maintenance?
 - What's the core purpose of these changes?
@@ -66,19 +73,23 @@ ANALYZE semantically what's changing:
 - Read the actual code changes to understand intent
 
 GENERATE PR content intelligently:
+
 - **Title**: Concise summary of the primary change (not just "Update files")
+
   - Use conventional commit format if changes fit a clear type
   - Example: "feat: add webhook retry mechanism" or "fix: prevent race condition in auth flow"
   - If custom title provided in args, use that instead
 
 - **Description**: Keep it MINIMAL. 3-5 sentences total:
+
   1. One sentence: what changed
-  2. One sentence: why it matters
-  3. Optional: one sentence about notable implementation detail or follow-up
+  1. One sentence: why it matters
+  1. Optional: one sentence about notable implementation detail or follow-up
 
   DO NOT write lengthy paragraphs. DO NOT explain every detail. PR descriptions should be scannable.
 
 - **Admonitions**: Add GitHub-style admonitions when appropriate:
+
   - `> [!NOTE]` - For context, dependencies, or implementation details reviewers should notice
   - `> [!TIP]` - For suggestions on testing or reviewing specific aspects
   - `> [!IMPORTANT]` - For breaking changes, migration requirements, or critical review points
@@ -86,6 +97,7 @@ GENERATE PR content intelligently:
   - `> [!CAUTION]` - For temporary solutions, technical debt, or follow-up work needed
 
   Keep admonitions concise (1-2 sentences). Place after main description. Example:
+
   ```
   This PR refactors the payment processing pipeline to handle retries.
 
@@ -94,15 +106,18 @@ GENERATE PR content intelligently:
   ```
 
 - **Test Plan** (only if `--test-plan` flag present):
+
   - Add a dedicated "## Test Plan" section describing testing/validation approach
   - Include manual testing steps, automated test coverage, or validation checklist
 
 DETECT issue references:
+
 - Extract issue numbers from branch name: `$(git branch --show-current | rg -o '#?\d+' || echo "")`
 - Extract from commit messages
 - Format as "Closes #123" if fix, "Related to #123" if reference only
 
 IDENTIFY reviewers intelligently:
+
 - Check for CODEOWNERS file: `git ls-files | rg CODEOWNERS`
 - If exists, extract owners for changed files
 - Otherwise use git blame to find frequent contributors to changed files
@@ -111,11 +126,13 @@ IDENTIFY reviewers intelligently:
 ### STEP 4: Check for existing PR
 
 CHECK for existing PR on current branch:
+
 ```bash
 gh pr list --head $(git branch --show-current) --json number,url --jq '.[0]' 2>/dev/null
 ```
 
 IF existing PR found (non-empty result):
+
 - PARSE the number and URL from result
 - ERROR and exit with: "PR already exists for this branch: $URL"
 - DO NOT create or update anything
@@ -123,11 +140,13 @@ IF existing PR found (non-empty result):
 ### STEP 5: Create new PR
 
 ENSURE branch is pushed:
+
 ```bash
 git push -u origin $(git branch --show-current) 2>&1 || echo "Already pushed"
 ```
 
 BUILD pr creation command:
+
 ```bash
 gh pr create \
   --title "$generated_title" \
@@ -138,10 +157,12 @@ gh pr create \
 ```
 
 EXECUTE and capture output:
+
 - Extract PR URL from command output
 - Display: "✓ Created PR: $PR_URL"
 
 IF command fails:
+
 - Check specific error (auth, branch protection, validation)
 - Provide specific fix for that error
 - DO NOT retry automatically

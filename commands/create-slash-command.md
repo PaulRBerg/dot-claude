@@ -26,12 +26,13 @@ IF documentation doesn't exist: WARN "Documentation not found. Proceeding with k
 From $ARGUMENTS, determine:
 
 1. **Purpose**: What problem does this command solve?
-2. **Users**: Who will use it and when?
-3. **Output**: What's the expected result?
-4. **Type**: Is it interactive or batch?
-5. **Complexity**: Simple prompt or multi-step workflow?
+1. **Users**: Who will use it and when?
+1. **Output**: What's the expected result?
+1. **Type**: Is it interactive or batch?
+1. **Complexity**: Simple prompt or multi-step workflow?
 
 IF requirements are unclear or incomplete:
+
 - ASK clarifying questions:
   - "What specific problem should this command solve?"
   - "What inputs does it need?"
@@ -43,12 +44,14 @@ IF requirements are unclear or incomplete:
 🎯 **Critical Decision: Where should this command live?**
 
 **Project Command** (`./.claude/commands/`)
+
 - Specific to this project's workflow
 - Uses project conventions
 - References project documentation
 - Integrates with project MCP tools
 
 **User Command** (`~/.claude/commands/`)
+
 - General-purpose utility
 - Reusable across projects
 - Personal productivity tool
@@ -57,14 +60,17 @@ IF requirements are unclear or incomplete:
 ANALYZE the command's nature:
 
 IF command references project-specific files, workflows, or conventions:
+
 - RECOMMEND: Project command
 - LOCATION: `./.claude/commands/{command-name}.md`
 
 IF command is general-purpose or personal productivity:
+
 - RECOMMEND: User command
 - LOCATION: `~/.claude/commands/{command-name}.md`
 
 IF uncertain:
+
 - ASK: "Should this be a project command (specific to this codebase) or a user command (available in all projects)?"
 
 ### STEP 4: Analyze similar commands
@@ -77,6 +83,7 @@ ls ~/.claude/commands/ | head -5 | xargs -I {} cat ~/.claude/commands/{}
 ```
 
 IDENTIFY common patterns:
+
 - Front matter format (YAML with `argument-hint`, `description`)
 - Context section with shell outputs
 - STEP-based workflow structure
@@ -146,17 +153,20 @@ Show output to user:
 WRITE the command to the chosen location:
 
 IF location is user commands:
+
 ```bash
 cat > ~/.claude/commands/{command-name}.md
 ```
 
 IF location is project commands:
+
 ```bash
 mkdir -p ./.claude/commands/
 cat > ./.claude/commands/{command-name}.md
 ```
 
 DISPLAY:
+
 ```
 ✓ Created command: {location}/{command-name}.md
 ```
