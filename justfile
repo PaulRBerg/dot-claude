@@ -31,7 +31,16 @@ default:
 install:
     bun install
     uv sync --all-extras --dev
-    brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
+    just install-utils
+
+# Install CLI utilities (skipped in CI)
+[script]
+install-utils:
+    if [[ "$CI" == "true" ]]; then
+        echo "Skipping brew install in CI environment"
+    else
+        brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
+    fi
 
 # Merge JSONC settings files into settings.json
 [group("settings")]
