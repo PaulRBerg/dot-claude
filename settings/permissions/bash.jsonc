@@ -55,6 +55,7 @@
       "Bash(zip:*)",
 
       // Git & Version Control
+      "Bash(delta:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(git-filter-repo:*)",
@@ -62,6 +63,7 @@
 
       // Misc
       "Bash(amp:*)",
+      "Bash(atuin:*)",
       "Bash(bc:*)",
       "Bash(chezmoi:*)",
       "Bash(just:*)",

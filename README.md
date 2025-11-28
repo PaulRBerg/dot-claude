@@ -91,19 +91,19 @@ testing, `-d` for debug, `-n` to skip linting). Flags are composable: `implement
 ### Commands
 
 Slash commands in `commands/*.md` handle GitHub workflows, releases, and task management. Examples: `/commit` (atomic
-commits), `/create-pr` (PRs with semantic analysis), `/fix-issue` (fetch and fix issues), `/bump-release` (version
-bumping).
+commits), `/create-pr` (PRs with semantic analysis), `/create-issue` (GitHub issues), `/bump-release` (version bumping),
+`/update-readme` (README sync), `/lint-context` (validate CLAUDE.md).
 
 ### Skills
 
-Auto-activating skills in `skills/`: **typescript**, **web3-frontend**, **ui-ux-design**, **dry-refactor**.
+Auto-activating skills in `skills/`: **typescript**, **gh-cli**, **ui-ux-design**, **dry-refactor**.
 
 External plugins: **code-review**, **playwright-skill**.
 
 ### Agents
 
-Specialized subagents in `agents/`: code review, debugging, web3 backend engineering, tool discovery. Invoke via `-s`
-flag or Task tool.
+Specialized subagents in `agents/`: code review, debugging, tool discovery, docs finding, AI docs fetching. Invoke via
+`-s` flag or Task tool.
 
 ### MCP Servers
 
