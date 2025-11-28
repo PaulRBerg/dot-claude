@@ -464,11 +464,38 @@ Practical automation scripts (see `examples/` directory):
 - **API Documentation**: https://docs.github.com/en/rest
 - **Extension Marketplace**: https://github.com/topics/gh-extension
 
+## JSON Output
+
+Use `--json` flag for structured output. **Always verify field names with `--help`** as they differ from GitHub API names.
+
+```bash
+# Check available JSON fields for any command
+gh repo view --help | grep -A 50 "JSON FIELDS"
+gh pr list --help | grep -A 50 "JSON FIELDS"
+```
+
+### Common JSON Field Corrections
+
+| Wrong (API-style) | Correct (gh CLI) |
+| ----------------- | ---------------- |
+| `stargazersCount` | `stargazerCount` |
+| `forksCount`      | `forkCount`      |
+| `watchersCount`   | `watchers`       |
+| `openIssuesCount` | `issues`         |
+
+### Repository View Fields
+
+```bash
+# Common fields for gh repo view --json
+gh repo view owner/repo --json name,description,stargazerCount,forkCount,updatedAt,url,readme
+```
+
 ## Tips
 
 1. Use `--web` flag to open items in browser for detailed view
 1. Leverage interactive prompts by omitting parameters - most commands support interactive mode
 1. Apply filters with `--author`, `--label`, `--state` to narrow down lists efficiently
 1. Add `--json` flag to enable scriptable output for automation
+1. **Always check `--help` for valid JSON field names** - they differ from GitHub API
 1. Use `gh repo create --template` to scaffold from template repositories
 1. Enable auto-merge with `gh pr merge --auto` for PRs that pass checks
