@@ -30,15 +30,42 @@ Note: If you don't specify a repository, the command will infer the current repo
 Check if the repository has issue templates:
 
 ```bash
-gh api repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE --jq '.[].name' 2>/dev/null
+gh api repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE --jq '.[].name | select(endswith(".md") or endswith(".yml") or endswith(".yaml"))' 2>/dev/null
 ```
 
-IF markdown templates (\*.md) are found:
+Note: Exclude `config.yml` from template selection - it's for GitHub configuration, not an issue template.
+
+IF templates are found (`.yml`, `.yaml`, or `.md`):
 
 - **SELECT TEMPLATE**: Infer which template best matches the user's intent from $ARGUMENTS
-  - Common patterns: `bug_report.md`, `feature_request.md`, `enhancement.md`, `question.md`, etc.
-  - Consider keywords in user's description (bug, feature, docs, etc.)
-- **USE TEMPLATE**: Fetch and populate the selected template structure for the issue body
+
+  - Common patterns: `bug_report.yml`, `feature_request.yml`, `bug_report.md`, `feature_request.md`, etc.
+  - Consider keywords in user's description (bug, feature, docs, model, etc.)
+  - Prefer YAML templates over Markdown if both exist for same type (GitHub lists YAML first)
+
+- **PARSE TEMPLATE**: Based on file extension:
+
+  **IF `.yml` or `.yaml` template:**
+
+  1. Fetch raw template content:
+     ```bash
+     gh api repos/{owner}/{repo}/contents/.github/ISSUE_TEMPLATE/{template_name} --jq '.content' | base64 -d
+     ```
+  1. Parse YAML structure to extract:
+     - `name`, `description` - template metadata
+     - `title` - default issue title prefix (e.g., "[BUG] ")
+     - `labels` - pre-defined labels to merge with auto-labels
+     - `body` array - form fields with `type`, `id`, `attributes`
+  1. For each field in `body` array:
+     - `markdown`: Skip (display-only, not submitted)
+     - `textarea`/`input`: Use `attributes.label` as section header, `attributes.description` as guidance
+     - `dropdown`: Select appropriate option based on $ARGUMENTS context
+     - `checkboxes`: Auto-acknowledge as "Confirmed" (preflight attestations)
+
+  **IF `.md` template:**
+
+  - Fetch and populate the markdown template structure for the issue body (existing behavior)
+
 - Continue to STEP 4
 
 ELSE:
@@ -76,8 +103,57 @@ From content analysis, determine:
 
 From remaining $ARGUMENTS, create:
 
-- **Title**: Clear, concise summary (5-10 words)
-- **Body**: Use the selected template from STEP 3 if available, otherwise use this default template:
+- **Title**: If YAML template has `title` field (e.g., "[BUG] "), prepend it to a clear, concise summary (5-10 words)
+- **Body**: Generate based on template type from STEP 3:
+
+**IF YAML template (`.yml`/`.yaml`):**
+
+Generate markdown sections matching the template's `body` array fields:
+
+```
+### {field.attributes.label}
+
+{Generated content based on $ARGUMENTS and field.attributes.description}
+```
+
+For each field type:
+
+- `textarea`/`input`: Create a section with `### {label}` header, populate from $ARGUMENTS
+- `dropdown`: Include selected option value (infer from context)
+- `checkboxes`: Add "Confirmed" for preflight attestations
+- `markdown`: Skip (not included in submitted issues)
+
+Example for `feature_request.yml`:
+
+```
+### Problem Statement
+
+Users cannot export their data in CSV format, limiting integration options.
+
+### Proposed Solution
+
+Add a CSV export button to the dashboard settings page.
+
+### Alternative Solutions
+
+Considered JSON export but CSV is more widely supported by spreadsheet tools.
+
+### Priority
+
+Medium - Would be very helpful
+
+### Feature Category
+
+CLI commands and flags
+```
+
+**IF Markdown template (`.md`):**
+
+Populate the template structure with content from $ARGUMENTS (existing behavior).
+
+**IF no template found:**
+
+Use this default template:
 
 ```
 ## Problem
@@ -130,6 +206,12 @@ File links:
 
 ### STEP 7: Create the issue
 
+**Label handling:**
+
+- If YAML template has `labels` field (e.g., `labels: ["bug"]`), merge with auto-generated labels from STEP 5
+- Deduplicate labels (e.g., don't add "bug" twice if template and auto-labels both include it)
+- Template labels always apply regardless of repository owner
+
 **IF owner is PaulRBerg or sablier-labs**:
 
 ```bash
@@ -137,12 +219,20 @@ gh issue create \
   --repo "$repository" \
   --title "$title" \
   --body "$body" \
-  --label "label1,label2,label3"
+  --label "template-label1,auto-label1,auto-label2"
 ```
 
 **IF owner is neither PaulRBerg nor sablier-labs**:
 
 ```bash
+# If YAML template has labels defined:
+gh issue create \
+  --repo "$repository" \
+  --title "$title" \
+  --body "$body" \
+  --label "template-label1,template-label2"
+
+# If no template labels:
 gh issue create \
   --repo "$repository" \
   --title "$title" \
