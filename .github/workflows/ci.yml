@@ -13,19 +13,10 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup Just
-        uses: extractions/setup-just@v3
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup Python and uv
-        uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@v5
+      - uses: extractions/setup-just@v3
+      - uses: astral-sh/setup-uv@v7
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: just install
@@ -36,19 +27,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup Just
-        uses: extractions/setup-just@v3
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup Python and uv
-        uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@v5
+      - uses: extractions/setup-just@v3
+      - uses: oven-sh/setup-bun@v2
+      - uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
         run: just install

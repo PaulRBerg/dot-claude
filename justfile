@@ -81,13 +81,13 @@ alias fw := full-write
 # Check Markdown formatting (exclusions in .mdformat.toml)
 [group("checks")]
 @mdformat-check +paths=".":
-    mdformat --check {{ paths }}
+    uv run mdformat --check {{ paths }}
 alias mc := mdformat-check
 
 # Format Markdown files (exclusions in .mdformat.toml)
 [group("checks")]
 @mdformat-write +paths=".":
-    mdformat {{ paths }}
+    uv run mdformat {{ paths }}
 alias mw := mdformat-write
 
 # Check Prettier formatting
