@@ -229,7 +229,13 @@ bun := require("bun")
 na := require("na")
 ni := require("ni")
 nlx := require("nlx")
+
+# Usage: invoke directly in recipes (not with interpolation)
+build:
+    bun next build
 ```
+
+**Note:** `require()` validates the tool exists at recipe evaluation time. Use the variable name directly (e.g., `bun`), not with interpolation (`{{ bun }}`).
 
 ## Context7 Fallback
 

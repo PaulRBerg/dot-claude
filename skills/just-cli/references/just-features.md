@@ -343,9 +343,15 @@ Available globally without definition:
 jq := require("jq")
 # Returns full path: /usr/bin/jq
 
+# Usage: invoke directly in recipes (not with interpolation)
+process:
+    jq '.name' package.json
+
 # Check if executable exists
 has_docker := `which docker > /dev/null 2>&1 && echo "true" || echo "false"`
 ```
+
+**Note:** `require()` validates the tool exists and stores its path. Use the variable name directly (e.g., `jq`), not with interpolation (`{{ jq }}`).
 
 ### Environment Functions
 
