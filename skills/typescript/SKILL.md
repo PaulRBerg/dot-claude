@@ -93,3 +93,45 @@ Use `type` instead of `interface` for declaring types.
 const x = Number.isNaN(y); // good
 const x = isNaN(y); // bad
 ```
+
+### Comment Dividers
+
+Use centered comment dividers for major section breaks:
+
+**Format (80 chars total):**
+
+```typescript
+// -------------------------------------------------------------------------- //
+//                                   TITLE                                    //
+// -------------------------------------------------------------------------- //
+```
+
+**Rules:**
+
+- Total width: 80 characters
+- Title: UPPERCASE, centered with spaces
+- Border line: dashes `-` filling the space between `// ` and ` //`
+
+**When to use:**
+
+- Major logical sections (imports, types, constants, main logic, exports)
+- Separating distinct feature areas
+- NOT for every function or small grouping
+
+**Example:**
+
+```typescript
+// -------------------------------------------------------------------------- //
+//                                   IMPORTS                                  //
+// -------------------------------------------------------------------------- //
+
+import { Effect } from "effect";
+
+// -------------------------------------------------------------------------- //
+//                                    TYPES                                   //
+// -------------------------------------------------------------------------- //
+
+type Config = {
+  name: string;
+};
+```
