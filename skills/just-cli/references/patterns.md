@@ -310,21 +310,15 @@ alias rw := ruff-write
 alias pyc := pyright-check
 ```
 
-### TypeScript
+### TypeScript Checks
 
 ```just
 # Type check with TypeScript
 [group("checks")]
 [no-cd]
-@tsc-check project="tsconfig.json":
-    na tsc --noEmit --project {{ project }}
+@type-check project="tsconfig.json":
+    na tsgo --noEmit --project {{ project }}
 alias tc := tsc-check
-
-# Build with TypeScript
-[no-cd]
-tsc-build project="tsconfig.json":
-    na tsc -p {{ project }}
-alias tb := tsc-build
 ```
 
 ## Full Check/Write Pattern

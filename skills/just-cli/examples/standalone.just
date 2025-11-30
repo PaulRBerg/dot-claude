@@ -46,12 +46,6 @@ alias b := build
     bunx del-cli dist
     echo "✅ Cleaned build files"
 
-# Build with TypeScript
-[no-cd]
-tsc-build project="tsconfig.json":
-    na tsc -p {{ project }}
-alias tb := tsc-build
-
 # ---------------------------------------------------------------------------- #
 #                                    CHECKS                                    #
 # ---------------------------------------------------------------------------- #
@@ -116,9 +110,9 @@ alias pw := prettier-write
 # Type check with TypeScript
 [group("checks")]
 [no-cd]
-@tsc-check project="tsconfig.json":
-    na tsc --noEmit --project {{ project }}
-alias tc := tsc-check
+@type-check compiler="tsc" project="tsconfig.json":
+    na {{ compiler }} --noEmit --project {{ project }}
+alias tc := type-check
 
 # ---------------------------------------------------------------------------- #
 #                                     TESTS                                    #
