@@ -1,23 +1,11 @@
 ---
 name: typescript
-description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "set up BiomeJS", "use dayjs", mentions .ts or .tsx files, TypeScript projects, React with TypeScript, or asks about TypeScript best practices, type definitions, or TypeScript-specific tooling like BiomeJS.
+description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "set up BiomeJS", "use dayjs", "add type definitions", "set up React with TypeScript", mentions ".ts" or ".tsx" files, or asks about TypeScript best practices or TypeScript-specific tooling.
 ---
 
 # TypeScript Skill
 
-## General Principles
-
-Apply these principles when working with TypeScript:
-
-- Be terse and concise
-- Anticipate needs and suggest solutions not yet considered
-- Assume expert-level understanding
-- Be precise and exhaustive in implementations
-- Lead with the answer; add explanations only as needed
-- Embrace new tools and contrarian ideas, not just conventional best practices
-- Speculate freely, but clearly label speculation
-
-## TypeScript Rules
+## Rules
 
 Note that these are not hard-and-fast rules. If there's a good reason not to apply a rule, don't apply it.
 
@@ -29,6 +17,24 @@ Maintain alphabetical order for better readability and consistency:
 - **Object literal fields** - Sort by key name
 - **Type definitions** - Arrange fields alphabetically
 - **Class properties** - Order by property name
+
+**Example (type definitions):**
+
+```typescript
+// bad
+type User = {
+  name: string;
+  age: number;
+  email: string;
+};
+
+// good
+type User = {
+  age: number;
+  email: string;
+  name: string;
+};
+```
 
 ### Biome
 

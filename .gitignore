@@ -8,6 +8,7 @@ file-history/
 ide/
 logs/
 node_modules/
+plans
 plans/
 plugins/
 projects/
@@ -22,20 +23,15 @@ todos/
 .credentials.json
 .update.lock
 history.jsonl
+settings.json
 PROMPT.md
 SPEC.md
 TODO.md
 
-# Generated from settings/*.jsonc by helpers/merge_settings.sh
-settings.json
 
 # Python Directories
 __pycache__/
 .pytest-cache/
 .ruff-cache/
 .venv
-htmlcov/
 
-# Python Files
-*.coverage
-pytest-results.md
