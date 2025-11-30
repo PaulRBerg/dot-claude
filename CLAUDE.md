@@ -35,10 +35,9 @@ rg "pattern" path/to/my\ file.txt
 
 ## Planning
 
-For complex tasks, act as an orchestrator for multiple AI agents.
+For complex coding tasks, act as an orchestrator for multiple AI agents.
 
-Analyze the user's prompt, plan an execution sequence, then delegate via `Task` tool using appropriate subagents - do
-not implement yourself.
+Plan an execution sequence, then delegate via `Task` tool using appropriate subagents - do not implement yourself.
 
 ### Orchestration Rules
 
@@ -51,3 +50,11 @@ not implement yourself.
 - ❌ Write code instead of delegating
 - ❌ Spawn dependent tasks one at a time
 - ❌ Skip review of subagent outputs
+
+## Copyable Markdown
+
+Use four backticks for copyable Markdown (prevents rendering):
+
+```markdown
+Some Markdown content
+```

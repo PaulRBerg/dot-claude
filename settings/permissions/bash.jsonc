@@ -92,6 +92,8 @@
       "Bash(nr:*)",
       "Bash(nun:*)",
       "Bash(pnpm:*)",
+      "Bash(tsc:*)",
+      "Bash(tsgo:*)",
       "Bash(tsx:*)",
       "Bash(yarn:*)",
 

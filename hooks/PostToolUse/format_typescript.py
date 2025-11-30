@@ -50,7 +50,16 @@ def run_biome(file_path: str) -> None:
     """Run biome format and lint on a TypeScript file."""
     commands = [
         ["na", "biome", "format", "--write", file_path],
-        ["na", "biome", "lint", "--unsafe", "--write", "--only", "correctness/noUnusedImports", file_path],
+        [
+            "na",
+            "biome",
+            "lint",
+            "--unsafe",
+            "--write",
+            "--only",
+            "correctness/noUnusedImports",
+            file_path,
+        ],
     ]
 
     for cmd in commands:
