@@ -12,6 +12,9 @@
       "Bash(bulloak:*)",
       "Bash(mdformat:*)",
       "Bash(prettier:*)",
+      "Bash(ruff:*)",
+      "Bash(shellcheck:*)",
+      "Bash(shfmt:*)",
 
       // Core Shell Commands
       "Bash(COMMAND:*)",
