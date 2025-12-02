@@ -4,10 +4,17 @@
   "permissions": {
     "allow": [
       "SlashCommand(/commit:*)",
+      "SlashCommand(/create-cc-issue:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
+      "SlashCommand(/create-slash-command:*)",
       "SlashCommand(/docs:*)",
-      "SlashCommand(/update-pr:*)"
+      "SlashCommand(/init-context:*)",
+      "SlashCommand(/lint-context:*)",
+      "SlashCommand(/refine-prompt:*)",
+      "SlashCommand(/rename-work-dir:*)",
+      "SlashCommand(/update-pr:*)",
+      "SlashCommand(/update-readme:*)"
     ]
   }
 }
