@@ -27,6 +27,16 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/PostToolUse/plan_frontmatter.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "PermissionRequest": [
       {
         "hooks": [
