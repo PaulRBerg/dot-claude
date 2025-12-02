@@ -9,6 +9,10 @@
           {
             "command": "~/.claude/hooks/SessionEnd/sync_plugins.sh",
             "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/SessionEnd/sync_skills.sh",
+            "type": "command"
           }
         ]
       }
