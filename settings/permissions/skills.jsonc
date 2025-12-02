@@ -3,19 +3,18 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "Skill(claude-opus-4-5-migration:claude-opus-4-5-migration)",
-      "Skill(claude-code-plugins:code-review)",
+      "Skill(dry-refactor)",
+      "Skill(gh-cli)",
+      "Skill(just-cli)",
+      "Skill(playwright-skill:playwright-skill)",
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",
       "Skill(plugin-dev:hook-development)",
       "Skill(plugin-dev:plugin-settings)",
       "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
-      "Skill(dry-refactor)",
-      "Skill(effect-nextjs)",
-      "Skill(gh-cli)",
-      "Skill(just-cli)",
-      "Skill(playwright-skill:playwright-skill)",
+      "Skill(sablier:effect-ts-next)",
+      "Skill(sablier:effect-ts)",
       "Skill(typescript)",
       "Skill(ui-ux-design)"
     ]
