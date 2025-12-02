@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Sync Claude Code settings at session end.
+"""Sync global Claude Code settings at session end.
 
 Combines skill, command, and plugin synchronization into a single hook
 that runs at session end:
-- Skills: Discovers from ~/.claude/skills and ./.claude/skills
-- Commands: Discovers from ~/.claude/commands and ./.claude/commands
+- Skills: Discovers from ~/.claude/skills (global only)
+- Commands: Discovers from ~/.claude/commands (global only)
 - Plugins: Merges enabledPlugins from settings.json
 
-Replaces sync_skills.sh and sync_plugins.sh.
+Local project settings (./.claude/) are handled by sync_local_settings.py.
 """
 
 import json
@@ -74,8 +74,8 @@ def read_jsonc(path: Path) -> dict:
 # === SKILL DISCOVERY ===
 
 
-def discover_local_skills(base_path: Path) -> list[str]:
-    """Find all local skills by looking for SKILL.md files.
+def discover_skills(base_path: Path) -> list[str]:
+    """Find skills by looking for SKILL.md files.
 
     Args:
         base_path: Directory to search (e.g., ~/.claude/skills)
@@ -110,19 +110,19 @@ def extract_plugin_skills(skills_config: dict) -> list[str]:
 
 
 def merge_and_dedupe_skills(
-    local_skills: list[str],
+    global_skills: list[str],
     plugin_skills: list[str],
 ) -> list[str]:
     """Merge skill lists, deduplicate, and sort.
 
     Args:
-        local_skills: Skills discovered from filesystem
+        global_skills: Skills discovered from global ~/.claude/skills
         plugin_skills: Skills extracted from existing config
 
     Returns:
         Sorted, deduplicated list of all skills
     """
-    all_skills = set(local_skills + plugin_skills)
+    all_skills = set(global_skills + plugin_skills)
     return sorted(all_skills)
 
 
@@ -147,7 +147,7 @@ def build_skills_jsonc(skills: list[str]) -> str:
 
 
 def sync_skills() -> bool:
-    """Sync local skills to skills.jsonc.
+    """Sync global skills to skills.jsonc.
 
     Returns:
         True if sync succeeded, False otherwise
@@ -155,10 +155,8 @@ def sync_skills() -> bool:
     if not SKILLS_SETTINGS.exists():
         return False
 
-    # 1. Discover local skills from both directories
-    global_skills = discover_local_skills(CLAUDE_DIR / "skills")
-    project_skills = discover_local_skills(Path.cwd() / ".claude" / "skills")
-    local_skills = global_skills + project_skills
+    # 1. Discover global skills (local handled by sync_local_settings.py)
+    global_skills = discover_skills(CLAUDE_DIR / "skills")
 
     # 2. Extract plugin skills from existing config
     try:
@@ -168,7 +166,7 @@ def sync_skills() -> bool:
         plugin_skills = []
 
     # 3. Merge, dedupe, sort
-    all_skills = merge_and_dedupe_skills(local_skills, plugin_skills)
+    all_skills = merge_and_dedupe_skills(global_skills, plugin_skills)
 
     # 4. Write skills.jsonc
     try:
@@ -182,8 +180,8 @@ def sync_skills() -> bool:
 # === COMMAND DISCOVERY ===
 
 
-def discover_local_commands(base_path: Path) -> list[str]:
-    """Find all local commands by looking for .md files.
+def discover_commands(base_path: Path) -> list[str]:
+    """Find commands by looking for .md files.
 
     Args:
         base_path: Directory to search (e.g., ~/.claude/commands)
@@ -228,19 +226,19 @@ def extract_plugin_commands(commands_config: dict) -> list[str]:
 
 
 def merge_and_dedupe_commands(
-    local_commands: list[str],
+    global_commands: list[str],
     plugin_commands: list[str],
 ) -> list[str]:
     """Merge command lists, deduplicate, and sort.
 
     Args:
-        local_commands: Commands discovered from filesystem
+        global_commands: Commands discovered from global ~/.claude/commands
         plugin_commands: Commands extracted from existing config
 
     Returns:
         Sorted, deduplicated list of all commands
     """
-    all_commands = set(local_commands + plugin_commands)
+    all_commands = set(global_commands + plugin_commands)
     return sorted(all_commands)
 
 
@@ -265,7 +263,7 @@ def build_commands_jsonc(commands: list[str]) -> str:
 
 
 def sync_commands() -> bool:
-    """Sync local commands to commands.jsonc.
+    """Sync global commands to commands.jsonc.
 
     Returns:
         True if sync succeeded, False otherwise
@@ -273,10 +271,8 @@ def sync_commands() -> bool:
     if not COMMANDS_SETTINGS.exists():
         return False
 
-    # 1. Discover local commands from both directories
-    global_commands = discover_local_commands(CLAUDE_DIR / "commands")
-    project_commands = discover_local_commands(Path.cwd() / ".claude" / "commands")
-    local_commands = global_commands + project_commands
+    # 1. Discover global commands (local handled by sync_local_settings.py)
+    global_commands = discover_commands(CLAUDE_DIR / "commands")
 
     # 2. Extract plugin commands from existing config
     try:
@@ -286,7 +282,7 @@ def sync_commands() -> bool:
         plugin_commands = []
 
     # 3. Merge, dedupe, sort
-    all_commands = merge_and_dedupe_commands(local_commands, plugin_commands)
+    all_commands = merge_and_dedupe_commands(global_commands, plugin_commands)
 
     # 4. Write commands.jsonc
     try:

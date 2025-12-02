@@ -7,7 +7,11 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/SessionEnd/sync_settings.py",
+            "command": "~/.claude/hooks/SessionEnd/sync_global_settings.py",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/SessionEnd/sync_local_settings.py",
             "type": "command"
           }
         ]
