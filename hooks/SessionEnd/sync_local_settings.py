@@ -80,9 +80,7 @@ def discover_skills() -> list[str]:
     if not skills_dir.exists():
         return []
 
-    return [
-        f"Skill({skill_md.parent.name})" for skill_md in skills_dir.glob("*/SKILL.md")
-    ]
+    return [f"Skill({skill_md.parent.name})" for skill_md in skills_dir.glob("*/SKILL.md")]
 
 
 def discover_commands() -> list[str]:
@@ -95,9 +93,7 @@ def discover_commands() -> list[str]:
     if not commands_dir.exists():
         return []
 
-    return [
-        f"SlashCommand(/{cmd_file.stem}:*)" for cmd_file in commands_dir.glob("*.md")
-    ]
+    return [f"SlashCommand(/{cmd_file.stem}:*)" for cmd_file in commands_dir.glob("*.md")]
 
 
 # === SETTINGS MANAGEMENT ===
