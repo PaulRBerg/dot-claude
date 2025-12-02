@@ -201,8 +201,8 @@ Present findings in this structure:
 
 **Key Stats:**
 
--
-- Stars: [GitHub stars]
+- GitHub: \[full URL, e.g., https://github.com/org/repo]
+- Stars: [GitHub stars count]
 - \[Size/Performance\]: [relevant metric]
 - \[Ecosystem-specific\]: [e.g., TypeScript support, type hints, memory safety]
 - Last Updated: [date]
@@ -221,27 +221,29 @@ Present findings in this structure:
 
 ### Comparison Summary
 
-Present a table with ecosystem-appropriate columns:
+Present a table with ecosystem-appropriate columns. **Always include GitHub URL and Stars.**
 
 **For npm/JavaScript:**
 
-| Package | Downloads/week | Stars | Size | TS Support | Last Update |
-| ------- | -------------- | ----- | ---- | ---------- | ----------- |
+| Package | GitHub | Stars | Downloads/week | Size | TS Support | Last Update |
+| ------- | ------ | ----- | -------------- | ---- | ---------- | ----------- |
 
 **For Python:**
 
-| Package | Downloads/month | Stars | Typing | Py Version | Last Update |
-| ------- | --------------- | ----- | ------ | ---------- | ----------- |
+| Package | GitHub | Stars | Downloads/month | Typing | Py Version | Last Update |
+| ------- | ------ | ----- | --------------- | ------ | ---------- | ----------- |
 
 **For Rust:**
 
-| Crate | Downloads | Stars | unsafe | Compile Time | Last Update |
-| ----- | --------- | ----- | ------ | ------------ | ----------- |
+| Crate | GitHub | Stars | Downloads | unsafe | Compile Time | Last Update |
+| ----- | ------ | ----- | --------- | ------ | ------------ | ----------- |
 
 **For CLI Tools:**
 
-| Tool | Install Method | Stars | Performance | Platform | Last Update |
-| ---- | -------------- | ----- | ----------- | -------- | ----------- |
+| Tool | GitHub | Stars | Install Method | Performance | Platform | Last Update |
+| ---- | ------ | ----- | -------------- | ----------- | -------- | ----------- |
+
+**GitHub column format:** Use `[repo](url)` markdown links, e.g., `[sindresorhus/execa](https://github.com/sindresorhus/execa)`
 
 ## Red Flags to Call Out
 
@@ -366,8 +368,9 @@ ni email-validator
 
 **Key Stats:**
 
-- Downloads: 450K/week
+- GitHub: https://github.com/manishsaraan/email-validator
 - Stars: 780
+- Downloads: 450K/week
 - Size: 2.4KB minified
 - TypeScript: Native
 - Last Updated: 2024-12-15
@@ -402,6 +405,7 @@ brew install ripgrep
 
 **Key Stats:**
 
+- GitHub: https://github.com/BurntSushi/ripgrep
 - Stars: 45K
 - Performance: Fastest grep alternative
 - Platform: macOS, Linux, Windows
@@ -437,6 +441,8 @@ pip install tomli
 
 **Key Stats:**
 
+- GitHub: https://github.com/python/cpython (stdlib) / https://github.com/hukkin/tomli (backport)
+- Stars: N/A (stdlib) / 350 (tomli)
 - Downloads: Built-in (tomli: 50M/month)
 - Python Version: 3.11+
 - Type Hints: Full support
@@ -461,7 +467,9 @@ Before submitting recommendation:
 - ✓ Checked multiple information sources
 - ✓ Evaluated ecosystem-appropriate criteria
 - ✓ Provided correct installation command for ecosystem
-- ✓ Included metrics and evidence
+- ✓ **Included GitHub URL for each tool** (in Key Stats and Comparison table)
+- ✓ **Included GitHub Stars for each tool**
+- ✓ Included other metrics and evidence
 - ✓ Noted any red flags or concerns
 - ✓ Offered 2-3 alternatives for comparison
 - ✓ Considered user's platform (macOS) and preferences
