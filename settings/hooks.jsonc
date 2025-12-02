@@ -7,11 +7,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/SessionEnd/sync_plugins.sh",
-            "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/SessionEnd/sync_skills.sh",
+            "command": "~/.claude/hooks/SessionEnd/sync_settings.py",
             "type": "command"
           }
         ]
