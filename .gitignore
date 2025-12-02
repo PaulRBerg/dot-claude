@@ -31,7 +31,7 @@ TODO.md
 
 # Python Directories
 __pycache__/
-.pytest-cache/
-.ruff-cache/
+.pytest_cache/
+.ruff_cache/
 .venv
 
