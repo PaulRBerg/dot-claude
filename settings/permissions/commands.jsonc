@@ -3,16 +3,15 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "SlashCommand(/bump-release:*)",
       "SlashCommand(/commit:*)",
       "SlashCommand(/create-cc-issue:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
       "SlashCommand(/create-slash-command:*)",
-      "SlashCommand(/docs:*)",
       "SlashCommand(/init-context:*)",
       "SlashCommand(/lint-context:*)",
       "SlashCommand(/refine-prompt:*)",
-      "SlashCommand(/rename-work-dir:*)",
       "SlashCommand(/update-pr:*)",
       "SlashCommand(/update-readme:*)"
     ]
