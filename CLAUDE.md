@@ -33,6 +33,14 @@ bat src/\(shared\)/Foo.tsx
 rg "pattern" path/to/my\ file.txt
 ```
 
+## Testing
+
+Run tests with `uv`:
+
+```bash
+uv run pytest path/to/test.py -v
+```
+
 ## Copyable Markdown
 
 Use four backticks for copyable Markdown (prevents rendering):
