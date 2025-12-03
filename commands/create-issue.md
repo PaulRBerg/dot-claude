@@ -1,5 +1,5 @@
 ---
-argument-hint: '[repository] [description]'
+argument-hint: '[repository] [description] [--check]'
 description: Create a GitHub issue with automatic labeling
 model: opus
 ---
@@ -9,6 +9,10 @@ model: opus
 - Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "not a repository"`
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Arguments: $ARGUMENTS
+
+## Skills
+
+Activate the `gh-cli` skill for this command.
 
 ## Your Task
 
@@ -24,6 +28,44 @@ Determine repository from $ARGUMENTS:
 - ELSE: infer the current repository from the working directory (error if not in a repo)
 
 Note: If you don't specify a repository, the command will infer the current repository (owner/repo) automatically.
+
+### STEP 2.5: Parse optional flags
+
+IF `$ARGUMENTS` contains `--check`:
+
+- Remove `--check` from `$ARGUMENTS`
+- Set `check_mode = true`
+- Continue to STEP 2.6
+
+ELSE:
+
+- Set `check_mode = false`
+- Skip STEP 2.6 and continue to STEP 3
+
+### STEP 2.6: Check for similar issues (if `--check` flag present)
+
+**ONLY if `check_mode = true`:**
+
+1. Extract key terms from the remaining `$ARGUMENTS` (issue description)
+
+1. Search for similar open issues (full-text search across title and body):
+
+   ```bash
+   gh search issues "{key_terms}" --repo "{owner}/{repo}" --state open --limit 10 --json number,title,url
+   ```
+
+1. **IF similar issues found:**
+
+   - Display the list of potentially related issues to the user
+   - Use `AskUserQuestion` to prompt: "Similar issues found. Do you want to proceed with creating a new issue?"
+     - Options: "Yes, create new issue" / "No, cancel"
+   - IF user selects "No": Exit command with message "Issue creation cancelled"
+   - IF user selects "Yes": Continue to STEP 3
+
+1. **IF no similar issues found:**
+
+   - Inform user: "No similar issues found. Proceeding with issue creation."
+   - Continue to STEP 3
 
 ### STEP 3: Check for issue templates
 
@@ -77,7 +119,7 @@ ELSE:
 
 Extract the owner from the repository (the part before the `/`).
 
-IF owner is `PaulRBerg` OR `sablier-labs`:
+IF owner is `PaulRBerg`:
 
 - **APPLY LABELS**: The user has permission to add labels
 - Continue to STEP 5
@@ -89,7 +131,7 @@ ELSE:
 
 ### STEP 5: Apply labels
 
-**ONLY if owner is PaulRBerg or sablier-labs** (from STEP 4):
+**ONLY if owner is PaulRBerg** (from STEP 4):
 
 From content analysis, determine:
 
@@ -97,7 +139,6 @@ From content analysis, determine:
 - **Work**: Complexity via Cynefin (clear, complicated, complex, chaotic)
 - **Priority**: Urgency (0=critical to 3=nice-to-have)
 - **Effort**: Size (low, medium, high, epic)
-- **Scope**: Domain area (only for sablier-labs/command-center)
 
 ### STEP 6: Generate title and body
 
@@ -212,7 +253,7 @@ File links:
 - Deduplicate labels (e.g., don't add "bug" twice if template and auto-labels both include it)
 - Template labels always apply regardless of repository owner
 
-**IF owner is PaulRBerg or sablier-labs**:
+**IF owner is PaulRBerg**:
 
 ```bash
 gh issue create \
@@ -222,7 +263,7 @@ gh issue create \
   --label "template-label1,auto-label1,auto-label2"
 ```
 
-**IF owner is neither PaulRBerg nor sablier-labs**:
+**IF owner is not PaulRBerg**:
 
 ```bash
 # If YAML template has labels defined:
@@ -279,23 +320,14 @@ On failure: show specific error and fix
 - `effort: high` - Several days
 - `effort: epic` - Weeks, multiple PRs
 
-### Scope (sablier-labs/command-center only)
-
-- `scope: frontend`
-- `scope: backend`
-- `scope: evm`
-- `scope: solana`
-- `scope: data`
-- `scope: devops`
-- `scope: integrations`
-- `scope: marketing`
-- `scope: business`
-- `scope: other`
-
 ## Examples
 
 ```bash
 /create-issue "Bug in auth flow causing token expiration in src/auth/token.ts"
 /create-issue PaulRBerg/dotfiles "Add zsh configuration for tmux startup"
-/create-issue sablier-labs/command-center "Implement dark mode for frontend dashboard"
+/create-issue facebook/react "Add useDebounce hook to react-dom"
+
+# With --check flag (searches for similar issues first)
+/create-issue --check "Bug in auth flow causing token expiration"
+/create-issue vercel/next.js --check "Improve error overlay for server components"
 ```
