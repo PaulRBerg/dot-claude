@@ -33,11 +33,13 @@ From $ARGUMENTS, determine:
 
 IF requirements are unclear or incomplete:
 
-- ASK clarifying questions:
-  - "What specific problem should this command solve?"
-  - "What inputs does it need?"
-  - "What should the output look like?"
-  - "Are there any similar existing commands I should reference?"
+- Use `AskUserQuestion` to clarify:
+  - Question: "What specific problem should this command solve?"
+    - Options: Automate workflow, Generate content, Analyze code, Other
+  - Question: "What inputs does it need?"
+    - Options: No inputs, Single argument, Multiple arguments, Flags only
+  - Question: "What should the output look like?"
+    - Options: File changes, Terminal output, Both, Other
 
 ### STEP 3: Determine command location
 
@@ -71,7 +73,11 @@ IF command is general-purpose or personal productivity:
 
 IF uncertain:
 
-- ASK: "Should this be a project command (specific to this codebase) or a user command (available in all projects)?"
+- Use `AskUserQuestion`:
+  - Question: "Where should this command live?"
+  - Options:
+    - "Project command" - Specific to this codebase, uses project conventions
+    - "User command" - General-purpose, available in all projects
 
 ### STEP 4: Analyze similar commands
 

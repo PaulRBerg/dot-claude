@@ -35,10 +35,12 @@ CHECK for existing files:
 IF result is "root" or "claude":
 
 - Read the existing file
-- ASK user: "CLAUDE.md already exists at [location]. Choose action:"
-  - **Overwrite** - Replace existing file completely
-  - **Merge** - Append new context to existing file
-  - **Abort** - Cancel operation
+- Use `AskUserQuestion`:
+  - Question: "CLAUDE.md already exists at [location]. Choose action:"
+  - Options:
+    - "Overwrite" - Replace existing file completely
+    - "Merge" - Append new context to existing file
+    - "Abort" - Cancel operation
 - WAIT for user response before proceeding
 
 ### STEP 3: Gather project context
