@@ -1,0 +1,161 @@
+---
+name: codex-oracle
+description: This skill should be used when the user asks to "use Codex for planning", "get Codex's opinion", "have Codex review code", "consult Codex", "ask Codex to plan", "Codex code review", "what does Codex think", or mentions using OpenAI Codex/GPT as a planning oracle or code reviewer. NOT for implementation tasks.
+---
+
+# Codex Oracle
+
+Use OpenAI Codex CLI as a **planning oracle** and **code reviewer**. Codex provides analysis and recommendations; Claude synthesizes and presents to the user.
+
+**Critical**: This skill is for planning and review ONLY. Never use Codex to implement changes.
+
+## Prerequisites
+
+Before invoking Codex, validate availability:
+
+```bash
+~/.claude/skills/codex-oracle/scripts/check-codex.sh
+```
+
+If the script exits non-zero, display the error message and stop. Do not proceed without Codex CLI.
+
+## Configuration Defaults
+
+| Setting   | Default             | User Override                                |
+| --------- | ------------------- | -------------------------------------------- |
+| Model     | `gpt-5.1-codex-max` | "use model X" or "with gpt-5.1"              |
+| Reasoning | `xhigh`             | "use medium reasoning" or "with high effort" |
+| Sandbox   | `read-only`         | Not overridable (safety constraint)          |
+
+For available models and reasoning levels, consult `references/codex-flags.md`.
+
+## Workflow
+
+### 1. Validate Prerequisites
+
+Run the check script. On failure, report the installation instructions and abort.
+
+### 2. Determine Mode
+
+- **Planning mode**: User wants architecture, implementation approach, or design decisions
+- **Review mode**: User wants code analysis, bug detection, or improvement suggestions
+
+### 3. Construct Prompt
+
+Build a focused prompt for Codex based on mode:
+
+**Planning prompt template:**
+
+```
+Analyze this codebase and provide a detailed implementation plan for: [user request]
+
+Focus on:
+- Architecture decisions and trade-offs
+- Files to create or modify
+- Implementation sequence
+- Potential risks or blockers
+
+Do NOT implement anything. Provide analysis and recommendations only.
+```
+
+**Review prompt template:**
+
+```
+Review the following code for:
+- Bugs and logic errors
+- Security vulnerabilities
+- Performance issues
+- Code quality and maintainability
+- Adherence to best practices
+
+[code or file paths]
+
+Provide specific, actionable feedback with file locations and line references.
+```
+
+### 4. Execute Codex
+
+Use HEREDOC syntax for safe prompt handling:
+
+```bash
+codex exec \
+  --model "${MODEL:-gpt-5.1-codex-max}" \
+  --reasoning-effort "${EFFORT:-xhigh}" \
+  --sandbox read-only \
+  --skip-git-repo-check \
+  2>/dev/null <<'EOF'
+[constructed prompt]
+EOF
+```
+
+**Important flags:**
+
+- `--sandbox read-only`: Prevents any file modifications (non-negotiable)
+- `--skip-git-repo-check`: Works outside git repositories
+- `2>/dev/null`: Suppresses thinking tokens from output
+
+### 5. Present Codex Output
+
+Display the complete Codex response to the user with clear attribution:
+
+```
+## Codex Analysis
+
+[Codex output here]
+
+---
+Model: gpt-5.1-codex-max | Reasoning: xhigh
+```
+
+### 6. Synthesize and Plan
+
+After presenting Codex output:
+
+1. Synthesize key insights from Codex analysis
+1. Identify actionable items and critical decisions
+1. Write a structured plan to `~/.claude/plans/[plan-name].md`
+1. Call `ExitPlanMode` to present the plan for user approval
+
+## Error Handling
+
+| Error               | Response                                              |
+| ------------------- | ----------------------------------------------------- |
+| Codex not installed | Show installation instructions from check script      |
+| Codex timeout       | Inform user, suggest simpler query or lower reasoning |
+| API rate limit      | Wait and retry, or inform user of limit               |
+| Empty response      | Retry once, then report failure                       |
+
+## Usage Examples
+
+### Planning Request
+
+User: "Ask Codex to plan how to add authentication to this app"
+
+1. Validate Codex CLI available
+1. Gather relevant codebase context
+1. Construct planning prompt with auth requirements
+1. Execute Codex with `gpt-5.1-codex-max` and `xhigh`
+1. Present Codex's architecture recommendations
+1. Synthesize into Claude plan format
+1. Write to `~/.claude/plans/` and call `ExitPlanMode`
+
+### Code Review Request
+
+User: "Have Codex review the changes in src/auth/"
+
+1. Validate Codex CLI available
+1. Read files in `src/auth/` directory
+1. Construct review prompt with file contents
+1. Execute Codex review
+1. Present findings with file/line references
+1. Summarize critical issues and recommendations
+
+## Additional Resources
+
+### Reference Files
+
+- **`references/codex-flags.md`** - Complete model and flag documentation
+
+### Scripts
+
+- **`scripts/check-codex.sh`** - Prerequisite validation (run before any Codex command)
