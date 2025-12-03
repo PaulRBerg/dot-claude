@@ -41,12 +41,11 @@ def get_git_branch(cwd: str) -> str:
         return ""
 
 
-def build_frontmatter(data: dict, file_path: Path) -> str:
+def build_frontmatter(data: dict) -> str:
     """Build YAML frontmatter string with metadata.
 
     Args:
         data: Hook input data containing session_id and cwd
-        file_path: Path to the plan file
 
     Returns:
         YAML frontmatter block as string
@@ -58,7 +57,6 @@ def build_frontmatter(data: dict, file_path: Path) -> str:
     fields = [
         ("created", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
         ("git_branch", get_git_branch(cwd)),
-        ("plan_name", file_path.stem),
         ("session_id", data.get("session_id", "unknown")),
         ("working_directory", cwd),
     ]
@@ -115,7 +113,7 @@ def main() -> None:
         sys.exit(0)
 
     # Build and prepend frontmatter
-    frontmatter = build_frontmatter(data, file_path)
+    frontmatter = build_frontmatter(data)
 
     try:
         file_path.write_text(f"{frontmatter}\n{content}")
