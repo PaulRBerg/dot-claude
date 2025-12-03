@@ -79,9 +79,9 @@ Use HEREDOC syntax for safe prompt handling:
 
 ```bash
 codex exec \
-  --model "${MODEL:-gpt-5.1-codex-max}" \
-  --reasoning-effort "${EFFORT:-xhigh}" \
-  --sandbox read-only \
+  -m "${MODEL:-gpt-5.1-codex-max}" \
+  -c "model_reasoning_effort=\"${EFFORT:-xhigh}\"" \
+  -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
 [constructed prompt]
@@ -90,7 +90,9 @@ EOF
 
 **Important flags:**
 
-- `--sandbox read-only`: Prevents any file modifications (non-negotiable)
+- `-m`: Model selection
+- `-c model_reasoning_effort=`: Reasoning depth (low/medium/high/xhigh)
+- `-s read-only`: Prevents any file modifications (non-negotiable)
 - `--skip-git-repo-check`: Works outside git repositories
 - `2>/dev/null`: Suppresses thinking tokens from output
 

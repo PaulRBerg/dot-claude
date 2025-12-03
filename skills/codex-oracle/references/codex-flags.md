@@ -1,16 +1,16 @@
 # Codex CLI Configuration Options
 
-## Model Selection (`--model` / `-m`)
+## Model Selection (`-m` / `--model`)
 
 | Model               | Description                                         |
 | ------------------- | --------------------------------------------------- |
-| `gpt-5`             | Base GPT-5 model                                    |
-| `gpt-5.1`           | Enhanced GPT-5.1 model                              |
-| `gpt-5-codex`       | GPT-5 optimized for code                            |
-| `gpt-5.1-codex`     | GPT-5.1 optimized for code                          |
+| `o3`                | OpenAI o3 reasoning model                           |
+| `o4-mini`           | Lightweight reasoning model                         |
 | `gpt-5.1-codex-max` | Maximum capability Codex model (default for oracle) |
 
-## Reasoning Effort (`--reasoning-effort`)
+## Reasoning Effort (`-c model_reasoning_effort=`)
+
+Configured via `-c model_reasoning_effort=<level>` or in `~/.codex/config.toml`.
 
 | Level    | Description                                  |
 | -------- | -------------------------------------------- |
@@ -19,7 +19,7 @@
 | `high`   | Deeper analysis, slower responses            |
 | `xhigh`  | Maximum reasoning depth (default for oracle) |
 
-## Sandbox Modes (`--sandbox` / `-s`)
+## Sandbox Modes (`-s` / `--sandbox`)
 
 | Mode                 | Description                   | Use Case                     |
 | -------------------- | ----------------------------- | ---------------------------- |
@@ -43,9 +43,9 @@
 
 ```bash
 codex exec \
-  --model gpt-5.1-codex-max \
-  --reasoning-effort xhigh \
-  --sandbox read-only \
+  -m gpt-5.1-codex-max \
+  -c model_reasoning_effort=xhigh \
+  -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
 Analyze this codebase and design an implementation plan for [feature].
@@ -56,9 +56,9 @@ EOF
 
 ```bash
 codex exec \
-  --model gpt-5.1-codex-max \
-  --reasoning-effort xhigh \
-  --sandbox read-only \
+  -m gpt-5.1-codex-max \
+  -c model_reasoning_effort=xhigh \
+  -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
 Review the following code for bugs, security issues, and improvements:
