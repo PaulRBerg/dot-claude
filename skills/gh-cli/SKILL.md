@@ -1,5 +1,5 @@
 ---
-name: GitHub CLI
+name: gh-cli
 description: This skill should be used when the user asks to "create a pull request", "manage GitHub issues", "view repository info", "trigger workflows", "create a release", "search GitHub", "manage codespaces", or mentions GitHub CLI, gh command, or GitHub automation from the command line.
 version: 0.1.0
 ---
