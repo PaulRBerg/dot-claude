@@ -55,15 +55,13 @@ class TestBuildFrontmatter:
         mock_git.return_value = "feature-branch"
 
         data = {"session_id": "abc123", "cwd": "/Users/prb/projects/test"}
-        file_path = Path("/Users/prb/.claude/plans/test-plan.md")
 
-        result = plan_frontmatter.build_frontmatter(data, file_path)
+        result = plan_frontmatter.build_frontmatter(data)
 
         assert "---" in result
         # Fields ordered alphabetically
         assert 'created: "2025-12-02T14:30:00Z"' in result
         assert 'git_branch: "feature-branch"' in result
-        assert 'plan_name: "test-plan"' in result
         assert 'session_id: "abc123"' in result
         assert 'working_directory: "/Users/prb/projects/test"' in result
 
@@ -76,9 +74,8 @@ class TestBuildFrontmatter:
         mock_git.return_value = ""
 
         data = {"session_id": "abc123", "cwd": "/tmp/no-repo"}
-        file_path = Path("/Users/prb/.claude/plans/test.md")
 
-        result = plan_frontmatter.build_frontmatter(data, file_path)
+        result = plan_frontmatter.build_frontmatter(data)
 
         assert "git_branch" not in result
 
@@ -91,9 +88,8 @@ class TestBuildFrontmatter:
         mock_git.return_value = "main"
 
         data = {"session_id": "abc", "cwd": "/Users/prb/My Documents/project"}
-        file_path = Path("/Users/prb/.claude/plans/test.md")
 
-        result = plan_frontmatter.build_frontmatter(data, file_path)
+        result = plan_frontmatter.build_frontmatter(data)
 
         assert 'working_directory: "/Users/prb/My Documents/project"' in result
 
@@ -106,9 +102,8 @@ class TestBuildFrontmatter:
         mock_git.return_value = "feature/test"
 
         data = {"session_id": "abc123", "cwd": 'C:\\Users\\name\\"quoted"'}
-        file_path = Path("/Users/prb/.claude/plans/test.md")
 
-        result = plan_frontmatter.build_frontmatter(data, file_path)
+        result = plan_frontmatter.build_frontmatter(data)
 
         # Backslashes and quotes should be escaped
         assert 'working_directory: "C:\\\\Users\\\\name\\\\\\"quoted\\""' in result
