@@ -3,9 +3,12 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      // AI hooks
+      // AI
       "Bash(ai-flags:*)",
       "Bash(ai-notify:*)",
+      "Bash(codex:*)",
+      "Bash(gemini:*)",
+
       // Code Quality & Formatting
       "Bash(biome:*)",
       "Bash(bulloak:*)",
@@ -14,6 +17,7 @@
       "Bash(ruff:*)",
       "Bash(shellcheck:*)",
       "Bash(shfmt:*)",
+
       // Core Shell Commands
       "Bash(COMMAND:*)",
       "Bash(cd:*)",
@@ -33,8 +37,11 @@
       "Bash(which:*)",
       "Bash(while:*)",
       "Bash(xargs:*)",
+
       // Custom Scripts
       "Bash(~/.claude/hooks:*)",
+      "Bash(~/.claude/skills/codex-oracle/scripts/check-codex.sh:*)",
+
       // File System
       "Bash(bat:*)",
       "Bash(cat:*)",
@@ -53,12 +60,14 @@
       "Bash(tree:*)",
       "Bash(unzip:*)",
       "Bash(zip:*)",
+
       // Git & Version Control
       "Bash(delta:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(git-filter-repo:*)",
       "Bash(gita:*)",
+
       // Misc
       "Bash(amp:*)",
       "Bash(atuin:*)",
@@ -77,6 +86,7 @@
       "Bash(sqlite3:*)",
       "Bash(terminal-notifier:*)",
       "Bash(zk:*)",
+
       // Node.js
       "Bash(bun:*)",
       "Bash(na:*)",
@@ -93,6 +103,7 @@
       "Bash(tsgo:*)",
       "Bash(tsx:*)",
       "Bash(yarn:*)",
+
       // Python
       "Bash(pip:*)",
       "Bash(poetry:*)",
@@ -102,19 +113,23 @@
       "Bash(pyright:*)",
       "Bash(pytest:*)",
       "Bash(uv:*)",
+
       // Rust
       "Bash(cargo:*)",
       "Bash(rustc:*)",
+
       // Text Processing
       "Bash(awk:*)",
       "Bash(cut:*)",
       "Bash(head:*)",
       "Bash(sort:*)",
       "Bash(tail:*)",
+
       // Search
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(sed:*)",
+
       // Web3
       "Bash(anvil:*)",
       "Bash(cast:*)",

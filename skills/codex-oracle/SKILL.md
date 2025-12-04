@@ -26,6 +26,16 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 | Model     | `gpt-5.1-codex-max` | "use model X" or "with gpt-5.1"              |
 | Reasoning | `xhigh`             | "use medium reasoning" or "with high effort" |
 | Sandbox   | `read-only`         | Not overridable (safety constraint)          |
+| Timeout   | 5 minutes minimum   | Estimate based on task complexity            |
+
+### Timeout Guidelines
+
+When invoking `codex exec` via the Bash tool, always set an appropriate timeout:
+
+- **Minimum**: 5 minutes (300000ms) for any Codex operation
+- **Simple queries** (single file review, focused question): 5 minutes (300000ms)
+- **Moderate complexity** (multi-file review, feature planning): 10 minutes (600000ms)
+- **High complexity** (architecture analysis, large codebase planning): 15 minutes (900000ms)
 
 For available models and reasoning levels, consult `references/codex-flags.md`.
 
@@ -75,9 +85,10 @@ Provide specific, actionable feedback with file locations and line references.
 
 ### 4. Execute Codex
 
-Use HEREDOC syntax for safe prompt handling:
+Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes):
 
 ```bash
+# Bash tool timeout: 300000-900000ms based on complexity
 codex exec \
   -m "${MODEL:-gpt-5.1-codex-max}" \
   -c "model_reasoning_effort=\"${EFFORT:-xhigh}\"" \
@@ -95,6 +106,8 @@ EOF
 - `-s read-only`: Prevents any file modifications (non-negotiable)
 - `--skip-git-repo-check`: Works outside git repositories
 - `2>/dev/null`: Suppresses thinking tokens from output
+
+**Bash tool timeout**: Estimate based on task complexity (see Timeout Guidelines above). Never use the default 2-minute timeout for Codex operations.
 
 ### 5. Present Codex Output
 
