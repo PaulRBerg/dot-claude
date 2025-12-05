@@ -3,10 +3,14 @@
   "enabledPlugins": {
     "code-review@claude-code-plugins": true,
     "feature-dev@claude-code-plugins": true,
+    "fp@sablier-plugins": true,
     "frontend-design@claude-code-plugins": true,
+    "frontend@sablier-plugins": true,
     "playwright-skill@playwright-skill": true,
     "plugin-dev@claude-code-plugins": true,
     "ralph-wiggum@claude-code-plugins": true,
-    "sablier@sablier-plugins": true
+    "sablier@sablier-plugins": true,
+    "testing@sablier-plugins": true,
+    "web3@sablier-plugins": true
   }
 }

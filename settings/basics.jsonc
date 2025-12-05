@@ -5,7 +5,6 @@
   "alwaysThinkingEnabled": true,
   "includeCoAuthoredBy": false,
   "model": "opus",
-  "terminalProgressBar": true,
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
   },
