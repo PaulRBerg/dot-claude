@@ -54,8 +54,7 @@ function ccc() {
 # Claude Code commit and push
 # Best suited for feature branches with upstream configured
 function cccp() {
-  ccc "$@" || return $?
-  git push
+  ccc --all --push
 }
 
 # Claude Code bump release
