@@ -54,6 +54,12 @@ function ccc() {
   jq -r '.result' <<<"$output"
 }
 
+# Claude Code commit and push
+# Best suited for feature branches with upstream configured
+function cccp() {
+  ccc --all --push
+}
+
 # Claude Code bump release
 function ccbump() {
   # Proceed with release bump
