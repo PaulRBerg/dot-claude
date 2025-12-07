@@ -85,7 +85,9 @@ Provide specific, actionable feedback with file locations and line references.
 
 ### 4. Execute Codex
 
-Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes):
+Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
+
+Redirect output to a temp file to avoid context bloat:
 
 ```bash
 # Bash tool timeout: 300000-900000ms based on complexity
@@ -94,7 +96,7 @@ codex exec \
   -c "model_reasoning_effort=\"${EFFORT:-xhigh}\"" \
   -s read-only \
   --skip-git-repo-check \
-  2>/dev/null <<'EOF'
+  2>/dev/null <<'EOF' > /tmp/codex-analysis.txt
 [constructed prompt]
 EOF
 ```
@@ -111,16 +113,24 @@ EOF
 
 ### 5. Present Codex Output
 
-Display the complete Codex response to the user with clear attribution:
+Read the analysis from the temp file and display to the user with clear attribution:
+
+```bash
+cat /tmp/codex-analysis.txt
+```
+
+Format the output with clear attribution:
 
 ```
 ## Codex Analysis
 
-[Codex output here]
+[Codex output from /tmp/codex-analysis.txt]
 
 ---
 Model: gpt-5.1-codex-max | Reasoning: xhigh
 ```
+
+For very large outputs (>5000 lines), summarize key sections rather than displaying everything.
 
 ### 6. Synthesize and Plan
 
@@ -128,8 +138,21 @@ After presenting Codex output:
 
 1. Synthesize key insights from Codex analysis
 1. Identify actionable items and critical decisions
+1. **If Codex's analysis presents multiple viable approaches or significant trade-offs**, consider using `AskUserQuestion` to clarify user preferences before finalizing the plan
 1. Write a structured plan to `~/.claude/plans/[plan-name].md`
 1. Call `ExitPlanMode` to present the plan for user approval
+
+**When to use AskUserQuestion:**
+
+- Codex proposes multiple architectures with different trade-offs
+- Technology or library choices need user input
+- Scope decisions (minimal vs comprehensive) are ambiguous
+
+**Skip clarification when:**
+
+- Codex's recommendations are clear and unambiguous
+- User's original request already specified preferences
+- Only one viable approach exists
 
 ## Error Handling
 
