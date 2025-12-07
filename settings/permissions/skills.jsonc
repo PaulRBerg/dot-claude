@@ -3,15 +3,18 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      // My own
       "Skill(codex-oracle)",
       "Skill(dry-refactor)",
-      "Skill(fp:effect-ts)",
-      "Skill(fp:effect-ts-next)",
-      "Skill(frontend:tailwind-css)",
-      "Skill(frontend:xstate-react)",
-      "Skill(frontend:zustand)",
       "Skill(gh-cli)",
       "Skill(just-cli)",
+      "Skill(typescript)",
+      "Skill(ui-ux-design)",
+      // From plugins
+      "Skill(fp:effect-ts)",
+      "Skill(fp:effect-ts-next)",
+      "Skill(frontend:xstate-react)",
+      "Skill(frontend:zustand)",
       "Skill(playwright-skill:playwright-skill)",
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",
@@ -22,9 +25,9 @@
       "Skill(sablier:design)",
       "Skill(sablier:sablier)",
       "Skill(testing:vitest-v4)",
-      "Skill(typescript)",
-      "Skill(ui-ux-design)",
-      "Skill(web3:etherscan-api)"
+      "Skill(web3:etherscan-api)",
+      "Skill(web3:etherscan-verification)",
+      "Skill(web3:evm-deployment)"
     ]
   }
 }
