@@ -3,21 +3,19 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      // My own
       "SlashCommand(/bump-release:*)",
       "SlashCommand(/commit:*)",
       "SlashCommand(/create-cc-issue:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
       "SlashCommand(/create-slash-command:*)",
+      "SlashCommand(/frontend:spec-screenshot:*)",
       "SlashCommand(/init-context:*)",
       "SlashCommand(/lint-context:*)",
       "SlashCommand(/refine-prompt:*)",
+      "SlashCommand(/sablier:create-issue:*)",
       "SlashCommand(/update-pr:*)",
-      "SlashCommand(/update-readme:*)",
-      // From plugins
-      "SlashCommand(/frontend:spec-screenshot:*)",
-      "SlashCommand(/sablier:create-issue:*)"
+      "SlashCommand(/update-readme:*)"
     ]
   }
 }
