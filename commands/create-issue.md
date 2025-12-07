@@ -142,6 +142,8 @@ From content analysis, determine:
 
 ### STEP 6: Generate title and body
 
+**Tone**: Write the issue body in an informal, casual style. Skip corporate speak and excessive formality. Be direct and conversational - write like you're explaining the issue to a colleague, not drafting a legal document.
+
 From remaining $ARGUMENTS, create:
 
 - **Title**: If YAML template has `title` field (e.g., "[BUG] "), prepend it to a clear, concise summary (5-10 words)
