@@ -7,7 +7,9 @@
   "includeCoAuthoredBy": false,
   "model": "opus",
   "env": {
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "DISABLE_ERROR_REPORTING": "0",
+    "DISABLE_BUG_COMMAND": "0",
+    "DISABLE_TELEMETRY": "0",
     "DISABLE_AUTOUPDATER": "0"
   },
   "statusLine": {
