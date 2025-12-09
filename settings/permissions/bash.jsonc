@@ -74,6 +74,7 @@
       "Bash(bc:*)",
       "Bash(chezmoi:*)",
       "Bash(diff:*)",
+      "Bash(espanso:*)",
       "Bash(just:*)",
       "Bash(curl:*)",
       "Bash(gdate:*)",
