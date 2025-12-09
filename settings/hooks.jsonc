@@ -46,7 +46,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/PostToolUse/plan_frontmatter.py",
+            "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
             "type": "command"
           }
         ]
