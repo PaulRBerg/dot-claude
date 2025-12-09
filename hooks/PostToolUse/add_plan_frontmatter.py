@@ -7,6 +7,8 @@ frontmatter to plan files, enabling better organization and searchability.
 See https://github.com/anthropics/claude-code/issues/12378
 """
 
+# ruff: noqa: D103
+
 import json
 import subprocess
 import sys
@@ -41,11 +43,20 @@ def get_git_branch(cwd: str) -> str:
         return ""
 
 
-def build_frontmatter(data: dict) -> str:
+def to_tilde_path(path: str) -> str:
+    """Convert absolute path to ~-prefixed path if under home directory."""
+    home = str(Path.home())
+    if path.startswith(home):
+        return "~" + path[len(home) :]
+    return path
+
+
+def build_frontmatter(data: dict, plan_path: str) -> str:
     """Build YAML frontmatter string with metadata.
 
     Args:
         data: Hook input data containing session_id and cwd
+        plan_path: Absolute path to the plan file
 
     Returns:
         YAML frontmatter block as string
@@ -57,8 +68,9 @@ def build_frontmatter(data: dict) -> str:
     fields = [
         ("created", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
         ("git_branch", get_git_branch(cwd)),
+        ("plan_path", to_tilde_path(plan_path)),
+        ("project_directory", cwd),
         ("session_id", data.get("session_id", "unknown")),
-        ("working_directory", cwd),
     ]
 
     lines = ["---"]
@@ -113,7 +125,7 @@ def main() -> None:
         sys.exit(0)
 
     # Build and prepend frontmatter
-    frontmatter = build_frontmatter(data)
+    frontmatter = build_frontmatter(data, file_path_str)
 
     try:
         file_path.write_text(f"{frontmatter}\n{content}")

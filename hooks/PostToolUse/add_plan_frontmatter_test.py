@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for plan_frontmatter.py hook."""
+"""Unit tests for add_plan_frontmatter.py hook."""
 
 import json
 import subprocess
@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import plan_frontmatter
+import add_plan_frontmatter
 
 
 class TestGetGitBranch:
@@ -20,34 +20,34 @@ class TestGetGitBranch:
     def test_returns_branch_name(self, mock_run):
         """Test returning branch name from git."""
         mock_run.return_value = MagicMock(returncode=0, stdout="main\n")
-        result = plan_frontmatter.get_git_branch("/some/path")
+        result = add_plan_frontmatter.get_git_branch("/some/path")
         assert result == "main"
 
     @patch("subprocess.run")
     def test_returns_empty_on_failure(self, mock_run):
         """Test returning empty string when git fails."""
         mock_run.return_value = MagicMock(returncode=1, stdout="")
-        result = plan_frontmatter.get_git_branch("/some/path")
+        result = add_plan_frontmatter.get_git_branch("/some/path")
         assert result == ""
 
     @patch("subprocess.run")
     def test_returns_empty_on_timeout(self, mock_run):
         """Test returning empty string on timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("git", 5)
-        result = plan_frontmatter.get_git_branch("/some/path")
+        result = add_plan_frontmatter.get_git_branch("/some/path")
         assert result == ""
 
     def test_returns_empty_for_empty_cwd(self):
         """Test returning empty string for empty cwd."""
-        result = plan_frontmatter.get_git_branch("")
+        result = add_plan_frontmatter.get_git_branch("")
         assert result == ""
 
 
 class TestBuildFrontmatter:
     """Test build_frontmatter() function."""
 
-    @patch("plan_frontmatter.get_git_branch")
-    @patch("plan_frontmatter.datetime")
+    @patch("add_plan_frontmatter.get_git_branch")
+    @patch("add_plan_frontmatter.datetime")
     def test_builds_complete_frontmatter(self, mock_datetime, mock_git):
         """Test building frontmatter with all fields."""
         mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
@@ -55,18 +55,20 @@ class TestBuildFrontmatter:
         mock_git.return_value = "feature-branch"
 
         data = {"session_id": "abc123", "cwd": "/Users/prb/projects/test"}
+        plan_path = "/Users/prb/.claude/plans/test-plan.md"
 
-        result = plan_frontmatter.build_frontmatter(data)
+        result = add_plan_frontmatter.build_frontmatter(data, plan_path)
 
         assert "---" in result
         # Fields ordered alphabetically
         assert 'created: "2025-12-02T14:30:00Z"' in result
         assert 'git_branch: "feature-branch"' in result
+        assert 'plan_path: "~/.claude/plans/test-plan.md"' in result
+        assert 'project_directory: "/Users/prb/projects/test"' in result
         assert 'session_id: "abc123"' in result
-        assert 'working_directory: "/Users/prb/projects/test"' in result
 
-    @patch("plan_frontmatter.get_git_branch")
-    @patch("plan_frontmatter.datetime")
+    @patch("add_plan_frontmatter.get_git_branch")
+    @patch("add_plan_frontmatter.datetime")
     def test_skips_empty_git_branch(self, mock_datetime, mock_git):
         """Test that empty git branch is omitted."""
         mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
@@ -74,13 +76,14 @@ class TestBuildFrontmatter:
         mock_git.return_value = ""
 
         data = {"session_id": "abc123", "cwd": "/tmp/no-repo"}
+        plan_path = "/tmp/test-plans/plan.md"
 
-        result = plan_frontmatter.build_frontmatter(data)
+        result = add_plan_frontmatter.build_frontmatter(data, plan_path)
 
         assert "git_branch" not in result
 
-    @patch("plan_frontmatter.get_git_branch")
-    @patch("plan_frontmatter.datetime")
+    @patch("add_plan_frontmatter.get_git_branch")
+    @patch("add_plan_frontmatter.datetime")
     def test_handles_path_with_spaces(self, mock_datetime, mock_git):
         """Test that paths with spaces are properly quoted."""
         mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
@@ -88,13 +91,14 @@ class TestBuildFrontmatter:
         mock_git.return_value = "main"
 
         data = {"session_id": "abc", "cwd": "/Users/prb/My Documents/project"}
+        plan_path = "/tmp/test-plans/plan.md"
 
-        result = plan_frontmatter.build_frontmatter(data)
+        result = add_plan_frontmatter.build_frontmatter(data, plan_path)
 
-        assert 'working_directory: "/Users/prb/My Documents/project"' in result
+        assert 'project_directory: "/Users/prb/My Documents/project"' in result
 
-    @patch("plan_frontmatter.get_git_branch")
-    @patch("plan_frontmatter.datetime")
+    @patch("add_plan_frontmatter.get_git_branch")
+    @patch("add_plan_frontmatter.datetime")
     def test_escapes_yaml_special_characters(self, mock_datetime, mock_git):
         """Test that quotes and backslashes are escaped for YAML safety."""
         mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
@@ -102,11 +106,23 @@ class TestBuildFrontmatter:
         mock_git.return_value = "feature/test"
 
         data = {"session_id": "abc123", "cwd": 'C:\\Users\\name\\"quoted"'}
+        plan_path = "/tmp/test-plans/plan.md"
 
-        result = plan_frontmatter.build_frontmatter(data)
+        result = add_plan_frontmatter.build_frontmatter(data, plan_path)
 
         # Backslashes and quotes should be escaped
-        assert 'working_directory: "C:\\\\Users\\\\name\\\\\\"quoted\\""' in result
+        assert 'project_directory: "C:\\\\Users\\\\name\\\\\\"quoted\\""' in result
+
+    def test_to_tilde_path_converts_home_directory(self):
+        """Test that home directory paths are converted to ~ notation."""
+        home = str(Path.home())
+        result = add_plan_frontmatter.to_tilde_path(f"{home}/.claude/plans/test.md")
+        assert result == "~/.claude/plans/test.md"
+
+    def test_to_tilde_path_preserves_non_home_paths(self):
+        """Test that non-home paths are preserved."""
+        result = add_plan_frontmatter.to_tilde_path("/tmp/test-plans/plan.md")
+        assert result == "/tmp/test-plans/plan.md"
 
 
 class TestMain:
@@ -119,7 +135,7 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
@@ -131,11 +147,11 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("sys.stdin", new_callable=StringIO)
     def test_exits_on_file_outside_plans_dir(self, mock_stdin):
         """Test exit when file is outside plans directory."""
@@ -147,11 +163,11 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("sys.stdin", new_callable=StringIO)
     def test_exits_on_non_markdown_file(self, mock_stdin):
         """Test exit when file is not a markdown file."""
@@ -163,11 +179,11 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
     def test_skips_file_with_existing_frontmatter(self, mock_stdin, mock_read):
@@ -182,12 +198,12 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
-    @patch("plan_frontmatter.build_frontmatter")
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.build_frontmatter")
     @patch("pathlib.Path.write_text")
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
@@ -206,7 +222,7 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
         mock_write.assert_called_once()
@@ -214,7 +230,7 @@ class TestMain:
         assert written.startswith('---\ncreated: "2025-12-02T14:30:00Z"\n---')
         assert "# My Plan" in written
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
     def test_handles_read_error_gracefully(self, mock_stdin, mock_read):
@@ -229,12 +245,12 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0
 
-    @patch("plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
-    @patch("plan_frontmatter.build_frontmatter")
+    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
+    @patch("add_plan_frontmatter.build_frontmatter")
     @patch("pathlib.Path.write_text")
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
@@ -252,6 +268,6 @@ class TestMain:
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:
-            plan_frontmatter.main()
+            add_plan_frontmatter.main()
 
         assert exc_info.value.code == 0  # Should not crash
