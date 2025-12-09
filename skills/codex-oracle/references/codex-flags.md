@@ -29,13 +29,14 @@ Configured via `-c model_reasoning_effort=<level>` or in `~/.codex/config.toml`.
 
 ## Common Flags
 
-| Flag                      | Description                                      |
-| ------------------------- | ------------------------------------------------ |
-| `--skip-git-repo-check`   | Bypass git repository requirement                |
-| `--json`                  | Output in JSON format                            |
-| `-o <file>`               | Write output to file                             |
-| `-C <dir>` / `--cd <dir>` | Set working directory                            |
-| `--full-auto`             | Shorthand for workspace-write with auto-approval |
+| Flag                      | Description                                                     |
+| ------------------------- | --------------------------------------------------------------- |
+| `--skip-git-repo-check`   | Bypass git repository requirement                               |
+| `--json`                  | Output in JSON format                                           |
+| `-o <file>`               | Write output to file                                            |
+| `-C <dir>` / `--cd <dir>` | Set working directory                                           |
+| `--full-auto`             | Shorthand for workspace-write with auto-approval                |
+| `--profile <name>`        | Load profile from config (e.g., `quiet` disables notifications) |
 
 ## Example Commands
 
@@ -51,6 +52,21 @@ codex exec \
 Analyze this codebase and design an implementation plan for [feature].
 EOF
 ```
+
+### Silent Profile Example
+
+```bash
+codex --profile quiet exec \
+  -m gpt-5.1-codex-max \
+  -c model_reasoning_effort=xhigh \
+  -s read-only \
+  --skip-git-repo-check \
+  2>/dev/null <<'EOF'
+Use the quiet profile to inherit silent notification settings from config.
+EOF
+```
+
+*Codex-oracle uses `--profile quiet` by default; switch profiles only if the user explicitly asks for notifications or another profile.*
 
 ### Code Review Query
 

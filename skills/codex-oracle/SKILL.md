@@ -21,12 +21,13 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 
 ## Configuration Defaults
 
-| Setting   | Default             | User Override                                |
-| --------- | ------------------- | -------------------------------------------- |
-| Model     | `gpt-5.1-codex-max` | "use model X" or "with gpt-5.1"              |
-| Reasoning | `xhigh`             | "use medium reasoning" or "with high effort" |
-| Sandbox   | `read-only`         | Not overridable (safety constraint)          |
-| Timeout   | 5 minutes minimum   | Estimate based on task complexity            |
+| Setting   | Default             | User Override                                   |
+| --------- | ------------------- | ----------------------------------------------- |
+| Model     | `gpt-5.1-codex-max` | "use model X" or "with gpt-5.1"                 |
+| Reasoning | `xhigh`             | "use medium reasoning" or "with high effort"    |
+| Sandbox   | `read-only`         | Not overridable (safety constraint)             |
+| Timeout   | 5 minutes minimum   | Estimate based on task complexity               |
+| Profile   | `quiet` (notify=[]) | User opts into another profile or notifications |
 
 ### Timeout Guidelines
 
@@ -94,6 +95,7 @@ Redirect output to a temp file to avoid context bloat:
 codex exec \
   -m "${MODEL:-gpt-5.1-codex-max}" \
   -c "model_reasoning_effort=\"${EFFORT:-xhigh}\"" \
+  --profile "${CODEX_PROFILE:-quiet}" \
   -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF' > /tmp/codex-analysis.txt
@@ -105,6 +107,7 @@ EOF
 
 - `-m`: Model selection
 - `-c model_reasoning_effort=`: Reasoning depth (low/medium/high/xhigh)
+- `--profile quiet`: Default for this skill (suppresses notify hooks); change only if the user explicitly wants another profile/notifications
 - `-s read-only`: Prevents any file modifications (non-negotiable)
 - `--skip-git-repo-check`: Works outside git repositories
 - `2>/dev/null`: Suppresses thinking tokens from output

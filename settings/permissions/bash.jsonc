@@ -82,6 +82,7 @@
       "Bash(nix:*)",
       "Bash(lsof:*)",
       "Bash(qsv:*)",
+      "Bash(ruby:*)",
       "Bash(screencapture:*)",
       "Bash(sqlite3:*)",
       "Bash(terminal-notifier:*)",
