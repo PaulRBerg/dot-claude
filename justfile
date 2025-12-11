@@ -42,15 +42,38 @@ install-utils:
         brew install bat delta eza fd fzf gh gum jq just rg ruff uv yq
     fi
 
+# ---------------------------------------------------------------------------- #
+#                                   HELPERS                                    #
+# ---------------------------------------------------------------------------- #
+
+# Add Bash permission to project's local Claude settings (run from project dir)
+[no-cd]
+[group("helpers")]
+@allow-bash:
+    uv run helpers/allow_all_bash.py
+alias ab := allow-bash
+
+# Clean ~/.claude.json by removing conversation history
+[group("helpers")]
+@cleanup:
+    uv run helpers/cleanup.py
+
+# Manage claude-island hooks (add|remove|status)
+[group("helpers")]
+@manage-claude-island action="status":
+    uv run helpers/manage-claude-island.py {{ action }}
+alias mci := manage-claude-island
+
 # Merge JSONC settings files into settings.json
-[group("settings")]
+[group("helpers")]
 @merge-settings:
     gum spin --spinner dot --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
 alias ms := merge-settings
 
 # Sync a section from template across projects (default: ## Lint Rules)
+[group("helpers")]
 sync-section section="":
-    uv run -u helpers/sync_context_section.py --section "{{ section }}"
+    uv run helpers/sync_context_section.py --section "{{ section }}"
 alias ss := sync-section
 
 # ---------------------------------------------------------------------------- #
