@@ -77,6 +77,14 @@ def main():
     except json.JSONDecodeError:
         sys.exit(1)
 
+    prompt = data.get("prompt")
+    if isinstance(prompt, str):
+        stripped = prompt.lstrip()
+        if stripped.startswith("/commit"):
+            boundary = stripped[len("/commit") :]  # chars after the command
+            if boundary == "" or boundary[0].isspace():
+                sys.exit(0)
+
     session_id = data.get("session_id", "unknown")
     event = data.get("hook_event_name", "")
     cwd = data.get("cwd", "")
