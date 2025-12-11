@@ -3,12 +3,72 @@
   // These hooks execute in response to events during Claude Code's operation
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "ai-notify event notification",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "ai-notify event permission-request",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "AskUserQuestion",
         "hooks": [
           {
             "command": "ai-notify event ask-user-question",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
@@ -28,35 +88,19 @@
           {
             "command": "~/.claude/hooks/SessionEnd/sync_local_settings.py",
             "type": "command"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
+          },
           {
-            "command": "ai-notify event notification",
+            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
       }
     ],
-    "PostToolUse": [
+    "SessionStart": [
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "ai-notify event permission-request",
+            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
@@ -67,6 +111,20 @@
         "hooks": [
           {
             "command": "ai-notify event stop",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
@@ -85,6 +143,10 @@
           },
           {
             "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
