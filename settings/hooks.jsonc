@@ -9,10 +9,6 @@
           {
             "command": "ai-notify event notification",
             "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
           }
         ]
       }
@@ -22,10 +18,6 @@
         "hooks": [
           {
             "command": "ai-notify event permission-request",
-            "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
@@ -37,10 +29,6 @@
           {
             "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
             "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
           }
         ]
       }
@@ -48,10 +36,6 @@
     "PreCompact": [
       {
         "hooks": [
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
-          }
         ]
       }
     ],
@@ -67,10 +51,6 @@
       },
       {
         "hooks": [
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
-          }
         ]
       }
     ],
@@ -88,10 +68,6 @@
           {
             "command": "~/.claude/hooks/SessionEnd/sync_local_settings.py",
             "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
           }
         ]
       }
@@ -99,10 +75,6 @@
     "SessionStart": [
       {
         "hooks": [
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
-          }
         ]
       }
     ],
@@ -112,10 +84,6 @@
           {
             "command": "ai-notify event stop",
             "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
           }
         ]
       }
@@ -123,10 +91,6 @@
     "SubagentStop": [
       {
         "hooks": [
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
-            "type": "command"
-          }
         ]
       }
     ],
@@ -143,10 +107,6 @@
           },
           {
             "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
-            "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/claude-island-state.py",
             "type": "command"
           }
         ]
