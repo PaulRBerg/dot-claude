@@ -192,6 +192,10 @@ def main() -> None:
     existing = read_existing_settings()
     user_permissions = extract_user_permissions(existing)
 
+    # Early exit: nothing to write and no existing file
+    if not LOCAL_SETTINGS.exists() and not skills and not commands:
+        sys.exit(0)
+
     # Build and write new settings
     settings = build_settings(existing, user_permissions, skills, commands)
     write_settings(settings)
