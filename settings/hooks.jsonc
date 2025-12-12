@@ -35,8 +35,7 @@
     ],
     "PreCompact": [
       {
-        "hooks": [
-        ]
+        "hooks": []
       }
     ],
     "PreToolUse": [
@@ -50,8 +49,7 @@
         ]
       },
       {
-        "hooks": [
-        ]
+        "hooks": []
       }
     ],
     "SessionEnd": [
@@ -74,8 +72,7 @@
     ],
     "SessionStart": [
       {
-        "hooks": [
-        ]
+        "hooks": []
       }
     ],
     "Stop": [
@@ -90,8 +87,7 @@
     ],
     "SubagentStop": [
       {
-        "hooks": [
-        ]
+        "hooks": []
       }
     ],
     "UserPromptSubmit": [

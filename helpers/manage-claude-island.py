@@ -149,9 +149,7 @@ def add_hooks(lines: list[str], content: str) -> list[str]:
     result = lines.copy()
 
     # Process events in reverse order to maintain line indices
-    events_to_add = [
-        (e, find_hooks_array_end(result, e)) for e in ALL_EVENTS if not status[e]
-    ]
+    events_to_add = [(e, find_hooks_array_end(result, e)) for e in ALL_EVENTS if not status[e]]
     events_to_add = [(e, idx) for e, idx in events_to_add if idx is not None]
     events_to_add.sort(key=lambda x: x[1], reverse=True)
 
@@ -180,9 +178,7 @@ def add_hooks(lines: list[str], content: str) -> list[str]:
         ]
 
         # Insert before the closing bracket
-        result = (
-            result[:closing_bracket_idx] + hook_entry + result[closing_bracket_idx:]
-        )
+        result = result[:closing_bracket_idx] + hook_entry + result[closing_bracket_idx:]
 
     return result
 

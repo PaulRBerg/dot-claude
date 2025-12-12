@@ -24,10 +24,13 @@ todos/
 .update.lock
 history.jsonl
 settings.json
+stats-cache.json
+
+# Markdown
+#
 PROMPT.md
 SPEC.md
 TODO.md
-
 
 # Python Directories
 __pycache__/
