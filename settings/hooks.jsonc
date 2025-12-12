@@ -85,11 +85,6 @@
         ]
       }
     ],
-    "SubagentStop": [
-      {
-        "hooks": []
-      }
-    ],
     "UserPromptSubmit": [
       {
         "hooks": [

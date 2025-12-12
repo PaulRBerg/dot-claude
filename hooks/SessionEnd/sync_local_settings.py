@@ -10,6 +10,7 @@ Runs at SessionEnd. Exits early if no .claude/ directory in CWD.
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -175,6 +176,34 @@ def write_settings(settings: dict) -> bool:
         return False
 
 
+# === FORMATTING ===
+
+
+def format_with_biome(path: Path) -> bool:
+    """Format file with Biome if biome.jsonc exists in cwd.
+
+    Args:
+        path: Path to file to format
+
+    Returns:
+        True if formatted successfully or no biome.jsonc, False on error
+    """
+    biome_config = Path.cwd() / "biome.jsonc"
+    if not biome_config.exists():
+        return True
+
+    try:
+        subprocess.run(
+            ["nlx", "biome", "--write", str(path)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        return True
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
+        return False
+
+
 # === MAIN ===
 
 
@@ -198,7 +227,8 @@ def main() -> None:
 
     # Build and write new settings
     settings = build_settings(existing, user_permissions, skills, commands)
-    write_settings(settings)
+    if write_settings(settings):
+        format_with_biome(LOCAL_SETTINGS)
 
     sys.exit(0)
 

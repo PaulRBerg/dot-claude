@@ -172,6 +172,7 @@ def sync_skills() -> bool:
     try:
         content = build_skills_jsonc(all_skills)
         SKILLS_SETTINGS.write_text(content + "\n")
+        format_with_biome(SKILLS_SETTINGS)
         return True
     except OSError:
         return False
@@ -288,6 +289,7 @@ def sync_commands() -> bool:
     try:
         content = build_commands_jsonc(all_commands)
         COMMANDS_SETTINGS.write_text(content + "\n")
+        format_with_biome(COMMANDS_SETTINGS)
         return True
     except OSError:
         return False
@@ -377,8 +379,37 @@ def sync_plugins() -> bool:
     try:
         content = build_plugins_json(merged)
         PLUGINS_SETTINGS.write_text(content + "\n")
+        format_with_biome(PLUGINS_SETTINGS)
         return True
     except OSError:
+        return False
+
+
+# === FORMATTING ===
+
+
+def format_with_biome(path: Path) -> bool:
+    """Format file with Biome if biome.jsonc exists in cwd.
+
+    Args:
+        path: Path to file to format
+
+    Returns:
+        True if formatted successfully or no biome.jsonc, False on error
+    """
+    biome_config = Path.cwd() / "biome.jsonc"
+    if not biome_config.exists():
+        return True
+
+    try:
+        subprocess.run(
+            ["nlx", "biome", "--write", str(path)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        return True
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
         return False
 
 
@@ -421,7 +452,8 @@ def main() -> None:
     sync_plugins()
 
     # Run merge_settings.sh once at the end
-    run_merge_settings()
+    if run_merge_settings():
+        format_with_biome(ROOT_SETTINGS)
 
     # Always exit cleanly
     sys.exit(0)
