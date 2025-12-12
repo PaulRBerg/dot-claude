@@ -76,6 +76,10 @@ def remove_hooks(content: str) -> str:
     # Remove all matches
     new_content = re.sub(pattern, "", content)
 
+    # Remove empty hook entries like { "hooks": [] }
+    empty_hooks_pattern = r',?\s*\{\s*"hooks"\s*:\s*\[\s*\]\s*\},?'
+    new_content = re.sub(empty_hooks_pattern, "", new_content)
+
     # Clean up: fix double commas or comma before ]
     new_content = re.sub(r",(\s*[}\]])", r"\1", new_content)
     # Fix leading comma after [
