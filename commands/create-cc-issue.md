@@ -8,7 +8,7 @@ model: opus
 
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Claude Code version: !`claude --version 2>/dev/null || echo "unknown"`
-- OS: !`uname -s`
+- OS: !`echo "macOS $(awk -F 'macOS ' '/SOFTWARE LICENSE AGREEMENT FOR macOS/{gsub(/[0-9]+\\.*/, "", $2); gsub(/\\.*/, "", $2); print $2; exit}' "/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf" | tr -d ' ') $(sw_vers -productVersion)"`
 - Terminal: !`echo "${TERM_PROGRAM:-${TERMINAL_EMULATOR:-unknown}}"`
 - Arguments: $ARGUMENTS
 
