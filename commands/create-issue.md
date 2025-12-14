@@ -9,7 +9,7 @@ model: opus
 - Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "not a repository"`
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Arguments: $ARGUMENTS
-- OS: !`echo "macOS $(awk -F 'macOS ' '/SOFTWARE LICENSE AGREEMENT FOR macOS/{gsub(/[0-9]+\\.*/, "", $2); gsub(/\\.*/, "", $2); print $2; exit}' "/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf" | tr -d ' ') $(sw_vers -productVersion)"`
+- OS: !`~/.claude/helpers/get-macos-version.sh`
 
 ## Skills
 
