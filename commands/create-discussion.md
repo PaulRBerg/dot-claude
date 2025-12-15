@@ -11,10 +11,6 @@ model: opus
 - Arguments: $ARGUMENTS
 - OS: !`~/.claude/helpers/get-macos-version.sh`
 
-## Skills
-
-Activate the `gh-cli` skill for this command.
-
 ## Your Task
 
 ### STEP 1: Validate prerequisites

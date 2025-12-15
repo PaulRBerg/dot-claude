@@ -6,6 +6,7 @@
       "SlashCommand(/bump-release:*)",
       "SlashCommand(/commit:*)",
       "SlashCommand(/create-cc-issue:*)",
+      "SlashCommand(/create-discussion:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
       "SlashCommand(/create-slash-command:*)",
