@@ -1,6 +1,6 @@
 ---
 name: codex-oracle
-description: This skill should be used when the user asks to "use Codex for planning", "get Codex's opinion", "have Codex review code", "consult Codex", "ask Codex to plan", "Codex code review", "what does Codex think", or mentions using OpenAI Codex/GPT as a planning oracle or code reviewer. NOT for implementation tasks.
+description: This skill should be used when the user asks to "use Codex", "ask Codex", "consult Codex", "Codex review", "use GPT for planning", "ask GPT to review", "get GPT's opinion", "what does GPT think", "second opinion on code", "consult the oracle", "ask the oracle", or mentions using an AI oracle for planning or code review. NOT for implementation tasks.
 ---
 
 # Codex Oracle
@@ -21,13 +21,13 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 
 ## Configuration Defaults
 
-| Setting   | Default             | User Override                                   |
-| --------- | ------------------- | ----------------------------------------------- |
-| Model     | `gpt-5.2`           | "use model X" or "with gpt-5.2"                 |
-| Reasoning | `high`              | "use medium reasoning" or "with high effort"    |
-| Sandbox   | `read-only`         | Not overridable (safety constraint)             |
-| Timeout   | 5 minutes minimum   | Estimate based on task complexity               |
-| Profile   | `quiet` (notify=[]) | User opts into another profile or notifications |
+| Setting   | Default                       | User Override                                   |
+| --------- | ----------------------------- | ----------------------------------------------- |
+| Model     | `gpt-5.2`                     | "use model X" or "with gpt-5.2"                 |
+| Reasoning | Dynamic (based on complexity) | "use medium reasoning" or "with xhigh effort"   |
+| Sandbox   | `read-only`                   | Not overridable (safety constraint)             |
+| Timeout   | 5 minutes minimum             | Estimate based on task complexity               |
+| Profile   | `quiet` (notify=[])           | User opts into another profile or notifications |
 
 ### Timeout Guidelines
 
@@ -37,6 +37,24 @@ When invoking `codex exec` via the Bash tool, always set an appropriate timeout:
 - **Simple queries** (single file review, focused question): 5 minutes (300000ms)
 - **Moderate complexity** (multi-file review, feature planning): 10 minutes (600000ms)
 - **High complexity** (architecture analysis, large codebase planning): 15 minutes (900000ms)
+
+### Reasoning Effort Guidelines
+
+Select reasoning effort based on task complexity:
+
+| Complexity | Effort   | Examples                                                      |
+| ---------- | -------- | ------------------------------------------------------------- |
+| Simple     | `low`    | Single file review, syntax check, quick question              |
+| Moderate   | `medium` | Multi-file review, focused feature planning, bug analysis     |
+| Complex    | `high`   | Architecture analysis, cross-cutting concerns, security audit |
+| Maximum    | `xhigh`  | Large codebase planning, comprehensive design, deep reasoning |
+
+**Selection heuristics:**
+
+- **`low`**: Task involves \<3 files, simple question, or quick validation
+- **`medium`**: Task involves 3-10 files or requires moderate analysis
+- **`high`**: Task spans multiple modules or requires architectural thinking
+- **`xhigh`**: Task requires comprehensive codebase understanding or critical decisions
 
 For available models and reasoning levels, consult `references/codex-flags.md`.
 
@@ -84,17 +102,24 @@ Review the following code for:
 Provide specific, actionable feedback with file locations and line references.
 ```
 
-### 4. Execute Codex
+### 4. Assess Complexity and Execute Codex
+
+Before executing, assess task complexity to select appropriate reasoning effort:
+
+1. **Count files involved** in the query
+1. **Evaluate scope** (single module vs cross-cutting)
+1. **Consider depth** (surface review vs architectural analysis)
 
 Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
 
 Redirect output to a temp file to avoid context bloat:
 
 ```bash
+# Select EFFORT based on complexity assessment (low/medium/high/xhigh)
 # Bash tool timeout: 300000-900000ms based on complexity
 codex exec \
   -m "${MODEL:-gpt-5.2}" \
-  -c "model_reasoning_effort=\"${EFFORT:-high}\"" \
+  -c "model_reasoning_effort=${EFFORT}" \
   --profile "${CODEX_PROFILE:-quiet}" \
   -s read-only \
   --skip-git-repo-check \
@@ -106,7 +131,7 @@ EOF
 **Important flags:**
 
 - `-m`: Model selection
-- `-c model_reasoning_effort=`: Reasoning depth (low/medium/high/xhigh)
+- `-c model_reasoning_effort=`: Reasoning depth (low/medium/high/xhigh) — select based on Reasoning Effort Guidelines
 - `--profile quiet`: Default for this skill (suppresses notify hooks); change only if the user explicitly wants another profile/notifications
 - `-s read-only`: Prevents any file modifications (non-negotiable)
 - `--skip-git-repo-check`: Works outside git repositories
@@ -130,7 +155,7 @@ Format the output with clear attribution:
 [Codex output from /tmp/codex-analysis.txt]
 
 ---
-Model: gpt-5.2 | Reasoning: high
+Model: gpt-5.2 | Reasoning: [selected effort level]
 ```
 
 For very large outputs (>5000 lines), summarize key sections rather than displaying everything.
@@ -174,6 +199,7 @@ User: "Ask Codex to plan how to add authentication to this app"
 
 1. Validate Codex CLI available
 1. Gather relevant codebase context
+1. Assess complexity → auth spans multiple modules → `high` reasoning
 1. Construct planning prompt with auth requirements
 1. Execute Codex with `gpt-5.2` and `high`
 1. Present Codex's architecture recommendations
@@ -186,8 +212,9 @@ User: "Have Codex review the changes in src/auth/"
 
 1. Validate Codex CLI available
 1. Read files in `src/auth/` directory
+1. Assess complexity → single directory, focused review → `medium` reasoning
 1. Construct review prompt with file contents
-1. Execute Codex review
+1. Execute Codex review with `medium`
 1. Present findings with file/line references
 1. Summarize critical issues and recommendations
 

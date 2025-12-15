@@ -12,12 +12,14 @@
 
 Configured via `-c model_reasoning_effort=<level>` or in `~/.codex/config.toml`.
 
-| Level    | Description                                  |
-| -------- | -------------------------------------------- |
-| `low`    | Fast responses, minimal reasoning            |
-| `medium` | Balanced speed and depth                     |
-| `high`   | Deeper analysis, slower responses            |
-| `xhigh`  | Maximum reasoning depth (default for oracle) |
+| Level    | Description                       | When to Use                                      |
+| -------- | --------------------------------- | ------------------------------------------------ |
+| `low`    | Fast responses, minimal reasoning | Single file review, syntax check, quick question |
+| `medium` | Balanced speed and depth          | Multi-file review, focused feature planning      |
+| `high`   | Deeper analysis, slower responses | Architecture analysis, cross-cutting concerns    |
+| `xhigh`  | Maximum reasoning depth           | Large codebase planning, comprehensive audit     |
+
+**Selection**: Choose effort level based on task complexity (see SKILL.md Reasoning Effort Guidelines).
 
 ## Sandbox Modes (`-s` / `--sandbox`)
 
@@ -40,12 +42,12 @@ Configured via `-c model_reasoning_effort=<level>` or in `~/.codex/config.toml`.
 
 ## Example Commands
 
-### Planning Query
+### Planning Query (High Complexity → `high`)
 
 ```bash
 codex exec \
   -m gpt-5.1-codex-max \
-  -c model_reasoning_effort=xhigh \
+  -c model_reasoning_effort=high \
   -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
@@ -53,7 +55,7 @@ Analyze this codebase and design an implementation plan for [feature].
 EOF
 ```
 
-### Silent Profile Example
+### Silent Profile Example (Maximum Complexity → `xhigh`)
 
 ```bash
 codex --profile quiet exec \
@@ -62,18 +64,18 @@ codex --profile quiet exec \
   -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
-Use the quiet profile to inherit silent notification settings from config.
+Comprehensive architecture review of the entire codebase.
 EOF
 ```
 
 *Codex-oracle uses `--profile quiet` by default; switch profiles only if the user explicitly asks for notifications or another profile.*
 
-### Code Review Query
+### Code Review Query (Moderate Complexity → `medium`)
 
 ```bash
 codex exec \
   -m gpt-5.1-codex-max \
-  -c model_reasoning_effort=xhigh \
+  -c model_reasoning_effort=medium \
   -s read-only \
   --skip-git-repo-check \
   2>/dev/null <<'EOF'
