@@ -33,11 +33,6 @@
         ]
       }
     ],
-    "PreCompact": [
-      {
-        "hooks": []
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "AskUserQuestion",
@@ -47,9 +42,6 @@
             "type": "command"
           }
         ]
-      },
-      {
-        "hooks": []
       }
     ],
     "SessionEnd": [
@@ -68,11 +60,6 @@
             "type": "command"
           }
         ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": []
       }
     ],
     "Stop": [

@@ -20,22 +20,13 @@
 
       // Core Shell Commands
       "Bash(COMMAND:*)",
-      "Bash(cd:*)",
-      "Bash(cwd:*)",
-      "Bash(done:*)",
-      "Bash(echo:*)",
-      "Bash(for:*)",
-      "Bash(ln:*)",
       "Bash(kill:*)",
-      "Bash(printf:*)",
+      "Bash(ln:*)",
       "Bash(ps:*)",
       "Bash(pwd:*)",
-      "Bash(select:*)",
-      "Bash(test:*)",
       "Bash(time:*)",
       "Bash(timeout:*)",
       "Bash(which:*)",
-      "Bash(while:*)",
       "Bash(xargs:*)",
 
       // Custom Scripts
@@ -45,7 +36,6 @@
 
       // File System
       "Bash(bat:*)",
-      "Bash(cat:*)",
       "Bash(chmod:*)",
       "Bash(cp:*)",
       "Bash(eza:*)",
@@ -56,7 +46,6 @@
       "Bash(mkdir:*)",
       "Bash(stat:*)",
       "Bash(tar:*)",
-      "Bash(tail:*)",
       "Bash(touch:*)",
       "Bash(tree:*)",
       "Bash(unzip:*)",
@@ -66,7 +55,6 @@
       "Bash(delta:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
-      "Bash(git-filter-repo:*)",
       "Bash(gita:*)",
 
       // Misc
@@ -74,16 +62,12 @@
       "Bash(atuin:*)",
       "Bash(bc:*)",
       "Bash(chezmoi:*)",
-      "Bash(diff:*)",
-      "Bash(espanso:*)",
-      "Bash(just:*)",
       "Bash(curl:*)",
-      "Bash(gdate:*)",
-      "Bash(identify:*)",
+      "Bash(diff:*)",
       "Bash(jq:*)",
-      "Bash(nix:*)",
+      "Bash(just:*)",
       "Bash(lsof:*)",
-      "Bash(qsv:*)",
+      "Bash(nix:*)",
       "Bash(ruby:*)",
       "Bash(screencapture:*)",
       "Bash(sqlite3:*)",
@@ -109,7 +93,6 @@
 
       // Python
       "Bash(pip:*)",
-      "Bash(poetry:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(ruff:*)",
@@ -123,15 +106,18 @@
 
       // Text Processing
       "Bash(awk:*)",
+      "Bash(cat:*)",
       "Bash(cut:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
       "Bash(head:*)",
+      "Bash(printf:*)",
+      "Bash(sed:*)",
       "Bash(sort:*)",
       "Bash(tail:*)",
 
       // Search
-      "Bash(grep:*)",
       "Bash(rg:*)",
-      "Bash(sed:*)",
 
       // Web3
       "Bash(anvil:*)",
@@ -142,10 +128,8 @@
       // Destructive File Operations
       "Bash(chmod -R:*)",
       "Bash(chown -R:*)",
-      "Bash(rm -rf /)",
-      "Bash(rm -rf ~)",
-      "Bash(rm -rf ~/)",
-      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
       // Dangerous Disk Operations
       "Bash(> /dev/sda*)",
       "Bash(> /etc/*)",
