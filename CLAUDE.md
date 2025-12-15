@@ -33,6 +33,10 @@ bat src/\(shared\)/Foo.tsx
 rg "pattern" path/to/my\ file.txt
 ```
 
+## Web Fetch
+
+Never fetch from `npmjs.com`—it blocks AI agents with 403. Use Bash with `npm view <pkg> readme` or Context7 MCP instead.
+
 ## Testing
 
 Run tests with `uv`:
