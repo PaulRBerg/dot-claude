@@ -76,6 +76,12 @@ sync-section section="":
     uv run helpers/sync_context_section.py --section "{{ section }}"
 alias ss := sync-section
 
+# Update all plugin marketplaces and refresh metadata
+[group("helpers")]
+@update-plugins:
+    uv run helpers/update_plugins.py
+alias up := update-plugins
+
 # ---------------------------------------------------------------------------- #
 #                                    CHECKS                                    #
 # ---------------------------------------------------------------------------- #
