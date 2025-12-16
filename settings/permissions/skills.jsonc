@@ -4,6 +4,7 @@
   "permissions": {
     "allow": [
       "Skill(biome)",
+      "Skill(code-review)",
       "Skill(codex-oracle)",
       "Skill(dry-refactor)",
       "Skill(fp:effect-ts)",
@@ -13,7 +14,6 @@
       "Skill(just-cli)",
       "Skill(md-docs)",
       "Skill(oss)",
-      "Skill(playwright:playwright)",
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",
       "Skill(plugin-dev:hook-development)",
