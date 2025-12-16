@@ -12,6 +12,7 @@
       "Skill(gh-cli)",
       "Skill(just-cli)",
       "Skill(oss)",
+      "Skill(playwright:playwright)",
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",
       "Skill(plugin-dev:hook-development)",
