@@ -1,5 +1,5 @@
 ---
-argument-hint: '[--all] [--thorough] [--push] [--stack]'
+argument-hint: '[--all] [--deep] [--push] [--stack]'
 description: Create atomic git commits with smart heuristic analysis
 model: sonnet
 ---
@@ -33,7 +33,7 @@ OTHERWISE (default - atomic commits):
 Flags:
 
 - `--all` → commit all changes (not just chat-modified files)
-- `--thorough` → deep code analysis, breaking changes, detailed body
+- `--deep` → deep code analysis, breaking changes, detailed body
 - `--push` → push after commit
 - `--stack` → use `gt create` instead of `git commit`
 - Type keywords (`feat`, `fix`, `docs`) → use that type
@@ -59,7 +59,7 @@ Flags:
   - Multiple areas or unclear path → omit scope
 - Extract a specific description of what changed (not just which files)
 
-**IF `--thorough`:**
+**IF `--deep`:**
 
 - Deep semantic analysis of the code
 - Detect breaking changes
@@ -79,7 +79,7 @@ Subject line (≤50 chars): `type(scope): description` or `type: description`
 
 **Default mode:** Subject only. Brief but specific.
 
-**IF `--thorough`:**
+**IF `--deep`:**
 
 - Add body (wrap 72 chars, explain WHY)
 - Breaking change: `BREAKING CHANGE: description` + migration notes
