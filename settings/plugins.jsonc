@@ -1,15 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
     "envio-hyperindex@envio-plugins": true,
-    "feature-dev@claude-code-plugins": true,
+    "feature-dev@claude-plugins-official": true,
     "fp@sablier-plugins": true,
-    "frontend-design@claude-code-plugins": true,
     "frontend@sablier-plugins": true,
-    "playwright-skill@playwright-skill": true,
-    "plugin-dev@claude-code-plugins": true,
-    "ralph-wiggum@claude-code-plugins": true,
+    "playwright@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
     "sablier@sablier-plugins": true,
     "testing@sablier-plugins": true,
     "web3@sablier-plugins": true
