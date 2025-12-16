@@ -1,0 +1,45 @@
+// Biome configuration for a UI/frontend project
+// Extends both base and UI configs for Tailwind CSS support
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@sablier/devkit/biome/base", "@sablier/devkit/biome/ui"],
+  "files": {
+    "includes": [
+      "**/*.{css,js,jsx,json,jsonc,ts,tsx}",
+      "!**/generated",
+      "!node_modules/**/*"
+    ]
+  },
+  "overrides": [
+    {
+      // Relax rules in test files
+      "includes": ["**/*.test.{ts,tsx}", "**/tests/**/*.{ts,tsx}"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      // Disable sorting for generated files
+      "includes": ["**/generated/**/*.ts"],
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedKeys": "off"
+          }
+        }
+      },
+      "javascript": {
+        "formatter": {
+          "expand": "never"
+        }
+      }
+    }
+  ]
+}
