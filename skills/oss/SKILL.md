@@ -1,6 +1,6 @@
 ---
 name: oss
-description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
+description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a Codex issue", "report a bug in Codex CLI", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
 version: 0.1.0
 ---
 
@@ -237,6 +237,64 @@ Return the issue URL to the user.
 
 For the complete Claude Code issue workflow with template examples and environment gathering scripts, refer to `references/CLAUDE_CODE_ISSUES.md`.
 
+## Codex CLI Issues
+
+Create issues specifically in the openai/codex repository with environment information gathering and specialized templates. This workflow is optimized for reporting bugs, requesting features, improving documentation, or reporting VS Code extension issues for Codex CLI.
+
+### Workflow Steps
+
+**Identify Issue Type**
+
+Determine which template to use based on user intent:
+
+- `2-bug-report`: Errors, crashes, unexpected behavior in CLI
+- `4-feature-request`: New functionality or enhancements
+- `3-docs-issue`: Docs improvements or clarifications
+- `5-vs-code-extension`: Issues with the VS Code/Cursor/Windsurf extension
+
+**Gather Environment Information**
+
+Collect relevant environment details:
+
+```bash
+# Codex CLI version
+codex --version
+
+# Platform (macOS/Linux)
+uname -mprs
+
+# For VS Code extension issues
+code --version
+```
+
+**Generate Issue Body**
+
+Create structured content following the selected template format:
+
+- Clear description of the issue or request
+- Steps to reproduce (for bugs)
+- Expected vs actual behavior (for bugs)
+- Environment information section (version, platform, model, subscription)
+- Additional context
+
+**Create in openai/codex**
+
+Execute the gh command targeting the correct repository:
+
+```bash
+gh issue create \
+  --repo openai/codex \
+  --title "Issue title" \
+  --body "$(cat <<'EOF'
+Issue content here
+EOF
+)"
+```
+
+Return the issue URL to the user.
+
+For the complete Codex CLI issue workflow with template examples and environment gathering scripts, refer to `references/CODEX_CLI_ISSUES.md`.
+
 ## Discussions
 
 Create GitHub discussions using the GraphQL API with automatic category selection. Discussions are ideal for Q&A, ideas, announcements, and general community conversations that don't fit the issue format.
@@ -448,6 +506,7 @@ For detailed workflows, examples, and edge case handling, refer to these referen
 - **`references/PULL_REQUESTS.md`** - Complete pull request workflow including git state validation, semantic analysis strategies, template examples, and reviewer management
 - **`references/ISSUES.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
 - **`references/CLAUDE_CODE_ISSUES.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
+- **`references/CODEX_CLI_ISSUES.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
 - **`references/DISCUSSIONS.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
 
 These references provide implementation details, code examples, and troubleshooting guidance for each workflow type.
