@@ -204,6 +204,12 @@ deploy:
     set -e
     npm run build
     aws s3 sync dist/ s3://bucket/
+
+[script("node")]
+analyze:
+    const fs = require('fs');
+    const pkg = JSON.parse(fs.readFileSync('package.json'));
+    console.log(`Package: ${pkg.name}@${pkg.version}`);
 ```
 
 ### Confirmation

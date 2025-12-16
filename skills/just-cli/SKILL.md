@@ -151,6 +151,61 @@ alias fw := full-write
 | tsc-check      | tc    | ruff-check     | rc    |
 | test           | t     | build          | b     |
 
+## Inline Scripts
+
+Just supports inline scripts in any language via two methods:
+
+### Script Attribute (Recommended)
+
+Use `[script("interpreter")]` for cross-platform compatibility:
+
+```just
+[script("node")]
+fetch-data:
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+
+[script("python3")]
+analyze:
+    import json
+    with open('package.json') as f:
+        pkg = json.load(f)
+    print(f"Package: {pkg['name']}@{pkg['version']}")
+
+[script("bash")]
+deploy:
+    set -e
+    npm run build
+    aws s3 sync dist/ s3://bucket/
+```
+
+### Shebang Method
+
+Use `#!/usr/bin/env interpreter` at the recipe start:
+
+```just
+node-script:
+    #!/usr/bin/env node
+    console.log(`Node ${process.version}`);
+    console.log(JSON.stringify(process.env, null, 2));
+
+python-script:
+    #!/usr/bin/env python3
+    import sys
+    print(f"Python {sys.version}")
+
+bash-script:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Running on $(uname -s)"
+```
+
+**When to use which:**
+
+- `[script()]` - Better cross-platform support, cleaner syntax
+- Shebang - Traditional Unix approach, works without `set unstable`
+
 ## Modules & Imports
 
 ### Import Pattern
@@ -259,8 +314,8 @@ Example topics to search:
 
 For detailed patterns and comprehensive coverage, consult:
 
-- **[`references/just-features.md`](references/just-features.md)** - Complete settings, modules, attributes, functions reference
-- **[`references/patterns.md`](references/patterns.md)** - Established conventions, section organization, helper patterns
+- **[`references/JUST_FEATURES.md`](references/JUST_FEATURES.md)** - Complete settings, modules, attributes, functions reference
+- **[`references/PATTERNS.md`](references/PATTERNS.md)** - Established conventions, section organization, helper patterns
 
 ### Example Templates
 
