@@ -69,7 +69,7 @@ def build_frontmatter(data: dict, plan_path: str) -> str:
         ("created", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
         ("git_branch", get_git_branch(cwd)),
         ("plan_path", to_tilde_path(plan_path)),
-        ("project_directory", cwd),
+        ("project_directory", to_tilde_path(cwd)),
         ("session_id", data.get("session_id", "unknown")),
     ]
 
