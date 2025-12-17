@@ -107,25 +107,36 @@ Before executing, assess task complexity to select appropriate model:
 1. **Evaluate scope** (single module vs cross-cutting)
 1. **Consider depth** (surface review vs architectural analysis)
 
-Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
+Use **positional prompt syntax** (Gemini CLI does NOT support HEREDOC/stdin). **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
 
-Redirect output to a temp file to avoid context bloat:
+For short prompts, pass directly as a positional argument:
 
 ```bash
-# Select MODEL based on complexity (gemini-3-pro-preview, gemini-2.5-pro, or gemini-2.5-flash)
+# Short prompt - direct positional argument
+gemini -m gemini-3-pro-preview --sandbox -o text "Your prompt here" 2>/dev/null
+```
+
+For long prompts, write to a temp file first, then use command substitution:
+
+```bash
+# Step 1: Write prompt to temp file
+cat > /tmp/gemini-prompt.txt <<'EOF'
+[constructed prompt with code context]
+EOF
+
+# Step 2: Execute Gemini with prompt from file
 # Bash tool timeout: 300000-900000ms based on complexity
 gemini \
   -m "${MODEL:-gemini-3-pro-preview}" \
   --sandbox \
   -o text \
-  2>/dev/null <<'EOF' > /tmp/gemini-analysis.txt
-[constructed prompt]
-EOF
+  "$(cat /tmp/gemini-prompt.txt)" \
+  2>/dev/null > /tmp/gemini-analysis.txt
 ```
 
 **Important flags:**
 
-- `-m`: Model selection (gemini-2.5-pro or gemini-2.5-flash)
+- `-m`: Model selection (gemini-3-pro-preview, gemini-2.5-pro, or gemini-2.5-flash)
 - `--sandbox`: Prevents any file modifications (non-negotiable)
 - `-o text`: Plain text output (use `json` if user requests structured output)
 - `2>/dev/null`: Suppresses error messages and stderr noise
