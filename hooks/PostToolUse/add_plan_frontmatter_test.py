@@ -66,7 +66,7 @@ class TestBuildFrontmatter:
         assert 'created: "2025-12-02T14:30:00Z"' in result
         assert 'git_branch: "feature-branch"' in result
         assert 'plan_path: "~/.claude/plans/test-plan.md"' in result
-        assert 'project_directory: "/Users/prb/projects/test"' in result
+        assert 'project_directory: "~/projects/test"' in result
         assert 'session_id: "abc123"' in result
 
     @patch("add_plan_frontmatter.get_git_branch")
@@ -97,7 +97,7 @@ class TestBuildFrontmatter:
 
         result = add_plan_frontmatter.build_frontmatter(data, plan_path)
 
-        assert 'project_directory: "/Users/prb/My Documents/project"' in result
+        assert 'project_directory: "~/My Documents/project"' in result
 
     @patch("add_plan_frontmatter.get_git_branch")
     @patch("add_plan_frontmatter.datetime")
