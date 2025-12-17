@@ -507,6 +507,7 @@ For detailed workflows, examples, and edge case handling, refer to these referen
 - **`references/ISSUES.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
 - **`references/CLAUDE_CODE_ISSUES.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
 - **`references/CODEX_CLI_ISSUES.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
+- **`references/BIOME_ISSUES.md`** - Biome-specific issue creation including playground reproduction links, formatter/linter bug templates, and environment detection
 - **`references/DISCUSSIONS.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
 
 These references provide implementation details, code examples, and troubleshooting guidance for each workflow type.
