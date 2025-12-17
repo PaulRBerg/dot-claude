@@ -5,7 +5,7 @@
     "allow": [
       "Skill(biome)",
       "Skill(code-review)",
-      "Skill(codex-oracle)",
+      "Skill(oracle-codex)",
       "Skill(dry-refactor)",
       "Skill(fp:effect-ts)",
       "Skill(frontend:xstate-react)",
@@ -13,6 +13,7 @@
       "Skill(gh-cli)",
       "Skill(just-cli)",
       "Skill(md-docs)",
+      "Skill(node-deps)",
       "Skill(oss)",
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",

@@ -32,7 +32,7 @@
       // Custom Scripts
       "Bash(~/.claude/helpers:*)",
       "Bash(~/.claude/hooks:*)",
-      "Bash(~/.claude/skills/codex-oracle/scripts/check-codex.sh:*)",
+      "Bash(~/.claude/skills/oracle-codex/scripts/check-codex.sh:*)",
 
       // File System
       "Bash(bat:*)",

@@ -68,7 +68,7 @@ Comprehensive architecture review of the entire codebase.
 EOF
 ```
 
-*Codex-oracle uses `--profile quiet` by default; switch profiles only if the user explicitly asks for notifications or another profile.*
+*Oracle-codex uses `--profile quiet` by default; switch profiles only if the user explicitly asks for notifications or another profile.*
 
 ### Code Review Query (Moderate Complexity → `medium`)
 

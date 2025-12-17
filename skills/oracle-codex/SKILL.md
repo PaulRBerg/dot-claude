@@ -1,5 +1,5 @@
 ---
-name: codex-oracle
+name: oracle-codex
 description: This skill should be used when the user asks to "use Codex", "ask Codex", "consult Codex", "Codex review", "use GPT for planning", "ask GPT to review", "get GPT's opinion", "what does GPT think", "second opinion on code", "consult the oracle", "ask the oracle", or mentions using an AI oracle for planning or code review. NOT for implementation tasks.
 ---
 
@@ -14,7 +14,7 @@ Use OpenAI Codex CLI as a **planning oracle** and **code reviewer**. Codex provi
 Before invoking Codex, validate availability:
 
 ```bash
-~/.claude/skills/codex-oracle/scripts/check-codex.sh
+~/.claude/skills/oracle-codex/scripts/check-codex.sh
 ```
 
 If the script exits non-zero, display the error message and stop. Do not proceed without Codex CLI.
