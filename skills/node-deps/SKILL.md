@@ -18,7 +18,7 @@ Before starting, verify taze is installed by running:
 If exit code is 1, stop and inform the user that taze must be installed:
 
 - Global install: `npm install -g taze`
-- One-time: `npx taze`
+- One-time: `nlx taze`
 
 ## Update Workflow
 
@@ -70,7 +70,11 @@ Report the packages that were updated.
 
 ### Step 5: Prompt for MAJOR Updates
 
-For each package with a major update available, use `AskUserQuestion` to ask the user individually:
+**Auto-skip packages:** Never prompt for these packages—auto-apply their major updates:
+
+- `lucide-react` (icon library with frequent major bumps, backward-compatible in practice)
+
+For each remaining package with a major update available, use `AskUserQuestion` to ask the user individually:
 
 ```
 Package: <package-name>

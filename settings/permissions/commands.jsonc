@@ -15,6 +15,7 @@
       "SlashCommand(/refine-prompt:*)",
       "SlashCommand(/sablier:create-issue:*)",
       "SlashCommand(/update-context:*)",
+      "SlashCommand(/update-deps:*)",
       "SlashCommand(/update-md-docs:*)",
       "SlashCommand(/update-pr:*)",
       "SlashCommand(/update-readme:*)"
