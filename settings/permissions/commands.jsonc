@@ -12,11 +12,10 @@
       "SlashCommand(/create-slash-command:*)",
       "SlashCommand(/frontend:spec-screenshot:*)",
       "SlashCommand(/init-context:*)",
-      "SlashCommand(/lint-context:*)",
       "SlashCommand(/refine-prompt:*)",
       "SlashCommand(/sablier:create-issue:*)",
       "SlashCommand(/update-context:*)",
-      "SlashCommand(/update-docs:*)",
+      "SlashCommand(/update-md-docs:*)",
       "SlashCommand(/update-pr:*)",
       "SlashCommand(/update-readme:*)"
     ]
