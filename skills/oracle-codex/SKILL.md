@@ -56,7 +56,7 @@ Select reasoning effort based on task complexity:
 - **`high`**: Task spans multiple modules or requires architectural thinking
 - **`xhigh`**: Task requires comprehensive codebase understanding or critical decisions
 
-For available models and reasoning levels, consult `references/codex-flags.md`.
+For available models and reasoning levels, consult `references/CODEX_FLAGS.md`.
 
 ## Workflow
 
