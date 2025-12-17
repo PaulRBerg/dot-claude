@@ -107,7 +107,7 @@ Execute the gh command with all parsed flags and generated content. Include:
 - `--draft` if draft mode requested
 - Return the PR URL to the user
 
-For the complete pull request workflow with detailed steps, examples, and edge cases, refer to `references/PULL_REQUESTS.md`.
+For the complete pull request workflow with detailed steps, examples, and edge cases, refer to `references/pull-requests.md`.
 
 ## Issues
 
@@ -167,7 +167,7 @@ Display results and ask user if they want to proceed with creation.
 
 Execute the gh command with generated title, body, and metadata. Pass multi-line bodies using HEREDOC syntax. Return the issue URL to the user.
 
-For the complete issue creation workflow with template examples, label strategies, and search patterns, refer to `references/ISSUES.md`.
+For the complete issue creation workflow with template examples, label strategies, and search patterns, refer to `references/issues.md`.
 
 ## Claude Code Issues
 
@@ -235,7 +235,7 @@ EOF
 
 Return the issue URL to the user.
 
-For the complete Claude Code issue workflow with template examples and environment gathering scripts, refer to `references/CLAUDE_CODE_ISSUES.md`.
+For the complete Claude Code issue workflow with template examples and environment gathering scripts, refer to `references/issues-claude-code.md`.
 
 ## Codex CLI Issues
 
@@ -293,7 +293,7 @@ EOF
 
 Return the issue URL to the user.
 
-For the complete Codex CLI issue workflow with template examples and environment gathering scripts, refer to `references/CODEX_CLI_ISSUES.md`.
+For the complete Codex CLI issue workflow with template examples and environment gathering scripts, refer to `references/issues-codex-cli.md`.
 
 ## Discussions
 
@@ -391,7 +391,7 @@ gh api graphql -f query='
 
 Return the discussion URL to the user.
 
-For the complete discussion workflow with GraphQL examples, category selection logic, and search patterns, refer to `references/DISCUSSIONS.md`.
+For the complete discussion workflow with GraphQL examples, category selection logic, and search patterns, refer to `references/discussions.md`.
 
 ## Common Patterns
 
@@ -503,11 +503,11 @@ For search operations with `--check`:
 
 For detailed workflows, examples, and edge case handling, refer to these reference documents:
 
-- **`references/PULL_REQUESTS.md`** - Complete pull request workflow including git state validation, semantic analysis strategies, template examples, and reviewer management
-- **`references/ISSUES.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
-- **`references/CLAUDE_CODE_ISSUES.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
-- **`references/CODEX_CLI_ISSUES.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
-- **`references/BIOME_ISSUES.md`** - Biome-specific issue creation including playground reproduction links, formatter/linter bug templates, and environment detection
-- **`references/DISCUSSIONS.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
+- **`references/pull-requests.md`** - Complete pull request workflow including git state validation, semantic analysis strategies, template examples, and reviewer management
+- **`references/issues.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
+- **`references/issues-claude-code.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
+- **`references/issues-codex-cli.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
+- **`references/issues-biome.md`** - Biome-specific issue creation including playground reproduction links, formatter/linter bug templates, and environment detection
+- **`references/discussions.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
 
 These references provide implementation details, code examples, and troubleshooting guidance for each workflow type.

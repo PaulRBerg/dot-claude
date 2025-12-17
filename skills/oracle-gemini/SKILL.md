@@ -53,7 +53,7 @@ Choose model based on task requirements:
 - **`gemini-2.5-pro`**: Task involves multiple files, requires deep analysis, or architectural thinking
 - **`gemini-2.5-flash`**: Simple queries, single file review, or when speed is prioritized
 
-For detailed model capabilities, consult `references/GEMINI_FLAGS.md`.
+For detailed model capabilities, consult `references/gemini-flags.md`.
 
 ## Workflow
 
@@ -237,7 +237,7 @@ User: "Ask Gemini with flash model to review this function"
 
 ### Reference Files
 
-- **`references/GEMINI_FLAGS.md`** - Complete model and flag documentation
+- **`references/gemini-flags.md`** - Complete model and flag documentation
 
 ### Scripts
 

@@ -84,10 +84,12 @@ class TestBuildFrontmatter:
 
         assert "git_branch" not in result
 
+    @patch("pathlib.Path.home")
     @patch("add_plan_frontmatter.get_git_branch")
     @patch("add_plan_frontmatter.datetime")
-    def test_handles_path_with_spaces(self, mock_datetime, mock_git):
+    def test_handles_path_with_spaces(self, mock_datetime, mock_git, mock_home):
         """Test that paths with spaces are properly quoted."""
+        mock_home.return_value = Path("/Users/prb")
         mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
         mock_datetime.timezone = timezone
         mock_git.return_value = "main"

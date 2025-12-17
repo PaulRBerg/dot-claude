@@ -314,8 +314,8 @@ Example topics to search:
 
 For detailed patterns and comprehensive coverage, consult:
 
-- **[`references/JUST_FEATURES.md`](references/JUST_FEATURES.md)** - Complete settings, modules, attributes, functions reference
-- **[`references/PATTERNS.md`](references/PATTERNS.md)** - Established conventions, section organization, helper patterns
+- **[`references/just-features.md`](references/just-features.md)** - Complete settings, modules, attributes, functions reference
+- **[`references/patterns.md`](references/patterns.md)** - Established conventions, section organization, helper patterns
 
 ### Example Templates
 
