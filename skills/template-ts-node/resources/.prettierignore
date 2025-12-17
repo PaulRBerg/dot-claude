@@ -1,0 +1,7 @@
+.claude/
+dist/
+node_modules/
+
+# Biome handles these
+*.js
+*.ts

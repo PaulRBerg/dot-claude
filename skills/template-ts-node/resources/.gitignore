@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build
+dist/
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Local
+.env
+.env.local
+*.local
+
+# Claude
+.claude/
+.serena/
