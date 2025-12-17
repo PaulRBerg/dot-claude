@@ -21,12 +21,12 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 
 ## Configuration Defaults
 
-| Setting | Default                | User Override                 |
-| ------- | ---------------------- | ----------------------------- |
-| Model   | `gemini-3-pro-preview` | "use 2.5 pro" or "with flash" |
-| Sandbox | `--sandbox`            | Not overridable (safety)      |
-| Timeout | 5 minutes minimum      | Based on complexity           |
-| Output  | `text`                 | "use json output"             |
+| Setting | Default           | User Override            |
+| ------- | ----------------- | ------------------------ |
+| Model   | `gemini-2.5-pro`  | "use flash"              |
+| Sandbox | `--sandbox`       | Not overridable (safety) |
+| Timeout | 5 minutes minimum | Based on complexity      |
+| Output  | `text`            | "use json output"        |
 
 ### Timeout Guidelines
 
@@ -41,15 +41,13 @@ When invoking `gemini` via the Bash tool, always set an appropriate timeout:
 
 Choose model based on task requirements:
 
-| Model                  | Best For                                             | Speed   |
-| ---------------------- | ---------------------------------------------------- | ------- |
-| `gemini-3-pro-preview` | Most complex analysis, cutting-edge reasoning        | Slowest |
-| `gemini-2.5-pro`       | Complex analysis, architecture, comprehensive review | Slower  |
-| `gemini-2.5-flash`     | Quick feedback, single-file review, rapid iteration  | Fastest |
+| Model              | Best For                                             | Speed   |
+| ------------------ | ---------------------------------------------------- | ------- |
+| `gemini-2.5-pro`   | Complex analysis, architecture, comprehensive review | Slower  |
+| `gemini-2.5-flash` | Quick feedback, single-file review, rapid iteration  | Fastest |
 
 **Selection heuristics:**
 
-- **`gemini-3-pro-preview`**: Critical architectural decisions, maximum reasoning capability needed
 - **`gemini-2.5-pro`**: Task involves multiple files, requires deep analysis, or architectural thinking
 - **`gemini-2.5-flash`**: Simple queries, single file review, or when speed is prioritized
 
@@ -113,7 +111,7 @@ For short prompts, pass directly as a positional argument:
 
 ```bash
 # Short prompt - direct positional argument
-gemini -m gemini-3-pro-preview --sandbox -o text "Your prompt here" 2>/dev/null
+gemini -m gemini-2.5-pro --sandbox -o text "Your prompt here" 2>/dev/null
 ```
 
 For long prompts, write to a temp file first, then use command substitution:
@@ -127,7 +125,7 @@ EOF
 # Step 2: Execute Gemini with prompt from file
 # Bash tool timeout: 300000-900000ms based on complexity
 gemini \
-  -m "${MODEL:-gemini-3-pro-preview}" \
+  -m "${MODEL:-gemini-2.5-pro}" \
   --sandbox \
   -o text \
   "$(cat /tmp/gemini-prompt.txt)" \
@@ -136,7 +134,7 @@ gemini \
 
 **Important flags:**
 
-- `-m`: Model selection (gemini-3-pro-preview, gemini-2.5-pro, or gemini-2.5-flash)
+- `-m`: Model selection (gemini-2.5-pro or gemini-2.5-flash)
 - `--sandbox`: Prevents any file modifications (non-negotiable)
 - `-o text`: Plain text output (use `json` if user requests structured output)
 - `2>/dev/null`: Suppresses error messages and stderr noise
@@ -159,7 +157,7 @@ Format the output with clear attribution:
 [Gemini output from /tmp/gemini-analysis.txt]
 
 ---
-Model: gemini-3-pro-preview
+Model: gemini-2.5-pro
 ```
 
 For very large outputs (>5000 lines), summarize key sections rather than displaying everything.
@@ -203,9 +201,9 @@ User: "Ask Gemini to plan how to add authentication to this app"
 
 1. Validate Gemini CLI available
 1. Gather relevant codebase context
-1. Assess complexity → auth spans multiple modules → use `gemini-3-pro-preview`
+1. Assess complexity → auth spans multiple modules → use `gemini-2.5-pro`
 1. Construct planning prompt with auth requirements
-1. Execute Gemini with `gemini-3-pro-preview` model
+1. Execute Gemini with `gemini-2.5-pro` model
 1. Present Gemini's architecture recommendations
 1. Synthesize into Claude plan format
 1. Write to `~/.claude/plans/` and call `ExitPlanMode`

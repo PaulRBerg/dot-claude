@@ -2,11 +2,10 @@
 
 ## Model Selection (`-m` / `--model`)
 
-| Model                  | Description                              | Context Window |
-| ---------------------- | ---------------------------------------- | -------------- |
-| `gemini-3-pro-preview` | Latest model with cutting-edge reasoning | 1M tokens      |
-| `gemini-2.5-pro`       | Advanced model with maximum capability   | 1M tokens      |
-| `gemini-2.5-flash`     | Faster model with good reasoning ability | 1M tokens      |
+| Model              | Description                              | Context Window |
+| ------------------ | ---------------------------------------- | -------------- |
+| `gemini-2.5-pro`   | Advanced model with maximum capability   | 1M tokens      |
+| `gemini-2.5-flash` | Faster model with good reasoning ability | 1M tokens      |
 
 ## Output Format (`-o` / `--output-format`)
 
@@ -42,14 +41,6 @@
 | `-v` / `--verbose`      | Enable verbose output                 |
 
 ## Model Comparison
-
-### gemini-3-pro-preview
-
-- **Best for:** Critical decisions, maximum reasoning capability, cutting-edge analysis
-- **Speed:** Slowest, optimized for accuracy and depth
-- **Reasoning:** State-of-the-art multi-step reasoning
-- **Context:** 1M token window
-- **Note:** Preview model, requires `previewFeatures: true` in settings
 
 ### gemini-2.5-pro
 

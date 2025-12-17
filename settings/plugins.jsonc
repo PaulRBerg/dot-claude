@@ -3,6 +3,7 @@
   "enabledPlugins": {
     "envio-hyperindex@envio-plugins": true,
     "fp@sablier-plugins": true,
+    "frontend-design@claude-plugins-official": true,
     "frontend@sablier-plugins": true,
     "playwright-skill@playwright-skill": true,
     "plugin-dev@claude-plugins-official": true,
