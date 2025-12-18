@@ -4,6 +4,8 @@ Expert guidance for reviewing configuration changes in production systems.
 
 ## Numeric Change Analysis
 
+See also the 'Relative Change Analysis' section in the main skill for strategic guidance on change magnitude and risk assessment.
+
 Assess relative changes, not absolute values. A 10% increase from 100 to 110 differs fundamentally from 10 to 11. Calculate percentage change and context impact before approval.
 
 Apply risk thresholds by magnitude:

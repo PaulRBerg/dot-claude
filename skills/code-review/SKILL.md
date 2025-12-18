@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: This skill should be used when the user asks to "review code", "review PR", "code review", "check for bugs", "security review", "review my changes", "find issues", mentions code review, pull request review, or asks about code quality, security issues, or best practices in code.
+description: This skill should be used when the user asks to "review code", "review PR", "code review", "audit code", "check for bugs", "security review", "review my changes", "find issues in this code", "review the diff", or asks for pull request review or code audit.
 version: 0.1.0
 ---
 
@@ -8,15 +8,15 @@ version: 0.1.0
 
 ## Overview
 
-Perform expert-level code review focusing on security vulnerabilities, correctness, performance implications, and maintainability. Support multiple languages and ecosystems including TypeScript, React, Node.js, Python, Bash, Solidity, and Solana. Apply industry best practices, security standards, and language-specific idioms. Prioritize findings by severity and provide actionable recommendations with evidence-based reasoning. Reviews should be thorough yet pragmatic, distinguishing between critical issues requiring immediate attention and minor improvements that can be addressed later.
+Perform expert-level code review focusing on security vulnerabilities, correctness, performance implications, and maintainability. Support multiple languages and ecosystems including TypeScript, React, Node.js, Python, Bash, Solidity, and Solana. Apply industry best practices, security standards, and language-specific idioms. Prioritize findings by severity and provide actionable recommendations with evidence-based reasoning. Keep reviews thorough yet pragmatic, distinguishing between critical issues requiring immediate attention and minor improvements that can be addressed later.
 
 ## Review Workflow
 
-Begin every code review by running `git diff` to understand the scope of changes. Examine both the changed lines and surrounding context to understand intent. Identify file types being modified: application code, test files, configuration, infrastructure-as-code, database migrations, or documentation.
+Begin every code review by running `git diff` to understand the scope of changes. Examine both the changed lines and surrounding context to understand intent. Identify file types being modified: application code, test files, configuration, database migrations, or documentation.
 
-Assess risk level based on change scope and type. High-risk areas include authentication logic, authorization checks, payment processing, data persistence, external API integrations, and cryptographic operations. Infrastructure changes affecting production environments warrant elevated scrutiny.
+Assess risk level based on change scope and type. High-risk areas include authentication logic, authorization checks, payment processing, data persistence, external API integrations, and cryptographic operations.
 
-Apply appropriate review strategies per file type. Application code requires deep analysis of logic, error handling, and security. Configuration files need validation of limits, timeouts, and environment-specific values. Infrastructure code demands assessment of resource allocation, access controls, and deployment impact. Test files should verify coverage of edge cases and error scenarios.
+Apply appropriate review strategies per file type. Application code requires deep analysis of logic, error handling, and security. Configuration files need validation of limits, timeouts, and environment-specific values. Test files should verify coverage of edge cases and error scenarios.
 
 ## Severity Classification
 
@@ -78,7 +78,7 @@ Structure review findings for maximum clarity and actionability:
 
 Group issues by severity level, presenting CRITICAL findings first, followed by HIGH, MEDIUM, and LOW. Within each severity tier, group related issues together.
 
-Include precise file paths and line numbers for every finding. Use the format `path/to/file.ts:42-45` to specify exact locations. Quote relevant code snippets when helpful for context.
+Include file paths and line numbers when available. When line numbers are uncertain, cite function names with quoted snippets. Never fabricate line references. Use the format `path/to/file.ts:42-45` to specify exact locations. Quote relevant code snippets when helpful for context.
 
 Provide evidence-based findings rather than opinions. Reference security standards (OWASP), performance benchmarks, or language best practices. Explain the potential impact and attack vectors for security issues. Quantify performance implications when possible.
 
@@ -86,16 +86,30 @@ Deliver actionable recommendations with specificity. Instead of "improve error h
 
 Acknowledge good practices observed in the code. Highlight effective patterns, thorough test coverage, or well-designed abstractions. Balanced feedback strengthens credibility and encourages continuation of positive practices.
 
+## Review Template
+
+Structure reviews consistently:
+
+1. **Context Questions** (if needed): 1-3 clarifying questions about intent or constraints
+1. **Findings**: Grouped by severity (CRITICAL → HIGH → MEDIUM → LOW)
+1. **Suggested Fixes**: Code snippets or specific recommendations
+1. **Deployment Notes**: Rollout strategy, monitoring requirements (when applicable)
+
 ## Additional Resources
 
 Consult specialized reference documents for in-depth guidance on specific review areas:
 
-- **CONFIGURATION.md** - Configuration file review patterns including environment-specific validation, secrets management, limit tuning, and infrastructure-as-code best practices
-- **SECURITY.md** - Comprehensive security review covering OWASP Top 10, authentication patterns, authorization models, cryptography, input validation, and secure defaults
-- **TYPESCRIPT_REACT.md** - Frontend and Node.js patterns including React hooks, state management, TypeScript type safety, async handling, and API design
-- **PYTHON.md** - Python-specific patterns covering type hints, async/await, exception handling, context managers, and common library pitfalls
-- **SMART_CONTRACTS.md** - Blockchain security for Solidity and Solana including reentrancy, integer overflow, access control, and economic attack vectors
-- **SHELL.md** - Bash script review covering quoting, error handling, portability, security risks from command injection and path traversal
-- **DATA_FORMATS.md** - CSV, JSON, and data format handling including parsing safety, schema validation, and encoding issues
+- **references/configuration.md** - Configuration file review patterns including environment-specific validation, secrets management, and limit tuning
+- **references/security.md** - Comprehensive security review covering OWASP Top 10, authentication patterns, authorization models, cryptography, input validation, and secure defaults
+- **references/typescript-react.md** - Frontend and Node.js patterns including React hooks, state management, TypeScript type safety, async handling, and API design
+- **references/python.md** - Python-specific patterns covering type hints, async/await, exception handling, context managers, and common library pitfalls
+- **references/smart-contracts.md** - Blockchain security for Solidity and Solana including reentrancy, integer overflow, access control, and economic attack vectors
+- **references/shell.md** - Bash script review covering quoting, error handling, portability, security risks from command injection and path traversal
+- **references/data-formats.md** - CSV, JSON, and data format handling including parsing safety, schema validation, and encoding issues
 
 Reference these documents when reviewing code in their respective domains for detailed checklists and language-specific vulnerabilities.
+
+### Examples
+
+- **examples/good-review.md** - Exemplary review output demonstrating proper structure, severity grouping, and actionable recommendations
+- **examples/bad-review.md** - Anti-patterns to avoid including fabricated line numbers, vague findings, and opinion without evidence
