@@ -1,6 +1,6 @@
 ---
 name: md-docs
-description: This skill should be used when the user asks to "update README", "update context files", "init context", "create CLAUDE.md", "update CLAUDE.md", "update AGENTS.md", "generate documentation", or mentions project documentation, context files, or markdown documentation workflows.
+description: This skill should be used when the user asks to "update README", "update context files", "init context", "create CLAUDE.md", "update CLAUDE.md", "update AGENTS.md", "update DOCS.md", "generate documentation", "API documentation", or mentions project documentation, context files, or markdown documentation workflows.
 version: 0.1.0
 ---
 
@@ -25,14 +25,14 @@ Ensure the output confirms you are in a git repository. If not initialized, docu
 For update workflows, verify target files exist:
 
 ```bash
-ls -la CLAUDE.md AGENTS.md README.md
+ls -la CLAUDE.md AGENTS.md DOCS.md README.md
 ```
 
-Check which files are present before attempting updates. Missing files should trigger initialization workflows rather than updates.
+Check which files are present before attempting updates. Missing files will show errors, which helps identify what needs initialization. Note that DOCS.md is optional and only relevant for projects with APIs or public interfaces.
 
 ## Update Context Files
 
-Verify and fix CLAUDE.md and AGENTS.md against the actual codebase. This workflow reads existing context files, analyzes the codebase structure, identifies discrepancies, and updates documentation to match reality.
+Verify and fix CLAUDE.md, AGENTS.md, and optionally DOCS.md against the actual codebase. This workflow reads existing context files, analyzes the codebase structure, identifies discrepancies, and updates documentation to match reality. DOCS.md is only processed if it exists (it contains API/code documentation).
 
 ### Workflow Steps
 
@@ -51,11 +51,12 @@ Confirm working directory is a git repository. If not, warn the user but proceed
 
 **Read Existing Context Files**
 
-Read current CLAUDE.md and AGENTS.md contents:
+Read current CLAUDE.md, AGENTS.md, and DOCS.md (if present) contents:
 
 ```bash
 cat CLAUDE.md
 cat AGENTS.md
+cat DOCS.md  # if exists
 ```
 
 Parse the structure and extract documented information including:
@@ -65,6 +66,9 @@ Parse the structure and extract documented information including:
 - Build and test commands
 - Custom tooling or scripts
 - Agent configurations and triggers
+- API endpoints and methods (from DOCS.md)
+- Function signatures and parameters (from DOCS.md)
+- Type definitions and interfaces (from DOCS.md)
 
 **Analyze Codebase**
 
@@ -91,6 +95,9 @@ Compare documented information against actual codebase:
 - Missing or removed features
 - Deprecated dependencies
 - Stale agent configurations
+- Outdated API endpoints or routes (DOCS.md)
+- Changed function signatures (DOCS.md)
+- Modified type definitions (DOCS.md)
 
 **Create Backups**
 
@@ -99,6 +106,7 @@ Before overwriting, create backup files:
 ```bash
 cp CLAUDE.md CLAUDE.md.backup
 cp AGENTS.md AGENTS.md.backup
+test -f DOCS.md && cp DOCS.md DOCS.md.backup
 ```
 
 **Update Context Files**
@@ -111,17 +119,33 @@ diff -u CLAUDE.md.backup CLAUDE.md
 
 **Generate Report**
 
-Display a summary of changes:
+Display a summary of changes.
+
+When DOCS.md exists:
 
 ```
 ✓ Updated CLAUDE.md
   - Fixed outdated build command
   - Added new /api directory to structure
-  - Removed deprecated testing section
 
 ✓ Updated AGENTS.md
   - Updated test-runner trigger pattern
-  - Fixed incorrect tool permissions
+
+✓ Updated DOCS.md
+  - Fixed outdated endpoint path /api/v1/users
+  - Updated function signature for createUser()
+```
+
+When DOCS.md is absent:
+
+```
+✓ Updated CLAUDE.md
+  - Fixed outdated build command
+
+✓ Updated AGENTS.md
+  - Updated test-runner trigger pattern
+
+⊘ DOCS.md not found (skipped)
 ```
 
 For the complete update context files workflow with verification strategies, diff examples, and edge cases, refer to `references/update-context.md`.
@@ -306,6 +330,16 @@ Display summary:
 
 For the complete initialize context workflow with language-specific templates, detection strategies, and customization options, refer to `references/init-context.md`.
 
+### DOCS.md Initialization
+
+DOCS.md is optional and not created by default. Create DOCS.md manually when the project has:
+
+- Public API endpoints requiring documentation
+- Exported functions or classes intended for external use
+- Complex type definitions users need to understand
+
+The update context workflow will suggest creating DOCS.md if it detects significant APIs without corresponding documentation.
+
 ## Common Patterns
 
 Shared conventions and patterns used across all documentation workflows.
@@ -328,15 +362,19 @@ Always create backups before overwriting existing files:
 
 ```bash
 cp CLAUDE.md CLAUDE.md.backup
+cp AGENTS.md AGENTS.md.backup
+test -f DOCS.md && cp DOCS.md DOCS.md.backup  # only if exists
 ```
 
 Inform the user when backups are created:
 
 ```
 Created backup: CLAUDE.md.backup
+Created backup: AGENTS.md.backup
+Created backup: DOCS.md.backup (optional file)
 ```
 
-Never delete backups automatically. Let users manage backup cleanup manually.
+Never delete backups automatically. Let users manage backup cleanup manually. Note that DOCS.md is optional—skip backup and update operations if it doesn't exist.
 
 ### Writing Style
 
@@ -387,11 +425,18 @@ After completing operations, display a clear summary:
   - Added installation section
   - Updated badges
 
+✓ Updated DOCS.md
+  - Updated API endpoint documentation
+  - Fixed function signature
+
 ✗ AGENTS.md not found
   - Skipped update
+
+⊘ DOCS.md not found
+  - Skipped (optional file)
 ```
 
-Use checkmarks (✓) for successful operations, crosses (✗) for skipped or failed operations. Include indented details showing specific changes made.
+Use checkmarks (✓) for successful operations, crosses (✗) for failed operations, and ⊘ for skipped optional files. Include indented details showing specific changes made.
 
 ### File Detection
 

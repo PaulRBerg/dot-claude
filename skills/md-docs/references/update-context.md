@@ -1,6 +1,6 @@
 # UPDATE_CONTEXT.md
 
-Workflow for updating `CLAUDE.md` and `AGENTS.md` files to match actual codebase state.
+Workflow for updating `CLAUDE.md`, `AGENTS.md`, and optionally `DOCS.md` files to match actual codebase state. DOCS.md is optional and only processed if it exists (for API/code documentation).
 
 ## Workflow
 
@@ -13,7 +13,7 @@ Check for `--dry-run` flag:
 
 ### Step 2: Extract Verifiable Claims
 
-Read each context file (`CLAUDE.md`, `AGENTS.md`) and extract verifiable claims:
+Read each context file (`CLAUDE.md`, `AGENTS.md`, and `DOCS.md` if present) and extract verifiable claims:
 
 - File paths mentioned
 - Directory structures described
@@ -22,6 +22,14 @@ Read each context file (`CLAUDE.md`, `AGENTS.md`) and extract verifiable claims:
 - Workflow descriptions
 - Testing patterns
 - Dependencies and integrations
+
+**DOCS.md-specific claims (if file exists):**
+
+- API endpoint paths and HTTP methods
+- Function signatures and parameters
+- Type definitions and interfaces
+- Response schemas and examples
+- Environment variables for API configuration
 
 ### Step 3: Verify and Fix Claims
 
@@ -50,6 +58,14 @@ Check each claim against actual codebase and auto-fix discrepancies:
 - Read actual files to verify patterns described
 - Update outdated patterns to match current code
 
+**API documentation claims (DOCS.md):**
+
+- Verify documented endpoints exist in route files
+- Verify function signatures match actual code
+- Verify type definitions match actual types
+- If endpoint removed: mark for removal
+- If signature changed: update to match actual signature
+
 ### Step 4: Discover Undocumented Patterns
 
 Scan for patterns not mentioned in context files:
@@ -67,6 +83,13 @@ Scan for patterns not mentioned in context files:
 **Build/test commands:**
 
 - Check for undocumented build, test, or deploy commands
+
+**API patterns (for DOCS.md):**
+
+- Scan for undocumented API routes
+- Detect undocumented exported functions
+- Find undocumented public types/interfaces
+- If DOCS.md doesn't exist but APIs are detected, suggest creating it
 
 ### Step 5: Apply Updates
 
@@ -89,7 +112,7 @@ Show preview of all changes without writing:
 
 **If NOT --dry-run:**
 
-1. Create backup: `{file}.backup`
+1. Create backup: `{file}.backup` (skip for DOCS.md if not present)
 1. Apply all fixes to the file
 1. Report changes made
 
@@ -102,6 +125,8 @@ Show preview of all changes without writing:
 
 ✓ {file}: Updated {claim} → {new_value}
 ✓ {file}: Removed outdated {claim}
+✓ DOCS.md: Updated endpoint /api/users → /api/v2/users
+✓ DOCS.md: Fixed function signature createUser()
 ```
 
 **Format for suggestions:**
@@ -114,12 +139,18 @@ Show preview of all changes without writing:
 ### [Section Name]
 
 [Draft content based on discovered patterns]
+
+---
+Note: DOCS.md not found. Consider creating it to document:
+- 5 API endpoints detected in src/routes/
+- 12 exported functions in src/lib/
 ```
 
 **If no changes needed:**
 
 ```
 ✓ All context files are up to date
+⊘ DOCS.md not found (optional, skipped)
 ```
 
 ## Notes
@@ -129,3 +160,5 @@ Show preview of all changes without writing:
 - Only suggest additions for genuinely useful patterns
 - Backup files before modifying (unless --dry-run)
 - Adapt discovery to project type (web, CLI, library, etc.)
+- DOCS.md is optional—skip gracefully if not present
+- Suggest DOCS.md creation only if significant APIs/public interfaces detected
