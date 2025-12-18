@@ -60,9 +60,9 @@ alias ab := allow-bash
 
 # Manage claude-island hooks (add|remove|status)
 [group("helpers")]
-@manage-claude-island action="status":
-    uv run helpers/manage-claude-island.py {{ action }}
-alias mci := manage-claude-island
+@manage_claude_island action="status":
+    uv run helpers/manage_claude_island.py {{ action }}
+alias mci := manage_claude_island
 
 # Merge JSONC settings files into settings.json
 [group("helpers")]

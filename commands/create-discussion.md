@@ -8,7 +8,7 @@ model: opus
 
 - Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "not a repository"`
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
-- OS: !`~/.claude/helpers/get-macos-version.sh`
+- OS: !`~/.claude/helpers/get_macos_version.sh`
 - Arguments: $ARGUMENTS
 
 ## Task

@@ -3,9 +3,9 @@
 Manage claude-island-state.py hooks in settings/hooks.jsonc.
 
 Usage:
-    manage-claude-island.py add      # Add hook to all events
-    manage-claude-island.py remove   # Remove hook from all events
-    manage-claude-island.py status   # Show which events have the hook
+    manage_claude_island.py add      # Add hook to all events
+    manage_claude_island.py remove   # Remove hook from all events
+    manage_claude_island.py status   # Show which events have the hook
 """
 
 import re
