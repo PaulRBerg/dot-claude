@@ -1,6 +1,6 @@
 # Update README Workflow
 
-Comprehensive workflow for updating README.md files based on current codebase structure. This reference documents the complete 8-step process used by the `/update-readme` command.
+Comprehensive workflow for updating README.md files based on current codebase structure. This reference documents the complete 8-step process used by the `/md-docs:update-readme` command.
 
 ## Guiding Principles
 
@@ -408,7 +408,7 @@ IF errors occurred during generation:
 **Basic update (default mode):**
 
 ```bash
-/update-readme
+/md-docs:update-readme
 ```
 
 Generates a balanced README with standard sections and moderate detail.
@@ -416,7 +416,7 @@ Generates a balanced README with standard sections and moderate detail.
 **Preserve custom sections:**
 
 ```bash
-/update-readme --preserve
+/md-docs:update-readme --preserve
 ```
 
 Keeps your hand-written Features, About, and other custom sections; only updates Install, Usage, Structure.
@@ -424,7 +424,7 @@ Keeps your hand-written Features, About, and other custom sections; only updates
 **Minimal README (fast):**
 
 ```bash
-/update-readme --minimal
+/md-docs:update-readme --minimal
 ```
 
 Creates basic README with badges, installation, and usage only. Completes in ~3 seconds.
@@ -432,7 +432,7 @@ Creates basic README with badges, installation, and usage only. Completes in ~3 
 **Thorough analysis with API docs:**
 
 ```bash
-/update-readme --thorough
+/md-docs:update-readme --thorough
 ```
 
 Deep codebase analysis, extracts API documentation, generates comprehensive sections. Takes ~20-30 seconds.
@@ -441,7 +441,7 @@ Deep codebase analysis, extracts API documentation, generates comprehensive sect
 
 ```bash
 # In a repo without README.md
-/update-readme
+/md-docs:update-readme
 ```
 
 Analyzes codebase and creates complete README from scratch.

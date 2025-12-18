@@ -82,7 +82,7 @@ testing, `-d` for debug, `-n` to skip linting). Flags are composable: `implement
 
 Slash commands in `commands/*.md` handle GitHub workflows, releases, and task management. Examples: `/commit` (atomic
 commits), `/create-pr` (PRs with semantic analysis), `/create-issue` (GitHub issues), `/bump-release` (version bumping),
-`/update-readme` (README sync), `/lint-context` (validate CLAUDE.md).
+`/md-docs:update-readme` (README sync), `/lint-context` (validate CLAUDE.md).
 
 ### Skills
 

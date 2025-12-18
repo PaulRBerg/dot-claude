@@ -17,8 +17,8 @@ Determine operating mode:
 
 Guided mode examples:
 
-- `/init-context TypeScript monorepo with strict type safety and functional patterns`
-- `/init-context Foundry smart contract project with security-first mindset`
+- `/md-docs:init-context TypeScript monorepo with strict type safety and functional patterns`
+- `/md-docs:init-context Foundry smart contract project with security-first mindset`
 
 ### 2. Check Existing CLAUDE.md
 
@@ -199,4 +199,4 @@ Add these lines to CLAUDE.md to auto-load context.
 ## Related Resources
 
 - Memory docs: https://docs.anthropic.com/en/docs/claude-code/memory
-- Command source: `~/.claude/commands/init-context.md`
+- Command source: `~/.claude/commands/md-docs/init-context.md`
