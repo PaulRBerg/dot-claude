@@ -10,13 +10,13 @@ Enable strict mode. Set `strict: true` in tsconfig as a baseline. Add `noUncheck
 
 ## React Patterns
 
-Respect exhaustive dependencies. Missing dependencies in hooks cause stale closures where callbacks reference outdated values. Add all referenced variables to dependency arrays. Use `useCallback` and `useMemo` to stabilize references when child components depend on them via `memo` or other hooks.
+Respect exhaustive dependencies. Missing dependencies in hooks cause stale closures where callbacks reference outdated values. Add all referenced variables to dependency arrays. React 19's compiler handles memoization automatically—manual optimization is rarely needed.
 
-Avoid derived state anti-patterns. Don't sync props to state—compute derived values directly during render or with `useMemo`. Choose the right state layer: lift state for sibling communication, use context for deep prop drilling, prefer external stores like Zustand or Jotai for global state that needs subscription batching.
+Avoid derived state anti-patterns. Don't sync props to state—compute derived values directly during render. Choose the right state layer: lift state for sibling communication, use context for deep prop drilling, prefer external stores like Zustand or Jotai for global state that needs subscription batching.
 
 Handle effects properly. Return cleanup functions for subscriptions, timers, and event listeners. Prevent race conditions in async effects by checking cancellation flags or using `AbortController` to cancel in-flight requests. The cleanup function runs before the next effect and on unmount.
 
-Use memoization judiciously. Object literals in JSX props create new references on every render, breaking `memo`. Extract to constants or `useMemo`. Reserve `useMemo` for computationally expensive operations—premature memoization adds complexity. Pass custom comparison functions to `React.memo` only when shallow equality fails for valid reasons.
+Trust the compiler for memoization. React 19's compiler automatically optimizes re-renders—avoid manual `useMemo`, `useCallback`, and `React.memo`. Extract constant object literals outside components to avoid unnecessary allocations, but let the compiler handle reference stability.
 
 ## Node.js Server
 
