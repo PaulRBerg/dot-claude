@@ -97,6 +97,23 @@ def discover_commands() -> list[str]:
     return [f"SlashCommand(/{cmd_file.stem}:*)" for cmd_file in commands_dir.glob("*.md")]
 
 
+def discover_command_groups() -> list[str]:
+    """Find command groups by looking for subdirectories with .md files.
+
+    Returns:
+        List of group names in SlashCommand(/group:*) format
+    """
+    commands_dir = LOCAL_CLAUDE_DIR / "commands"
+    if not commands_dir.exists():
+        return []
+
+    return [
+        f"SlashCommand(/{subdir.name}:*)"
+        for subdir in commands_dir.iterdir()
+        if subdir.is_dir() and not subdir.name.startswith(".") and any(subdir.glob("*.md"))
+    ]
+
+
 # === SETTINGS MANAGEMENT ===
 
 
@@ -213,9 +230,9 @@ def main() -> None:
     if not LOCAL_CLAUDE_DIR.exists():
         sys.exit(0)
 
-    # Discover local skills and commands
+    # Discover local skills, commands, and command groups
     skills = discover_skills()
-    commands = discover_commands()
+    commands = discover_commands() + discover_command_groups()
 
     # Read existing settings and preserve user permissions
     existing = read_existing_settings()

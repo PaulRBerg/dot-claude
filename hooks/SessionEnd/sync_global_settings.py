@@ -203,6 +203,25 @@ def discover_commands(base_path: Path) -> list[str]:
     return commands
 
 
+def discover_command_groups(base_path: Path) -> list[str]:
+    """Find command groups by looking for subdirectories with .md files.
+
+    Args:
+        base_path: Directory to search (e.g., ~/.claude/commands)
+
+    Returns:
+        List of group names in SlashCommand(/group:*) format
+    """
+    if not base_path.exists():
+        return []
+
+    return [
+        f"SlashCommand(/{subdir.name}:*)"
+        for subdir in base_path.iterdir()
+        if subdir.is_dir() and not subdir.name.startswith(".") and any(subdir.glob("*.md"))
+    ]
+
+
 def extract_plugin_commands(commands_config: dict) -> list[str]:
     """Extract plugin commands (those with : in path before :*) from config.
 
@@ -272,8 +291,9 @@ def sync_commands() -> bool:
     if not COMMANDS_SETTINGS.exists():
         return False
 
-    # 1. Discover global commands (local handled by sync_local_settings.py)
-    global_commands = discover_commands(CLAUDE_DIR / "commands")
+    # 1. Discover global commands and groups (local handled by sync_local_settings.py)
+    commands_dir = CLAUDE_DIR / "commands"
+    global_commands = discover_commands(commands_dir) + discover_command_groups(commands_dir)
 
     # 2. Extract plugin commands from existing config
     try:
