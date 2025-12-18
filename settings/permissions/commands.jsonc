@@ -5,7 +5,10 @@
     "allow": [
       "SlashCommand(/bump-release:*)",
       "SlashCommand(/commit:*)",
+      "SlashCommand(/create-biome-discussion:*)",
+      "SlashCommand(/create-biome-issue:*)",
       "SlashCommand(/create-cc-issue:*)",
+      "SlashCommand(/create-codex-issue:*)",
       "SlashCommand(/create-discussion:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
