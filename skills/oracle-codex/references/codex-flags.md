@@ -2,11 +2,9 @@
 
 ## Model Selection (`-m` / `--model`)
 
-| Model               | Description                                         |
-| ------------------- | --------------------------------------------------- |
-| `o3`                | OpenAI o3 reasoning model                           |
-| `o4-mini`           | Lightweight reasoning model                         |
-| `gpt-5.1-codex-max` | Maximum capability Codex model (default for oracle) |
+| Model           | Description                          |
+| --------------- | ------------------------------------ |
+| `gpt-5.2-codex` | Latest frontier agentic coding model |
 
 ## Reasoning Effort (`-c model_reasoning_effort=`)
 
@@ -46,7 +44,7 @@ Configured via `-c model_reasoning_effort=<level>` or in `~/.codex/config.toml`.
 
 ```bash
 codex exec \
-  -m gpt-5.1-codex-max \
+  -m gpt-5.2-codex \
   -c model_reasoning_effort=high \
   -s read-only \
   --skip-git-repo-check \
@@ -59,7 +57,7 @@ EOF
 
 ```bash
 codex --profile quiet exec \
-  -m gpt-5.1-codex-max \
+  -m gpt-5.2-codex \
   -c model_reasoning_effort=xhigh \
   -s read-only \
   --skip-git-repo-check \
@@ -74,7 +72,7 @@ EOF
 
 ```bash
 codex exec \
-  -m gpt-5.1-codex-max \
+  -m gpt-5.2-codex \
   -c model_reasoning_effort=medium \
   -s read-only \
   --skip-git-repo-check \
@@ -88,6 +86,6 @@ EOF
 
 Override defaults by specifying in the prompt:
 
-- "Use model gpt-5.1-codex instead"
+- "Use model gpt-5.2-codex"
 - "Use medium reasoning effort"
 - "With high reasoning"

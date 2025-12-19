@@ -23,7 +23,7 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 
 | Setting   | Default                       | User Override                                   |
 | --------- | ----------------------------- | ----------------------------------------------- |
-| Model     | `gpt-5.2`                     | "use model X" or "with gpt-5.2"                 |
+| Model     | `gpt-5.2-codex`               | "use model X" or "with gpt-5.2-codex"           |
 | Reasoning | Dynamic (based on complexity) | "use medium reasoning" or "with xhigh effort"   |
 | Sandbox   | `read-only`                   | Not overridable (safety constraint)             |
 | Timeout   | 5 minutes minimum             | Estimate based on task complexity               |
@@ -118,7 +118,7 @@ Redirect output to a temp file to avoid context bloat:
 # Select EFFORT based on complexity assessment (low/medium/high/xhigh)
 # Bash tool timeout: 300000-900000ms based on complexity
 codex exec \
-  -m "${MODEL:-gpt-5.2}" \
+  -m "${MODEL:-gpt-5.2-codex}" \
   -c "model_reasoning_effort=${EFFORT}" \
   --profile "${CODEX_PROFILE:-quiet}" \
   -s read-only \
@@ -155,7 +155,7 @@ Format the output with clear attribution:
 [Codex output from /tmp/codex-analysis.txt]
 
 ---
-Model: gpt-5.2 | Reasoning: [selected effort level]
+Model: gpt-5.2-codex | Reasoning: [selected effort level]
 ```
 
 For very large outputs (>5000 lines), summarize key sections rather than displaying everything.
@@ -201,7 +201,7 @@ User: "Ask Codex to plan how to add authentication to this app"
 1. Gather relevant codebase context
 1. Assess complexity → auth spans multiple modules → `high` reasoning
 1. Construct planning prompt with auth requirements
-1. Execute Codex with `gpt-5.2` and `high`
+1. Execute Codex with `gpt-5.2-codex` and `high`
 1. Present Codex's architecture recommendations
 1. Synthesize into Claude plan format
 1. Write to `~/.claude/plans/` and call `ExitPlanMode`
