@@ -10,6 +10,7 @@ Usage:
 
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 HOOKS_FILE = Path.home() / ".claude" / "settings" / "hooks.jsonc"
@@ -147,10 +148,10 @@ def find_hooks_array_end(lines: list[str], event: str) -> int | None:
     return last_hooks_end
 
 
-def add_hooks(lines: list[str], content: str) -> list[str]:
+def add_hooks(lines: Sequence[str], content: str) -> list[str]:
     """Add claude-island hook to events that don't have it."""
     status = get_status(content)
-    result = lines.copy()
+    result = list(lines)
 
     # Process events in reverse order to maintain line indices
     events_to_add = [(e, find_hooks_array_end(result, e)) for e in ALL_EVENTS if not status[e]]

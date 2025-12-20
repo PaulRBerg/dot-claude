@@ -1,15 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "enabledPlugins": {
-    "envio-hyperindex@envio-plugins": true,
     "fp@sablier-plugins": true,
-    "frontend-design@claude-plugins-official": true,
-    "frontend@sablier-plugins": true,
-    "playwright-skill@playwright-skill": true,
-    "plugin-dev@claude-plugins-official": true,
     "ralph-wiggum@claude-plugins-official": true,
-    "sablier@sablier-plugins": true,
-    "testing@sablier-plugins": true,
-    "web3@sablier-plugins": true
+    "testing@sablier-plugins": true
   }
 }
