@@ -1,5 +1,5 @@
 ---
-name: dry-refactor
+name: DRY Refactor
 description: This skill should be used when the user asks to "refactor duplicate code", "apply DRY principles", "eliminate code repetition", "extract common functionality", or mentions code duplication, similar patterns, repeated logic, or reusable abstractions.
 ---
 

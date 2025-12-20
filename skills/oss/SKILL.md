@@ -1,5 +1,5 @@
 ---
-name: oss
+name: OSS
 description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a Codex issue", "report a bug in Codex CLI", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
 version: 0.1.0
 ---

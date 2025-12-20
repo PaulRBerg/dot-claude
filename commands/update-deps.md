@@ -1,6 +1,6 @@
 ---
 argument-hint: '[--monorepo]'
-description: Update Node.js dependencies with smart prompting
+description: Wrapper for node-deps skill with optional --monorepo flag for recursive updates
 ---
 
 ## Context

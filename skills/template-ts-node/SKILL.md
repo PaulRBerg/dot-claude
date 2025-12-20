@@ -1,5 +1,5 @@
 ---
-name: template-ts-node
+name: Template TypeScript Node.js
 description: This skill should be used when the user asks to "create a TypeScript project", "set up Node.js project", "scaffold new project", "initialize TypeScript repo", "create a new library", "set up a CLI tool", or mentions setting up a new TypeScript/Node.js codebase.
 version: 0.1.0
 ---

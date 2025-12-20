@@ -1,6 +1,6 @@
 ---
-name: typescript
-description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "set up BiomeJS", "use dayjs", "add type definitions", "set up React with TypeScript", mentions ".ts" or ".tsx" files, or asks about TypeScript best practices or TypeScript-specific tooling.
+name: TypeScript
+description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "use dayjs", "add type definitions", "set up React with TypeScript", mentions ".ts" or ".tsx" files, or asks about TypeScript best practices or TypeScript-specific tooling.
 ---
 
 # TypeScript Skill

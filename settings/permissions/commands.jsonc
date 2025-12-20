@@ -8,7 +8,6 @@
       "SlashCommand(/create-discussion:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
-      "SlashCommand(/create-slash-command:*)",
       "SlashCommand(/frontend:spec-screenshot:*)",
       "SlashCommand(/md-docs:*)",
       "SlashCommand(/oss:*)",

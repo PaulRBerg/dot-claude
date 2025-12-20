@@ -1,5 +1,5 @@
 ---
-name: just-cli
+name: Just CLI
 description: This skill should be used when the user asks to "create a justfile", "write just recipes", "configure just settings", "add just modules", "use just attributes", "set up task automation", mentions justfile, just command runner, or task automation with just.
 version: 0.1.0
 ---
