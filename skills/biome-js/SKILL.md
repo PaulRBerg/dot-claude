@@ -1,5 +1,5 @@
 ---
-name: BiomeJS
+name: biome-js
 description: This skill should be used when the user asks to "configure Biome", "extend biome config", "set up BiomeJS", "add biome overrides", "biome lint-staged", "fix biome errors", or mentions biome.jsonc, Biome linting, or Biome formatting configuration.
 ---
 

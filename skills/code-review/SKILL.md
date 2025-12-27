@@ -1,5 +1,5 @@
 ---
-name: Code Review
+name: code-review
 description: This skill should be used when the user asks to "review code", "review PR", "code review", "audit code", "check for bugs", "security review", "review my changes", "find issues in this code", "review the diff", or asks for pull request review or code audit.
 version: 0.1.0
 ---

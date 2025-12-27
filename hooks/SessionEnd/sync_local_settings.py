@@ -168,11 +168,20 @@ def build_settings(
     result = {
         "$schema": SCHEMA_URL,
         **{k: v for k, v in existing.items() if k not in ("$schema", "permissions")},
-        "permissions": {
-            **existing.get("permissions", {}),
-            "allow": all_permissions,
-        },
     }
+
+    # Only add permissions if there are any to add
+    existing_perms = existing.get("permissions", {})
+    if all_permissions or existing_perms:
+        new_perms = {**existing_perms}
+        if all_permissions:
+            new_perms["allow"] = all_permissions
+        elif "allow" in new_perms:
+            # Remove empty allow array from auto-generated permissions
+            del new_perms["allow"]
+        if new_perms:
+            result["permissions"] = new_perms
+
     return result
 
 

@@ -19,7 +19,7 @@
       "Bash(shfmt:*)",
 
       // Core Shell Commands
-      "Bash(COMMAND:*)",
+      "Bash(COMMAND:*)", // used in slash commands
       "Bash(kill:*)",
       "Bash(ln:*)",
       "Bash(ps:*)",
@@ -67,8 +67,6 @@
       "Bash(jq:*)",
       "Bash(just:*)",
       "Bash(lsof:*)",
-      "Bash(nix:*)",
-      "Bash(ruby:*)",
       "Bash(screencapture:*)",
       "Bash(sqlite3:*)",
       "Bash(terminal-notifier:*)",
@@ -76,6 +74,8 @@
 
       // Node.js
       "Bash(bun:*)",
+      "Bash(bun x:*)",
+      "Bash(bunx:*)",
       "Bash(na:*)",
       "Bash(ni:*)",
       "Bash(node:*)",
@@ -99,10 +99,6 @@
       "Bash(pyright:*)",
       "Bash(pytest:*)",
       "Bash(uv:*)",
-
-      // Rust
-      "Bash(cargo:*)",
-      "Bash(rustc:*)",
 
       // Text Processing
       "Bash(awk:*)",

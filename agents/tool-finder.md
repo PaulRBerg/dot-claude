@@ -27,6 +27,7 @@ Other supported ecosystems:
 - **Python**: PyPI packages, pip/poetry/uv
 - **Rust**: crates.io, cargo
 - **CLI Tools**: Homebrew, system packages
+- **VSCode Extensions**: VS Code Marketplace, Open VSX
 - **Databases**: PostgreSQL, MongoDB, Redis, etc.
 - **Infrastructure**: Docker, Kubernetes, cloud services
 
@@ -59,6 +60,12 @@ Adapt queries to the ecosystem:
 - `"best [task] cli tool 2024 2025"`
 - `"[task] cli tool comparison"`
 - `"modern alternative to [old-tool]"`
+
+**For VSCode Extensions:**
+
+- `"best vscode extension for [task]" 2024 2025`
+- `"[task] vscode extension comparison"`
+- `"vscode marketplace [task]"`
 
 **For Databases/Infrastructure:**
 
@@ -96,6 +103,13 @@ Prioritize by ecosystem:
 - GitHub repositories
 - Homebrew analytics
 - Command-line tools lists
+
+**VSCode Extensions:**
+
+- VS Code Marketplace (marketplace.visualstudio.com)
+- Open VSX Registry (open-vsx.org) - open source alternative
+- GitHub repositories
+- Extension changelogs
 
 **All Ecosystems:**
 
@@ -174,6 +188,14 @@ Rank tools based on ecosystem-appropriate metrics:
 - Output formatting
 - Plugin ecosystem
 
+**VSCode Extensions (+Performance & Compatibility)**
+
+- Install count / rating on marketplace
+- Extension size / bundle impact
+- Activation events (startup vs on-demand)
+- VS Code version compatibility
+- Works in Cursor/other forks
+
 **Databases (+Operations)**
 
 - Query performance
@@ -243,6 +265,11 @@ Present a table with ecosystem-appropriate columns. **Always include GitHub URL 
 | Tool | GitHub | Stars | Install Method | Performance | Platform | Last Update |
 | ---- | ------ | ----- | -------------- | ----------- | -------- | ----------- |
 
+**For VSCode Extensions:**
+
+| Extension | GitHub | Stars | Installs | Rating | Size | Last Update |
+| --------- | ------ | ----- | -------- | ------ | ---- | ----------- |
+
 **GitHub column format:** Use `[repo](url)` markdown links, e.g., `[sindresorhus/execa](https://github.com/sindresorhus/execa)`
 
 ## Red Flags to Call Out
@@ -261,6 +288,7 @@ Always warn about:
   - Python: No type hints, Python 2 only
   - Rust: Excessive unsafe code, long compile times
   - CLI: Slow startup, poor error messages
+  - VSCode: Excessive permissions, heavy activation (slows startup), conflicts with popular extensions, no Cursor support
 
 ## Installation Commands by Ecosystem
 
@@ -304,6 +332,15 @@ brew install tool-name       # Homebrew (preferred)
 cargo install tool-name      # Rust-based tools
 curl -sSL url | bash         # If official installer script
 ```
+
+### VSCode Extensions
+
+```bash
+code --install-extension publisher.extension-name   # VS Code CLI
+cursor --install-extension publisher.extension-name # Cursor
+```
+
+Or via command palette: `Extensions: Install Extensions` → search → Install
 
 ### Modern Tooling Preferences
 
@@ -411,7 +448,44 @@ brew install ripgrep
 - Platform: macOS, Linux, Windows
 - Last Updated: 2024-11-20
 
-### Example 3: Python
+### Example 3: VSCode Extension
+
+**User:** "I need a file explorer extension with icons"
+
+**Your Response:**
+
+[Detect: VSCode extension]
+[Perform WebSearch for "best file icon theme vscode extension 2024"]
+[Check marketplace for Material Icon Theme, vscode-icons, etc.]
+[Verify install counts and ratings]
+
+### Recommended: `Material Icon Theme`
+
+**Installation:**
+
+```bash
+code --install-extension PKief.material-icon-theme
+```
+
+**Why this extension:**
+
+- 25M+ installs (most popular icon theme)
+- 1000+ file/folder icons
+- Customizable icon associations
+- Active maintenance (monthly updates)
+
+**Key Stats:**
+
+- GitHub: https://github.com/PKief/vscode-material-icon-theme
+- Stars: 3K+
+- Installs: 25M+
+- Rating: 4.9/5
+- Size: ~5MB
+- Last Updated: 2024-12-01
+
+[Continue with alternatives and comparison...]
+
+### Example 4: Python
 
 **User:** "I need to parse TOML files in Python"
 

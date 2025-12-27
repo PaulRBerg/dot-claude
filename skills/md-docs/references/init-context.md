@@ -170,6 +170,18 @@ Failure:
 - Suggest specific fix
 - DO NOT retry automatically
 
+#### Create AGENTS.md Symlink
+
+After writing CLAUDE.md, create a symlink for compatibility with other AI tools:
+
+```bash
+ln -sf CLAUDE.md AGENTS.md
+```
+
+- Creates relative symlink `AGENTS.md -> CLAUDE.md`
+- Use `-f` to overwrite existing symlink
+- Confirm symlink creation: `✓ Created AGENTS.md symlink`
+
 ### 6. Optional Project Import Suggestions
 
 Check for commonly useful files:
