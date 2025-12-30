@@ -1,5 +1,5 @@
 ---
-name: markdown-docs
+name: md-docs
 description: This skill should be used when the user asks to "update README", "update context files", "init context", "create CLAUDE.md", "update CLAUDE.md", "update AGENTS.md", "update DOCS.md", "generate documentation", "API documentation", or mentions project documentation, context files, or markdown documentation workflows.
 version: 0.1.0
 ---

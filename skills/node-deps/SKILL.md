@@ -1,5 +1,5 @@
 ---
-name: node-js-dependencies
+name: node-deps
 description: This skill should be used when the user asks to "update dependencies", "update npm packages", "run taze", "upgrade node packages", "check for outdated packages", "update package.json", or mentions dependency updates, npm/pnpm/yarn package upgrades, or taze CLI usage.
 ---
 

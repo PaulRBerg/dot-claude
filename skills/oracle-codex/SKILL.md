@@ -115,6 +115,9 @@ Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeou
 Redirect output to a temp file to avoid context bloat:
 
 ```bash
+# Generate unique temp file to avoid race conditions
+CODEX_OUTPUT=$(mktemp /tmp/codex-analysis-XXXXXX.txt)
+
 # Select EFFORT based on complexity assessment (low/medium/high/xhigh)
 # Bash tool timeout: 300000-900000ms based on complexity
 codex exec \
@@ -123,7 +126,7 @@ codex exec \
   --profile "${CODEX_PROFILE:-quiet}" \
   -s read-only \
   --skip-git-repo-check \
-  2>/dev/null <<'EOF' > /tmp/codex-analysis.txt
+  2>/dev/null <<'EOF' > "$CODEX_OUTPUT"
 [constructed prompt]
 EOF
 ```
@@ -144,7 +147,7 @@ EOF
 Read the analysis from the temp file and display to the user with clear attribution:
 
 ```bash
-cat /tmp/codex-analysis.txt
+cat "$CODEX_OUTPUT"
 ```
 
 Format the output with clear attribution:
@@ -152,7 +155,7 @@ Format the output with clear attribution:
 ```
 ## Codex Analysis
 
-[Codex output from /tmp/codex-analysis.txt]
+[Codex output from $CODEX_OUTPUT]
 
 ---
 Model: gpt-5.2-codex | Reasoning: [selected effort level]
