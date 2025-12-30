@@ -340,13 +340,6 @@ BUILD complete markdown content:
 
 ### STEP 7: Write Updated README
 
-BEFORE writing, create backup:
-
-```bash
-# Create backup of existing README if it exists
-cp README.md README.md.backup 2>/dev/null || true
-```
-
 WRITE the new README:
 
 - Use the Write tool to create/overwrite README.md with the composed content
@@ -354,12 +347,10 @@ WRITE the new README:
 
 IF write succeeds:
 
-- Confirm backup was created (if README existed)
 - Note which sections were updated
 
 IF write fails:
 
-- Restore from backup if it exists: `mv README.md.backup README.md`
 - Show specific error message
 - Suggest fixes:
   - Check file permissions: `ls -la README.md`
@@ -388,13 +379,10 @@ SHOW what changed:
 **Sections Preserved:**
 - {list preserved custom sections}
 
-**Backup**: README.md.backup (restore with: `mv README.md.backup README.md`)
-
 **Next Steps:**
 1. Review README.md for accuracy
 2. Customize any auto-generated content if needed
-3. Delete backup when satisfied: `rm README.md.backup`
-4. Commit changes: `git add README.md && git commit -m "docs: update README"`
+3. Commit changes: `git add README.md && git commit -m "docs: update README"`
 ```
 
 IF errors occurred during generation:
@@ -450,7 +438,7 @@ Analyzes codebase and creates complete README from scratch.
 
 **Language-agnostic**: Works with Node.js, Rust, Python, Solidity, Go, Ruby, PHP, and other common stacks.
 
-**Non-destructive**: Always creates `README.md.backup` before overwriting existing README.
+**Non-destructive**: Overwrites README.md in place (use git to restore if needed).
 
 **Smart defaults**: Automatically detects project type (library vs application vs smart contract) and adjusts sections accordingly.
 
@@ -476,8 +464,8 @@ Analyzes codebase and creates complete README from scratch.
 - Missing metadata files (graceful degradation)
 - No license file (suggests adding one)
 
-**Restoration**: If you don't like the generated README, restore the backup immediately:
+**Restoration**: If you don't like the generated README, restore via git:
 
 ```bash
-mv README.md.backup README.md
+git checkout README.md
 ```

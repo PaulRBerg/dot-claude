@@ -112,8 +112,7 @@ Show preview of all changes without writing:
 
 **If NOT --dry-run:**
 
-1. Create backup: `{file}.backup` (skip for DOCS.md if not present)
-1. Apply all fixes to the file
+1. Apply all fixes to the file directly
 1. Report changes made
 
 ### Step 6: Report Summary
@@ -158,7 +157,6 @@ Note: DOCS.md not found. Consider creating it to document:
 - Focus on factual claims, not stylistic opinions
 - Preserve user's writing style when making fixes
 - Only suggest additions for genuinely useful patterns
-- Backup files before modifying (unless --dry-run)
 - Adapt discovery to project type (web, CLI, library, etc.)
 - DOCS.md is optional—skip gracefully if not present
 - Suggest DOCS.md creation only if significant APIs/public interfaces detected
