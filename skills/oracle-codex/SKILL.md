@@ -112,12 +112,17 @@ Before executing, assess task complexity to select appropriate reasoning effort:
 
 Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
 
-Redirect output to a temp file to avoid context bloat:
+Redirect output to a temp file to avoid context bloat and race conditions.
+
+**Step 1**: Generate a unique temp file and store the path in a variable:
 
 ```bash
-# Generate unique temp file to avoid race conditions
 CODEX_OUTPUT=$(mktemp /tmp/codex-analysis-XXXXXX.txt)
+```
 
+**Step 2**: Execute Codex and redirect output to the temp file:
+
+```bash
 # Select EFFORT based on complexity assessment (low/medium/high/xhigh)
 # Bash tool timeout: 300000-900000ms based on complexity
 codex exec \
@@ -144,7 +149,7 @@ EOF
 
 ### 5. Present Codex Output
 
-Read the analysis from the temp file and display to the user with clear attribution:
+**Step 3**: Read the analysis from the temp file and display to the user:
 
 ```bash
 cat "$CODEX_OUTPUT"
@@ -155,7 +160,7 @@ Format the output with clear attribution:
 ```
 ## Codex Analysis
 
-[Codex output from $CODEX_OUTPUT]
+[Codex output from the temp file]
 
 ---
 Model: gpt-5.2-codex | Reasoning: [selected effort level]
