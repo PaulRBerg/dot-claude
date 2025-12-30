@@ -6,6 +6,7 @@ debug/
 downloads/
 file-history/
 ide/
+image-cache/
 logs/
 node_modules/
 plans

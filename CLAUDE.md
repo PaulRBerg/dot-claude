@@ -45,6 +45,10 @@ Run tests with `uv`:
 uv run pytest path/to/test.py -v
 ```
 
+## Screenshots
+
+Look for visual annotations (rectangles, arrows, circles) highlighting the relevant areas.
+
 ## Copyable Markdown
 
 Use four backticks for copyable Markdown (prevents rendering):
