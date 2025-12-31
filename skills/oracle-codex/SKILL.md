@@ -114,10 +114,10 @@ Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeou
 
 Redirect output to a temp file to avoid context bloat and race conditions.
 
-**Step 1**: Generate a unique temp file and store the path in a variable:
+**Step 1**: Generate a unique temp file path using `$RANDOM` for randomness:
 
 ```bash
-CODEX_OUTPUT=$(mktemp /tmp/codex-analysis-XXXXXX.txt)
+CODEX_OUTPUT="/tmp/codex-analysis-${RANDOM}${RANDOM}.txt"
 ```
 
 **Step 2**: Execute Codex and redirect output to the temp file:
