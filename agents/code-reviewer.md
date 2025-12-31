@@ -67,3 +67,7 @@ Real-world outage patterns to check:
 - Memory pressure (limits set without considering actual usage)
 
 Configuration changes that "just change numbers" are often most dangerous. A single wrong value can bring down an entire system. Be the guardian who prevents these outages.
+
+## React 19 Projects
+
+NEVER recommend `useMemo`, `useCallback`, or `React.memo`. The React 19 compiler handles memoization automatically—manual optimization adds code noise with no benefit.
