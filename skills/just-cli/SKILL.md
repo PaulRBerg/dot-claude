@@ -1,7 +1,7 @@
 ---
 name: just-cli
 description: This skill should be used when the user asks to "create a justfile", "write just recipes", "configure just settings", "add just modules", "use just attributes", "set up task automation", mentions justfile, just command runner, or task automation with just.
-version: 0.1.0
+version: 0.2.0
 ---
 
 # Just Command Runner
@@ -33,16 +33,58 @@ set positional-arguments          # Pass recipe args as $1, $2, etc.
 
 ### Common Attributes
 
-| Attribute                 | Purpose                                       |
-| ------------------------- | --------------------------------------------- |
-| `[group("name")]`         | Group recipes in `just --list` output         |
-| `[no-cd]`                 | Don't change to justfile directory            |
-| `[private]`               | Hide from `just --list` (same as `_` prefix)  |
-| `[script]`                | Execute recipe as single script block         |
-| `[script("interpreter")]` | Use specific interpreter (bash, python, etc.) |
-| `[confirm("prompt")]`     | Require user confirmation before running      |
-| `[doc("text")]`           | Override recipe documentation                 |
-| `[positional-arguments]`  | Enable positional args for this recipe only   |
+| Attribute                 | Purpose                                        |
+| ------------------------- | ---------------------------------------------- |
+| `[arg("p", long, ...)]`   | Configure parameter as `--flag` option (v1.46) |
+| `[group("name")]`         | Group recipes in `just --list` output          |
+| `[no-cd]`                 | Don't change to justfile directory             |
+| `[private]`               | Hide from `just --list` (same as `_` prefix)   |
+| `[script]`                | Execute recipe as single script block          |
+| `[script("interpreter")]` | Use specific interpreter (bash, python, etc.)  |
+| `[confirm("prompt")]`     | Require user confirmation before running       |
+| `[doc("text")]`           | Override recipe documentation                  |
+| `[positional-arguments]`  | Enable positional args for this recipe only    |
+
+### Recipe Argument Flags (v1.46.0+)
+
+The `[arg()]` attribute configures parameters as CLI-style options:
+
+```just
+# Long option (--target)
+[arg("target", long)]
+build target:
+    cargo build --target {{ target }}
+
+# Short option (-v)
+[arg("verbose", short="v")]
+run verbose="false":
+    echo "Verbose: {{ verbose }}"
+
+# Combined long + short
+[arg("output", long, short="o")]
+compile output:
+    gcc main.c -o {{ output }}
+
+# Flag without value (presence sets to "true")
+[arg("release", long, value="true")]
+build release="false":
+    cargo build {{ if release == "true" { "--release" } else { "" } }}
+
+# Help string (shown in `just --usage`)
+[arg("target", long, help="Build target architecture")]
+build target:
+    cargo build --target {{ target }}
+```
+
+**Usage examples:**
+
+```bash
+just build --target x86_64
+just build --target=x86_64
+just compile -o main
+just build --release
+just --usage build    # Show recipe argument help
+```
 
 Multiple attributes can be combined:
 
@@ -329,23 +371,6 @@ Working justfile templates in `examples/`:
 - **Official Manual**: https://just.systems/man/en/
 - **GitHub Repository**: https://github.com/casey/just
 - **Context7 Library ID**: `/websites/just_systems-man`
-
-## Important Limitations
-
-**Just does not support flags.** Recipe parameters are positional only:
-
-```just
-# WRONG: Flags don't work
-build --release:  # This won't work!
-
-# CORRECT: Use positional parameters
-build mode="debug":
-    cargo build {{ if mode == "release" { "--release" } else { "" } }}
-
-# Usage: just build release
-```
-
-For complex flag-like behavior, use environment variables or positional parameters with defaults.
 
 ## Tips
 

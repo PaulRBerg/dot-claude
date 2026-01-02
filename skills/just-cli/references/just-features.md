@@ -35,6 +35,18 @@ Enable with `set NAME` or `set NAME := true`:
 | `tempdir`           | `"/tmp/just"`                        | Temporary file directory        |
 | `working-directory` | `"src"`                              | Default working directory       |
 
+**Const expressions in settings (v1.46.0+):**
+
+All settings now accept const expressions:
+
+```just
+project_name := "myapp"
+src_dir := "src"
+
+set working-directory := src_dir
+set dotenv-filename := project_name + ".env"
+```
+
 ### Recommended Settings
 
 ```just
@@ -492,6 +504,112 @@ deploy env=env("DEPLOY_ENV", "staging"):
     ./deploy.sh {{ env }}
 ```
 
+## Recipe Argument Flags (v1.46.0+)
+
+The `[arg()]` attribute configures parameters as command-line options.
+
+### Long Options
+
+Use `long` to accept `--name` style options:
+
+```just
+# Explicit long name
+[arg("target", long="target")]
+build target:
+    cargo build --target {{ target }}
+
+# Default to parameter name (recommended)
+[arg("target", long)]
+build target:
+    cargo build --target {{ target }}
+
+# Usage:
+#   just build --target x86_64
+#   just build --target=x86_64
+```
+
+### Short Options
+
+Use `short` to accept `-x` style options:
+
+```just
+[arg("verbose", short="v")]
+run verbose="false":
+    echo "Verbose: {{ verbose }}"
+
+# Usage: just run -v true
+```
+
+### Combined Long and Short
+
+A parameter can accept both styles:
+
+```just
+[arg("output", long="output", short="o")]
+compile output:
+    gcc main.c -o {{ output }}
+
+# Usage:
+#   just compile --output main
+#   just compile -o main
+```
+
+### Flags Without Values
+
+Use `value` for boolean-style flags that set a predefined value when present:
+
+```just
+[arg("release", long, value="true")]
+build release="false":
+    cargo build {{ if release == "true" { "--release" } else { "" } }}
+
+# Usage:
+#   just build           → release="false" (default)
+#   just build --release → release="true"
+```
+
+### Help Strings
+
+Use `help` to add descriptions visible in `just --usage`:
+
+```just
+[arg("target", long, help="Target architecture")]
+[arg("release", long, value="true", help="Build in release mode")]
+build target release="false":
+    cargo build --target {{ target }}
+```
+
+```console
+$ just --usage build
+Usage: just build [OPTIONS] --target <target>
+
+Arguments:
+  --target <target>  Target architecture
+  --release          Build in release mode
+```
+
+### Multiple arg Attributes
+
+Each parameter with options needs its own `[arg()]`:
+
+```just
+[arg("input", long, short="i", help="Input file")]
+[arg("output", long, short="o", help="Output file")]
+[arg("verbose", long, short="v", value="true")]
+convert input output verbose="false":
+    convert {{ input }} {{ output }} {{ if verbose == "true" { "-v" } else { "" } }}
+```
+
+### Arg Attribute Syntax Summary
+
+| Option        | Description                         |
+| ------------- | ----------------------------------- |
+| `long`        | Accept `--param` (defaults to name) |
+| `long="name"` | Accept `--name`                     |
+| `short="x"`   | Accept `-x`                         |
+| `value="val"` | Set this value when flag present    |
+| `help="text"` | Description for `just --usage`      |
+
 ## Recipe Dependencies
 
 ### Simple Dependencies
@@ -606,19 +724,20 @@ files := ```
 
 ## Just CLI Options
 
-| Option | Description |
-|--------|-------------|
-| `just --list` | List available recipes |
-| `just --list --unsorted` | List in source order |
-| `just --summary` | Brief recipe list |
-| `just --show RECIPE` | Show recipe source |
-| `just --dry-run RECIPE` | Print commands without running |
-| `just --evaluate` | Print all variables |
-| `just --fmt` | Format justfile |
-| `just --fmt --check` | Check formatting |
-| `just --choose` | Interactive recipe selection (fzf) |
-| `just -f PATH` | Use specific justfile |
-| `just -d DIR` | Set working directory |
+| Option                   | Description                            |
+| ------------------------ | -------------------------------------- |
+| `just --list`            | List available recipes                 |
+| `just --list --unsorted` | List in source order                   |
+| `just --summary`         | Brief recipe list                      |
+| `just --show RECIPE`     | Show recipe source                     |
+| `just --usage RECIPE`    | Show recipe argument usage (v1.46)     |
+| `just --dry-run RECIPE`  | Print commands without running         |
+| `just --evaluate`        | Print all variables                    |
+| `just --fmt`             | Format justfile                        |
+| `just --fmt --check`     | Check formatting                       |
+| `just --choose`          | Interactive recipe selection (fzf)     |
+| `just -f PATH`           | Use specific justfile                  |
+| `just -d DIR`            | Set working directory                  |
 
 ## Glob Patterns
 
