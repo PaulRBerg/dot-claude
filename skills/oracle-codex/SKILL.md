@@ -117,7 +117,7 @@ Redirect output to a temp file to avoid context bloat and race conditions.
 **Step 1**: Generate a unique temp file path using `$RANDOM` for randomness:
 
 ```bash
-CODEX_OUTPUT="/tmp/codex-analysis-${RANDOM}${RANDOM}.txt"
+CODEX_OUTPUT="/tmp/codex-${RANDOM}${RANDOM}.txt"
 ```
 
 **Step 2**: Execute Codex and redirect output to the temp file:

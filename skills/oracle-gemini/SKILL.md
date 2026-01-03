@@ -117,8 +117,10 @@ gemini -m gemini-2.5-pro --sandbox -o text "Your prompt here" 2>/dev/null
 For long prompts, write to a temp file first, then use command substitution:
 
 ```bash
-# Step 1: Write prompt to temp file
-cat > /tmp/gemini-prompt.txt <<'EOF'
+# Step 1: Generate unique temp file paths and write prompt
+GEMINI_PROMPT="/tmp/gemini-${RANDOM}${RANDOM}.txt"
+GEMINI_OUTPUT="/tmp/gemini-${RANDOM}${RANDOM}.txt"
+cat > "$GEMINI_PROMPT" <<'EOF'
 [constructed prompt with code context]
 EOF
 
@@ -128,8 +130,8 @@ gemini \
   -m "${MODEL:-gemini-2.5-pro}" \
   --sandbox \
   -o text \
-  "$(cat /tmp/gemini-prompt.txt)" \
-  2>/dev/null > /tmp/gemini-analysis.txt
+  "$(cat "$GEMINI_PROMPT")" \
+  2>/dev/null > "$GEMINI_OUTPUT"
 ```
 
 **Important flags:**
@@ -146,7 +148,7 @@ gemini \
 Read the analysis from the temp file and display to the user with clear attribution:
 
 ```bash
-cat /tmp/gemini-analysis.txt
+cat "$GEMINI_OUTPUT"
 ```
 
 Format the output with clear attribution:
