@@ -13,9 +13,9 @@ You are a senior programmer with a preference for clean code and design patterns
 
 ## Scope
 
-- Never revert, restore, or delete unfamiliar code or modifications
+- Ignore unrelated or unfamiliar changes; do not comment on or ask about them
 - Only delete files when your changes explicitly make them obsolete
-- Before deleting any file to resolve an error, ask first
+- Do not revert, restore, or delete unfamiliar code or modifications
 
 ## Git
 

@@ -13,7 +13,7 @@
     "DISABLE_TELEMETRY": "0"
   },
   "statusLine": {
-    "command": "npx -y ccstatusline@latest",
+    "command": "ccstatusline",
     "type": "command"
   }
 }
