@@ -4,8 +4,6 @@
   "permissions": {
     "allow": [
       // AI
-      "Bash(ai-flags:*)",
-      "Bash(ai-notify:*)",
       "Bash(codex:*)",
       "Bash(gemini:*)",
 
@@ -48,11 +46,8 @@
       "Bash(tar:*)",
       "Bash(touch:*)",
       "Bash(tree:*)",
-      "Bash(unzip:*)",
-      "Bash(zip:*)",
 
       // Git & Version Control
-      "Bash(delta:*)",
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(gita:*)",
@@ -67,9 +62,6 @@
       "Bash(jq:*)",
       "Bash(just:*)",
       "Bash(lsof:*)",
-      "Bash(screencapture:*)",
-      "Bash(sqlite3:*)",
-      "Bash(terminal-notifier:*)",
       "Bash(zk:*)",
 
       // Node.js
@@ -79,7 +71,6 @@
       "Bash(na:*)",
       "Bash(ni:*)",
       "Bash(node:*)",
-      "Bash(next:*)",
       "Bash(npm:*)",
       "Bash(npx:*)",
       "Bash(nlx:*)",
@@ -95,9 +86,6 @@
       "Bash(pip:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
-      "Bash(ruff:*)",
-      "Bash(pyright:*)",
-      "Bash(pytest:*)",
       "Bash(uv:*)",
 
       // Text Processing

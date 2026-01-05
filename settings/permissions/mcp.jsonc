@@ -2,6 +2,6 @@
   // MCP servers
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": ["mcp__context7", "mcp__next-devtools", "mcp__sequential-thinking", "mcp__serena"]
+    "allow": ["mcp__context7", "mcp__sequential-thinking"]
   }
 }
