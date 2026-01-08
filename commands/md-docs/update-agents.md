@@ -12,4 +12,4 @@ model: opus
 
 ## Task
 
-Activate the `md-docs` skill to update context files. Follow the workflow in `references/update-context.md`.
+Activate the `md-docs` skill to update context files. Follow the workflow in `references/update-agents.md`.

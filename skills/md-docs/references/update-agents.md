@@ -1,4 +1,4 @@
-# UPDATE_CONTEXT.md
+# UPDATE_AGENTS.md
 
 Workflow for updating `CLAUDE.md`, `AGENTS.md`, and optionally `DOCS.md` files to match actual codebase state. DOCS.md is optional and only processed if it exists (for API/code documentation).
 

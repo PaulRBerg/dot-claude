@@ -14,4 +14,4 @@ model: opus
 
 ## Task
 
-Activate the `md-docs` skill to initialize a CLAUDE.md file. Follow the workflow in `references/init-context.md`.
+Activate the `md-docs` skill to initialize a CLAUDE.md file. Follow the workflow in `references/init-agents.md`.

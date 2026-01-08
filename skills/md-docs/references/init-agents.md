@@ -4,7 +4,7 @@ Generate project-specific CLAUDE.md files with custom context derived from proje
 
 ## Overview
 
-The init-context workflow creates tailored CLAUDE.md files that provide project-specific instructions for AI agents. It operates in two modes: automatic inference (derives context from project files) or guided mode (uses user description to focus content).
+The init-agents workflow creates tailored CLAUDE.md files that provide project-specific instructions for AI agents. It operates in two modes: automatic inference (derives context from project files) or guided mode (uses user description to focus content).
 
 ## Workflow Steps
 
@@ -17,8 +17,8 @@ Determine operating mode:
 
 Guided mode examples:
 
-- `/md-docs:init-context TypeScript monorepo with strict type safety and functional patterns`
-- `/md-docs:init-context Foundry smart contract project with security-first mindset`
+- `/md-docs:init-agents TypeScript monorepo with strict type safety and functional patterns`
+- `/md-docs:init-agents Foundry smart contract project with security-first mindset`
 
 ### 2. Check Existing CLAUDE.md
 
@@ -211,4 +211,4 @@ Add these lines to CLAUDE.md to auto-load context.
 ## Related Resources
 
 - Memory docs: https://docs.anthropic.com/en/docs/claude-code/memory
-- Command source: `~/.claude/commands/md-docs/init-context.md`
+- Command source: `~/.claude/commands/md-docs/init-agents.md`

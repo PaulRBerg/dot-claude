@@ -1,7 +1,8 @@
-# Directories
+# Claude Directories
 .claude/
 .serena/
 backups/
+cache/
 debug/
 downloads/
 file-history/
@@ -9,6 +10,7 @@ ide/
 image-cache/
 logs/
 node_modules/
+paste-cache/
 plans
 plans/
 plugins/

@@ -18,6 +18,6 @@ model: opus
 Activate the `md-docs` skill to update project documentation. Perform both workflows:
 
 1. **README.md** - Follow `references/update-readme.md`
-1. **Context files** - Follow `references/update-context.md`
+1. **Context files** - Follow `references/update-agents.md`
 
 Update README first, then context files. If `--dry-run` is passed, report proposed changes without writing.
