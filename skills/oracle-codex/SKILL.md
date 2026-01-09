@@ -38,7 +38,8 @@ When invoking `codex exec` via the Bash tool, always set an appropriate timeout:
 - **Minimum**: 5 minutes (300000ms) for any Codex operation
 - **Simple queries** (single file review, focused question): 5 minutes (300000ms)
 - **Moderate complexity** (multi-file review, feature planning): 10 minutes (600000ms)
-- **High complexity** (architecture analysis, large codebase planning): 15 minutes (900000ms)
+- **High complexity** (`high` reasoning): 15 minutes minimum (900000ms)
+- **Maximum complexity** (`xhigh` reasoning): 20 minutes (1200000ms)
 
 ### Reasoning Effort Guidelines
 
@@ -126,7 +127,7 @@ CODEX_OUTPUT="/tmp/codex-${RANDOM}${RANDOM}.txt"
 
 ```bash
 # Select EFFORT based on complexity assessment (low/medium/high/xhigh)
-# Bash tool timeout: 300000-900000ms based on complexity
+# Bash tool timeout: 5-20 minutes based on complexity
 codex exec \
   -m "${MODEL:-gpt-5.2-codex}" \
   -c "model_reasoning_effort=${EFFORT}" \

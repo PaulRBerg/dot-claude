@@ -38,7 +38,7 @@ type User = {
 
 ### Biome
 
-Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file and, if it's not present, create it.
+Use BiomeJS for linting and formatting JavaScript and TypeScript code. Look for a `biome.jsonc` file.
 
 Exception: project already uses ESLint and Prettier.
 
@@ -83,22 +83,9 @@ Never use the `any` type.
 });
 ```
 
-### Prefer TypeScript over JavaScript
-
-Use TypeScript for all new code.
-
 ### Prefer `type` instead of `interface`
 
 Use `type` instead of `interface` for declaring types.
-
-### Use `Number.isNaN` instead of `isNaN`
-
-**Example:**
-
-```typescript
-const x = Number.isNaN(y); // good
-const x = isNaN(y); // bad
-```
 
 ### Comment Dividers
 
