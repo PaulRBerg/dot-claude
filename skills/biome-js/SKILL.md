@@ -232,11 +232,11 @@ Biome handles JS/TS/JSON/CSS formatting. Use Prettier for:
 
 ### Examples
 
-Working examples in `examples/`:
+Working examples in `./examples/`:
 
-- **`base-config.jsonc`** - Minimal library configuration
-- **`ui-config.jsonc`** - Frontend project with Tailwind
-- **`lint-staged.js`** - Pre-commit hook configuration
+- **`./examples/base-config.jsonc`** - Minimal library configuration
+- **`./examples/ui-config.jsonc`** - Frontend project with Tailwind
+- **`./examples/lint-staged.js`** - Pre-commit hook configuration
 
 ### Full Documentation
 

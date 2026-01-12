@@ -132,10 +132,10 @@ Packages shown with `--include-locked` that have no `^` or `~` are fixed version
 
 ## Script Reference
 
-| Script                   | Purpose                                              |
-| ------------------------ | ---------------------------------------------------- |
-| `scripts/run-taze.sh`    | Run taze in non-interactive mode, check installation |
-| `scripts/run-taze.sh -r` | Same with recursive monorepo scanning                |
+| Script                     | Purpose                                              |
+| -------------------------- | ---------------------------------------------------- |
+| `./scripts/run-taze.sh`    | Run taze in non-interactive mode, check installation |
+| `./scripts/run-taze.sh -r` | Same with recursive monorepo scanning                |
 
 ## Important Notes
 
