@@ -33,25 +33,13 @@ bat src/\(shared\)/Foo.tsx
 rg "pattern" path/to/my\ file.txt
 ```
 
-## Web Fetch
-
-Never fetch from `npmjs.com`—it blocks AI agents with 403. Use Bash with `npm view <pkg> readme` or Context7 MCP instead.
-
-## Testing
-
-Run tests with `uv`:
-
-```bash
-uv run pytest path/to/test.py -v
-```
-
 ## Screenshots
 
 Look for visual annotations (rectangles, arrows, circles) highlighting the relevant areas.
 
 ## Copyable Markdown
 
-Use four backticks for copyable Markdown (prevents rendering):
+Use four backticks when generating Markdown in the chat:
 
 ```markdown
 Some Markdown content
