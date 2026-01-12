@@ -1,55 +1,31 @@
 import "./node_modules/@sablier/devkit/just/base.just"
 
-na := require("na")
-ni := require("ni")
-nlx := require("nlx")
+# ---------------------------------------------------------------------------- #
+#                                    RECIPES                                   #
+# ---------------------------------------------------------------------------- #
 
+# Default recipe
 default:
     @just --list
 
+# Build the project
 [group("app")]
 build:
     na tsc
 
+# Start development mode with file watching
 [group("app")]
 dev:
     na tsc --watch
 
-[group("checks")]
-@full-check:
-    just biome-check
-    just tsc-check
-alias fc := full-check
-
-[group("checks")]
-@full-write:
-    just biome-write
-alias fw := full-write
-
-[group("checks")]
-@biome-check +globs=".":
-    na biome check {{ globs }}
-alias bc := biome-check
-
-[group("checks")]
-@biome-write +globs=".":
-    na biome check --write {{ globs }}
-alias bw := biome-write
-
-[group("checks")]
-@tsc-check:
-    na tsc --noEmit
-alias tc := tsc-check
-
+# Run tests
 [group("tests")]
-@test-unit *args:
+@test *args:
     na vitest run {{ args }}
-alias t := test-unit
+alias t := test
 
+# Run tests with UI
 [group("tests")]
-@test-unit-ui:
-    na vitest --ui
-alias tui := test-unit-ui
-
-clean:
-    nlx del-cli dist
+@test-ui *args:
+    na vitest --ui {{ args }}
+alias tui := test-ui
