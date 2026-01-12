@@ -493,9 +493,9 @@ gh repo view owner/repo --json name,description,stargazerCount,forkCount,updated
 ## Tips
 
 1. Use `--web` flag to open items in browser for detailed view
-1. Leverage interactive prompts by omitting parameters - most commands support interactive mode
-1. Apply filters with `--author`, `--label`, `--state` to narrow down lists efficiently
-1. Add `--json` flag to enable scriptable output for automation
-1. **Always check `--help` for valid JSON field names** - they differ from GitHub API
-1. Use `gh repo create --template` to scaffold from template repositories
-1. Enable auto-merge with `gh pr merge --auto` for PRs that pass checks
+2. Leverage interactive prompts by omitting parameters - most commands support interactive mode
+3. Apply filters with `--author`, `--label`, `--state` to narrow down lists efficiently
+4. Add `--json` flag to enable scriptable output for automation
+5. **Always check `--help` for valid JSON field names** - they differ from GitHub API
+6. Use `gh repo create --template` to scaffold from template repositories
+7. Enable auto-merge with `gh pr merge --auto` for PRs that pass checks

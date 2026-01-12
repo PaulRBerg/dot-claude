@@ -15,12 +15,12 @@ Use centered ASCII art headers to organize justfiles:
 ### Standard Sections (in order)
 
 1. **DEPENDENCIES** - Required tools with documentation URLs
-1. **ENVIRONMENT VARS** - Exported environment variables
-1. **CONSTANTS** - Glob patterns, paths, configuration values
-1. **COMMANDS / RECIPES** - Main public recipes
-1. **CHECKS** - Code quality and validation recipes
-1. **TESTS** - Testing recipes
-1. **UTILITIES / INTERNAL HELPERS** - Private helper recipes
+2. **ENVIRONMENT VARS** - Exported environment variables
+3. **CONSTANTS** - Glob patterns, paths, configuration values
+4. **COMMANDS / RECIPES** - Main public recipes
+5. **CHECKS** - Code quality and validation recipes
+6. **TESTS** - Testing recipes
+7. **UTILITIES / INTERNAL HELPERS** - Private helper recipes
 
 ## Dependencies Section
 

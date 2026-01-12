@@ -617,13 +617,13 @@ repos:
 ## Next Steps After Setup
 
 1. **Write initial code** in `src/index.ts`
-1. **Add first test** in `test/index.test.ts`
-1. **Run `just full-check`** to verify everything works
-1. **Create initial commit** with all scaffolding
-1. **Set up remote repository** and push
-1. **Configure CI/CD** using GitHub Actions or similar
-1. **Write README.md** with project-specific documentation
-1. **Add LICENSE** file appropriate for your use case
+2. **Add first test** in `test/index.test.ts`
+3. **Run `just full-check`** to verify everything works
+4. **Create initial commit** with all scaffolding
+5. **Set up remote repository** and push
+6. **Configure CI/CD** using GitHub Actions or similar
+7. **Write README.md** with project-specific documentation
+8. **Add LICENSE** file appropriate for your use case
 
 ## Related Skills
 

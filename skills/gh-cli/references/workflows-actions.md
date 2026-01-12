@@ -323,13 +323,13 @@ gh api repos/:owner/:repo/contents/.github/workflows --jq '.[] | .name'
 
 ## Best Practices
 
-1. **Use specific workflow names** when triggering or listing runs to avoid ambiguity
-1. **Enable auto-merge** for PRs to merge automatically when CI passes
-1. **Monitor workflow cache** regularly to prevent cache bloat
-1. **Use JSON output** for scripting and automation
-1. **Watch runs interactively** during development to catch failures quickly
-1. **Clean up old workflow runs** to keep repository tidy
-1. **Use workflow dispatch inputs** for flexible, reusable workflows
-1. **Set appropriate timeouts** to prevent workflows from running indefinitely
-1. **Use artifacts judiciously** - they count against storage limits
-1. **Leverage caching** to speed up workflows and reduce costs
+01. **Use specific workflow names** when triggering or listing runs to avoid ambiguity
+02. **Enable auto-merge** for PRs to merge automatically when CI passes
+03. **Monitor workflow cache** regularly to prevent cache bloat
+04. **Use JSON output** for scripting and automation
+05. **Watch runs interactively** during development to catch failures quickly
+06. **Clean up old workflow runs** to keep repository tidy
+07. **Use workflow dispatch inputs** for flexible, reusable workflows
+08. **Set appropriate timeouts** to prevent workflows from running indefinitely
+09. **Use artifacts judiciously** - they count against storage limits
+10. **Leverage caching** to speed up workflows and reduce costs

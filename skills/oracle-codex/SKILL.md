@@ -110,8 +110,8 @@ Provide specific, actionable feedback with file locations and line references.
 Before executing, assess task complexity to select appropriate reasoning effort:
 
 1. **Count files involved** in the query
-1. **Evaluate scope** (single module vs cross-cutting)
-1. **Consider depth** (surface review vs architectural analysis)
+2. **Evaluate scope** (single module vs cross-cutting)
+3. **Consider depth** (surface review vs architectural analysis)
 
 Use HEREDOC syntax for safe prompt handling. **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
 
@@ -176,10 +176,10 @@ For very large outputs (>5000 lines), summarize key sections rather than display
 After presenting Codex output:
 
 1. Synthesize key insights from Codex analysis
-1. Identify actionable items and critical decisions
-1. **If Codex's analysis presents multiple viable approaches or significant trade-offs**, consider using `AskUserQuestion` to clarify user preferences before finalizing the plan
-1. Write a structured plan to `~/.claude/plans/[plan-name].md`
-1. Call `ExitPlanMode` to present the plan for user approval
+2. Identify actionable items and critical decisions
+3. **If Codex's analysis presents multiple viable approaches or significant trade-offs**, consider using `AskUserQuestion` to clarify user preferences before finalizing the plan
+4. Write a structured plan to `~/.claude/plans/[plan-name].md`
+5. Call `ExitPlanMode` to present the plan for user approval
 
 **When to use AskUserQuestion:**
 
@@ -209,25 +209,25 @@ After presenting Codex output:
 User: "Ask Codex to plan how to add authentication to this app"
 
 1. Validate Codex CLI available
-1. Gather relevant codebase context
-1. Assess complexity → auth spans multiple modules → `high` reasoning
-1. Construct planning prompt with auth requirements
-1. Execute Codex with `gpt-5.2-codex` and `high`
-1. Present Codex's architecture recommendations
-1. Synthesize into Claude plan format
-1. Write to `~/.claude/plans/` and call `ExitPlanMode`
+2. Gather relevant codebase context
+3. Assess complexity → auth spans multiple modules → `high` reasoning
+4. Construct planning prompt with auth requirements
+5. Execute Codex with `gpt-5.2-codex` and `high`
+6. Present Codex's architecture recommendations
+7. Synthesize into Claude plan format
+8. Write to `~/.claude/plans/` and call `ExitPlanMode`
 
 ### Code Review Request
 
 User: "Have Codex review the changes in src/auth/"
 
 1. Validate Codex CLI available
-1. Read files in `src/auth/` directory
-1. Assess complexity → single directory, focused review → `medium` reasoning
-1. Construct review prompt with file contents
-1. Execute Codex review with `medium`
-1. Present findings with file/line references
-1. Summarize critical issues and recommendations
+2. Read files in `src/auth/` directory
+3. Assess complexity → single directory, focused review → `medium` reasoning
+4. Construct review prompt with file contents
+5. Execute Codex review with `medium`
+6. Present findings with file/line references
+7. Summarize critical issues and recommendations
 
 ## Additional Resources
 

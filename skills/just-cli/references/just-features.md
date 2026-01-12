@@ -135,8 +135,8 @@ just foo::build
 When using `mod foo`:
 
 1. `foo.just` in same directory
-1. `foo/justfile` subdirectory
-1. `foo/mod.just` subdirectory
+2. `foo/justfile` subdirectory
+3. `foo/mod.just` subdirectory
 
 ## Attributes
 

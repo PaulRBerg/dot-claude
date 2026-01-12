@@ -13,10 +13,10 @@ Use the WebSearch tool to find current, popular tools. Don't rely solely on trai
 ## When Invoked
 
 1. Identify the ecosystem/language from context or ask
-1. Clarify the specific task/requirement if ambiguous
-1. Perform web searches to identify candidate tools
-1. Evaluate top 3-5 options based on ecosystem-specific metrics
-1. Present a clear recommendation with rationale
+2. Clarify the specific task/requirement if ambiguous
+3. Perform web searches to identify candidate tools
+4. Evaluate top 3-5 options based on ecosystem-specific metrics
+5. Present a clear recommendation with rationale
 
 ## Ecosystem Detection
 
@@ -359,8 +359,8 @@ When recommending JavaScript/TypeScript tools, prioritize:
 For JavaScript/TypeScript (default):
 
 1. Choose better TypeScript support
-1. If tied, choose smaller bundle size
-1. If still tied, choose more recent update
+2. If tied, choose smaller bundle size
+3. If still tied, choose more recent update
 
 For other ecosystems, prioritize ecosystem-specific factors.
 
@@ -369,9 +369,9 @@ For other ecosystems, prioritize ecosystem-specific factors.
 If searches reveal no suitable packages:
 
 1. State this clearly
-1. Suggest building a custom solution
-1. Provide starter code or approach
-1. Reference similar packages as inspiration
+2. Suggest building a custom solution
+3. Provide starter code or approach
+4. Reference similar packages as inspiration
 
 ## Example Interactions
 

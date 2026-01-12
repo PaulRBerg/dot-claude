@@ -31,19 +31,19 @@ The `settings.json` file is automatically regenerated:
 The merge script (`helpers/merge_settings.sh`):
 
 1. Discovers all `.jsonc` and `.json` files in `settings/` (sorted alphabetically)
-1. Parses JSONC to JSON (strips comments, allows trailing commas)
-1. Merges with special handling:
+2. Parses JSONC to JSON (strips comments, allows trailing commas)
+3. Merges with special handling:
    - **Permissions arrays**: Deduplicated across all files (`additionalDirectories`, `allow`, `deny`)
    - **Other keys**: Later files override earlier files
    - **Schema field**: Removed from output
-1. Writes merged JSON to `settings.json`
+4. Writes merged JSON to `settings.json`
 
 ## Editing Workflow
 
 1. Edit the appropriate `.jsonc` file in `settings/` or `settings/permissions/`
-1. (Optional) Run `just merge-settings` to preview changes
-1. Commit your changes - `settings.json` regenerates automatically
-1. Push - other developers' `settings.json` will regenerate on their machines
+2. (Optional) Run `just merge-settings` to preview changes
+3. Commit your changes - `settings.json` regenerates automatically
+4. Push - other developers' `settings.json` will regenerate on their machines
 
 ## Why JSONC?
 

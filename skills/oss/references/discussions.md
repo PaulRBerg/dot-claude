@@ -26,13 +26,13 @@ If the `--check` flag is present:
 
 1. Extract key terms from the discussion description
 
-1. Search for similar open discussions:
+2. Search for similar open discussions:
 
    ```bash
    gh search discussions "{key_terms}" --repo "{owner}/{repo}" --limit 10 --json number,title,url
    ```
 
-1. **If similar discussions found:**
+3. **If similar discussions found:**
 
    - Display the list of potentially related discussions
    - Use `AskUserQuestion`: "Similar discussions found. Do you want to proceed with creating a new discussion?"
@@ -40,7 +40,7 @@ If the `--check` flag is present:
    - If "No": Exit with message "Discussion creation cancelled"
    - If "Yes": Continue with creation
 
-1. **If no similar discussions found:**
+4. **If no similar discussions found:**
 
    - Inform user: "No similar discussions found. Proceeding with discussion creation."
    - Continue with creation
@@ -107,18 +107,18 @@ gh api repos/{owner}/{repo}/contents/.github/DISCUSSION_TEMPLATE --jq '.[].name 
 
 1. **Select template**: Find template matching the selected category's slug (e.g., `ideas.yml` for the Ideas category)
 
-1. **Fetch and parse template**:
+2. **Fetch and parse template**:
 
    ```bash
    gh api repos/{owner}/{repo}/contents/.github/DISCUSSION_TEMPLATE/{template_name} --jq '.content' | base64 -d
    ```
 
-1. **Parse YAML structure** to extract:
+3. **Parse YAML structure** to extract:
 
    - `title` - default discussion title prefix
    - `body` array - form fields with `type`, `id`, `attributes`
 
-1. **Process each field** in `body` array:
+4. **Process each field** in `body` array:
 
    - `markdown`: Skip (display-only, not submitted)
    - `textarea`/`input`: Use `attributes.label` as section header, `attributes.description` as guidance

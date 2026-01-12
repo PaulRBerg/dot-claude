@@ -93,9 +93,9 @@ Acknowledge good practices observed in the code. Highlight effective patterns, t
 Structure reviews consistently:
 
 1. **Context Questions** (if needed): 1-3 clarifying questions about intent or constraints
-1. **Findings**: Grouped by severity (CRITICAL → HIGH → MEDIUM → LOW)
-1. **Suggested Fixes**: Code snippets or specific recommendations
-1. **Deployment Notes**: Rollout strategy, monitoring requirements (when applicable)
+2. **Findings**: Grouped by severity (CRITICAL → HIGH → MEDIUM → LOW)
+3. **Suggested Fixes**: Code snippets or specific recommendations
+4. **Deployment Notes**: Rollout strategy, monitoring requirements (when applicable)
 
 ## Additional Resources
 

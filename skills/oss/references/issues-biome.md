@@ -37,12 +37,12 @@ Bug reports require a playground reproduction. Create one at https://biomejs.dev
 ### Steps
 
 1. Open https://biomejs.dev/playground/
-1. Paste the minimal code that reproduces the issue
-1. Select the appropriate language (JavaScript, TypeScript, JSX, TSX, JSON, CSS, GraphQL)
-1. Configure relevant settings in the sidebar:
+2. Paste the minimal code that reproduces the issue
+3. Select the appropriate language (JavaScript, TypeScript, JSX, TSX, JSON, CSS, GraphQL)
+4. Configure relevant settings in the sidebar:
    - For formatter bugs: line width, indent style, quote style, etc.
    - For linter bugs: enable/disable specific rules
-1. Copy the URL from the browser address bar (auto-updates as you type)
+5. Copy the URL from the browser address bar (auto-updates as you type)
 
 ### URL Structure
 

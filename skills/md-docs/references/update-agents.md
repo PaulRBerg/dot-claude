@@ -113,7 +113,7 @@ Show preview of all changes without writing:
 **If NOT --dry-run:**
 
 1. Apply all fixes to the file directly
-1. Report changes made
+2. Report changes made
 
 ### Step 6: Report Summary
 

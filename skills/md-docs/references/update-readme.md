@@ -132,38 +132,38 @@ IF `--preserve` flag is set AND README.md exists:
 **For Libraries** (no main executable, exports modules/functions):
 
 1. Title + Badges
-1. Description
-1. Features (if `--preserve` keeps it, or `--thorough` generates it)
-1. Installation
-1. Usage (with code examples)
-1. API Reference (if `--thorough`)
-1. Contributing
-1. License
+2. Description
+3. Features (if `--preserve` keeps it, or `--thorough` generates it)
+4. Installation
+5. Usage (with code examples)
+6. API Reference (if `--thorough`)
+7. Contributing
+8. License
 
 **For Applications** (has main entry point, runnable program):
 
-1. Title + Badges
-1. Description
-1. Features
-1. Installation
-1. Usage/Getting Started
-1. Configuration (if config files found)
-1. Scripts/Commands
-1. Project Structure (if `--thorough`)
-1. Contributing
-1. License
+01. Title + Badges
+02. Description
+03. Features
+04. Installation
+05. Usage/Getting Started
+06. Configuration (if config files found)
+07. Scripts/Commands
+08. Project Structure (if `--thorough`)
+09. Contributing
+10. License
 
 **For Smart Contracts** (Solidity/Foundry):
 
 1. Title + Badges
-1. Description
-1. Installation (npm + forge install)
-1. Usage (Solidity import examples)
-1. Functions/API
-1. Testing
-1. Deployment
-1. Contributing
-1. License
+2. Description
+3. Installation (npm + forge install)
+4. Usage (Solidity import examples)
+5. Functions/API
+6. Testing
+7. Deployment
+8. Contributing
+9. License
 
 **Generate each section based on mode:**
 

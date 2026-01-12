@@ -6,3 +6,4 @@ exclude = [
   "plugins/**",
   "skills/.system/**",
 ]
+number = true

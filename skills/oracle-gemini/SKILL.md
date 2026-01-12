@@ -104,8 +104,8 @@ Provide specific, actionable feedback with file locations and line references.
 Before executing, assess task complexity to select appropriate model:
 
 1. **Count files involved** in the query
-1. **Evaluate scope** (single module vs cross-cutting)
-1. **Consider depth** (surface review vs architectural analysis)
+2. **Evaluate scope** (single module vs cross-cutting)
+3. **Consider depth** (surface review vs architectural analysis)
 
 Use **positional prompt syntax** (Gemini CLI does NOT support HEREDOC/stdin). **Always use the Bash tool's timeout parameter** (minimum 300000ms / 5 minutes).
 
@@ -171,10 +171,10 @@ For very large outputs (>5000 lines), summarize key sections rather than display
 After presenting Gemini output:
 
 1. Synthesize key insights from Gemini analysis
-1. Identify actionable items and critical decisions
-1. **If Gemini's analysis presents multiple viable approaches or significant trade-offs**, consider using `AskUserQuestion` to clarify user preferences before finalizing the plan
-1. Write a structured plan to `~/.claude/plans/[plan-name].md`
-1. Call `ExitPlanMode` to present the plan for user approval
+2. Identify actionable items and critical decisions
+3. **If Gemini's analysis presents multiple viable approaches or significant trade-offs**, consider using `AskUserQuestion` to clarify user preferences before finalizing the plan
+4. Write a structured plan to `~/.claude/plans/[plan-name].md`
+5. Call `ExitPlanMode` to present the plan for user approval
 
 **When to use AskUserQuestion:**
 
@@ -204,36 +204,36 @@ After presenting Gemini output:
 User: "Ask Gemini to plan how to add authentication to this app"
 
 1. Validate Gemini CLI available
-1. Gather relevant codebase context
-1. Assess complexity → auth spans multiple modules → use `gemini-2.5-pro`
-1. Construct planning prompt with auth requirements
-1. Execute Gemini with `gemini-2.5-pro` model
-1. Present Gemini's architecture recommendations
-1. Synthesize into Claude plan format
-1. Write to `~/.claude/plans/` and call `ExitPlanMode`
+2. Gather relevant codebase context
+3. Assess complexity → auth spans multiple modules → use `gemini-2.5-pro`
+4. Construct planning prompt with auth requirements
+5. Execute Gemini with `gemini-2.5-pro` model
+6. Present Gemini's architecture recommendations
+7. Synthesize into Claude plan format
+8. Write to `~/.claude/plans/` and call `ExitPlanMode`
 
 ### Code Review Request
 
 User: "Have Gemini review the changes in src/auth/"
 
 1. Validate Gemini CLI available
-1. Read files in `src/auth/` directory
-1. Assess complexity → single directory, focused review → use `gemini-2.5-flash` for speed
-1. Construct review prompt with file contents
-1. Execute Gemini review
-1. Present findings with file/line references
-1. Summarize critical issues and recommendations
+2. Read files in `src/auth/` directory
+3. Assess complexity → single directory, focused review → use `gemini-2.5-flash` for speed
+4. Construct review prompt with file contents
+5. Execute Gemini review
+6. Present findings with file/line references
+7. Summarize critical issues and recommendations
 
 ### Model Override Request
 
 User: "Ask Gemini with flash model to review this function"
 
 1. Validate Gemini CLI available
-1. Read the target function
-1. User explicitly requested flash model → use `gemini-2.5-flash`
-1. Construct focused review prompt
-1. Execute Gemini with flash model
-1. Present quick feedback
+2. Read the target function
+3. User explicitly requested flash model → use `gemini-2.5-flash`
+4. Construct focused review prompt
+5. Execute Gemini with flash model
+6. Present quick feedback
 
 ## Additional Resources
 

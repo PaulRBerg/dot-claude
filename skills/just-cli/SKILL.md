@@ -295,10 +295,10 @@ Standard section header format:
 Common sections (in order):
 
 1. **DEPENDENCIES** - Required tools with URLs
-1. **CONSTANTS** - Glob patterns, environment vars
-1. **RECIPES / COMMANDS** - Main entry points
-1. **CHECKS** - Code quality recipes
-1. **UTILITIES / INTERNAL HELPERS** - Private helpers
+2. **CONSTANTS** - Glob patterns, environment vars
+3. **RECIPES / COMMANDS** - Main entry points
+4. **CHECKS** - Code quality recipes
+5. **UTILITIES / INTERNAL HELPERS** - Private helpers
 
 ## Default Recipe
 
@@ -375,9 +375,9 @@ Working justfile templates in `examples/`:
 ## Tips
 
 1. Use `@` prefix to suppress command echo: `@echo "quiet"`
-1. Use `+` for variadic parameters: `test +args`
-1. Use `*` for optional variadic: `build *flags`
-1. Quote glob patterns in variables: `GLOBS := "\"**/*.json\""`
-1. Use `[no-cd]` in monorepos to stay in current directory
-1. Private recipes start with `_` or use `[private]`
-1. Always define aliases after recipe names for discoverability
+2. Use `+` for variadic parameters: `test +args`
+3. Use `*` for optional variadic: `build *flags`
+4. Quote glob patterns in variables: `GLOBS := "\"**/*.json\""`
+5. Use `[no-cd]` in monorepos to stay in current directory
+6. Private recipes start with `_` or use `[private]`
+7. Always define aliases after recipe names for discoverability

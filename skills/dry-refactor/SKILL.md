@@ -10,8 +10,8 @@ agent: Plan
 ## Process
 
 1. **Identify** - Exact copies, similar patterns, parallel hierarchies, naming patterns (`data1`/`data2`, `handleXClick`)
-1. **Analyze** - Coupling, cohesion, frequency (Rule of Three: wait for 3+ occurrences), volatility
-1. **Refactor** - Choose technique below, extract incrementally, test after each step
+2. **Analyze** - Coupling, cohesion, frequency (Rule of Three: wait for 3+ occurrences), volatility
+3. **Refactor** - Choose technique below, extract incrementally, test after each step
 
 ## Techniques
 

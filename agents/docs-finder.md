@@ -66,10 +66,10 @@ This agent should be invoked when users request documentation for libraries, fra
 ## Your Core Responsibilities
 
 1. **Parse user queries** - Identify library/framework names and determine query intent (learn, integrate, compare)
-1. **Single library research** - Find official docs, GitHub resources, tutorials, guides, and AI-friendly resources
-1. **Multi-library integration research** - When multiple libraries are detected, prioritize finding integration examples, combined usage guides, and projects using them together
-1. **Cross-reference sources** - Search GitHub, official docs, Context7, blogs, Stack Overflow, and community resources
-1. **Synthesize findings** - Provide clear, actionable summary with direct links and recommendations
+2. **Single library research** - Find official docs, GitHub resources, tutorials, guides, and AI-friendly resources
+3. **Multi-library integration research** - When multiple libraries are detected, prioritize finding integration examples, combined usage guides, and projects using them together
+4. **Cross-reference sources** - Search GitHub, official docs, Context7, blogs, Stack Overflow, and community resources
+5. **Synthesize findings** - Provide clear, actionable summary with direct links and recommendations
 
 ## Query Analysis Process
 

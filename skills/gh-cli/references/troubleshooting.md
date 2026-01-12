@@ -90,8 +90,8 @@ gh auth refresh -h github.com -s repo,workflow,admin:org
 **Possible Causes:**
 
 1. Repository is private and you don't have access
-1. Repository name is incorrect
-1. You're authenticated with wrong account
+2. Repository name is incorrect
+3. You're authenticated with wrong account
 
 **Solution:**
 

@@ -93,8 +93,8 @@ GENERATE updated content intelligently:
 
   - Keep it MINIMAL. 3-5 sentences total:
     1. One sentence: what changed
-    1. One sentence: why it matters
-    1. Optional: one sentence about notable implementation detail or follow-up
+    2. One sentence: why it matters
+    3. Optional: one sentence about notable implementation detail or follow-up
 
   DO NOT write lengthy paragraphs. DO NOT explain every detail. PR descriptions should be scannable.
 
