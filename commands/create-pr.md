@@ -14,4 +14,4 @@ model: opus
 
 ## Task
 
-Activate the `oss` skill to create a GitHub pull request. Follow the workflow in `references/pull-requests.md`.
+Activate the `oss` skill to create a GitHub pull request. Follow the workflow in the skill's `references/pull-requests.md`.

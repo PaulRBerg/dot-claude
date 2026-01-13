@@ -11,4 +11,4 @@ model: opus
 
 ## Task
 
-Activate the `oss` skill to create a discussion in `biomejs/biome`. Follow the workflow in `references/discussions.md`.
+Activate the `oss` skill to create a discussion in `biomejs/biome`. Follow the workflow in the skill's `references/discussions.md`.

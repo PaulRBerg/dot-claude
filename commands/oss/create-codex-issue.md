@@ -13,4 +13,4 @@ model: opus
 
 ## Task
 
-Activate the `oss` skill to create an issue in `openai/codex`. Follow the workflow in `references/issues-codex-cli.md`.
+Activate the `oss` skill to create an issue in `openai/codex`. Follow the workflow in the skill's `references/issues-codex-cli.md`.
