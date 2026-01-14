@@ -16,6 +16,10 @@ import add_plan_frontmatter
 class TestGetGitBranch:
     """Test get_git_branch() function."""
 
+    def setup_method(self):
+        """Clear cache before each test."""
+        add_plan_frontmatter._git_branch_cache.clear()
+
     @patch("subprocess.run")
     def test_returns_branch_name(self, mock_run):
         """Test returning branch name from git."""
@@ -27,20 +31,29 @@ class TestGetGitBranch:
     def test_returns_empty_on_failure(self, mock_run):
         """Test returning empty string when git fails."""
         mock_run.return_value = MagicMock(returncode=1, stdout="")
-        result = add_plan_frontmatter.get_git_branch("/some/path")
+        result = add_plan_frontmatter.get_git_branch("/some/failure/path")
         assert result == ""
 
     @patch("subprocess.run")
     def test_returns_empty_on_timeout(self, mock_run):
         """Test returning empty string on timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("git", 5)
-        result = add_plan_frontmatter.get_git_branch("/some/path")
+        result = add_plan_frontmatter.get_git_branch("/some/timeout/path")
         assert result == ""
 
     def test_returns_empty_for_empty_cwd(self):
         """Test returning empty string for empty cwd."""
         result = add_plan_frontmatter.get_git_branch("")
         assert result == ""
+
+    @patch("subprocess.run")
+    def test_uses_cache_on_second_call(self, mock_run):
+        """Test that cached value is returned on second call."""
+        mock_run.return_value = MagicMock(returncode=0, stdout="cached-branch\n")
+        result1 = add_plan_frontmatter.get_git_branch("/cache/test")
+        result2 = add_plan_frontmatter.get_git_branch("/cache/test")
+        assert result1 == result2 == "cached-branch"
+        mock_run.assert_called_once()  # Only called once due to caching
 
 
 class TestBuildFrontmatter:

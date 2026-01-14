@@ -10,7 +10,6 @@ See https://github.com/zk-org/zk
 
 import json
 import shutil
-import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -160,20 +159,8 @@ _Session ID: {session_id}_
         # Write to file (append mode)
         with open(note_path, "a") as f:
             f.write(content)
-
-        # Trigger zk re-indexing
-        subprocess.run(
-            ["zk", "index", "--notebook-dir", str(PROMPTS_DIR)],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
     except IOError as e:
         print(f"Warning: Failed to write prompt to file: {e}", file=sys.stderr)
-    except subprocess.TimeoutExpired:
-        print("Warning: zk index timed out", file=sys.stderr)
-    except subprocess.CalledProcessError as e:
-        print(f"Warning: Failed to index note: {e.stderr}", file=sys.stderr)
     except Exception as e:
         print(f"Warning: Unexpected error logging prompt: {e}", file=sys.stderr)
 

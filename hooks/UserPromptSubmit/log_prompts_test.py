@@ -2,7 +2,6 @@
 """Unit tests for log_prompts.py hook."""
 
 import json
-import subprocess
 from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
@@ -138,7 +137,6 @@ class TestLogPromptToZk:
     @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
     @patch("log_prompts.Path.home", return_value=Path("/Users/prb"))
     @patch("log_prompts.is_zk_notebook_initialized")
-    @patch("subprocess.run")
     @patch("builtins.open", new_callable=mock_open)
     @patch("pathlib.Path.mkdir")
     @patch("pathlib.Path.exists")
@@ -147,7 +145,6 @@ class TestLogPromptToZk:
         mock_exists,
         mock_mkdir,
         mock_file,
-        mock_subprocess,
         mock_ensure_init,
         mock_home,
     ):
@@ -185,14 +182,10 @@ class TestLogPromptToZk:
         assert "_Session ID: session-123_" in written_content
         assert "## 16:34:59" in written_content
         assert "Test prompt content" in written_content
-
-        # Verify zk index was called
-        mock_subprocess.assert_called_once()
-        assert mock_subprocess.call_args[0][0][0:2] == ["zk", "index"]
+        # Note: zk index is no longer called (removed for performance)
 
     @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
     @patch("log_prompts.is_zk_notebook_initialized")
-    @patch("subprocess.run")
     @patch("builtins.open", new_callable=mock_open)
     @patch("pathlib.Path.mkdir")
     @patch("pathlib.Path.exists")
@@ -201,7 +194,6 @@ class TestLogPromptToZk:
         mock_exists,
         mock_mkdir,
         mock_file,
-        mock_subprocess,
         mock_ensure_init,
     ):
         """Test appending to existing daily file."""
@@ -259,39 +251,10 @@ class TestLogPromptToZk:
             # Should not raise exception, just log warning
             log_prompts.log_prompt_to_zk("Test prompt", "session-123", "/Users/prb/projects")
 
-    @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
-    @patch("log_prompts.is_zk_notebook_initialized")
-    @patch("subprocess.run")
-    @patch("builtins.open", new_callable=mock_open)
-    @patch("pathlib.Path.mkdir")
-    @patch("pathlib.Path.exists")
-    def test_zk_index_timeout(
-        self,
-        mock_exists,
-        mock_mkdir,
-        mock_file,
-        mock_subprocess,
-        mock_ensure_init,
-    ):
-        """Test handling of zk index timeout."""
-        mock_ensure_init.return_value = True
-        mock_exists.return_value = False
-        mock_subprocess.side_effect = subprocess.TimeoutExpired("zk", 5)
-
-        with patch("log_prompts.datetime") as mock_datetime:
-            mock_now = datetime(2025, 11, 17, 12, 0, 0, 0, tzinfo=timezone.utc)
-            mock_datetime.now.return_value = mock_now
-            mock_datetime.timezone = timezone
-
-            # Should not raise exception, just log warning
-            log_prompts.log_prompt_to_zk("Test prompt", "session-123", "/Users/prb/projects")
-
-        # File should still be written even if index fails
-        mock_file().write.assert_called()
+    # Note: test_zk_index_timeout removed - zk index call was removed for performance
 
     @patch("log_prompts.PROMPTS_DIR", Path("/tmp/test-prompts"))
     @patch("log_prompts.is_zk_notebook_initialized")
-    @patch("subprocess.run")
     @patch("builtins.open", new_callable=mock_open)
     @patch("pathlib.Path.mkdir")
     @patch("pathlib.Path.exists")
@@ -300,7 +263,6 @@ class TestLogPromptToZk:
         mock_exists,
         mock_mkdir,
         mock_file,
-        mock_subprocess,
         mock_ensure_init,
     ):
         """Test correct flattened directory structure is created."""

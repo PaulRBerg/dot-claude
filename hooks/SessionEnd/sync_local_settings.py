@@ -220,7 +220,7 @@ def format_with_biome(path: Path) -> bool:
 
     try:
         subprocess.run(
-            ["nlx", "biome", "format", "--write", str(path)],
+            ["biome", "format", "--write", str(path)],
             capture_output=True,
             text=True,
             timeout=30,

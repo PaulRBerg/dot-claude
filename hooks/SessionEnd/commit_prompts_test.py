@@ -122,21 +122,25 @@ class TestMain:
 
     @patch("subprocess.run")
     @patch.object(commit_prompts, "PROMPTS_DIR")
-    def test_propagates_git_add_failure(self, mock_dir, mock_run):
-        """Test that git add failure raises CalledProcessError."""
+    def test_handles_git_add_failure_gracefully(self, mock_dir, mock_run, capsys):
+        """Test that git add failure is handled gracefully."""
         mock_dir.exists.return_value = True
         mock_run.side_effect = [
             MagicMock(stdout="M file.md\n", returncode=0),
             subprocess.CalledProcessError(1, "git add"),
         ]
 
-        with pytest.raises(subprocess.CalledProcessError):
+        with pytest.raises(SystemExit) as exc_info:
             commit_prompts.main()
+
+        assert exc_info.value.code == 0  # Exits cleanly
+        captured = capsys.readouterr()
+        assert "Warning" in captured.err
 
     @patch("subprocess.run")
     @patch.object(commit_prompts, "PROMPTS_DIR")
-    def test_propagates_git_commit_failure(self, mock_dir, mock_run):
-        """Test that git commit failure raises CalledProcessError."""
+    def test_handles_git_commit_failure_gracefully(self, mock_dir, mock_run, capsys):
+        """Test that git commit failure is handled gracefully."""
         mock_dir.exists.return_value = True
         mock_run.side_effect = [
             MagicMock(stdout="M file.md\n", returncode=0),
@@ -144,8 +148,29 @@ class TestMain:
             subprocess.CalledProcessError(1, "git commit"),
         ]
 
-        with pytest.raises(subprocess.CalledProcessError):
+        with pytest.raises(SystemExit) as exc_info:
             commit_prompts.main()
+
+        assert exc_info.value.code == 0  # Exits cleanly
+        captured = capsys.readouterr()
+        assert "Warning" in captured.err
+
+    @patch("subprocess.run")
+    @patch.object(commit_prompts, "PROMPTS_DIR")
+    def test_handles_timeout_gracefully(self, mock_dir, mock_run, capsys):
+        """Test that timeout is handled gracefully."""
+        mock_dir.exists.return_value = True
+        mock_run.side_effect = [
+            MagicMock(stdout="M file.md\n", returncode=0),
+            subprocess.TimeoutExpired("git", 10),
+        ]
+
+        with pytest.raises(SystemExit) as exc_info:
+            commit_prompts.main()
+
+        assert exc_info.value.code == 0
+        captured = capsys.readouterr()
+        assert "timed out" in captured.err
 
 
 class TestPromptsDir:

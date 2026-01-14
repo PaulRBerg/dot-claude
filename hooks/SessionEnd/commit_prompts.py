@@ -14,26 +14,40 @@ def main() -> None:
     if not PROMPTS_DIR.exists():
         sys.exit(0)
 
-    # Check for changes
-    result = subprocess.run(
-        ["git", "status", "--porcelain"],
-        cwd=PROMPTS_DIR,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        # Check for changes
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=PROMPTS_DIR,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
 
-    if not result.stdout.strip():
-        sys.exit(0)  # No changes
+        if not result.stdout.strip():
+            sys.exit(0)  # No changes
 
-    # Stage and commit
-    subprocess.run(["git", "add", "-A"], cwd=PROMPTS_DIR, check=True)
+        # Stage and commit
+        subprocess.run(
+            ["git", "add", "-A"],
+            cwd=PROMPTS_DIR,
+            check=True,
+            timeout=10,
+        )
 
-    timestamp = datetime.now(timezone.utc).strftime("%B %d, %Y at %H:%M UTC")
-    subprocess.run(
-        ["git", "commit", "-m", f"Update prompts - {timestamp}"],
-        cwd=PROMPTS_DIR,
-        check=True,
-    )
+        timestamp = datetime.now(timezone.utc).strftime("%B %d, %Y at %H:%M UTC")
+        subprocess.run(
+            ["git", "commit", "-m", f"Update prompts - {timestamp}"],
+            cwd=PROMPTS_DIR,
+            check=True,
+            timeout=30,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: git operation failed: {e}", file=sys.stderr)
+    except subprocess.TimeoutExpired:
+        print("Warning: git operation timed out", file=sys.stderr)
+    except OSError as e:
+        print(f"Warning: Failed to run git: {e}", file=sys.stderr)
 
     sys.exit(0)
 

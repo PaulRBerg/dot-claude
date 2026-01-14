@@ -423,7 +423,7 @@ def format_with_biome(path: Path) -> bool:
 
     try:
         subprocess.run(
-            ["nlx", "biome", "format", "--write", str(path)],
+            ["biome", "format", "--write", str(path)],
             capture_output=True,
             text=True,
             timeout=30,
@@ -462,20 +462,26 @@ def run_merge_settings() -> bool:
 
 def main() -> None:
     """Main hook entry point."""
-    # Sync skills (graceful - continue on failure)
-    sync_skills()
+    from concurrent.futures import ThreadPoolExecutor
 
-    # Sync commands (graceful - continue on failure)
-    sync_commands()
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        # Run sync operations in parallel
+        futures = [
+            executor.submit(sync_skills),
+            executor.submit(sync_commands),
+            executor.submit(sync_plugins),
+        ]
+        # Wait for all to complete
+        for f in futures:
+            try:
+                f.result()
+            except Exception:
+                pass  # Graceful - continue on failure
 
-    # Sync plugins (graceful - continue on failure)
-    sync_plugins()
-
-    # Run merge_settings.sh once at the end
+    # Run merge_settings after syncs complete
     if run_merge_settings():
         format_with_biome(ROOT_SETTINGS)
 
-    # Always exit cleanly
     sys.exit(0)
 
 

@@ -19,8 +19,14 @@ from pathlib import Path
 PLANS_DIR = Path.home() / ".claude" / "plans"
 
 
+# Cache for git branch (unlikely to change during session)
+_git_branch_cache: dict[str, str] = {}
+
+
 def get_git_branch(cwd: str) -> str:
     """Get current git branch, or empty string if not in repo.
+
+    Uses a cache since branch is unlikely to change during a session.
 
     Args:
         cwd: Directory to check for git repository
@@ -30,6 +36,10 @@ def get_git_branch(cwd: str) -> str:
     """
     if not cwd:
         return ""
+
+    if cwd in _git_branch_cache:
+        return _git_branch_cache[cwd]
+
     try:
         result = subprocess.run(
             ["git", "branch", "--show-current"],
@@ -38,8 +48,11 @@ def get_git_branch(cwd: str) -> str:
             text=True,
             timeout=5,
         )
-        return result.stdout.strip() if result.returncode == 0 else ""
+        branch = result.stdout.strip() if result.returncode == 0 else ""
+        _git_branch_cache[cwd] = branch
+        return branch
     except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
+        _git_branch_cache[cwd] = ""
         return ""
 
 
