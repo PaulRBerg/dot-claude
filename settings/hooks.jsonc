@@ -79,10 +79,12 @@
             "command": "ai-notify event user-prompt-submit",
             "type": "command"
           },
-          {
-            "command": "ai-flags handle",
-            "type": "command"
-          },
+          // Uncomment to enable ai-flags hook
+          // See https://github.com/PaulRBerg/ai-flags
+          // {
+          //   "command": "ai-flags handle",
+          //   "type": "command"
+          // },
           {
             "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
             "type": "command"

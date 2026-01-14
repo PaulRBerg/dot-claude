@@ -25,14 +25,14 @@ Ensure the output confirms you are in a git repository. If not initialized, docu
 For update workflows, verify target files exist:
 
 ```bash
-ls -la CLAUDE.md AGENTS.md DOCS.md README.md
+ls -la CLAUDE.md AGENTS.md DOCS.md README.md CONTRIBUTING.md
 ```
 
-Check which files are present before attempting updates. Missing files will show errors, which helps identify what needs initialization. Note that DOCS.md is optional and only relevant for projects with APIs or public interfaces.
+Check which files are present before attempting updates. Missing files will show errors, which helps identify what needs initialization. Note that DOCS.md is optional and only relevant for projects with APIs or public interfaces. CONTRIBUTING.md is optional and only relevant if the repo already defines contribution guidance.
 
 ## Update Context Files
 
-Verify and fix CLAUDE.md, AGENTS.md, and optionally DOCS.md against the actual codebase. This workflow reads existing context files, analyzes the codebase structure, identifies discrepancies, and updates documentation to match reality. DOCS.md is only processed if it exists (it contains API/code documentation).
+Verify and fix CLAUDE.md, AGENTS.md, and optionally DOCS.md and CONTRIBUTING.md against the actual codebase. This workflow reads existing context files, analyzes the codebase structure, identifies discrepancies, and updates documentation to match reality. DOCS.md and CONTRIBUTING.md are only processed if they exist in the repository.
 
 ### Workflow Steps
 
@@ -51,12 +51,13 @@ Confirm working directory is a git repository. If not, warn the user but proceed
 
 **Read Existing Context Files**
 
-Read current CLAUDE.md, AGENTS.md, and DOCS.md (if present) contents:
+Read current CLAUDE.md, AGENTS.md, DOCS.md, and CONTRIBUTING.md (if present) contents:
 
 ```bash
 cat CLAUDE.md
 cat AGENTS.md
-cat DOCS.md  # if exists
+cat DOCS.md         # if exists
+cat CONTRIBUTING.md # if exists
 ```
 
 Parse the structure and extract documented information including:
@@ -69,6 +70,8 @@ Parse the structure and extract documented information including:
 - API endpoints and methods (from DOCS.md)
 - Function signatures and parameters (from DOCS.md)
 - Type definitions and interfaces (from DOCS.md)
+- Contribution workflow and guidelines (from CONTRIBUTING.md)
+- Code review process and standards (from CONTRIBUTING.md)
 
 **Analyze Codebase**
 
@@ -98,6 +101,8 @@ Compare documented information against actual codebase:
 - Outdated API endpoints or routes (DOCS.md)
 - Changed function signatures (DOCS.md)
 - Modified type definitions (DOCS.md)
+- Outdated contribution guidelines (CONTRIBUTING.md)
+- Stale branch naming or PR process (CONTRIBUTING.md)
 
 **Create Backups**
 
@@ -107,6 +112,7 @@ Before overwriting, create backup files:
 cp CLAUDE.md CLAUDE.md.backup
 cp AGENTS.md AGENTS.md.backup
 test -f DOCS.md && cp DOCS.md DOCS.md.backup
+test -f CONTRIBUTING.md && cp CONTRIBUTING.md CONTRIBUTING.md.backup
 ```
 
 **Update Context Files**
@@ -134,9 +140,13 @@ When DOCS.md exists:
 ✓ Updated DOCS.md
   - Fixed outdated endpoint path /api/v1/users
   - Updated function signature for createUser()
+
+✓ Updated CONTRIBUTING.md
+  - Updated branch naming convention
+  - Fixed outdated PR template reference
 ```
 
-When DOCS.md is absent:
+When optional files are absent:
 
 ```
 ✓ Updated CLAUDE.md
@@ -146,6 +156,7 @@ When DOCS.md is absent:
   - Updated test-runner trigger pattern
 
 ⊘ DOCS.md not found (skipped)
+⊘ CONTRIBUTING.md not found (skipped)
 ```
 
 For the complete update context files workflow with verification strategies, diff examples, and edge cases, refer to `./references/update-agents.md`.
@@ -202,6 +213,14 @@ cat README.md
 
 Parse existing sections to preserve custom content while updating technical details.
 
+**Read CONTRIBUTING.md (Optional)**
+
+If CONTRIBUTING.md exists, read it and treat it as the source of truth for contribution guidance. Do not duplicate detailed contribution steps in README; link to CONTRIBUTING.md instead.
+
+```bash
+test -f CONTRIBUTING.md && cat CONTRIBUTING.md
+```
+
 **Create Backup**
 
 Before overwriting existing README:
@@ -219,7 +238,7 @@ Create structured content with appropriate sections:
 - **Installation** (package manager commands)
 - **Usage** (basic examples)
 - **Development** (build, test, lint commands)
-- **Contributing** (if applicable)
+- **Contributing** (if applicable; link to CONTRIBUTING.md when it exists)
 - **License** (based on package metadata)
 
 For `--minimal` mode, include only title, description, installation, and usage.
@@ -248,6 +267,85 @@ Display summary:
 ```
 
 For the complete update README workflow with section templates, metadata extraction strategies, and formatting examples, refer to `./references/update-readme.md`.
+
+## Update CONTRIBUTING
+
+Update CONTRIBUTING.md based on current codebase tooling and workflows. **This workflow only runs when CONTRIBUTING.md already exists in the repository.** If CONTRIBUTING.md is absent, skip this workflow entirely—do not auto-create contribution guidelines.
+
+### Prerequisite Check
+
+Before proceeding, verify the file exists:
+
+```bash
+test -f CONTRIBUTING.md && echo "exists" || echo "missing"
+```
+
+If missing, report to the user and stop. Do not create CONTRIBUTING.md unless explicitly requested.
+
+### Workflow Steps
+
+**Parse Arguments**
+
+Support the following arguments:
+
+- `--dry-run`: Show what would change without writing files
+- `--preserve`: Maximum preservation; only fix broken commands/links
+- `--thorough`: Deep analysis; verify all links and commands work
+
+**Read Existing CONTRIBUTING.md**
+
+```bash
+cat CONTRIBUTING.md
+```
+
+Parse the document structure:
+
+- Section headings and organization
+- Code blocks with commands
+- URLs and file path references
+- Mentioned tooling (test runners, linters, formatters)
+
+**Gather Codebase Intelligence**
+
+Detect current tooling and compare against documented content:
+
+- Package manager (npm, pnpm, yarn, bun) from lock files
+- Available scripts from package.json/Makefile/justfile
+- Branch conventions (main vs master)
+- Linting/formatting tools in use
+
+**Identify Discrepancies**
+
+Compare documented information against actual codebase:
+
+- Outdated CLI commands (npm → pnpm)
+- Incorrect branch references (master → main)
+- Broken links to issue templates or docs
+- Stale tooling references (Jest → Vitest)
+
+**Update Content**
+
+Fix technical inaccuracies while preserving:
+
+- Contribution policies (CLA, DCO, licensing)
+- Review processes and expectations
+- Code of conduct references
+- Governance decisions
+
+**Generate Report**
+
+Display summary:
+
+```
+✓ Updated CONTRIBUTING.md
+  - Fixed package manager: npm → pnpm
+  - Corrected branch reference: master → main
+  - Updated test command
+
+⊘ Policy sections preserved (CLA, review process)
+```
+
+For the complete update CONTRIBUTING workflow with verification strategies and examples, refer to `./references/update-contributing.md`.
 
 ## Initialize Context
 
@@ -363,7 +461,8 @@ Always create backups before overwriting existing files:
 ```bash
 cp CLAUDE.md CLAUDE.md.backup
 cp AGENTS.md AGENTS.md.backup
-test -f DOCS.md && cp DOCS.md DOCS.md.backup  # only if exists
+test -f DOCS.md && cp DOCS.md DOCS.md.backup                 # only if exists
+test -f CONTRIBUTING.md && cp CONTRIBUTING.md CONTRIBUTING.md.backup  # only if exists
 ```
 
 Inform the user when backups are created:
@@ -372,9 +471,10 @@ Inform the user when backups are created:
 Created backup: CLAUDE.md.backup
 Created backup: AGENTS.md.backup
 Created backup: DOCS.md.backup (optional file)
+Created backup: CONTRIBUTING.md.backup (optional file)
 ```
 
-Never delete backups automatically. Let users manage backup cleanup manually. Note that DOCS.md is optional—skip backup and update operations if it doesn't exist.
+Never delete backups automatically. Let users manage backup cleanup manually. Note that DOCS.md and CONTRIBUTING.md are optional—skip backup and update operations if they don't exist.
 
 ### Writing Style
 
@@ -434,6 +534,9 @@ After completing operations, display a clear summary:
 
 ⊘ DOCS.md not found
   - Skipped (optional file)
+
+⊘ CONTRIBUTING.md not found
+  - Skipped (optional file)
 ```
 
 Use checkmarks (✓) for successful operations, crosses (✗) for failed operations, and ⊘ for skipped optional files. Include indented details showing specific changes made.
@@ -478,6 +581,7 @@ For detailed workflows, examples, and implementation guidance, refer to these re
 
 - **`./references/update-agents.md`** - Complete context file update workflow including verification strategies, diff generation, and discrepancy detection
 - **`./references/update-readme.md`** - Complete README update workflow including section templates, metadata extraction, and formatting conventions
+- **`./references/update-contributing.md`** - Complete CONTRIBUTING.md update workflow including scope, templates, and validation (only when CONTRIBUTING.md exists)
 - **`./references/init-agents.md`** - Complete context initialization workflow including language-specific templates, detection strategies, and customization options
 
 These references provide implementation details, code examples, and troubleshooting guidance for each workflow type.
