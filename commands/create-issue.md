@@ -13,4 +13,4 @@ model: opus
 
 ## Task
 
-Activate the `oss` skill to create a GitHub issue. Follow the workflow in the skill's `references/issues.md`.
+Activate the `~/.claude/skills/oss` skill to create a GitHub issue. Follow the workflow in `~/.claude/skills/oss/references/issues.md`.

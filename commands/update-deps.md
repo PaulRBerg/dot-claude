@@ -11,4 +11,4 @@ description: Wrapper for node-deps skill with optional --monorepo flag for recur
 
 ## Task
 
-Activate the `node-deps` skill to update dependencies. If `--monorepo` is passed, use recursive mode (`-r` flag).
+Activate the `~/.claude/skills/node-deps` skill to update dependencies. If `--monorepo` is passed, use recursive mode (`-r` flag).

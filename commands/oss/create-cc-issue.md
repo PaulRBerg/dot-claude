@@ -14,4 +14,4 @@ model: opus
 
 ## Task
 
-Activate the `oss` skill to create an issue in `anthropics/claude-code`. Follow the workflow in the skill's `references/issues-claude-code.md`.
+Activate the `~/.claude/skills/oss` skill to create an issue in `anthropics/claude-code` Github repository. Follow the workflow in `~/.claude/skills/oss/references/issues-claude-code.md`.

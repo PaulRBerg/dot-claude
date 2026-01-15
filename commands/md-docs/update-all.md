@@ -15,9 +15,9 @@ model: opus
 
 ## Task
 
-Activate the `md-docs` skill to update project documentation. Perform both workflows:
+Activate the `~/.claude/skills/md-docs` skill to update project documentation. Perform both workflows:
 
-1. **README.md** - Follow the skill's `references/update-readme.md`
-2. **Context files** - Follow the skill's `references/update-agents.md`
+1. **README.md** - Follow `~/.claude/skills/md-docs/references/update-readme.md`
+2. **Context files** - Follow `~/.claude/skills/md-docs/references/update-agents.md`
 
 Update README first, then context files. If `--dry-run` is passed, report proposed changes without writing.

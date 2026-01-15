@@ -14,4 +14,4 @@ model: opus
 
 ## Task
 
-Activate the `md-docs` skill to update README.md. Follow the workflow in the skill's `references/update-readme.md`.
+Activate the `~/.claude/skills/md-docs` skill to update README.md. Follow the workflow in `~/.claude/skills/md-docs/references/update-readme.md`.
