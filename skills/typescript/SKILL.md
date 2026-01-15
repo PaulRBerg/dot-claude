@@ -1,5 +1,6 @@
 ---
 name: typescript
+user-invocable: false
 description: This skill should be used when the user asks to "configure TypeScript", "fix type errors", "use dayjs", "add type definitions", "set up React with TypeScript", mentions ".ts" or ".tsx" files, or asks about TypeScript best practices or TypeScript-specific tooling.
 ---
 

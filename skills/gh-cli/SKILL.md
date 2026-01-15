@@ -1,7 +1,7 @@
 ---
 name: gh-cli
+user-invocable: false
 description: This skill should be used when the user mentions "gh CLI", "gh command", asks to "view repository info", "trigger workflows", "search GitHub", "manage codespaces", "check PR status", "list issues", or asks about GitHub CLI usage and automation from the command line.
-version: 0.1.0
 ---
 
 # GitHub CLI (gh)

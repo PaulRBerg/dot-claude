@@ -1,8 +1,9 @@
 ---
 name: dry-refactor
-description: This skill should be used when the user asks to "refactor duplicate code", "apply DRY principles", "eliminate code repetition", "extract common functionality", or mentions code duplication, similar patterns, repeated logic, or reusable abstractions.
-context: fork
 agent: Plan
+context: fork
+user-invocable: false
+description: This skill should be used when the user asks to "refactor duplicate code", "apply DRY principles", "eliminate code repetition", "extract common functionality", or mentions code duplication, similar patterns, repeated logic, or reusable abstractions.
 ---
 
 # DRY Refactoring

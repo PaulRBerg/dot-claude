@@ -1,7 +1,7 @@
 ---
 name: just-cli
+user-invocable: false
 description: This skill should be used when the user asks to "create a justfile", "write just recipes", "configure just settings", "add just modules", "use just attributes", "set up task automation", mentions justfile, just command runner, or task automation with just.
-version: 0.2.0
 ---
 
 # Just Command Runner

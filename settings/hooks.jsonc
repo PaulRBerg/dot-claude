@@ -3,26 +3,26 @@
   // These hooks execute in response to events during Claude Code's operation
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "ai-notify event notification",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "ai-notify event permission-request",
-            "type": "command"
-          }
-        ]
-      }
-    ],
+    // "Notification": [
+    //   {
+    //     "hooks": [
+    //       {
+    //         "command": "ai-notify event notification",
+    //         "type": "command"
+    //       }
+    //     ]
+    //   }
+    // ],
+    // "PermissionRequest": [
+    //   {
+    //     "hooks": [
+    //       {
+    //         "command": "ai-notify event permission-request",
+    //         "type": "command"
+    //       }
+    //     ]
+    //   }
+    // ],
     "PostToolUse": [
       {
         "hooks": [
@@ -33,17 +33,17 @@
         ]
       }
     ],
-    "PreToolUse": [
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "command": "ai-notify event ask-user-question",
-            "type": "command"
-          }
-        ]
-      }
-    ],
+    // "PreToolUse": [
+    //   {
+    //     "matcher": "AskUserQuestion",
+    //     "hooks": [
+    //       {
+    //         "command": "ai-notify event ask-user-question",
+    //         "type": "command"
+    //       }
+    //     ]
+    //   }
+    // ],
     "SessionEnd": [
       {
         "hooks": [
@@ -62,23 +62,23 @@
         ]
       }
     ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "ai-notify event stop",
-            "type": "command"
-          }
-        ]
-      }
-    ],
+    // "Stop": [
+    //   {
+    //     "hooks": [
+    //       {
+    //         "command": "ai-notify event stop",
+    //         "type": "command"
+    //       }
+    //     ]
+    //   }
+    // ],
     "UserPromptSubmit": [
       {
         "hooks": [
-          {
-            "command": "ai-notify event user-prompt-submit",
-            "type": "command"
-          },
+          // {
+          //   "command": "ai-notify event user-prompt-submit",
+          //   "type": "command"
+          // },
           // Uncomment to enable ai-flags hook
           // See https://github.com/PaulRBerg/ai-flags
           // {

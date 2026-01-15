@@ -1,7 +1,7 @@
 ---
 name: template-ts-node
+user-invocable: true
 description: This skill should be used when the user asks to "create a TypeScript project", "set up Node.js project", "scaffold new project", "initialize TypeScript repo", "create a new library", "set up a CLI tool", or mentions setting up a new TypeScript/Node.js codebase.
-version: 0.1.0
 ---
 
 # TypeScript Node.js Project Setup
