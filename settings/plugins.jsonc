@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "enabledPlugins": {
     "fp@sablier-plugins": true,
-    "plannotator@plannotator": false,
     "plugin-dev@claude-plugins-official": true,
     "testing@sablier-plugins": true
   }

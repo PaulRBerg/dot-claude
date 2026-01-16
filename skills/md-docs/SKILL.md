@@ -1,7 +1,7 @@
 ---
 name: md-docs
 user-invocable: false
-description: This skill should be used when the user asks to "update README", "update context files", "init context", "create CLAUDE.md", "update CLAUDE.md", "update AGENTS.md", "update DOCS.md", "generate documentation", "API documentation", or mentions project documentation, context files, or markdown documentation workflows.
+description: This skill should be used ONLY when the user asks to update README.md, CLAUDE.md, AGENTS.md, or CONTRIBUTING.md. Trigger phrases include "update README", "update context files", "init context", "create CLAUDE.md", "update CLAUDE.md", "update AGENTS.md", "update CONTRIBUTING". Do NOT activate this skill for any other Markdown file updates.
 ---
 
 # Markdown Documentation Management
