@@ -3,6 +3,7 @@
   "enabledPlugins": {
     "fp@sablier-plugins": true,
     "plugin-dev@claude-plugins-official": true,
+    "sablier@sablier-plugins": true,
     "testing@sablier-plugins": true
   }
 }

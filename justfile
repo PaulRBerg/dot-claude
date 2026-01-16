@@ -58,12 +58,6 @@ alias ab := allow-bash
 @cleanup:
     uv run helpers/cleanup.py
 
-# Manage claude-island hooks (add|remove|status)
-[group("helpers")]
-@manage_claude_island action="status":
-    uv run helpers/manage_claude_island.py {{ action }}
-alias mci := manage_claude_island
-
 # Merge JSONC settings files into settings.json
 [group("helpers")]
 @merge-settings:
@@ -89,10 +83,10 @@ alias up := update-plugins
 # Run all code checks
 [group("checks")]
 @full-check:
-    just _run-with-status mdformat-check
-    just _run-with-status prettier-check
-    just _run-with-status ruff-check
-    just _run-with-status pyright-check
+    just rws mdformat-check
+    just rws prettier-check
+    just rws ruff-check
+    just rws pyright-check
     echo ""
     echo -e '{{ GREEN }}All code checks passed!{{ NORMAL }}'
 alias fc := full-check
@@ -100,9 +94,9 @@ alias fc := full-check
 # Run all code fixes
 [group("checks")]
 @full-write:
-    just _run-with-status mdformat-write
-    just _run-with-status prettier-write
-    just _run-with-status ruff-write
+    just rws mdformat-write
+    just rws prettier-write
+    just rws ruff-write
     echo ""
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
@@ -171,9 +165,10 @@ alias th := test-hooks
 # ---------------------------------------------------------------------------- #
 
 # Private recipe to run a check with formatted output
-@_run-with-status recipe:
+@_run_with-status recipe:
     echo ""
     echo -e '{{ CYAN }}→ Running {{ recipe }}...{{ NORMAL }}'
     just {{ recipe }}
     echo -e '{{ GREEN }}✓ {{ recipe }} completed{{ NORMAL }}'
-alias rws := _run-with-status
+alias rws := _run_with-status
+

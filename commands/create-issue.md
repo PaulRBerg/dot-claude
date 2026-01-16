@@ -13,4 +13,10 @@ model: opus
 
 ## Task
 
+**IF the current repository owner is `sablier-labs`:**
+
+STOP. Tell the user: "This is a sablier-labs repository. Please use `/sablier:create-issue` instead for Sablier-specific issue formatting and labeling."
+
+**OTHERWISE:**
+
 Activate the `~/.claude/skills/oss` skill to create a GitHub issue. Follow the workflow in `~/.claude/skills/oss/references/issues.md`.
