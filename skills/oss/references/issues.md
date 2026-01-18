@@ -28,6 +28,16 @@ ELSE:
 - Set `check_mode = false`
 - Skip similarity check and continue to template detection
 
+## Determine Authenticated User
+
+Get the authenticated GitHub username for permission checks:
+
+```bash
+gh api user -q .login
+```
+
+Store as `$AUTHENTICATED_USER` for later comparisons.
+
 ## Check for Similar Issues
 
 **ONLY if `check_mode = true`:**
@@ -111,7 +121,7 @@ ELSE:
 
 Extract the owner from the repository (the part before the `/`).
 
-IF owner is `PaulRBerg`:
+IF owner matches `$AUTHENTICATED_USER`:
 
 - **APPLY LABELS**: The user has permission to add labels
 - Continue to apply labels
@@ -123,7 +133,7 @@ ELSE:
 
 ## Apply Labels
 
-**ONLY if owner is PaulRBerg:**
+**ONLY if owner matches $AUTHENTICATED_USER:**
 
 From content analysis, determine:
 
@@ -290,7 +300,7 @@ Refactor the authentication module to use JWT tokens.
 - Deduplicate labels (e.g., don't add "bug" twice if template and auto-labels both include it)
 - Template labels always apply regardless of repository owner
 
-**IF owner is PaulRBerg:**
+**IF owner matches $AUTHENTICATED_USER:**
 
 ```bash
 gh issue create \
@@ -300,7 +310,7 @@ gh issue create \
   --label "template-label1,auto-label1,auto-label2"
 ```
 
-**IF owner is not PaulRBerg:**
+**IF owner does not match $AUTHENTICATED_USER:**
 
 ```bash
 # If YAML template has labels defined:
