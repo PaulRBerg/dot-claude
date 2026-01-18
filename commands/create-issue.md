@@ -20,3 +20,5 @@ STOP. Tell the user: "This is a sablier-labs repository. Please use `/sablier:cr
 **OTHERWISE:**
 
 Activate the `~/.claude/skills/oss` skill to create a GitHub issue. Follow the workflow in `~/.claude/skills/oss/references/issues.md`.
+
+When writing issue bodies that include environment information, use the OS value from the Context section above (e.g., "macOS Tahoe 26.2"). Do not use raw system output like "Darwin 25.2.0".

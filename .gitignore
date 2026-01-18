@@ -31,7 +31,6 @@ settings.json
 stats-cache.json
 
 # Markdown
-#
 PROMPT.md
 SPEC.md
 TODO.md
@@ -42,4 +41,3 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv/
-
