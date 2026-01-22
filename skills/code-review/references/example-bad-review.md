@@ -77,3 +77,19 @@ Making assumptions about intent without asking.
 ✅ **Good**:
 
 > I'm assuming this endpoint is public-facing. If it's internal-only, the authentication check may not be necessary. Could you clarify the access requirements?
+
+______________________________________________________________________
+
+## Anti-Pattern 6: Vague Naming Feedback
+
+❌ **Bad**:
+
+> Variable names could be better.
+
+No specifics about which names, where they are, or what they should be.
+
+✅ **Good**:
+
+> **Naming Clarity** — `src/api/orders.ts:23`
+>
+> Variable `x` in `processOrder` doesn't reveal intent. Consider `orderTotal` or `discountedPrice` based on what it represents.

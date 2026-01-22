@@ -42,7 +42,9 @@ Apply these language-agnostic patterns to every code review:
 
 **Performance Considerations**: Evaluate algorithmic complexity—O(n²) or worse on unbounded inputs is problematic. Check resource cleanup: files closed, connections released, timers cleared, event listeners removed. Assess caching opportunities for expensive computations or external calls. Review lazy loading and pagination for large datasets. Identify synchronous operations blocking event loops or main threads.
 
-**Maintainability Standards**: Evaluate naming clarity—names should reveal intent without comments. Assess coupling—changes should be localized, not rippling across modules. Verify single responsibility—functions and classes should have one reason to change. Check for magic numbers and strings—extract named constants. Review error messages for actionability—include context for debugging.
+**Maintainability Standards**: Assess coupling—changes should be localized, not rippling across modules. Verify single responsibility—functions and classes should have one reason to change. Check for magic numbers and strings—extract named constants. Review error messages for actionability—include context for debugging.
+
+**Naming Quality**: Function names should be verb phrases describing the action (`validateOrder`, not `process`). Variable names should reveal intent without requiring comments (`userCount`, not `n`). Boolean variables and functions should read as yes/no questions with prefixes like `is`, `has`, `should`, `can`. Avoid single-letter names except in small scopes (loop indices, lambdas). File names should follow project conventions and reflect contents. Constants should use UPPER_SNAKE_CASE and describe the value's purpose, not the value itself (`MAX_RETRY_COUNT`, not `THREE`).
 
 ## Relative Change Analysis
 
@@ -97,6 +99,8 @@ Structure reviews consistently:
 3. **Suggested Fixes**: Code snippets or specific recommendations
 4. **Deployment Notes**: Rollout strategy, monitoring requirements (when applicable)
 
+**Important**: After presenting findings, wait for the user to confirm which issues to address. Do not immediately implement fixes. The user may choose to address only critical issues, defer some findings, or disagree with recommendations. Ask which findings to fix before making any changes.
+
 ## Additional Resources
 
 Consult specialized reference documents for in-depth guidance on specific review areas:
@@ -108,10 +112,11 @@ Consult specialized reference documents for in-depth guidance on specific review
 - **references/smart-contracts.md** - Blockchain security for Solidity and Solana including reentrancy, integer overflow, access control, and economic attack vectors
 - **references/shell.md** - Bash script review covering quoting, error handling, portability, security risks from command injection and path traversal
 - **references/data-formats.md** - CSV, JSON, and data format handling including parsing safety, schema validation, and encoding issues
+- **references/naming.md** - Naming conventions covering functions, variables, files, classes, and constants with language-specific patterns and common anti-patterns
 
 Reference these documents when reviewing code in their respective domains for detailed checklists and language-specific vulnerabilities.
 
 ### Examples
 
-- **examples/good-review.md** - Exemplary review output demonstrating proper structure, severity grouping, and actionable recommendations
-- **examples/bad-review.md** - Anti-patterns to avoid including fabricated line numbers, vague findings, and opinion without evidence
+- **references/example-good-review.md** - Exemplary review output demonstrating proper structure, severity grouping, and actionable recommendations
+- **references/example-bad-review.md** - Anti-patterns to avoid including fabricated line numbers, vague findings, and opinion without evidence

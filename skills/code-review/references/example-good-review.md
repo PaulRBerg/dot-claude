@@ -67,11 +67,43 @@ Loop fetches related records individually instead of batching.
 
 ______________________________________________________________________
 
+**Generic Function Name** — `src/api/users.ts:80`
+
+```typescript
+async function process(data: OrderInput) { ... }
+```
+
+Function name `process` doesn't describe the action. Requires reading the implementation to understand behavior.
+
+**Fix**: Use a verb phrase describing the action:
+
+```typescript
+async function validateAndSubmitOrder(order: OrderInput) { ... }
+```
+
+______________________________________________________________________
+
 ### ℹ️ LOW
 
 **Naming Clarity** — `src/api/users.ts:30`
 
 Variable `d` could be more descriptive. Consider `userData` or `userRecord`.
+
+______________________________________________________________________
+
+**Boolean Variable Name** — `src/api/users.ts:42`
+
+```typescript
+const flag = user.status === 'active';
+```
+
+Boolean `flag` doesn't convey what condition it represents.
+
+**Fix**: Use a name that reads as a yes/no question:
+
+```typescript
+const isActive = user.status === 'active';
+```
 
 ______________________________________________________________________
 
