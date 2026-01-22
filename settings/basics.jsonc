@@ -6,13 +6,6 @@
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "model": "opus",
-  "env": {
-    "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS": "0",
-    "DISABLE_AUTOUPDATER": "0",
-    "DISABLE_BUG_COMMAND": "0",
-    "DISABLE_ERROR_REPORTING": "0",
-    "DISABLE_TELEMETRY": "0"
-  },
   "statusLine": {
     "command": "ccstatusline",
     "type": "command"

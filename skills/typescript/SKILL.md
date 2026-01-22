@@ -60,6 +60,26 @@ const tomorrow = now.add(1, "day");
 
 Never use the `any` type.
 
+### No nested ternary operators
+
+Avoid nested ternary operators. Use `if`/`else` statements or early returns instead.
+
+**Example:**
+
+```typescript
+// bad
+const result = a ? b : c ? d : e;
+
+// good
+if (a) {
+  return b;
+}
+if (c) {
+  return d;
+}
+return e;
+```
+
 ### Never return a value in `forEach` callbacks
 
 **Example:**
