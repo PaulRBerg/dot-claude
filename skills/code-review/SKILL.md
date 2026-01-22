@@ -44,7 +44,7 @@ Apply these language-agnostic patterns to every code review:
 
 **Maintainability Standards**: Assess coupling—changes should be localized, not rippling across modules. Verify single responsibility—functions and classes should have one reason to change. Check for magic numbers and strings—extract named constants. Review error messages for actionability—include context for debugging.
 
-**Naming Quality**: Function names should be verb phrases describing the action (`validateOrder`, not `process`). Variable names should reveal intent without requiring comments (`userCount`, not `n`). Boolean variables and functions should read as yes/no questions with prefixes like `is`, `has`, `should`, `can`. Avoid single-letter names except in small scopes (loop indices, lambdas). File names should follow project conventions and reflect contents. Constants should use UPPER_SNAKE_CASE and describe the value's purpose, not the value itself (`MAX_RETRY_COUNT`, not `THREE`).
+**Naming Quality**: Names should reveal intent—verb phrases for functions (`validateOrder`, not `process`), descriptive nouns for variables (`userCount`, not `n`), boolean prefixes (`is`, `has`, `can`). See `references/naming.md` for detailed conventions by language and common anti-patterns.
 
 ## Relative Change Analysis
 
