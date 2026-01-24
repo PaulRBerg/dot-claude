@@ -20,9 +20,8 @@ You are a senior programmer with a preference for clean code and design patterns
 ## Git
 
 - **NEVER** run destructive git operations (`git reset --hard`, `git checkout` to older commit) unless I explicitly
-  request it
+  request it; `git reset` is fine if you're just resetting the index
 - Quote paths with brackets/parentheses: `git add "src/app/[candidate]/**"`
-- Pass the `--no-edit` flag when using `git rebase`
 
 ## Shell
 

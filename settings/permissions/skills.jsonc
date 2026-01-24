@@ -10,6 +10,7 @@
       "Skill(frontend:xstate-react)",
       "Skill(frontend:zustand)",
       "Skill(gh-cli)",
+      "Skill(git-commit)",
       "Skill(just-cli)",
       "Skill(ls-lint)",
       "Skill(md-docs)",
@@ -28,6 +29,7 @@
       "Skill(template-ts-node)",
       "Skill(testing:vitest-v4)",
       "Skill(typescript)",
+      "Skill(vercel-react-best-practices)",
       "Skill(web3:etherscan-api)",
       "Skill(web3:etherscan-verification)",
       "Skill(web3:evm-deployment)"
