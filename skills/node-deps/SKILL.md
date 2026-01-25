@@ -1,7 +1,7 @@
 ---
 name: node-deps
 user-invocable: false
-description: This skill should be used when the user asks to "update dependencies", "update npm packages", "run taze", "upgrade node packages", "check for outdated packages", "update package.json", or mentions dependency updates, npm/pnpm/yarn package upgrades, or taze CLI usage.
+description: This skill should be used when the user asks to "update dependencies", "update npm packages", "bump dependencies", "upgrade node packages", "check for outdated packages", "update package.json", or mentions dependency updates, npm/pnpm/yarn/bun package upgrades, or taze CLI usage.
 ---
 
 # Node Dependencies Update Skill
@@ -19,7 +19,7 @@ Before starting, verify taze is installed by running:
 If exit code is 1, stop and inform the user that taze must be installed:
 
 - Global install: `npm install -g taze`
-- One-time: `nlx taze`
+- One-time: `npx taze`
 
 ## Update Workflow
 

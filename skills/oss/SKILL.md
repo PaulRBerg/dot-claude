@@ -1,7 +1,8 @@
 ---
 name: oss
+argument-hint: <create-pr|update-pr|create-issue|create-discussion> [options]
 user-invocable: false
-description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a Codex issue", "report a bug in Codex CLI", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
+description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "update a pull request", "update PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a Codex issue", "report a bug in Codex CLI", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
 ---
 
 # OSS Contribution Workflows
@@ -107,7 +108,50 @@ Execute the gh command with all parsed flags and generated content. Include:
 - `--draft` if draft mode requested
 - Return the PR URL to the user
 
-For the complete pull request workflow with detailed steps, examples, and edge cases, refer to `./references/pull-requests.md`.
+For the complete pull request workflow with detailed steps, examples, and edge cases, refer to `./references/create-pr.md`.
+
+## Update Pull Requests
+
+Update existing GitHub pull requests with semantic change analysis. The workflow regenerates titles and descriptions by reading actual code changes rather than relying solely on commit messages.
+
+### Workflow Steps
+
+**Validate Prerequisites**
+
+Same as Pull Requests: confirm gh CLI auth, verify git repo state.
+
+**Check for Existing PR**
+
+Verify a PR exists for the current branch:
+
+```bash
+gh pr view --json number,url,title,baseRefName 2>/dev/null
+```
+
+If no PR found, error and direct user to `/create-pr`.
+
+**Parse Arguments**
+
+Interpret arguments as natural language instructions:
+
+- References to "title" → update title
+- References to "description" or "body" → regenerate description
+- Quoted text → use as new title or append to description
+- Everything else → additional context for description
+
+**Semantic Change Analysis**
+
+Same process as Pull Requests: read the diff, analyze intent, generate content.
+
+**Execute Update**
+
+```bash
+gh pr edit --title "$title" --body "$body"
+```
+
+Push any local commits after updating.
+
+For the complete update workflow with detailed steps and examples, refer to `./references/update-pr.md`.
 
 ## Issues
 
@@ -503,11 +547,12 @@ For search operations with `--check`:
 
 For detailed workflows, examples, and edge case handling, refer to these reference documents:
 
-- **`./references/pull-requests.md`** - Complete pull request workflow including git state validation, semantic analysis strategies, template examples, and reviewer management
-- **`./references/issues.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
-- **`./references/issues-claude-code.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
-- **`./references/issues-codex-cli.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
-- **`./references/issues-biome.md`** - Biome-specific issue creation including playground reproduction links, formatter/linter bug templates, and environment detection
-- **`./references/discussions.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
+- **`./references/create-pr.md`** - Complete pull request workflow including git state validation, semantic analysis strategies, template examples, and reviewer management
+- **`./references/update-pr.md`** - Complete update PR workflow including argument parsing, semantic analysis, and title/description regeneration
+- **`./references/create-issue.md`** - Complete issue creation workflow including template parsing, label application strategies, and duplicate detection
+- **`./references/issue-claude-code.md`** - Claude Code-specific issue creation including all template formats, environment gathering scripts, and submission guidelines
+- **`./references/issue-codex-cli.md`** - Codex CLI-specific issue creation including bug reports, feature requests, docs issues, and VS Code extension templates
+- **`./references/issue-biome.md`** - Biome-specific issue creation including playground reproduction links, formatter/linter bug templates, and environment detection
+- **`./references/create-discussion.md`** - GitHub discussions workflow including GraphQL queries, category selection logic, and search strategies
 
 These references provide implementation details, code examples, and troubleshooting guidance for each workflow type.

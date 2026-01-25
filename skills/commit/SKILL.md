@@ -1,6 +1,6 @@
 ---
-name: git-commit
-user-invocable: false
+name: commit
+argument-hint: '[--all] [--deep] [--push] [--stack]'
 description: Create atomic git commits with heuristic analysis, conventional-commit formatting, staging rules, optional deep analysis, Graphite stack commits, and optional push. Use when the user asks to craft a commit message, commit changes, stage/commit only session edits, or run a commit workflow with flags like --all, --deep, --push, or --stack.
 ---
 

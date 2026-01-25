@@ -13,4 +13,4 @@ model: opus
 
 ## Task
 
-Activate the `~/.claude/skills/oss` skill to create a GitHub discussion. Follow the workflow in `~/.claude/skills/oss/references/discussions.md`.
+Activate the `~/.claude/skills/oss` skill to create a GitHub discussion. Follow the workflow in `~/.claude/skills/oss/references/create-discussion.md`.

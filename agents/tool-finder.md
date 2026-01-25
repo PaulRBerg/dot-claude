@@ -296,10 +296,10 @@ Use the appropriate package manager for each ecosystem:
 
 ### JavaScript/TypeScript (npm)
 
-User prefers **ni** utility with Bun:
+User prefers **ni** utility:
 
 ```bash
-ni package-name              # Install dependency
+ni package-name             # Install dependency
 ni -D dev-package           # Install dev dependency (public packages only)
 nun package-name            # Uninstall
 nr script-name              # Run script

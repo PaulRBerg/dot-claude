@@ -4,13 +4,14 @@
   "permissions": {
     "allow": [
       "Skill(biome-js)",
+      "Skill(bump-release)",
       "Skill(code-review)",
+      "Skill(commit)",
       "Skill(dry-refactor)",
       "Skill(fp:effect-ts)",
       "Skill(frontend:xstate-react)",
       "Skill(frontend:zustand)",
       "Skill(gh-cli)",
-      "Skill(git-commit)",
       "Skill(just-cli)",
       "Skill(ls-lint)",
       "Skill(md-docs)",
@@ -24,6 +25,7 @@
       "Skill(plugin-dev:plugin-settings)",
       "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
+      "Skill(refine-prompt)",
       "Skill(sablier:design)",
       "Skill(sablier:sablier)",
       "Skill(template-ts-node)",

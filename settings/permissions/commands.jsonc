@@ -3,8 +3,6 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "SlashCommand(/bump-release:*)",
-      "SlashCommand(/commit:*)",
       "SlashCommand(/create-discussion:*)",
       "SlashCommand(/create-issue:*)",
       "SlashCommand(/create-pr:*)",
@@ -15,7 +13,6 @@
       "SlashCommand(/oss:create-biome-issue:*)",
       "SlashCommand(/oss:create-cc-issue:*)",
       "SlashCommand(/oss:create-codex-issue:*)",
-      "SlashCommand(/refine-prompt:*)",
       "SlashCommand(/sablier:create-issue:*)",
       "SlashCommand(/update-deps:*)",
       "SlashCommand(/update-pr:*)"
