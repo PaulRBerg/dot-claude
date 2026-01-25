@@ -84,7 +84,6 @@ alias up := update-plugins
 [group("checks")]
 @full-check:
     just rws mdformat-check
-    just rws prettier-check
     just rws ruff-check
     just rws pyright-check
     echo ""
@@ -95,7 +94,6 @@ alias fc := full-check
 [group("checks")]
 @full-write:
     just rws mdformat-write
-    just rws prettier-write
     just rws ruff-write
     echo ""
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
@@ -112,18 +110,6 @@ alias mc := mdformat-check
 @mdformat-write +paths=".":
     uv run mdformat {{ paths }}
 alias mw := mdformat-write
-
-# Check Prettier formatting
-[group("checks")]
-@prettier-check +globs=GLOBS_PRETTIER:
-    bun prettier --check --cache {{ globs }}
-alias pc := prettier-check
-
-# Format using Prettier
-[group("checks")]
-@prettier-write +globs=GLOBS_PRETTIER:
-    bun prettier --write --cache --log-level warn {{ globs }}
-alias pw := prettier-write
 
 # Check Python type hints
 [group("checks")]

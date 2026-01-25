@@ -2,9 +2,6 @@
   "[json][jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "[md][yaml][yml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },

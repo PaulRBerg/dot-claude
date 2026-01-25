@@ -9,9 +9,7 @@
 
       // Code Quality & Formatting
       "Bash(biome:*)",
-      "Bash(bulloak:*)",
       "Bash(mdformat:*)",
-      "Bash(prettier:*)",
       "Bash(ruff:*)",
       "Bash(shellcheck:*)",
       "Bash(shfmt:*)",
@@ -30,7 +28,7 @@
       // Custom Scripts
       "Bash(~/.claude/helpers:*)",
       "Bash(~/.claude/hooks:*)",
-      "Bash(~/.claude/skills/oracle-codex/scripts/check-codex.sh:*)",
+      "Bash(~/.claude/skills:*)",
 
       // File System
       "Bash(bat:*)",
@@ -50,7 +48,6 @@
       // Git & Version Control
       "Bash(gh:*)",
       "Bash(git:*)",
-      "Bash(gita:*)",
 
       // Misc
       "Bash(amp:*)",

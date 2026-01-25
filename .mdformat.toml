@@ -1,9 +1,10 @@
 exclude = [
   ".serena/**",
   ".venv/**",
-  "node_modules/**",
   "plans/**",
   "plugins/**",
   "skills/.system/**",
+  "**/cache/**",
+  "**/node_modules/**",
 ]
 number = true
