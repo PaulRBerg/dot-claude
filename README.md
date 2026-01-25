@@ -6,7 +6,7 @@
 
 PRB's `.claude` directory.
 
-## Quick Start
+## 🚀 Quick Start
 
 Get up and running in 3 steps:
 
@@ -22,22 +22,9 @@ just install
 ccc                  # Make your first commit with the claude wrapper
 ```
 
-See [Installation](#installation) for detailed setup and [Configuration](#configuration) for customization.
+See [Installation](#-installation) for detailed setup and [Configuration](#-configuration) for customization.
 
-## Settings
-
-**Modular architecture**: All JSONC files in `settings/*` automatically merge into `settings.json` on commit via Husky +
-lint-staged.
-
-**Editing**: Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or
-run `just merge_settings` manually.
-
-## Context
-
-Global instructions live in `CLAUDE.md`. Sections cover communication style, code preferences, scope preservation, git
-safety, and shell escaping rules.
-
-## Installation
+## 📦 Installation
 
 ### Prerequisites
 
@@ -57,7 +44,7 @@ cd ~/.claude
 ### Install Dependencies
 
 ```bash
-just install  # Node deps, Python deps, and CLI dependencies
+just install  # Node deps, Python deps, and CLI utilities
 ```
 
 ### Verify Installation
@@ -65,57 +52,87 @@ just install  # Node deps, Python deps, and CLI dependencies
 ```bash
 just full-check      # Run all code checks
 just test-hooks      # Run hook tests
-claude                # Run Claude
+claude               # Run Claude
 ```
 
-## Configuration
+## ⚙️ Configuration
 
-**Flags**: Add flags at the end of prompts to trigger behaviors (`-s` for subagents, `-c` for auto-commit, `-t` for
-testing, `-d` for debug, `-n` to skip linting). Flags are composable: `implement API -s -t -c`.
+### Settings
 
-**Justfile**: Run common tasks like `just full-check` (all code checks), `just merge_settings` (merge JSONC files), or
-`just test` (run tests). See `justfile` for all commands.
+**Modular architecture**: All JSONC files in `settings/*` automatically merge into `settings.json` on commit via Husky +
+lint-staged.
 
-## Features
+**Editing**: Modify `settings/**/*.jsonc` files (never edit `settings.json` directly). Changes auto-merge on commit, or
+run `just merge-settings` manually.
+
+### Context
+
+Global instructions live in `CLAUDE.md`. Sections cover communication style, code preferences, scope preservation, git
+safety, and shell escaping rules.
+
+### Flags
+
+Add flags at the end of prompts to trigger behaviors (`-s` for subagents, `-c` for auto-commit, `-t` for testing, `-d`
+for debug, `-n` to skip linting). Flags are composable: `implement API -s -t -c`.
+
+### Justfile
+
+Run common tasks like `just full-check` (all code checks), `just merge-settings` (merge JSONC files), or `just test`
+(run tests). See `justfile` for all commands.
+
+## ✨ Features
 
 ### Commands
 
-Slash commands in `commands/*.md` handle GitHub workflows, releases, and task management. Examples: `/commit` (atomic
-commits), `/create-pr` (PRs with semantic analysis), `/create-issue` (GitHub issues), `/bump-release` (version bumping),
-`/md-docs:update-readme` (README sync), `/lint-context` (validate CLAUDE.md).
+Slash commands in `commands/*.md` handle GitHub workflows, releases, and task management:
+
+- `/create-pr` - Create PRs with semantic analysis
+- `/create-issue` - Create GitHub issues
+- `/update-pr` - Update existing PRs
+- `/create-discussion` - Start GitHub discussions
+- `/update-deps` - Update Node.js dependencies
+- `/md-docs:update-readme` - Sync README with codebase
+- `/md-docs:update-agents` - Update AI context files
 
 ### Skills
 
-Activating skills live in [`~/.agents/skills`](https://github.com/PaulRBerg/dot-agents). Examples: **typescript**,
+Activatable skills live in [`~/.agents/skills`](https://github.com/PaulRBerg/dot-agents). Examples: **typescript**,
 **gh-cli**, **code-review**.
 
 ### Agents
 
-Specialized subagents in `agents/`: code review, debugging, tool discovery, docs finding, AI docs fetching. Invoke via
-`-s` flag or Task tool.
+Specialized subagents in `agents/`: code review, debugging, tool discovery, docs finding. Invoke via `-s` flag or Task
+tool.
 
 ### MCP Servers
 
-Three servers extend Claude's capabilities (configured in `.mcp.json`):
+Two servers extend Claude's capabilities (configured in `.mcp.json`):
 
 - **context7** - Library documentation and code examples
-- **serena** - Semantic code navigation and editing
 - **sequential-thinking** - Chain-of-thought reasoning
 
 Enable/disable in `settings/permissions/mcp.jsonc`.
 
 ### Hooks
 
-Event-driven automation. See [hooks/README.md](hooks/README.md) for details.
+Event-driven automation for Claude Code events. See [hooks/README.md](hooks/README.md) for details.
 
-## Utilities
+Key hooks:
 
-> [!NOTE] Highly recommended: The `claude` wrapper runs Claude with `--dangerously-skip-permissions` and auto-loads MCP
-> servers from `.mcp.json`. See [this issue](https://github.com/anthropics/claude-code/issues/3321).
+- **ai-flags** - Parse flags from prompts to trigger behaviors
+- **ai-notify** - Desktop notifications for events (optional)
+- **log_prompts.py** - Log conversations to zk notebook (optional)
+
+## 🛠️ Utilities
+
+> [!NOTE]
+> The `claude` wrapper runs Claude with `--dangerously-skip-permissions` and auto-loads MCP servers from `.mcp.json`.
+> See [this issue](https://github.com/anthropics/claude-code/issues/3321).
 
 Optional shell utilities in `utils.sh`:
 
 - **`ccc [args]`** - Streamlined commits via `/commit` (defaults to `--all`)
+- **`cccp`** - Commit and push (for feature branches)
 - **`ccbump [args]`** - Quick release bumping via `/bump-release`
 - **`claude [args]`** - Enhanced CLI wrapper with MCP auto-loading
 
@@ -126,6 +143,6 @@ Source in your shell config:
 source ~/.claude/utils.sh
 ```
 
-## License
+## 📄 License
 
-This project is licensed under MIT.
+This project is licensed under MIT - see the [LICENSE.md](LICENSE.md) file for details.
