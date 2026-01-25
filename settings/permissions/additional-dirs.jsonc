@@ -4,8 +4,10 @@
   "permissions": {
     "additionalDirectories": [
       "/tmp",
+      "~/.agents",
       "~/.claude",
       "~/.claude-prompts",
+      "~/.codex",
       "~/.effect",
       "~/projects",
       "~/sablier"

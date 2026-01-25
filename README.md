@@ -86,9 +86,8 @@ commits), `/create-pr` (PRs with semantic analysis), `/create-issue` (GitHub iss
 
 ### Skills
 
-Auto-activating skills in `skills/`: **typescript**, **gh-cli**, **ui-ux-design**, **dry-refactor**.
-
-External plugins: **code-review**, **playwright-skill**.
+Activating skills live in [`~/.agents/skills`](https://github.com/PaulRBerg/dot-agents). Examples: **typescript**,
+**gh-cli**, **code-review**.
 
 ### Agents
 
