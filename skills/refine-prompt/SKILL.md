@@ -1,6 +1,7 @@
 ---
 name: refine-prompt
 argument-hint: '[prompt-request]'
+disable-model-invocation: true
 allowed-tools: Bash(mkdir:*), Read, Write, Glob
 description: Optimize prompts for LLMs and append to PROMPT.md
 model: opus

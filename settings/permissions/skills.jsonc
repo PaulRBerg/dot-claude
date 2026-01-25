@@ -7,7 +7,6 @@
       "Skill(bump-release)",
       "Skill(code-review)",
       "Skill(commit)",
-      "Skill(dry-refactor)",
       "Skill(fp:effect-ts)",
       "Skill(frontend:xstate-react)",
       "Skill(frontend:zustand)",

@@ -1,6 +1,7 @@
 ---
 name: node-deps
-user-invocable: false
+argument-hint: '[-r|--monorepo]'
+user-invocable: true
 description: This skill should be used when the user asks to "update dependencies", "update npm packages", "bump dependencies", "upgrade node packages", "check for outdated packages", "update package.json", or mentions dependency updates, npm/pnpm/yarn/bun package upgrades, or taze CLI usage.
 ---
 

@@ -283,100 +283,6 @@ project-name/
 └── README.md
 ```
 
-## Adapting for Specific Project Types
-
-### CLI Tools
-
-**Add dependencies:**
-
-```bash
-bun add commander chalk ora
-bun add -d @types/node
-```
-
-**Update `package.json`:**
-
-```json
-{
-  "bin": {
-    "cli-name": "./dist/cli.js"
-  }
-}
-```
-
-**Create `src/cli.ts`:**
-
-```typescript
-#!/usr/bin/env node
-
-import { Command } from "commander";
-import { VERSION } from "./index.js";
-
-const program = new Command();
-
-program
-  .name("cli-name")
-  .description("CLI description")
-  .version(VERSION);
-
-program.parse();
-```
-
-### Libraries
-
-**Update `package.json` for library distribution:**
-
-```json
-{
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": ["dist"]
-}
-```
-
-**Configure `tsconfig.json` for declaration generation:**
-
-```json
-{
-  "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true
-  }
-}
-```
-
-### Backend Services
-
-**Add server dependencies:**
-
-```bash
-bun add express
-bun add -d @types/express
-```
-
-**Create `src/server.ts`:**
-
-```typescript
-import express from "express";
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-```
-
 ## Resource Files
 
 Copy these pre-configured files from `resources/` directory to bootstrap new projects:
@@ -397,28 +303,6 @@ Copy these pre-configured files from `resources/` directory to bootstrap new pro
 **Usage:** Copy files to project root, then adapt `package.json` fields (name, description, author, version).
 
 **Important:** The `justfile` imports `@sablier/devkit/just/base.just` which provides common recipes. Only add project-specific recipes that aren't in the devkit.
-
-## Reference Documentation
-
-### For React/Next.js UI Projects
-
-Consult `references/next-ui.md` for guidance on:
-
-- Next.js project structure
-- React component patterns
-- UI-specific dependencies (Tailwind, Radix, etc.)
-- Server and client component architecture
-- API routes and middleware
-
-### For Monorepo Workspaces
-
-Consult `references/monorepo.md` for guidance on:
-
-- Workspace configuration with Bun
-- Shared package setup
-- Cross-package dependencies
-- Monorepo-specific scripts
-- Turborepo or Nx integration
 
 ## Best Practices
 
@@ -491,129 +375,6 @@ export { functionB } from "./moduleB.js";
 
 **Use barrel exports sparingly** - they can impact tree-shaking.
 
-## Troubleshooting
-
-### TypeScript Errors After Installation
-
-Run type checking explicitly:
-
-```bash
-bun run typecheck
-```
-
-Check that `@sablier/devkit` installed correctly:
-
-```bash
-ls node_modules/@sablier/devkit
-```
-
-### Biome Not Finding Configuration
-
-Verify `biome.jsonc` exists in project root:
-
-```bash
-ls -la biome.jsonc
-```
-
-Check that Biome can parse the configuration:
-
-```bash
-bunx biome check --config-path=biome.jsonc
-```
-
-### Just Recipes Failing
-
-Confirm Just is installed:
-
-```bash
-just --version
-```
-
-Verify `justfile` imports are resolvable:
-
-```bash
-just --list
-```
-
-Check for syntax errors in custom recipes:
-
-```bash
-just --dry-run recipe-name
-```
-
-### Git Hooks Not Running
-
-Reinstall Husky hooks:
-
-```bash
-rm -rf .husky
-bun run prepare
-```
-
-Verify hook scripts are executable:
-
-```bash
-chmod +x .husky/pre-commit
-```
-
-## Integration with Existing Tools
-
-### VSCode
-
-**Recommended extensions:**
-
-- Biome (biomejs.biome)
-- TypeScript and JavaScript Language Features (built-in)
-- Just (skellock.just)
-
-**Workspace settings (`.vscode/settings.json`):**
-
-```json
-{
-  "editor.defaultFormatter": "biomejs.biome",
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
-  }
-}
-```
-
-### GitHub Actions
-
-**Example CI workflow (`.github/workflows/ci.yml`):**
-
-```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: just full-check
-```
-
-### Pre-commit Framework
-
-Integrate with Python's pre-commit framework if needed:
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: biome
-        name: Biome Check
-        entry: just biome-check
-        language: system
-        pass_filenames: false
-```
-
 ## Next Steps After Setup
 
 1. **Write initial code** in `src/index.ts`
@@ -624,6 +385,16 @@ repos:
 6. **Configure CI/CD** using GitHub Actions or similar
 7. **Write README.md** with project-specific documentation
 8. **Add LICENSE** file appropriate for your use case
+
+## Reference Documentation
+
+For detailed guidance on specific topics, consult these reference files:
+
+- **`./references/adapting-project-types.md`** - CLI tools, libraries, and backend services setup
+- **`./references/troubleshooting.md`** - Common issues and solutions
+- **`./references/ide-ci-integration.md`** - VSCode, GitHub Actions, and pre-commit setup
+- **`./references/next-ui.md`** - React/Next.js UI projects
+- **`./references/monorepo.md`** - Workspace and monorepo configuration
 
 ## Related Skills
 

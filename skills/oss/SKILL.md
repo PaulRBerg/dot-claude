@@ -1,7 +1,7 @@
 ---
 name: oss
 argument-hint: <create-pr|update-pr|create-issue|create-discussion> [options]
-user-invocable: false
+user-invocable: true
 description: This skill should be used when the user asks to "create a pull request", "create PR", "open PR", "update a pull request", "update PR", "create an issue", "file an issue", "create a GitHub issue", "create a Claude Code issue", "report a bug in Claude Code", "create a Codex issue", "report a bug in Codex CLI", "create a discussion", "start a GitHub discussion", or mentions OSS contribution workflows.
 ---
 
@@ -211,7 +211,7 @@ Display results and ask user if they want to proceed with creation.
 
 Execute the gh command with generated title, body, and metadata. Pass multi-line bodies using HEREDOC syntax. Return the issue URL to the user.
 
-For the complete issue creation workflow with template examples, label strategies, and search patterns, refer to `./references/issues.md`.
+For the complete issue creation workflow with template examples, label strategies, and search patterns, refer to `./references/create-issue.md`.
 
 ## Claude Code Issues
 
@@ -279,7 +279,7 @@ EOF
 
 Return the issue URL to the user.
 
-For the complete Claude Code issue workflow with template examples and environment gathering scripts, refer to `./references/issues-claude-code.md`.
+For the complete Claude Code issue workflow with template examples and environment gathering scripts, refer to `./references/issue-claude-code.md`.
 
 ## Codex CLI Issues
 
@@ -337,7 +337,7 @@ EOF
 
 Return the issue URL to the user.
 
-For the complete Codex CLI issue workflow with template examples and environment gathering scripts, refer to `./references/issues-codex-cli.md`.
+For the complete Codex CLI issue workflow with template examples and environment gathering scripts, refer to `./references/issue-codex-cli.md`.
 
 ## Discussions
 
@@ -435,7 +435,7 @@ gh api graphql -f query='
 
 Return the discussion URL to the user.
 
-For the complete discussion workflow with GraphQL examples, category selection logic, and search patterns, refer to `./references/discussions.md`.
+For the complete discussion workflow with GraphQL examples, category selection logic, and search patterns, refer to `./references/create-discussion.md`.
 
 ## Common Patterns
 
