@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Sync global Claude Code settings at session end.
 
-Combines skill, command, and plugin synchronization into a single hook
+Combines skill and plugin synchronization into a single hook
 that runs at session end:
-- Skills: Discovers from ~/.claude/skills (global only)
-- Commands: Discovers from ~/.claude/commands (global only)
+- Skills: Discovers from ~/.claude/skills and ~/.claude/commands (global only)
 - Plugins: Merges enabledPlugins from settings.json
 
 Local project settings (./.claude/) are handled by sync_local_settings.py.
@@ -20,7 +19,6 @@ from pathlib import Path
 
 CLAUDE_DIR = Path.home() / ".claude"
 SKILLS_SETTINGS = CLAUDE_DIR / "settings" / "permissions" / "skills.jsonc"
-COMMANDS_SETTINGS = CLAUDE_DIR / "settings" / "permissions" / "commands.jsonc"
 PLUGINS_SETTINGS = CLAUDE_DIR / "settings" / "plugins.jsonc"
 ROOT_SETTINGS = CLAUDE_DIR / "settings.json"
 MERGE_SCRIPT = CLAUDE_DIR / "helpers" / "merge_settings.sh"
@@ -142,12 +140,12 @@ def build_skills_jsonc(skills: list[str]) -> str:
     json_str = json.dumps(config, indent=2)
     # Insert comment after opening brace (matching original format)
     lines = json_str.split("\n")
-    lines.insert(1, "  // Claude Skills")
+    lines.insert(1, "  // Skills and commands")
     return "\n".join(lines)
 
 
 def sync_skills() -> bool:
-    """Sync global skills to skills.jsonc.
+    """Sync global skills and commands to skills.jsonc.
 
     Returns:
         True if sync succeeded, False otherwise
@@ -155,8 +153,10 @@ def sync_skills() -> bool:
     if not SKILLS_SETTINGS.exists():
         return False
 
-    # 1. Discover global skills (local handled by sync_local_settings.py)
+    # 1. Discover global skills and commands (local handled by sync_local_settings.py)
     global_skills = discover_skills(CLAUDE_DIR / "skills")
+    commands_dir = CLAUDE_DIR / "commands"
+    global_commands = discover_commands(commands_dir) + discover_command_groups(commands_dir)
 
     # 2. Extract plugin skills from existing config
     try:
@@ -165,8 +165,8 @@ def sync_skills() -> bool:
     except (FileNotFoundError, json.JSONDecodeError):
         plugin_skills = []
 
-    # 3. Merge, dedupe, sort
-    all_skills = merge_and_dedupe_skills(global_skills, plugin_skills)
+    # 3. Merge skills and commands, dedupe, sort
+    all_skills = merge_and_dedupe_skills(global_skills + global_commands, plugin_skills)
 
     # 4. Write skills.jsonc
     try:
@@ -188,19 +188,16 @@ def discover_commands(base_path: Path) -> list[str]:
         base_path: Directory to search (e.g., ~/.claude/commands)
 
     Returns:
-        List of command names in SlashCommand(/name:*) format
+        List of command names in Skill(name) format
 
     Note:
         Finds .md files directly in the commands directory.
+        Commands are treated as skills for permission purposes.
     """
     if not base_path.exists():
         return []
 
-    commands = []
-    for cmd_file in base_path.glob("*.md"):
-        cmd_name = cmd_file.stem  # filename without .md
-        commands.append(f"SlashCommand(/{cmd_name}:*)")
-    return commands
+    return [f"Skill({cmd_file.stem})" for cmd_file in base_path.glob("*.md")]
 
 
 def discover_command_groups(base_path: Path) -> list[str]:
@@ -210,109 +207,16 @@ def discover_command_groups(base_path: Path) -> list[str]:
         base_path: Directory to search (e.g., ~/.claude/commands)
 
     Returns:
-        List of group names in SlashCommand(/group:*) format
+        List of group names in Skill(group) format
     """
     if not base_path.exists():
         return []
 
     return [
-        f"SlashCommand(/{subdir.name}:*)"
+        f"Skill({subdir.name})"
         for subdir in base_path.iterdir()
         if subdir.is_dir() and not subdir.name.startswith(".") and any(subdir.glob("*.md"))
     ]
-
-
-def extract_plugin_commands(commands_config: dict) -> list[str]:
-    """Extract plugin commands (those with : in path before :*) from config.
-
-    Args:
-        commands_config: Parsed commands.jsonc content
-
-    Returns:
-        List of plugin command names (path contains ':')
-
-    Note:
-        Plugin commands have format SlashCommand(/plugin:command:*)
-        Local commands have format SlashCommand(/command:*)
-    """
-    allow = commands_config.get("permissions", {}).get("allow", [])
-    plugin_commands = []
-    for cmd in allow:
-        # Extract path between / and :*
-        match = re.match(r"SlashCommand\(/([^)]+):\*\)", cmd)
-        if match and ":" in match.group(1):  # has : in path = plugin
-            plugin_commands.append(cmd)
-    return plugin_commands
-
-
-def merge_and_dedupe_commands(
-    global_commands: list[str],
-    plugin_commands: list[str],
-) -> list[str]:
-    """Merge command lists, deduplicate, and sort.
-
-    Args:
-        global_commands: Commands discovered from global ~/.claude/commands
-        plugin_commands: Commands extracted from existing config
-
-    Returns:
-        Sorted, deduplicated list of all commands
-    """
-    all_commands = set(global_commands + plugin_commands)
-    return sorted(all_commands)
-
-
-def build_commands_jsonc(commands: list[str]) -> str:
-    """Generate commands.jsonc content with comment header.
-
-    Args:
-        commands: List of command names to include
-
-    Returns:
-        JSONC string with schema and comment
-    """
-    config = {
-        "$schema": "https://json.schemastore.org/claude-code-settings.json",
-        "permissions": {"allow": commands},
-    }
-    json_str = json.dumps(config, indent=2)
-    # Insert comment after opening brace (matching original format)
-    lines = json_str.split("\n")
-    lines.insert(1, "  // Slash commands")
-    return "\n".join(lines)
-
-
-def sync_commands() -> bool:
-    """Sync global commands to commands.jsonc.
-
-    Returns:
-        True if sync succeeded, False otherwise
-    """
-    if not COMMANDS_SETTINGS.exists():
-        return False
-
-    # 1. Discover global commands and groups (local handled by sync_local_settings.py)
-    commands_dir = CLAUDE_DIR / "commands"
-    global_commands = discover_commands(commands_dir) + discover_command_groups(commands_dir)
-
-    # 2. Extract plugin commands from existing config
-    try:
-        current_config = read_jsonc(COMMANDS_SETTINGS)
-        plugin_commands = extract_plugin_commands(current_config)
-    except (FileNotFoundError, json.JSONDecodeError):
-        plugin_commands = []
-
-    # 3. Merge, dedupe, sort
-    all_commands = merge_and_dedupe_commands(global_commands, plugin_commands)
-
-    # 4. Write commands.jsonc
-    try:
-        content = build_commands_jsonc(all_commands)
-        COMMANDS_SETTINGS.write_text(content + "\n")
-        format_with_biome(COMMANDS_SETTINGS)
-        return True
-    except OSError:
-        return False
 
 
 # === PLUGIN SYNCHRONIZATION ===
@@ -464,11 +368,10 @@ def main() -> None:
     """Main hook entry point."""
     from concurrent.futures import ThreadPoolExecutor
 
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         # Run sync operations in parallel
         futures = [
             executor.submit(sync_skills),
-            executor.submit(sync_commands),
             executor.submit(sync_plugins),
         ]
         # Wait for all to complete

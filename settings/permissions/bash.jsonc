@@ -26,9 +26,9 @@
       "Bash(xargs:*)",
 
       // Custom Scripts
-      "Bash(~/.claude/helpers:*)",
-      "Bash(~/.claude/hooks:*)",
-      "Bash(~/.claude/skills:*)",
+      "Bash(~/.claude/helpers/*)",
+      "Bash(~/.claude/hooks/*)",
+      "Bash(~/.claude/skills/*)",
 
       // File System
       "Bash(bat:*)",

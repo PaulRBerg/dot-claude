@@ -157,7 +157,7 @@ class TestBuildSkillsJsonc:
         """Test output includes schema and comment."""
         skills = ["Skill(test)"]
         result = sync_global_settings.build_skills_jsonc(skills)
-        assert "// Claude Skills" in result
+        assert "// Skills and commands" in result
         assert "$schema" in result
         assert "https://json.schemastore.org/claude-code-settings.json" in result
 
@@ -198,7 +198,7 @@ class TestSyncSkills:
         mock_settings.write_text.assert_called_once()
 
 
-class TestDiscoverLocalCommands:
+class TestDiscoverCommands:
     """Test discover_commands() function."""
 
     @patch("pathlib.Path.glob")
@@ -214,8 +214,8 @@ class TestDiscoverLocalCommands:
 
         result = sync_global_settings.discover_commands(Path("/fake/commands"))
 
-        assert "SlashCommand(/commit:*)" in result
-        assert "SlashCommand(/create-pr:*)" in result
+        assert "Skill(commit)" in result
+        assert "Skill(create-pr)" in result
 
     @patch("pathlib.Path.exists")
     def test_returns_empty_for_missing_directory(self, mock_exists):
@@ -223,111 +223,6 @@ class TestDiscoverLocalCommands:
         mock_exists.return_value = False
         result = sync_global_settings.discover_commands(Path("/nonexistent"))
         assert result == []
-
-
-class TestExtractPluginCommands:
-    """Test extract_plugin_commands() function."""
-
-    def test_extracts_commands_with_colon_in_path(self):
-        """Test extracting plugin commands (those with ':' in path before :*)."""
-        config = {
-            "permissions": {
-                "allow": [
-                    "SlashCommand(/commit:*)",
-                    "SlashCommand(/code-review:code-review:*)",
-                    "SlashCommand(/sablier:spec-screenshot:*)",
-                ]
-            }
-        }
-        result = sync_global_settings.extract_plugin_commands(config)
-        assert "SlashCommand(/code-review:code-review:*)" in result
-        assert "SlashCommand(/sablier:spec-screenshot:*)" in result
-        assert "SlashCommand(/commit:*)" not in result
-
-    def test_handles_empty_config(self):
-        """Test handling empty configuration."""
-        result = sync_global_settings.extract_plugin_commands({})
-        assert result == []
-
-    def test_handles_missing_permissions(self):
-        """Test handling config without permissions key."""
-        result = sync_global_settings.extract_plugin_commands({"other": "key"})
-        assert result == []
-
-
-class TestMergeAndDedupeCommands:
-    """Test merge_and_dedupe_commands() function."""
-
-    def test_merges_and_sorts(self):
-        """Test merging and sorting commands."""
-        local = ["SlashCommand(/z-cmd:*)", "SlashCommand(/a-cmd:*)"]
-        plugin = ["SlashCommand(/m-cmd:*)"]
-        result = sync_global_settings.merge_and_dedupe_commands(local, plugin)
-        assert result == [
-            "SlashCommand(/a-cmd:*)",
-            "SlashCommand(/m-cmd:*)",
-            "SlashCommand(/z-cmd:*)",
-        ]
-
-    def test_deduplicates(self):
-        """Test removing duplicates."""
-        local = ["SlashCommand(/shared:*)", "SlashCommand(/local:*)"]
-        plugin = ["SlashCommand(/shared:*)", "SlashCommand(/plugin:cmd:*)"]
-        result = sync_global_settings.merge_and_dedupe_commands(local, plugin)
-        assert result.count("SlashCommand(/shared:*)") == 1
-
-    def test_handles_empty_lists(self):
-        """Test handling empty input lists."""
-        result = sync_global_settings.merge_and_dedupe_commands([], [])
-        assert result == []
-
-
-class TestBuildCommandsJsonc:
-    """Test build_commands_jsonc() function."""
-
-    def test_includes_schema_and_comment(self):
-        """Test output includes schema and comment."""
-        commands = ["SlashCommand(/test:*)"]
-        result = sync_global_settings.build_commands_jsonc(commands)
-        assert "// Slash commands" in result
-        assert "$schema" in result
-        assert "https://json.schemastore.org/claude-code-settings.json" in result
-
-    def test_includes_all_commands(self):
-        """Test all commands are included in output."""
-        commands = ["SlashCommand(/a:*)", "SlashCommand(/b:*)"]
-        result = sync_global_settings.build_commands_jsonc(commands)
-        assert '"SlashCommand(/a:*)"' in result
-        assert '"SlashCommand(/b:*)"' in result
-
-
-class TestSyncCommands:
-    """Test sync_commands() function."""
-
-    @patch.object(sync_global_settings, "COMMANDS_SETTINGS")
-    def test_returns_false_when_settings_missing(self, mock_path):
-        """Test returning False when commands.jsonc doesn't exist."""
-        mock_path.exists.return_value = False
-        result = sync_global_settings.sync_commands()
-        assert result is False
-
-    @patch.object(sync_global_settings, "COMMANDS_SETTINGS")
-    @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/fake"))
-    @patch("sync_global_settings.discover_commands")
-    @patch("sync_global_settings.read_jsonc")
-    @patch("pathlib.Path.cwd")
-    def test_syncs_commands_successfully(self, mock_cwd, mock_read, mock_discover, mock_settings):
-        """Test successful command synchronization."""
-        mock_settings.exists.return_value = True
-        mock_settings.write_text = MagicMock()
-        mock_discover.return_value = ["SlashCommand(/local:*)"]
-        mock_read.return_value = {"permissions": {"allow": ["SlashCommand(/plugin:remote:*)"]}}
-        mock_cwd.return_value = Path("/project")
-
-        result = sync_global_settings.sync_commands()
-
-        assert result is True
-        mock_settings.write_text.assert_called_once()
 
 
 class TestReadPluginsFromRoot:
@@ -450,12 +345,10 @@ class TestMain:
 
     @patch("sync_global_settings.run_merge_settings")
     @patch("sync_global_settings.sync_plugins")
-    @patch("sync_global_settings.sync_commands")
     @patch("sync_global_settings.sync_skills")
-    def test_runs_all_sync_operations(self, mock_skills, mock_commands, mock_plugins, mock_merge):
+    def test_runs_all_sync_operations(self, mock_skills, mock_plugins, mock_merge):
         """Test that main runs all sync operations."""
         mock_skills.return_value = True
-        mock_commands.return_value = True
         mock_plugins.return_value = True
         mock_merge.return_value = True
 
@@ -464,20 +357,15 @@ class TestMain:
 
         assert exc_info.value.code == 0
         mock_skills.assert_called_once()
-        mock_commands.assert_called_once()
         mock_plugins.assert_called_once()
         mock_merge.assert_called_once()
 
     @patch("sync_global_settings.run_merge_settings")
     @patch("sync_global_settings.sync_plugins")
-    @patch("sync_global_settings.sync_commands")
     @patch("sync_global_settings.sync_skills")
-    def test_continues_on_skill_sync_failure(
-        self, mock_skills, mock_commands, mock_plugins, mock_merge
-    ):
+    def test_continues_on_skill_sync_failure(self, mock_skills, mock_plugins, mock_merge):
         """Test that main continues even if skill sync fails."""
         mock_skills.return_value = False
-        mock_commands.return_value = True
         mock_plugins.return_value = True
         mock_merge.return_value = True
 
@@ -485,18 +373,15 @@ class TestMain:
             sync_global_settings.main()
 
         assert exc_info.value.code == 0
-        mock_commands.assert_called_once()
         mock_plugins.assert_called_once()
         mock_merge.assert_called_once()
 
     @patch("sync_global_settings.run_merge_settings")
     @patch("sync_global_settings.sync_plugins")
-    @patch("sync_global_settings.sync_commands")
     @patch("sync_global_settings.sync_skills")
-    def test_always_exits_zero(self, mock_skills, mock_commands, mock_plugins, mock_merge):
+    def test_always_exits_zero(self, mock_skills, mock_plugins, mock_merge):
         """Test graceful exit even when all operations fail."""
         mock_skills.return_value = False
-        mock_commands.return_value = False
         mock_plugins.return_value = False
         mock_merge.return_value = False
 
