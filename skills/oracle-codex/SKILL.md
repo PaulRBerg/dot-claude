@@ -1,6 +1,5 @@
 ---
 name: oracle-codex
-agent: Plan
 context: fork
 user-invocable: false
 description: This skill should be used when the user asks to "use Codex", "ask Codex", "consult Codex", "Codex review", "use GPT for planning", "ask GPT to review", "get GPT's opinion", "what does GPT think", "second opinion on code", "consult the oracle", "ask the oracle", or mentions using an AI oracle for planning or code review. NOT for implementation tasks.
@@ -24,13 +23,12 @@ If the script exits non-zero, display the error message and stop. Do not proceed
 
 ## Configuration Defaults
 
-| Setting   | Default                       | User Override                                   |
-| --------- | ----------------------------- | ----------------------------------------------- |
-| Model     | `gpt-5.2-codex`               | "use model X" or "with gpt-5.2-codex"           |
-| Reasoning | Dynamic (based on complexity) | "use medium reasoning" or "with xhigh effort"   |
-| Sandbox   | `read-only`                   | Not overridable (safety constraint)             |
-| Timeout   | 5 minutes minimum             | Estimate based on task complexity               |
-| Profile   | `quiet` (notify=[])           | User opts into another profile or notifications |
+| Setting   | Default                       | User Override                                 |
+| --------- | ----------------------------- | --------------------------------------------- |
+| Model     | `gpt-5.2-codex`               | "use model X" or "with gpt-5.2-codex"         |
+| Reasoning | Dynamic (based on complexity) | "use medium reasoning" or "with xhigh effort" |
+| Sandbox   | `read-only`                   | Not overridable (safety constraint)           |
+| Timeout   | 5 minutes minimum             | Estimate based on task complexity             |
 
 ### Timeout Guidelines
 
@@ -72,6 +70,27 @@ Run the check script. On failure, report the installation instructions and abort
 
 - **Planning mode**: User wants architecture, implementation approach, or design decisions
 - **Review mode**: User wants code analysis, bug detection, or improvement suggestions
+  - **Preferred**: Use `codex review` subcommand (simpler, see below)
+
+### 2b. Quick Review with `codex review`
+
+For code review requests, prefer the dedicated `codex review` subcommand:
+
+```bash
+# Review uncommitted changes
+codex review --uncommitted
+
+# Review changes against a base branch
+codex review --base main
+
+# Review a specific commit
+codex review --commit <SHA>
+
+# With custom focus instructions
+codex review --base main "Focus on security and error handling"
+```
+
+This is simpler than `codex exec` for review workflows. Fall back to `codex exec` when more control is needed (custom prompts, specific reasoning effort, output redirection).
 
 ### 3. Construct Prompt
 
@@ -124,7 +143,7 @@ Redirect output to a temp file to avoid context bloat and race conditions.
 CODEX_OUTPUT="/tmp/codex-${RANDOM}${RANDOM}.txt"
 ```
 
-**Step 2**: Execute Codex and redirect output to the temp file:
+**Step 2**: Execute Codex with output to the temp file:
 
 ```bash
 # Select EFFORT based on complexity assessment (low/medium/high/xhigh)
@@ -132,10 +151,10 @@ CODEX_OUTPUT="/tmp/codex-${RANDOM}${RANDOM}.txt"
 codex exec \
   -m "${MODEL:-gpt-5.2-codex}" \
   -c "model_reasoning_effort=${EFFORT}" \
-  --profile "${CODEX_PROFILE:-quiet}" \
   -s read-only \
   --skip-git-repo-check \
-  2>/dev/null <<'EOF' > "$CODEX_OUTPUT"
+  -o "$CODEX_OUTPUT" \
+  2>/dev/null <<'EOF'
 [constructed prompt]
 EOF
 ```
@@ -144,10 +163,11 @@ EOF
 
 - `-m`: Model selection
 - `-c model_reasoning_effort=`: Reasoning depth (low/medium/high/xhigh) — select based on Reasoning Effort Guidelines
-- `--profile quiet`: Default for this skill (suppresses notify hooks); change only if the user explicitly wants another profile/notifications
 - `-s read-only`: Prevents any file modifications (non-negotiable)
-- `--skip-git-repo-check`: Works outside git repositories
-- `2>/dev/null`: Suppresses thinking tokens from output
+- `--skip-git-repo-check`: Works outside git repositories (exec-specific)
+- `-o <file>`: Write output to file (cleaner than shell redirection)
+- `--search`: Enable web search for queries needing current information (optional)
+- `2>/dev/null`: Suppresses stderr (progress/thinking output)
 
 **Bash tool timeout**: Estimate based on task complexity (see Timeout Guidelines above). Never use the default 2-minute timeout for Codex operations.
 
@@ -196,12 +216,21 @@ After presenting Codex output:
 
 ## Error Handling
 
-| Error               | Response                                              |
-| ------------------- | ----------------------------------------------------- |
-| Codex not installed | Show installation instructions from check script      |
-| Codex timeout       | Inform user, suggest simpler query or lower reasoning |
-| API rate limit      | Wait and retry, or inform user of limit               |
-| Empty response      | Retry once, then report failure                       |
+The check script returns specific exit codes:
+
+| Exit Code | Error                   | Response                                         |
+| --------- | ----------------------- | ------------------------------------------------ |
+| 1         | Codex not installed     | Show installation instructions from check script |
+| 2         | Codex not responding    | Suggest running `codex --version` manually       |
+| 3         | Codex not authenticated | Show login instructions from check script        |
+
+Runtime errors:
+
+| Error          | Response                                              |
+| -------------- | ----------------------------------------------------- |
+| Codex timeout  | Inform user, suggest simpler query or lower reasoning |
+| API rate limit | Wait and retry, or inform user of limit               |
+| Empty response | Retry once, then report failure                       |
 
 ## Usage Examples
 
