@@ -24,6 +24,7 @@ todos/
 
 # Files
 *.log*
+.coverage
 .claude.json
 .credentials.json
 .update.lock
