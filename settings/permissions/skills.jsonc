@@ -40,6 +40,7 @@
       "Skill(sablier:create-issue)",
       "Skill(sablier:design)",
       "Skill(sablier:sablier)",
+      "Skill(template-ts-node)",
       "Skill(testing:vitest-v4)",
       "Skill(update-deps)",
       "Skill(update-pr)",
