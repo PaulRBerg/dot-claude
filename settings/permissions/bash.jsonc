@@ -55,6 +55,7 @@
       "Bash(jq:*)",
       "Bash(just:*)",
       "Bash(lsof:*)",
+      "Bash(test:*)",
       "Bash(zk:*)",
       // Node.js
       "Bash(bun:*)",
