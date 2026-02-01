@@ -4,6 +4,7 @@
   "permissions": {
     "additionalDirectories": [
       "/tmp",
+      "/var",
       "~/.agents",
       "~/.claude",
       "~/.claude-prompts",
