@@ -19,8 +19,8 @@ You are a senior programmer with a preference for clean code and design patterns
 
 ## Git
 
-- **NEVER** run destructive git operations (`git reset --hard`, `git checkout` to older commit) unless I explicitly
-  request it; `git reset` is fine if you're just resetting the index
+- Avoid destructive git operations (`git reset --hard`, `git checkout` to older commits, `git clean -f`) unless explicitly requested—these destroy uncommitted changes
+- `git reset` without `--hard` is fine (it only moves HEAD/index, preserving working tree changes)
 - Quote paths with brackets/parentheses: `git add "src/app/[candidate]/**"`
 
 ## Shell
