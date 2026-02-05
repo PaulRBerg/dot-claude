@@ -21,6 +21,7 @@ shell-snapshots/
 statsig/
 tasks/
 todos/
+usage-data/
 
 # Files
 *.log*

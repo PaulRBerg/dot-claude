@@ -3,6 +3,7 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      // My skills
       "Skill(biome-js)",
       "Skill(bump-release)",
       "Skill(code-review)",
@@ -12,9 +13,6 @@
       "Skill(create-issue)",
       "Skill(create-pr)",
       "Skill(delayed-command)",
-      "Skill(fp:effect-ts)",
-      "Skill(frontend:xstate-react)",
-      "Skill(frontend:zustand)",
       "Skill(gh-cli)",
       "Skill(just-cli)",
       "Skill(ls-lint)",
@@ -31,6 +29,10 @@
       "Skill(oss:create-biome-issue)",
       "Skill(oss:create-cc-issue)",
       "Skill(oss:create-codex-issue)",
+      "Skill(sentry)",
+      "Skill(update-deps)",
+      "Skill(update-pr)",
+      // Official Claude skills
       "Skill(plugin-dev:agent-development)",
       "Skill(plugin-dev:command-development)",
       "Skill(plugin-dev:create-plugin)",
@@ -39,19 +41,9 @@
       "Skill(plugin-dev:plugin-settings)",
       "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
-      "Skill(refine-prompt)",
-      "Skill(sablier:create-issue)",
-      "Skill(sablier:design)",
-      "Skill(sablier:sablier)",
-      "Skill(sentry)",
-      "Skill(testing:vitest-v4)",
-      "Skill(update-deps)",
-      "Skill(update-pr)",
+      // Vercel
       "Skill(vercel-composition-patterns)",
-      "Skill(vercel-react-best-practices)",
-      "Skill(web3:etherscan-api)",
-      "Skill(web3:etherscan-verification)",
-      "Skill(web3:evm-deployment)"
+      "Skill(vercel-react-best-practices)"
     ]
   }
 }
