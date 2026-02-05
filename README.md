@@ -96,8 +96,11 @@ Slash commands in `commands/*.md` handle GitHub workflows, releases, and task ma
 
 ### Skills
 
-Activatable skills live in [`~/.agents/skills`](https://github.com/PaulRBerg/dot-agents). Examples: **typescript**,
-**gh-cli**, **code-review**.
+Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-agents) and installed via Vercel's
+[skills CLI](https://github.com/vercel-labs/skills). This repo only keeps symlinks to `~/.agents/skills/`. See dot-agents
+for installation guidance.
+
+Examples: **biome-js**, **gh-cli**, **code-review**, **vercel-react-best-practices**.
 
 ### Agents
 
