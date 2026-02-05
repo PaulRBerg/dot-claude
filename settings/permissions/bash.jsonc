@@ -6,6 +6,7 @@
       // AI
       "Bash(codex:*)",
       "Bash(gemini:*)",
+      "Bash(openclaw:*)",
       // Code Quality & Formatting
       "Bash(biome:*)",
       "Bash(mdformat:*)",
