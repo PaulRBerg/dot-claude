@@ -12,6 +12,7 @@
       "Skill(create-issue)",
       "Skill(create-pr)",
       "Skill(delayed-command)",
+      "Skill(effect-ts)",
       "Skill(gh-cli)",
       "Skill(just-cli)",
       "Skill(ls-lint)",
@@ -37,10 +38,14 @@
       "Skill(plugin-dev:plugin-structure)",
       "Skill(plugin-dev:skill-development)",
       "Skill(refine-prompt)",
+      "Skill(sablier-design)",
+      "Skill(sablier-protocol)",
+      "Skill(sablier-writing)",
       "Skill(update-deps)",
       "Skill(update-pr)",
       "Skill(vercel-composition-patterns)",
-      "Skill(vercel-react-best-practices)"
+      "Skill(vercel-react-best-practices)",
+      "Skill(vitest)"
     ]
   }
 }
