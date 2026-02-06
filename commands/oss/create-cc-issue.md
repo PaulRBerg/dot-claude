@@ -8,8 +8,8 @@ model: opus
 
 - GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Claude Code version: !`claude --version 2>/dev/null || echo "unknown"`
-- OS: !`~/.agents/helpers/get_macos_version.sh`
-- Terminal: !`echo "${TERM_PROGRAM:-${TERMINAL_EMULATOR:-unknown}}"`
+- OS: !`~/.agents/skills/oss/scripts/get-macos-version.sh`
+- Terminal: !`echo "$TERM_PROGRAM"`
 - Arguments: $ARGUMENTS
 
 ## Task
