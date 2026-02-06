@@ -1,48 +1,50 @@
-# Claude Directories
-.claude/
-.serena/
-backups/
-cache/
-debug/
-downloads/
-file-history/
-ide/
-image-cache/
-logs/
-node_modules/
-paste-cache/
-plans
-plans/
-plugins/
-projects/
-session-env/
-skills/.system/
-shell-snapshots/
-statsig/
-tasks/
-teams/
-telemetry/
-todos/
-usage-data/
+# Ignore everything by default
+**
 
-# Files
+# Top-level files
+!.gitignore
+!.lintstagedrc.js
+!.mcp.json
+!.mdformat.toml
+!.prettierignore
+!.prettierrc.yml
+!CLAUDE.md
+!LICENSE.md
+!README.md
+!bun.lock
+!justfile
+!package.json
+!pyproject.toml
+!pyrightconfig.json
+!ruff.toml
+!utils.sh
+!uv.lock
+
+# Directories
+!.github/
+!.github/**
+!.husky/
+!.husky/**
+!.vscode/
+!.vscode/**
+!agents/
+!agents/**
+!commands/
+!commands/**
+!helpers/
+!helpers/**
+!hooks/
+!hooks/**
+!settings/
+!settings/**
+!skills/
+!skills/**
+
+# Re-ignore generated files inside allowed directories
+.DS_Store
+__pycache__/
+*.pyc
 *.log*
 .coverage
-.claude.json
-.credentials.json
-.update.lock
-history.jsonl
-settings.json
-stats-cache.json
-
-# Markdown
-PROMPT.md
-SPEC.md
-TODO.md
-
-# Python Directories
-__pycache__/
-.coverage/
-.pytest_cache/
-.ruff_cache/
-.venv/
+node_modules/
+skills/.system/
