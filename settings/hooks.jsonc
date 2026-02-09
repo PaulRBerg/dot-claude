@@ -44,6 +44,16 @@
     //     ]
     //   }
     // ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/SessionStart/load-envrc.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "SessionEnd": [
       {
         "hooks": [
