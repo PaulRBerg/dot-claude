@@ -5,7 +5,6 @@
   "alwaysThinkingEnabled": true,
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
-  "model": "opus",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },

@@ -1,7 +1,6 @@
 ---
 argument-hint: '[repository] [description] [--check]'
 description: Create a GitHub issue with automatic labeling
-model: opus
 ---
 
 ## Context

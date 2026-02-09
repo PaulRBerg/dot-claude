@@ -1,7 +1,6 @@
 ---
 argument-hint: '[repository] [description] [--check]'
 description: Create a GitHub discussion with automatic category selection
-model: opus
 ---
 
 ## Context
