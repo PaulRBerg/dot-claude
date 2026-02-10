@@ -6,7 +6,9 @@
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    // Activate MCP tool search when tool definitions exceed 5% of context (default: 10%)
+    "ENABLE_TOOL_SEARCH": "auto:5"
   },
   "statusLine": {
     "command": "ccstatusline",
