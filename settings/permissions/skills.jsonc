@@ -15,6 +15,7 @@
       "Skill(create-issue)",
       "Skill(create-pr)",
       "Skill(effect-ts)",
+      "Skill(etherscan-api)",
       "Skill(find-skills)",
       "Skill(ls-lint)",
       "Skill(md-docs)",
@@ -47,7 +48,9 @@
       "Skill(vercel-composition-patterns)",
       "Skill(vercel-react-best-practices)",
       "Skill(vitest)",
-      "Skill(web-design-guidelines)"
+      "Skill(web-design-guidelines)",
+      "Skill(web3-foundry)",
+      "Skill(xstate-react)"
     ]
   }
 }
