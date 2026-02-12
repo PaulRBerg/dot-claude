@@ -4,6 +4,7 @@
   "permissions": {
     "allow": [
       "Skill(biome-js)",
+      "Skill(bump-deps)",
       "Skill(bump-release)",
       "Skill(cli-gh)",
       "Skill(cli-just)",
@@ -23,7 +24,6 @@
       "Skill(md-docs:update-agents)",
       "Skill(md-docs:update-all)",
       "Skill(md-docs:update-readme)",
-      "Skill(node-deps)",
       "Skill(openclaw)",
       "Skill(oracle-codex)",
       "Skill(oss)",
@@ -43,7 +43,6 @@
       "Skill(sablier-design)",
       "Skill(sablier-protocol)",
       "Skill(sablier-writing)",
-      "Skill(update-deps)",
       "Skill(update-pr)",
       "Skill(vercel-composition-patterns)",
       "Skill(vercel-react-best-practices)",
