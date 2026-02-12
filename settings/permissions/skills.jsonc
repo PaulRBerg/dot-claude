@@ -24,7 +24,6 @@
       "Skill(md-docs:update-agents)",
       "Skill(md-docs:update-all)",
       "Skill(md-docs:update-readme)",
-      "Skill(openclaw)",
       "Skill(oracle-codex)",
       "Skill(oss)",
       "Skill(oss:create-biome-discussion)",
@@ -41,6 +40,7 @@
       "Skill(plugin-dev:skill-development)",
       "Skill(refine-prompt)",
       "Skill(sablier-design)",
+      "Skill(sablier-icon)",
       "Skill(sablier-protocol)",
       "Skill(sablier-writing)",
       "Skill(update-pr)",
@@ -49,6 +49,7 @@
       "Skill(vitest)",
       "Skill(web-design-guidelines)",
       "Skill(web3-foundry)",
+      "Skill(work)",
       "Skill(xstate-react)"
     ]
   }
