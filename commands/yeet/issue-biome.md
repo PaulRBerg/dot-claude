@@ -12,4 +12,4 @@ model: opus
 
 ## Task
 
-Activate the `~/.claude/skills/oss` skill to create an issue in `biomejs/biome` Github repository. Follow the workflow in `~/.claude/skills/oss/references/issue-biome.md`.
+Activate the `~/.claude/skills/yeet` skill to create an issue in `biomejs/biome` Github repository. Follow the workflow in `~/.claude/skills/yeet/references/issue-biome.md`.

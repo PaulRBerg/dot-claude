@@ -11,4 +11,4 @@ model: opus
 
 ## Task
 
-Activate the `~/.claude/skills/oss` skill to create a discussion in `biomejs/biome` Github repository. Follow the workflow in `~/.claude/skills/oss/references/discussions.md`.
+Activate the `~/.claude/skills/yeet` skill to create a discussion in `biomejs/biome` Github repository. Follow the workflow in `~/.claude/skills/yeet/references/create-discussion.md`.

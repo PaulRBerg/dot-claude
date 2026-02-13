@@ -6,15 +6,13 @@
       "Skill(biome-js)",
       "Skill(bump-deps)",
       "Skill(bump-release)",
+      "Skill(cli-cast)",
       "Skill(cli-gh)",
       "Skill(cli-just)",
       "Skill(code-polish)",
       "Skill(code-review)",
       "Skill(code-simplify)",
       "Skill(commit)",
-      "Skill(create-discussion)",
-      "Skill(create-issue)",
-      "Skill(create-pr)",
       "Skill(effect-ts)",
       "Skill(etherscan-api)",
       "Skill(find-skills)",
@@ -25,7 +23,6 @@
       "Skill(md-docs:update-all)",
       "Skill(md-docs:update-readme)",
       "Skill(oracle-codex)",
-      "Skill(oss)",
       "Skill(oss:create-biome-discussion)",
       "Skill(oss:create-biome-issue)",
       "Skill(oss:create-cc-issue)",
@@ -43,14 +40,14 @@
       "Skill(sablier-icon)",
       "Skill(sablier-protocol)",
       "Skill(sablier-writing)",
-      "Skill(update-pr)",
       "Skill(vercel-composition-patterns)",
       "Skill(vercel-react-best-practices)",
       "Skill(vitest)",
       "Skill(web-design-guidelines)",
       "Skill(web3-foundry)",
       "Skill(work)",
-      "Skill(xstate-react)"
+      "Skill(xstate-react)",
+      "Skill(yeet)"
     ]
   }
 }
