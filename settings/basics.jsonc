@@ -4,7 +4,9 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "alwaysThinkingEnabled": true,
   "enableAllProjectMcpServers": true,
+  "model": "opusplan",
   "includeCoAuthoredBy": false,
+  "skipDangerousModePermissionPrompt": true,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     // Activate MCP tool search when tool definitions exceed 5% of context (default: 10%)
