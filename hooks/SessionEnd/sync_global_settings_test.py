@@ -359,7 +359,7 @@ class TestFormatWithBiome:
         assert result is True
         expected_cwd = Path("/home/dev/.claude").resolve()
         mock_run.assert_called_once_with(
-            ["biome", "format", "--write", "settings.json"],
+            ["nlx", "biome", "format", "--write", "settings.json"],
             capture_output=True,
             text=True,
             timeout=30,

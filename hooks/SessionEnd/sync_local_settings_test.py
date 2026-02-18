@@ -226,7 +226,7 @@ class TestFormatWithBiome:
 
         assert result is True
         mock_run.assert_called_once_with(
-            ["biome", "format", "--write", ".claude/settings.json"],
+            ["nlx", "biome", "format", "--write", ".claude/settings.json"],
             capture_output=True,
             text=True,
             timeout=30,
