@@ -343,9 +343,14 @@ class TestRunMergeSettings:
 class TestFormatWithBiome:
     """Test format_with_biome() function."""
 
+    @patch("sync_global_settings.Path.is_file", return_value=True)
     @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/home/dev/.claude"))
     @patch("subprocess.run")
-    def test_formats_with_relative_path_in_claude_dir(self, mock_run):
+    def test_formats_with_relative_path_in_claude_dir(
+        self,
+        mock_run,
+        _mock_is_file,
+    ):
         """Test formatting with relative paths for include matching."""
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -361,15 +366,26 @@ class TestFormatWithBiome:
             cwd=expected_cwd,
         )
 
+    @patch("sync_global_settings.Path.is_file", return_value=True)
     @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/home/dev/.claude"))
     @patch("subprocess.run")
-    def test_returns_false_on_nonzero_exit(self, mock_run):
+    def test_returns_false_on_nonzero_exit(self, mock_run, _mock_is_file):
         """Test returning False when biome exits with failure."""
         mock_run.return_value = MagicMock(returncode=1)
 
         result = sync_global_settings.format_with_biome(Path("/home/dev/.claude/settings.json"))
 
         assert result is False
+
+    @patch("sync_global_settings.Path.is_file", return_value=False)
+    @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/home/dev/.claude"))
+    @patch("subprocess.run")
+    def test_skips_when_biome_jsonc_missing(self, mock_run, _mock_is_file):
+        """Test skipping format when biome.jsonc is missing."""
+        result = sync_global_settings.format_with_biome(Path("/home/dev/.claude/settings.json"))
+
+        assert result is True
+        mock_run.assert_not_called()
 
 
 class TestMain:

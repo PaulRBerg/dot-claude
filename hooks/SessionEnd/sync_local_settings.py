@@ -194,6 +194,8 @@ def format_with_biome(path: Path) -> bool:
             if resolved_path.parent.name == ".claude"
             else resolved_path.parent
         )
+        if not (project_root / "biome.jsonc").is_file():
+            return True
         try:
             # Keep the path relative so Biome include globs like ".claude/settings.json" match.
             target = resolved_path.relative_to(project_root)

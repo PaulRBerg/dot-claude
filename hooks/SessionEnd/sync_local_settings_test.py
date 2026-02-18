@@ -215,8 +215,9 @@ class TestWriteSettings:
 class TestFormatWithBiome:
     """Test format_with_biome() function."""
 
+    @patch("sync_local_settings.Path.is_file", return_value=True)
     @patch("subprocess.run")
-    def test_formats_from_project_root(self, mock_run):
+    def test_formats_from_project_root(self, mock_run, _mock_is_file):
         """Test formatting with project root as working directory."""
         mock_run.return_value = MagicMock(returncode=0)
 
@@ -232,8 +233,9 @@ class TestFormatWithBiome:
             cwd=Path("/project"),
         )
 
+    @patch("sync_local_settings.Path.is_file", return_value=True)
     @patch("subprocess.run")
-    def test_returns_false_on_nonzero_exit(self, mock_run):
+    def test_returns_false_on_nonzero_exit(self, mock_run, _mock_is_file):
         """Test returning False when biome exits with failure."""
         mock_run.return_value = MagicMock(returncode=1)
 
@@ -241,14 +243,24 @@ class TestFormatWithBiome:
 
         assert result is False
 
+    @patch("sync_local_settings.Path.is_file", return_value=True)
     @patch("subprocess.run")
-    def test_returns_false_on_timeout(self, mock_run):
+    def test_returns_false_on_timeout(self, mock_run, _mock_is_file):
         """Test returning False on timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("biome", 30)
 
         result = sync_local_settings.format_with_biome(Path("/project/.claude/settings.json"))
 
         assert result is False
+
+    @patch("sync_local_settings.Path.is_file", return_value=False)
+    @patch("subprocess.run")
+    def test_skips_when_biome_jsonc_missing(self, mock_run, _mock_is_file):
+        """Test skipping format when biome.jsonc is missing."""
+        result = sync_local_settings.format_with_biome(Path("/project/.claude/settings.json"))
+
+        assert result is True
+        mock_run.assert_not_called()
 
 
 class TestMain:

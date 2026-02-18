@@ -324,6 +324,8 @@ def format_with_biome(path: Path) -> bool:
     try:
         resolved_path = path.resolve()
         claude_root = CLAUDE_DIR.resolve()
+        if not (claude_root / "biome.jsonc").is_file():
+            return True
         try:
             # Keep the path relative so Biome include globs like "settings/**/*.jsonc" match.
             target = resolved_path.relative_to(claude_root)
