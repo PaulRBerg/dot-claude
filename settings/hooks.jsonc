@@ -19,14 +19,6 @@
           {
             "command": "~/.claude/hooks/SessionEnd/commit_prompts.py",
             "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/SessionEnd/sync_global_settings.py",
-            "type": "command"
-          },
-          {
-            "command": "~/.claude/hooks/SessionEnd/sync_local_settings.py",
-            "type": "command"
           }
         ]
       }
