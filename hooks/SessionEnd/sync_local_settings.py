@@ -194,8 +194,13 @@ def format_with_biome(path: Path) -> bool:
             if resolved_path.parent.name == ".claude"
             else resolved_path.parent
         )
+        try:
+            # Keep the path relative so Biome include globs like ".claude/settings.json" match.
+            target = resolved_path.relative_to(project_root)
+        except ValueError:
+            target = resolved_path
         result = subprocess.run(
-            ["biome", "format", "--write", str(resolved_path)],
+            ["biome", "format", "--write", str(target)],
             capture_output=True,
             text=True,
             timeout=30,

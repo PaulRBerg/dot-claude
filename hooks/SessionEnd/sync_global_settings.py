@@ -313,26 +313,30 @@ def sync_plugins() -> bool:
 
 
 def format_with_biome(path: Path) -> bool:
-    """Format file with Biome if biome.jsonc exists in cwd.
+    """Format file with Biome using global .claude as working directory.
 
     Args:
         path: Path to file to format
 
     Returns:
-        True if formatted successfully or no biome.jsonc, False on error
+        True if formatted successfully, False on error
     """
-    biome_config = Path.cwd() / "biome.jsonc"
-    if not biome_config.exists():
-        return True
-
     try:
-        subprocess.run(
-            ["biome", "format", "--write", str(path)],
+        resolved_path = path.resolve()
+        claude_root = CLAUDE_DIR.resolve()
+        try:
+            # Keep the path relative so Biome include globs like "settings/**/*.jsonc" match.
+            target = resolved_path.relative_to(claude_root)
+        except ValueError:
+            target = resolved_path
+        result = subprocess.run(
+            ["biome", "format", "--write", str(target)],
             capture_output=True,
             text=True,
             timeout=30,
+            cwd=claude_root,
         )
-        return True
+        return result.returncode == 0
     except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
         return False
 

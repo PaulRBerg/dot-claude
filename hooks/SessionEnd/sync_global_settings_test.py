@@ -340,6 +340,38 @@ class TestRunMergeSettings:
         assert result is False
 
 
+class TestFormatWithBiome:
+    """Test format_with_biome() function."""
+
+    @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/home/dev/.claude"))
+    @patch("subprocess.run")
+    def test_formats_with_relative_path_in_claude_dir(self, mock_run):
+        """Test formatting with relative paths for include matching."""
+        mock_run.return_value = MagicMock(returncode=0)
+
+        result = sync_global_settings.format_with_biome(Path("/home/dev/.claude/settings.json"))
+
+        assert result is True
+        expected_cwd = Path("/home/dev/.claude").resolve()
+        mock_run.assert_called_once_with(
+            ["biome", "format", "--write", "settings.json"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=expected_cwd,
+        )
+
+    @patch.object(sync_global_settings, "CLAUDE_DIR", Path("/home/dev/.claude"))
+    @patch("subprocess.run")
+    def test_returns_false_on_nonzero_exit(self, mock_run):
+        """Test returning False when biome exits with failure."""
+        mock_run.return_value = MagicMock(returncode=1)
+
+        result = sync_global_settings.format_with_biome(Path("/home/dev/.claude/settings.json"))
+
+        assert result is False
+
+
 class TestMain:
     """Test main() entry point."""
 
