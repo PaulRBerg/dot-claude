@@ -179,26 +179,29 @@ def write_settings(settings: dict) -> bool:
 
 
 def format_with_biome(path: Path) -> bool:
-    """Format file with Biome if biome.jsonc exists in cwd.
+    """Format file with Biome using project-scoped config resolution.
 
     Args:
         path: Path to file to format
 
     Returns:
-        True if formatted successfully or no biome.jsonc, False on error
+        True if formatted successfully, False on error
     """
-    biome_config = Path.cwd() / "biome.jsonc"
-    if not biome_config.exists():
-        return True
-
     try:
-        subprocess.run(
-            ["biome", "format", "--write", str(path)],
+        resolved_path = path.resolve()
+        project_root = (
+            resolved_path.parent.parent
+            if resolved_path.parent.name == ".claude"
+            else resolved_path.parent
+        )
+        result = subprocess.run(
+            ["biome", "format", "--write", str(resolved_path)],
             capture_output=True,
             text=True,
             timeout=30,
+            cwd=project_root,
         )
-        return True
+        return result.returncode == 0
     except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
         return False
 

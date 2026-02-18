@@ -2,6 +2,7 @@
 """Unit tests for sync_local_settings.py hook."""
 
 import json
+import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -208,6 +209,45 @@ class TestWriteSettings:
         """Test returning False on OSError."""
         mock_path.write_text.side_effect = OSError("Permission denied")
         result = sync_local_settings.write_settings({})
+        assert result is False
+
+
+class TestFormatWithBiome:
+    """Test format_with_biome() function."""
+
+    @patch("subprocess.run")
+    def test_formats_from_project_root(self, mock_run):
+        """Test formatting with project root as working directory."""
+        mock_run.return_value = MagicMock(returncode=0)
+
+        path = Path("/project/.claude/settings.json")
+        result = sync_local_settings.format_with_biome(path)
+
+        assert result is True
+        mock_run.assert_called_once_with(
+            ["biome", "format", "--write", "/project/.claude/settings.json"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=Path("/project"),
+        )
+
+    @patch("subprocess.run")
+    def test_returns_false_on_nonzero_exit(self, mock_run):
+        """Test returning False when biome exits with failure."""
+        mock_run.return_value = MagicMock(returncode=1)
+
+        result = sync_local_settings.format_with_biome(Path("/project/.claude/settings.json"))
+
+        assert result is False
+
+    @patch("subprocess.run")
+    def test_returns_false_on_timeout(self, mock_run):
+        """Test returning False on timeout."""
+        mock_run.side_effect = subprocess.TimeoutExpired("biome", 30)
+
+        result = sync_local_settings.format_with_biome(Path("/project/.claude/settings.json"))
+
         assert result is False
 
 
