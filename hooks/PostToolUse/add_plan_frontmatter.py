@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Add YAML frontmatter to plan files created in ~/.claude/plans/.
+"""Add YAML frontmatter to plan files in any .claude/plans/ directory.
 
 This PostToolUse hook intercepts Write tool executions and adds metadata
 frontmatter to plan files, enabling better organization and searchability.
+Works with both ~/.claude/plans/ and project-local .claude/plans/ directories.
 
 See https://github.com/anthropics/claude-code/issues/12378
 """
@@ -14,10 +15,6 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-
-# Target directory for plan files
-PLANS_DIR = Path.home() / ".claude" / "plans"
-
 
 # Cache for git branch (unlikely to change during session)
 _git_branch_cache: dict[str, str] = {}
@@ -114,16 +111,20 @@ def main() -> None:
     if not file_path_str:
         sys.exit(0)
 
-    # Check if file is in plans directory
+    # Check if file is a .md in a .claude/plans/ directory (any location)
     try:
         file_path = Path(file_path_str).resolve()
-        plans_dir_resolved = PLANS_DIR.resolve()
-
-        if not file_path.is_relative_to(plans_dir_resolved):
-            sys.exit(0)  # Not in plans directory
 
         if file_path.suffix != ".md":
-            sys.exit(0)  # Not a markdown file
+            sys.exit(0)
+
+        # Match any path containing .claude/plans/ as consecutive parts
+        parts = file_path.parts
+        if not any(
+            parts[i] == ".claude" and i + 1 < len(parts) and parts[i + 1] == "plans"
+            for i in range(len(parts))
+        ):
+            sys.exit(0)
     except (ValueError, TypeError, OSError):
         sys.exit(0)
 
