@@ -168,7 +168,6 @@ class TestMain:
 
         assert exc_info.value.code == 0
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("sys.stdin", new_callable=StringIO)
     def test_exits_on_file_outside_plans_dir(self, mock_stdin):
         """Test exit when file is outside plans directory."""
@@ -184,13 +183,12 @@ class TestMain:
 
         assert exc_info.value.code == 0
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("sys.stdin", new_callable=StringIO)
     def test_exits_on_non_markdown_file(self, mock_stdin):
         """Test exit when file is not a markdown file."""
         data = {
             "tool_name": "Write",
-            "tool_input": {"file_path": "/tmp/test-plans/file.txt"},
+            "tool_input": {"file_path": "/tmp/.claude/plans/file.txt"},
         }
         mock_stdin.write(json.dumps(data))
         mock_stdin.seek(0)
@@ -200,7 +198,6 @@ class TestMain:
 
         assert exc_info.value.code == 0
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
     def test_skips_file_with_existing_frontmatter(self, mock_stdin, mock_read):
@@ -209,7 +206,7 @@ class TestMain:
 
         data = {
             "tool_name": "Write",
-            "tool_input": {"file_path": "/tmp/test-plans/existing.md"},
+            "tool_input": {"file_path": "/tmp/.claude/plans/existing.md"},
         }
         mock_stdin.write(json.dumps(data))
         mock_stdin.seek(0)
@@ -219,7 +216,6 @@ class TestMain:
 
         assert exc_info.value.code == 0
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("add_plan_frontmatter.build_frontmatter")
     @patch("pathlib.Path.write_text")
     @patch("pathlib.Path.read_text")
@@ -231,7 +227,7 @@ class TestMain:
 
         data = {
             "tool_name": "Write",
-            "tool_input": {"file_path": "/tmp/test-plans/new-plan.md"},
+            "tool_input": {"file_path": "/tmp/.claude/plans/new-plan.md"},
             "session_id": "abc123",
             "cwd": "/Users/prb/project",
         }
@@ -247,7 +243,6 @@ class TestMain:
         assert written.startswith('---\ncreated: "2025-12-02T14:30:00Z"\n---')
         assert "# My Plan" in written
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("pathlib.Path.read_text")
     @patch("sys.stdin", new_callable=StringIO)
     def test_handles_read_error_gracefully(self, mock_stdin, mock_read):
@@ -256,7 +251,7 @@ class TestMain:
 
         data = {
             "tool_name": "Write",
-            "tool_input": {"file_path": "/tmp/test-plans/unreadable.md"},
+            "tool_input": {"file_path": "/tmp/.claude/plans/unreadable.md"},
         }
         mock_stdin.write(json.dumps(data))
         mock_stdin.seek(0)
@@ -266,7 +261,6 @@ class TestMain:
 
         assert exc_info.value.code == 0
 
-    @patch("add_plan_frontmatter.PLANS_DIR", Path("/tmp/test-plans"))
     @patch("add_plan_frontmatter.build_frontmatter")
     @patch("pathlib.Path.write_text")
     @patch("pathlib.Path.read_text")
@@ -279,7 +273,7 @@ class TestMain:
 
         data = {
             "tool_name": "Write",
-            "tool_input": {"file_path": "/tmp/test-plans/plan.md"},
+            "tool_input": {"file_path": "/tmp/.claude/plans/plan.md"},
         }
         mock_stdin.write(json.dumps(data))
         mock_stdin.seek(0)
