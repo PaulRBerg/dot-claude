@@ -40,14 +40,6 @@ rg "pattern" path/to/my\ file.txt
 
 Look for visual annotations (rectangles, arrows, circles) highlighting the relevant areas.
 
-## Copyable Markdown
-
-Use four backticks when generating Markdown in the chat:
-
-```markdown
-Some Markdown content
-```
-
 ## Skills
 
 All `references/`, `scripts/`, and other file paths mentioned in `SKILL.md` files are relative to the skill installation directory (where `SKILL.md` is located).
