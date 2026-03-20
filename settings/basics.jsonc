@@ -17,7 +17,7 @@
     "ENABLE_TOOL_SEARCH": "auto:5"
   },
   "statusLine": {
-    "command": "ccstatusline",
+    "command": "npx -y ccstatusline@latest",
     "type": "command"
   }
 }

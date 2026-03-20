@@ -74,7 +74,7 @@
       "Bash(tsc:*)",
       "Bash(tsgo:*)",
       "Bash(tsx:*)",
-      "Bash(yarn:*)",
+      "Bash(vp:*)",
       // Python
       "Bash(pip:*)",
       "Bash(python:*)",
