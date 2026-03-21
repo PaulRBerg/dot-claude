@@ -8,6 +8,7 @@
   "model": "opus",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
+  "showClearContextOnPlanAccept": false,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
   "env": {

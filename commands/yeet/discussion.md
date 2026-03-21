@@ -12,4 +12,4 @@ description: Create a GitHub discussion with automatic category selection
 
 ## Task
 
-Activate the `~/.claude/skills/yeet` skill to create a GitHub discussion. Follow the workflow in `~/.claude/skills/yeet/references/create-discussion.md`.
+Activate the `yeet` skill to create a GitHub discussion. Follow the workflow in `~/.agents/skills/yeet/references/create-discussion.md`.

@@ -1,5 +1,5 @@
 ---
-argument-hint: '[base-branch] [reviewers] [title] [--draft] [--test-plan]'
+argument-hint: '[base-branch] [title] [--reviewers <name>] [--draft]'
 description: Create a GitHub pull request with semantic change analysis
 ---
 
@@ -13,4 +13,4 @@ description: Create a GitHub pull request with semantic change analysis
 
 ## Task
 
-Activate the `~/.claude/skills/yeet` skill to create a GitHub pull request. Follow the workflow in `~/.claude/skills/yeet/references/create-pr.md`.
+Activate the `yeet` skill to create a GitHub pull request. Follow the workflow in `~/.agents/skills/yeet/references/create-pr.md`.

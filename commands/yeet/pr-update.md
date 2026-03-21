@@ -13,4 +13,4 @@ description: Update an existing GitHub pull request with semantic change analysi
 
 ## Task
 
-Activate the `~/.claude/skills/yeet` skill to update an existing GitHub pull request. Follow the workflow in `~/.claude/skills/yeet/references/update-pr.md`.
+Activate the `yeet` skill to update an existing GitHub pull request. Follow the workflow in `~/.agents/skills/yeet/references/update-pr.md`.
