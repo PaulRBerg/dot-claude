@@ -5,7 +5,6 @@
   "alwaysThinkingEnabled": true,
   "enableAllProjectMcpServers": true,
   "effortLevel": "high",
-  "model": "opus",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
   "showClearContextOnPlanAccept": false,
