@@ -1,0 +1,17 @@
+---
+argument-hint: '[description?] [--minimal] [--full] [--dry-run] [--force]'
+description: Initialize README.md from scratch based on codebase analysis or description
+model: opus
+---
+
+## Context
+
+- Current directory: !`pwd`
+- Git repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo "not a git repo"`
+- Existing README: !`test -f README.md && echo "exists" || echo "none"`
+- GitHub remote: !`git remote get-url origin 2>/dev/null || echo "no remote"`
+- Arguments: $ARGUMENTS
+
+## Task
+
+Activate the `~/.claude/skills/md-docs` skill to initialize README.md. Follow the workflow in `~/.claude/skills/md-docs/references/init-readme.md`.

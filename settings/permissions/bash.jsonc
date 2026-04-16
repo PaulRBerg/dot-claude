@@ -53,6 +53,7 @@
       "Bash(chezmoi:*)",
       "Bash(curl:*)",
       "Bash(diff:*)",
+      "Bash(go:*)",
       "Bash(jq:*)",
       "Bash(just:*)",
       "Bash(lsof:*)",
