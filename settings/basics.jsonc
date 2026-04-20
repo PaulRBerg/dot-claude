@@ -5,7 +5,7 @@
   "alwaysThinkingEnabled": true,
   "autoMemoryEnabled": false,
   "enableAllProjectMcpServers": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
   "skipDangerousModePermissionPrompt": true,
