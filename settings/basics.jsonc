@@ -5,9 +5,11 @@
   "alwaysThinkingEnabled": true,
   "autoMemoryEnabled": false,
   "enableAllProjectMcpServers": true,
+  "defaultMode": "default",
   "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
+  "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
   "env": {
