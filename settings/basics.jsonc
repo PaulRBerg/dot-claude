@@ -9,6 +9,7 @@
   "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
+  "showClearContextOnPlanAccept": true,
   "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
