@@ -10,9 +10,11 @@
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
   "showClearContextOnPlanAccept": true,
+  "skillListingBudgetFraction": 0.02,
   "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
+  "useAutoModeDuringPlan": false,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "true",
     "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
