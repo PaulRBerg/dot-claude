@@ -26,3 +26,9 @@ rg "pattern" path/to/my\ file.txt
 ## Skills
 
 All `references/`, `scripts/`, and other file paths mentioned in `SKILL.md` files are relative to the skill installation directory (where `SKILL.md` is located).
+
+## CLAUDE.md ↔ AGENTS.md
+
+The user symlinks `CLAUDE.md` files to `AGENTS.md`.
+
+Edit `AGENTS.md` directly — don't try to "replace the symlink" or write through `CLAUDE.md`. Both paths resolve to the same file, so editing `AGENTS.md` is correct and expected.
