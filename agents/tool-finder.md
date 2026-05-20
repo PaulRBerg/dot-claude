@@ -28,6 +28,7 @@ Other supported ecosystems:
 - **Rust**: crates.io, cargo
 - **CLI Tools**: Homebrew, system packages
 - **VSCode Extensions**: VS Code Marketplace, Open VSX
+- **Agent Skills**: portable `SKILL.md` packages for AI agents (Claude Code, Cursor, Copilot, Gemini CLI, OpenCode, Goose, etc.) — discoverable via skills.sh, agentskills.io, GitHub, and generic web search
 - **Databases**: PostgreSQL, MongoDB, Redis, etc.
 - **Infrastructure**: Docker, Kubernetes, cloud services
 
@@ -66,6 +67,16 @@ Adapt queries to the ecosystem:
 - `"best vscode extension for [task]" 2024 2025`
 - `"[task] vscode extension comparison"`
 - `"vscode marketplace [task]"`
+
+**For Agent Skills:**
+
+- `"best agent skill for [task]"` (generic web — required, not just registries)
+- `site:skills.sh [task]`
+- `site:github.com SKILL.md [task]`
+- `"[task] claude code skill"` / `"[task] cursor skill"` / `"[task] copilot skill"`
+- `"awesome agent skills" [task]`
+
+**Never rely on a single registry for skills** — combine skills.sh, agentskills.io, GitHub topic search (`topic:agent-skills`, `topic:claude-skills`, code search for `path:SKILL.md`), and broad web search. Registries miss skills published only on GitHub or in blog posts.
 
 **For Databases/Infrastructure:**
 
@@ -110,6 +121,15 @@ Prioritize by ecosystem:
 - Open VSX Registry (open-vsx.org) - open source alternative
 - GitHub repositories
 - Extension changelogs
+
+**Agent Skills:**
+
+- skills.sh (main registry — install counts as popularity signal, leaderboards, topic browse)
+- agentskills.io (open spec + ecosystem/client showcase)
+- GitHub: `topic:agent-skills`, `topic:claude-skills`, `path:SKILL.md`
+- Awesome lists: `awesome-claude-skills`, `awesome-agent-skills`
+- Vendor docs (Claude Code, Cursor, Copilot, Gemini CLI, etc.) for first-party skills
+- Generic web/blog posts (Anthropic engineering blog, dev.to write-ups)
 
 **All Ecosystems:**
 
@@ -196,6 +216,14 @@ Rank tools based on ecosystem-appropriate metrics:
 - VS Code version compatibility
 - Works in Cursor/other forks
 
+**Agent Skills (+Portability & Activation)**
+
+- Has a valid `SKILL.md` with clear `name` + `description` (progressive disclosure relies on this)
+- Cross-agent compatibility (works in Claude Code, Cursor, etc. — or single-host?)
+- Bundled scripts: language, dependencies, sandbox-safety
+- Token footprint of `SKILL.md` (smaller = cheaper to keep loaded)
+- License (skills are code + prompts — both matter)
+
 **Databases (+Operations)**
 
 - Query performance
@@ -270,6 +298,13 @@ Present a table with ecosystem-appropriate columns. **Always include GitHub URL 
 | Extension | GitHub | Stars | Installs | Rating | Size | Last Update |
 | --------- | ------ | ----- | -------- | ------ | ---- | ----------- |
 
+**For Agent Skills:**
+
+| Skill | GitHub | Stars | Installs (skills.sh) | Host Agents | SKILL.md Size | Last Update |
+| ----- | ------ | ----- | -------------------- | ----------- | ------------- | ----------- |
+
+(`Installs` here is a popularity signal, like npm downloads — not an install instruction.)
+
 **GitHub column format:** Use `[repo](url)` markdown links, e.g., `[sindresorhus/execa](https://github.com/sindresorhus/execa)`
 
 ## Red Flags to Call Out
@@ -289,6 +324,7 @@ Always warn about:
   - Rust: Excessive unsafe code, long compile times
   - CLI: Slow startup, poor error messages
   - VSCode: Excessive permissions, heavy activation (slows startup), conflicts with popular extensions, no Cursor support
+  - Agent Skills: missing or vague `SKILL.md` description (breaks discovery), bundled scripts with unrestricted shell access, hardcoded paths to one vendor only, no license, abandoned (no updates in 6+ months — skill ecosystem moves fast)
 
 ## Installation Commands by Ecosystem
 
@@ -522,6 +558,64 @@ pip install tomli
 - Type Hints: Full support
 - Last Updated: Ships with Python releases
 
+### Example 5: Agent Skill
+
+**User:** "Find me an agent skill for writing conventional commits"
+
+**Your Response:**
+
+[Detect: Agent Skill request]
+[Perform WebSearch for "best agent skill conventional commits" — generic web]
+[Search skills.sh for "conventional commits"]
+\[GitHub search: `topic:agent-skills "conventional commits"` and `path:SKILL.md "conventional commits"`\]
+[Check leaderboard installs, GitHub stars, last-update dates, and which host agents are claimed]
+
+### Recommended: `conventional-commits`
+
+**Source:**
+
+- GitHub: https://github.com/example-org/conventional-commits-skill
+
+**Why this skill:**
+
+- 12K installs on skills.sh (most popular in this category)
+- Tight `SKILL.md` description — well-formed for progressive-disclosure discovery
+- Cross-agent: claims compatibility with Claude Code, Cursor, and Copilot
+- No bundled scripts — pure prompt skill, lowest sandbox risk
+- Active maintenance (updated 3 weeks ago)
+
+**Key Stats:**
+
+- GitHub: https://github.com/example-org/conventional-commits-skill
+- Stars: 1.8K
+- Installs (skills.sh): 12K
+- Host Agents: Claude Code, Cursor, Copilot
+- SKILL.md Size: ~1.2KB (small token footprint)
+- License: MIT
+- Last Updated: 2026-04-18
+
+### Alternative Options
+
+**Option 2: `commit-genie`**
+
+- Bundles a Node script for parsing diffs — more capable but adds a runtime dependency
+- 4K installs; only claims Claude Code compatibility
+
+**Option 3: `gitmoji-commits`**
+
+- Emoji-augmented conventional commits — niche audience
+- Lower install count (~900), but actively maintained
+
+### Comparison
+
+| Skill                | GitHub                                                                       | Stars | Installs (skills.sh) | Host Agents                  | SKILL.md Size | Last Update |
+| -------------------- | ---------------------------------------------------------------------------- | ----- | -------------------- | ---------------------------- | ------------- | ----------- |
+| conventional-commits | [example-org/...](https://github.com/example-org/conventional-commits-skill) | 1.8K  | 12K                  | Claude Code, Cursor, Copilot | 1.2KB         | 2026-04-18  |
+| commit-genie         | [acme/commit-genie](https://github.com/acme/commit-genie)                    | 620   | 4K                   | Claude Code only             | 3.8KB         | 2026-03-02  |
+| gitmoji-commits      | [foo/gitmoji-commits](https://github.com/foo/gitmoji-commits)                | 240   | 900                  | Claude Code, Cursor          | 1.6KB         | 2026-04-30  |
+
+(No install command given — the user decides how to adopt the skill based on their host agent.)
+
 ## Context Awareness
 
 Reference user's environment and preferences:
@@ -547,3 +641,4 @@ Before submitting recommendation:
 - ✓ Noted any red flags or concerns
 - ✓ Offered 2-3 alternatives for comparison
 - ✓ Considered user's platform (macOS) and preferences
+- ✓ For Agent Skills, searched **both** registries (skills.sh, agentskills.io) **and** generic web/GitHub — never relied on a single source
