@@ -1,5 +1,8 @@
 # Claude Code config
 
+[![Run in Smithery](https://smithery.ai/badge/skills/paulrberg)](https://smithery.ai/skills?ns=paulrberg&utm_source=github&utm_medium=badge)
+
+
 [![CI](https://github.com/PaulRBerg/dot-claude/actions/workflows/ci.yml/badge.svg)](https://github.com/PaulRBerg/dot-claude/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Configured-DE7356)](https://github.com/anthropics/claude-code)
