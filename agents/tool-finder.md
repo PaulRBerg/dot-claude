@@ -26,6 +26,7 @@ Other supported ecosystems:
 
 - **Python**: PyPI packages, pip/poetry/uv
 - **Rust**: crates.io, cargo
+- **Go**: pkg.go.dev, go modules
 - **CLI Tools**: Homebrew, system packages
 - **VSCode Extensions**: VS Code Marketplace, Open VSX
 - **Agent Skills**: portable `SKILL.md` packages for AI agents (Claude Code, Cursor, Copilot, Gemini CLI, OpenCode, Goose, etc.) — discoverable via skills.sh, agentskills.io, GitHub, and generic web search
@@ -55,6 +56,12 @@ Adapt queries to the ecosystem:
 - `"best rust crate for [task]" 2024 2025`
 - `"[task] rust library comparison"`
 - `"popular [task] rust crates.io"`
+
+**For Go:**
+
+- `"best go package for [task]" 2024 2025`
+- `"[task] golang library comparison"`
+- `"popular [task] go module pkg.go.dev"`
 
 **For CLI/System Tools:**
 
@@ -108,6 +115,13 @@ Prioritize by ecosystem:
 - lib.rs (crate discovery)
 - GitHub repositories
 - Blessed.rs (curated list)
+
+**Go:**
+
+- pkg.go.dev (official package discovery + docs)
+- Awesome Go (curated list)
+- go.libhunt.com (trending + comparison)
+- GitHub repositories
 
 **CLI/System Tools:**
 
@@ -201,6 +215,14 @@ Rank tools based on ecosystem-appropriate metrics:
 - Binary size
 - no_std support
 
+**Go (+Simplicity & Dependencies)**
+
+- Go version support (go.mod directive)
+- Dependency count (Go culture favors minimal/zero deps)
+- Standard library alternative exists?
+- Generics usage (Go 1.18+) where relevant
+- context.Context support for cancellation
+
 **CLI Tools (+Installation & UX)**
 
 - Install method (brew, cargo, go install)
@@ -288,6 +310,11 @@ Present a table with ecosystem-appropriate columns. **Always include GitHub URL 
 | Crate | GitHub | Stars | Downloads | unsafe | Compile Time | Last Update |
 | ----- | ------ | ----- | --------- | ------ | ------------ | ----------- |
 
+**For Go:**
+
+| Package | GitHub | Stars | Imported By | Go Version | Deps | Last Update |
+| ------- | ------ | ----- | ----------- | ---------- | ---- | ----------- |
+
 **For CLI Tools:**
 
 | Tool | GitHub | Stars | Install Method | Performance | Platform | Last Update |
@@ -322,6 +349,7 @@ Always warn about:
   - npm: Bundle bloat, missing TypeScript support
   - Python: No type hints, Python 2 only
   - Rust: Excessive unsafe code, long compile times
+  - Go: Heavy dependency trees, missing go.mod (pre-modules), unmaintained vendored deps
   - CLI: Slow startup, poor error messages
   - VSCode: Excessive permissions, heavy activation (slows startup), conflicts with popular extensions, no Cursor support
   - Agent Skills: missing or vague `SKILL.md` description (breaks discovery), bundled scripts with unrestricted shell access, hardcoded paths to one vendor only, no license, abandoned (no updates in 6+ months — skill ecosystem moves fast)
@@ -357,6 +385,13 @@ uv pip install package-name  # Using uv (modern alternative)
 ```bash
 cargo add crate-name         # Add to Cargo.toml and install
 cargo install binary-name    # Install binary
+```
+
+### Go
+
+```bash
+go get github.com/org/package           # Add module dependency
+go install github.com/org/binary@latest # Install CLI binary
 ```
 
 ### CLI Tools (macOS)
@@ -615,6 +650,63 @@ pip install tomli
 | gitmoji-commits      | [foo/gitmoji-commits](https://github.com/foo/gitmoji-commits)                | 240   | 900                  | Claude Code, Cursor          | 1.6KB         | 2026-04-30  |
 
 (No install command given — the user decides how to adopt the skill based on their host agent.)
+
+### Example 6: Go
+
+**User:** "I need structured logging in Go"
+
+**Your Response:**
+
+[Detect: Go ecosystem]
+[Perform WebSearch for "best go structured logging library 2024 2025"]
+[Check pkg.go.dev for slog, zap, zerolog]
+[Note stdlib log/slog added in Go 1.21 — check stdlib first]
+
+### Recommended: `log/slog` (stdlib in Go 1.21+)
+
+**Installation:**
+
+```bash
+# Built-in for Go 1.21+, no installation needed
+
+# For hot-path / high-throughput needs, see zap:
+go get go.uber.org/zap
+```
+
+**Why this tool:**
+
+- Standard library (zero external dependencies)
+- Structured + leveled logging with pluggable handlers (JSON, text)
+- Idiomatic `context.Context` support
+- Zero maintenance burden, long-term compatibility guarantee
+
+**Key Stats:**
+
+- GitHub: https://github.com/golang/go (stdlib)
+- Imported By: ubiquitous (stdlib)
+- Go Version: 1.21+
+- Dependencies: 0
+- Last Updated: Ships with Go releases
+
+### Alternative Options
+
+**Option 2: `go.uber.org/zap`**
+
+- Fastest structured logger; best for hot paths and high throughput
+- Adds a dependency and more config surface than slog
+
+**Option 3: `github.com/rs/zerolog`**
+
+- Zero-allocation JSON logging with a chainable API
+- Less idiomatic now that slog is in the stdlib
+
+### Comparison
+
+| Package  | GitHub                                        | Stars  | Imported By | Go Version | Deps | Last Update |
+| -------- | --------------------------------------------- | ------ | ----------- | ---------- | ---- | ----------- |
+| log/slog | [golang/go](https://github.com/golang/go)     | stdlib | ubiquitous  | 1.21+      | 0    | ships w/ Go |
+| zap      | [uber-go/zap](https://github.com/uber-go/zap) | ~22K   | 80K+        | 1.19+      | few  | active      |
+| zerolog  | [rs/zerolog](https://github.com/rs/zerolog)   | ~11K   | 30K+        | 1.15+      | few  | active      |
 
 ## Context Awareness
 
