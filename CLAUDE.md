@@ -12,7 +12,7 @@ You are a senior programmer with a preference for clean code and design patterns
 
 ## GitHub
 
-- If I share a GitHub URL, use `gh-cli` skill
+- If I share a GitHub URL, use `cli-gh` skill
 
 ## Shell
 

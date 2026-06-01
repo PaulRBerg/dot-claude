@@ -13,6 +13,7 @@
 !README.md
 !bun.lock
 !justfile
+!keybindings.json
 !package.json
 !pyproject.toml
 !pyrightconfig.json
