@@ -16,6 +16,20 @@ You are a senior programmer with a preference for clean code and design patterns
 
 ## Shell
 
+The Bash tool runs commands under **zsh** (my macOS login shell), despite the tool's name — it auto-detects zsh from `~/.zshrc`, ignoring `$SHELL`. Don't write bash-only syntax at the top level; zsh parse-errors on it ("bad substitution") and aborts the whole command.
+
+- Keep top-level commands POSIX-compatible (zsh-safe).
+- For bash-only features (`declare -A`, `${var^^}`/`${var,,}`, `${!arr[@]}`, `mapfile`, process substitution `<(...)`), wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`):
+
+```bash
+bash <<'EOF'
+declare -A color=([sky]=blue [sun]=yellow)
+echo "${color[sky]} / ${color[sun]^^}"   # blue / YELLOW
+EOF
+```
+
+The quoted `<<'EOF'` keeps the body out of zsh's parser and runs it in real bash. For longer scripts, write a `#!/usr/bin/env bash` file and execute it.
+
 When using the Bash tool and passing paths to a CLI that contains special characters, escape them:
 
 ```bash
