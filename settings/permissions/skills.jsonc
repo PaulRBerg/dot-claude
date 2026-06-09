@@ -12,12 +12,10 @@
       "Skill(code-polish)",
       "Skill(code-review)",
       "Skill(code-simplify)",
-      "Skill(coderabbit)",
       "Skill(coingecko-api)",
       "Skill(commit)",
       "Skill(create-skill)",
       "Skill(effect-ts)",
-      "Skill(etherscan-api)",
       "Skill(evm-chains)",
       "Skill(find-skills)",
       "Skill(frontend-design)",
@@ -38,6 +36,10 @@
       "Skill(web-design-guidelines)",
       "Skill(work)",
       "Skill(yeet)"
+    ],
+    "deny": [
+      // Disable bundled /simplify; we use /code-simplify (and /code-polish chains it)
+      "Skill(simplify)"
     ]
   }
 }
