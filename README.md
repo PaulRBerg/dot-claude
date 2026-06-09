@@ -106,13 +106,8 @@ Invoke via `-s` or the Task tool.
 
 ### MCP servers
 
-Three MCP servers are configured in `.mcp.json`:
-
-- **context7**: library docs and code examples
-- **filesystem**: filesystem access and manipulation
-- **sequential-thinking**: chain-of-thought reasoning
-
-Enable or disable them in `settings/permissions/mcp.jsonc`.
+MCP servers are configured in `.mcp.json` (currently none). Permission rules for MCP tools live in
+`settings/permissions/mcp.jsonc`.
 
 ### Hooks
 
