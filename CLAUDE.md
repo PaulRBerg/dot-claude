@@ -41,6 +41,8 @@ rg "pattern" path/to/my\ file.txt
 
 All `references/`, `scripts/`, and other file paths mentioned in `SKILL.md` files are relative to the skill installation directory (where `SKILL.md` is located).
 
+When skill docs say to run `python` or `python3`, use `uv run python` unless a project-specific activated environment is explicitly required.
+
 ## CLAUDE.md ↔ AGENTS.md
 
 The user symlinks `CLAUDE.md` files to `AGENTS.md`.
