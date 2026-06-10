@@ -54,14 +54,14 @@ When skill docs say to run `python` or `python3`, use `uv run python` unless a p
 
 - When I share a GitHub URL, use the `cli-gh` skill.
 
+## Gmail / Google Drive
+
+- For any request involving my Gmail or Google Drive accounts, consult `~/work/mailops` first for guidance on how to access my Google accounts.
+
 ## Dotfiles (chezmoi)
 
-I manage my dotfiles with [chezmoi](https://www.chezmoi.io) to version them and keep machines in sync. The source tree lives at `~/.local/share/chezmoi` (private repo `git@github.com:PaulRBerg/dotfiles.git`). chezmoi mangles source names with prefixes like `dot_`, `private_`, and `run_onchange_`. Edit the file in the chezmoi source and run `chezmoi apply` — editing the applied dotfile directly loses the change on the next apply.
+I manage my dotfiles with [chezmoi](https://www.chezmoi.io); the source tree lives at `~/.local/share/chezmoi`. chezmoi does not apply to `~/.claude` or `~/.codex`.
 
 ## IDE
 
-**VSCode** and **Cursor** share one user configuration. VSCode is the source of truth; Cursor's `settings.json`, `keybindings.json`, and `tasks.json` are symlinks to VSCode's copies in `~/Library/Application Support/Code/User/`, recreated on every `chezmoi apply` by a `run_onchange_` hook (`dot_setup/run_onchange_sync_vscode_cursor.sh`). Settings are unified — a change in one editor takes effect in both, so never maintain per-editor copies.
-
-## CLAUDE.md ↔ AGENTS.md
-
-I symlink `CLAUDE.md` files to `AGENTS.md`, so both paths resolve to the same file. Edit `AGENTS.md` directly — don't try to "replace the symlink" or write through `CLAUDE.md`. Editing `AGENTS.md` is correct and expected.
+**VSCode** and **Cursor** share one user configuration. VSCode is the source of truth; Cursor's `settings.json`, `keybindings.json`, and `tasks.json` are symlinks to VSCode's copies in `~/Library/Application Support/Code/User/`. Settings are unified — a change in one editor takes effect in both, so never maintain per-editor copies.
