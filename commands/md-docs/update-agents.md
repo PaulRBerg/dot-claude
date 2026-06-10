@@ -1,5 +1,5 @@
 ---
-argument-hint: '[--dry-run]'
+argument-hint: '[path?] [--root-only] [--preserve] [--minimal] [--thorough] [--dry-run]'
 description: Update CLAUDE.md and AGENTS.md files to match actual codebase
 model: opus
 ---

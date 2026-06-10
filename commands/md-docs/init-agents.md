@@ -1,5 +1,5 @@
 ---
-argument-hint: '[description?]'
+argument-hint: '[description?] [path?] [--root-only] [--minimal] [--full] [--dry-run] [--force]'
 description: Generate project-specific CLAUDE.md file with custom context
 model: opus
 ---
@@ -7,8 +7,7 @@ model: opus
 ## Context
 
 - Current directory: !`pwd`
-- Existing CLAUDE.md (root): !`test -f CLAUDE.md && echo "exists" || echo "none"`
-- Existing CLAUDE.md (.claude): !`test -f .claude/CLAUDE.md && echo "exists" || echo "none"`
+- Existing context files: !`fd '(CLAUDE|AGENTS)\.md' -t f | sort`
 - Git repository: !`git rev-parse --show-toplevel 2>/dev/null || echo "not a git repo"`
 - Arguments: $ARGUMENTS
 

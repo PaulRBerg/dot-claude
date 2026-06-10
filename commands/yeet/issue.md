@@ -1,5 +1,5 @@
 ---
-argument-hint: '[repository] [description] [--check]'
+argument-hint: '[repository] [description] [--check] [--image <path>]... [--image-release]'
 description: Create a GitHub issue with automatic labeling
 ---
 

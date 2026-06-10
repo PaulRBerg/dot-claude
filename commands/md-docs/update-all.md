@@ -1,5 +1,5 @@
 ---
-argument-hint: '[--preserve] [--minimal] [--thorough] [--dry-run]'
+argument-hint: '[path?] [--root-only] [--preserve] [--minimal] [--thorough] [--dry-run]'
 description: Update README.md and AI context files (CLAUDE.md, AGENTS.md)
 model: opus
 ---
@@ -9,7 +9,7 @@ model: opus
 - Working directory: !`pwd`
 - Git repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo "not a git repo"`
 - GitHub remote: !`git remote get-url origin 2>/dev/null || echo "no remote"`
-- Existing README: !`test -f README.md && echo "exists" || echo "none"`
+- Existing READMEs: !`fd '^README\.md$' -t f | sort`
 - Context files: !`fd '(CLAUDE|AGENTS)\.md' -t f | sort`
 - Arguments: $ARGUMENTS
 

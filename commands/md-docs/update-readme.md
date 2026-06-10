@@ -1,5 +1,5 @@
 ---
-argument-hint: '[--preserve] [--minimal] [--thorough]'
+argument-hint: '[path?] [--root-only] [--preserve] [--minimal] [--thorough] [--dry-run]'
 description: Update README.md based on current codebase structure
 model: opus
 ---
@@ -8,7 +8,7 @@ model: opus
 
 - Current directory: !`pwd`
 - Git repository root: !`git rev-parse --show-toplevel 2>/dev/null || echo "not a git repo"`
-- Existing README: !`test -f README.md && echo "exists" || echo "none"`
+- Existing READMEs: !`fd '^README\.md$' -t f | sort`
 - GitHub remote: !`git remote get-url origin 2>/dev/null || echo "no remote"`
 - Arguments: $ARGUMENTS
 
