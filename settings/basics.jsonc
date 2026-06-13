@@ -9,7 +9,7 @@
   "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
-  "model": "claude-fable-5",
+  "model": "opus",
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
   "skipAutoPermissionPrompt": true,
