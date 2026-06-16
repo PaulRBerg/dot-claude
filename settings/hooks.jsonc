@@ -12,26 +12,6 @@
           }
         ]
       }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/SessionEnd/commit_prompts.py",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/UserPromptSubmit/log_prompts.py",
-            "type": "command"
-          }
-        ]
-      }
     ]
   }
 }

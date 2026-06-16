@@ -116,10 +116,8 @@ Hooks provide event-driven Claude Code automation. See [hooks/README.md](hooks/R
 Active hooks:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
-- **commit_prompts.py**: commit logged prompts to zk notebook (`SessionEnd`)
 - **sync_global_settings.py**: sync global settings across machines (`SessionEnd`)
 - **sync_local_settings.py**: sync local project settings (`SessionEnd`)
-- **log_prompts.py**: log conversations to zk notebook (`UserPromptSubmit`, optional)
 
 Optional (commented out): **ai-flags** (prompt flag parsing), **ai-notify** (desktop notifications).
 

@@ -9,7 +9,6 @@ Several hooks provide event-driven automation across different Claude Code event
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
 - **ai-flags** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
-- **log_prompts.py** - Log conversations to zk notebook (UserPromptSubmit, optional)
 
 ## Hook Events
 
@@ -133,40 +132,6 @@ echo '{"prompt": "my task -t -c"}' | ai-flags handle
 
 # Verify current configuration
 ai-flags config show
-```
-
-## 3. log_prompts.py (UserPromptSubmit) - Optional
-
-Logs conversation prompts to a [zk](https://github.com/zk-org/zk) notebook at `~/.claude-prompts/` for tracking and
-analysis.
-
-### Prerequisites
-
-- `zk` CLI installed: `brew install zk`
-- `~/.claude-prompts/` initialized as a zk notebook:
-  ```bash
-  mkdir -p ~/.claude-prompts
-  cd ~/.claude-prompts
-  zk init
-  ```
-
-### Behavior
-
-- Exits gracefully if prerequisites are missing
-- Creates dated entries in zk notebook
-- Logs user prompts and context for future reference
-- Useful for tracking conversations and patterns over time
-
-### Setup
-
-```bash
-# Install zk
-brew install zk
-
-# Initialize notebook
-mkdir -p ~/.claude-prompts
-cd ~/.claude-prompts
-zk init
 ```
 
 ## Development
