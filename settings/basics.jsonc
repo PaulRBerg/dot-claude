@@ -23,7 +23,7 @@
     "ENABLE_TOOL_SEARCH": "auto:5"
   },
   "statusLine": {
-    "command": "npx -y ccstatusline@latest",
+    "command": "~/.local/share/bun/bin/ccstatusline",
     "type": "command"
   }
 }
