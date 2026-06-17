@@ -36,11 +36,12 @@ fi
 #                             2. PARSE JSONC FILES                             #
 # ---------------------------------------------------------------------------- #
 
-# Parse all JSONC files to valid JSON using json5 in a single Node.js process
+# Parse all JSONC files to valid JSON using json5 in a single Bun process
 # The json5 tool allows comments and trailing commas in JSON files
-# Using a single Node.js process is much faster than calling bunx per file
+# Using a single Bun process is much faster than calling bunx per file, and Bun
+# resolves json5 itself (a separate `node` binary can't see bunx's temp install)
 # If a file fails to parse, fall back to empty object
-parsed_json=$(bunx -p json5 node -e "
+parsed_json=$(bunx -p json5 bun -e "
 const fs = require('fs');
 const JSON5 = require('json5');
 process.argv.slice(1).forEach(file => {
