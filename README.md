@@ -99,7 +99,6 @@ Examples: **commit**, **code-review**, **code-polish**, **vitest**, **effect-ts*
 
 `agents/` includes specialized subagents:
 
-- **tool-finder**: discover tools and packages for any task
 - **docs-finder**: find library/framework documentation
 
 Invoke via `-s` or the Task tool.
