@@ -67,7 +67,7 @@
       "Bash(ni:*)",
       "Bash(node:*)",
       "Bash(npm:*)",
-      "Bash(npx:*)",
+      "Bash(bunx:*)",
       "Bash(nlx:*)",
       "Bash(nr:*)",
       "Bash(nun:*)",

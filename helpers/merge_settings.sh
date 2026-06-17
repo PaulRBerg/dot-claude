@@ -38,9 +38,9 @@ fi
 
 # Parse all JSONC files to valid JSON using json5 in a single Node.js process
 # The json5 tool allows comments and trailing commas in JSON files
-# Using a single Node.js process is much faster than calling npx per file
+# Using a single Node.js process is much faster than calling bunx per file
 # If a file fails to parse, fall back to empty object
-parsed_json=$(npx -y -p json5 node -e "
+parsed_json=$(bunx -p json5 node -e "
 const fs = require('fs');
 const JSON5 = require('json5');
 process.argv.slice(1).forEach(file => {
