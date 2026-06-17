@@ -84,7 +84,7 @@ command list.
 ### Commands
 
 `commands/` contains thin entry points that invoke skills. Commands still matter because they support directory nesting,
-which enables namespaced patterns like `/yeet:issue-cc` and `/md-docs:update-readme`.
+which enables namespaced patterns like `/yeet:issue-cc` and `/agents-context:polish`.
 
 ### Skills
 

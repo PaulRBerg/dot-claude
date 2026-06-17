@@ -3,6 +3,8 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "Skill(agents-context)",
+      "Skill(agents-introspection)",
       "Skill(autoresearch)",
       "Skill(bump-deps)",
       "Skill(bump-release)",
@@ -12,34 +14,26 @@
       "Skill(code-polish)",
       "Skill(code-review)",
       "Skill(code-simplify)",
-      "Skill(coingecko-api)",
+      "Skill(coingecko-cli)",
+      "Skill(coingecko-historical)",
       "Skill(commit)",
       "Skill(create-skill)",
+      "Skill(debrief)",
       "Skill(effect-ts)",
       "Skill(evm-chains)",
       "Skill(find-skills)",
-      "Skill(frontend-design)",
+      "Skill(find-tool)",
       "Skill(git-squash)",
-      "Skill(md-docs)",
-      "Skill(md-docs:init-agents)",
-      "Skill(md-docs:init-readme)",
-      "Skill(md-docs:update-agents)",
-      "Skill(md-docs:update-all)",
-      "Skill(md-docs:update-readme)",
+      "Skill(notion-cli)",
+      "Skill(pdf)",
       "Skill(playground)",
-      "Skill(playwright-skill)",
-      "Skill(process-cleanup)",
+      "Skill(spreadsheets)",
+      "Skill(summarize)",
       "Skill(tailwind-css)",
-      "Skill(vercel-composition-patterns)",
-      "Skill(vercel-react-best-practices)",
+      "Skill(todo-archive)",
       "Skill(vitest)",
-      "Skill(web-design-guidelines)",
       "Skill(work)",
       "Skill(yeet)"
-    ],
-    "deny": [
-      // Disable bundled /simplify; we use /code-simplify (and /code-polish chains it)
-      "Skill(simplify)"
     ]
   }
 }
