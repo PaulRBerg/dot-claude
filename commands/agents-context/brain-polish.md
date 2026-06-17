@@ -15,4 +15,4 @@ model: opus
 
 ## Task
 
-Activate the `agents-context` skill and run the `polish` workflow. Follow `references/polish.md` from that skill.
+Activate the `agents-context` skill and run the `polish` workflow. Follow `references/brain-polish.md` from that skill.
