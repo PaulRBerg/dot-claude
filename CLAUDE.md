@@ -42,22 +42,16 @@ rg "pattern" path/to/my\ file.txt
 ```
 
 - zsh does not word-split scalar strings by default; use arrays or explicit splitting when building argument lists.
+- `status` is a **read-only** special variable in zsh (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status` — even though the same code is fine in bash. Rename the variable (`rc`, `ret`, `result`) or run the script through an explicit `bash` call. Related: zsh ties `path` to `$PATH`, so assigning a plain string to `path` silently corrupts `PATH`; avoid both names.
 - Prefer modern, structured CLIs: `rg`/`fd` for search, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
-- Avoid `grep`, `find`, `sed` chains and ad hoc text parsing when a purpose-built tool or structured parser is available.
 
 ## Skills
 
 All `references/`, `scripts/`, and other file paths mentioned in a `SKILL.md` are relative to the skill installation directory (where `SKILL.md` lives).
 
-When skill docs say to run `python` or `python3`, use `uv run python` unless a project-specific activated environment is explicitly required.
-
-## GitHub
-
-- When I share a GitHub URL, use the `cli-gh` skill.
-
 ## Gmail / Google Drive
 
-- For any request involving my Gmail or Google Drive accounts, consult `~/work/mailops` first for guidance on how to access my Google accounts.
+For any request involving my Gmail or Google Drive accounts, consult `~/work/mailops` first for guidance on how to access my Google accounts.
 
 ## Dotfiles (chezmoi)
 
