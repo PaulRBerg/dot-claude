@@ -15,6 +15,7 @@ You are a senior programmer who values clean code and design patterns.
 - Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe first if flags or side effects are unclear.
 - Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc behavior.
+- Work directly on the existing branch unless I explicitly request the work to be done in a PR.
 - Verify with the narrowest command that proves the change, then summarize the exact checks and outcomes concisely.
 
 ## Shell
