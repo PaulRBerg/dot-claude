@@ -45,12 +45,12 @@ When passing paths with special characters to a CLI, escape them:
 
 ```bash
 bat src/\(shared\)/Foo.tsx
-rg "pattern" path/to/my\ file.txt
+wc -l path/to/my\ file.txt
 ```
 
 - zsh does not word-split scalar strings by default; use arrays or explicit splitting when building argument lists.
 - `status` is a **read-only** special variable in zsh (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status` — even though the same code is fine in bash. Rename the variable (`rc`, `ret`, `result`) or run the script through an explicit `bash` call. Related: zsh ties `path` to `$PATH`, so assigning a plain string to `path` silently corrupts `PATH`; avoid both names.
-- Prefer modern, structured CLIs: `rg`/`fd` for search, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
+- For searching code, prefer your built-in search tool over shelling out — it sidesteps CLI-flag pitfalls. Otherwise prefer modern, structured CLIs: `fd` for finding files, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
 
 ## Skills
 
