@@ -59,6 +59,9 @@ Raw prompts are noisy, so the text is sanitized before it reaches the clipboard:
   or `MAX_CHARS` keep a bounded head and mark the rest `[Pasted]`.
 - Excess blank lines are squeezed; an empty result skips `pbcopy` so the clipboard is never clobbered.
 
+After sanitizing, a compact provenance prefix such as `[repo:dot-claude session:00893aaf]` is prepended so each
+clipboard entry is traceable to its source repo and session.
+
 The thresholds are module-level constants at the top of the script, easy to tune.
 
 ### Notes

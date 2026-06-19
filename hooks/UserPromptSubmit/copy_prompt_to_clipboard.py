@@ -15,12 +15,14 @@ Set ``CLAUDE_CLIP_DEBUG=1`` to append raw stdin to ``.debug.jsonl`` (next to thi
 script) for a one-shot check of how prompts/pastes are represented.
 """
 
+import hashlib
 import json
 import os
 import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 # Absolute path: PATH-independent in the non-interactive hook shell. The pbcopy
 # on PATH is just an `exec /usr/bin/pbcopy` shim anyway.
@@ -30,6 +32,8 @@ PBCOPY = "/usr/bin/pbcopy"
 LONG_LINE_CHARS = 400  # A single line longer than this collapses to "[Pasted]".
 MAX_CHARS = 1500  # Whole prompt longer than this keeps a bounded head.
 MAX_LINES = 20  # Whole prompt with more lines than this keeps a bounded head.
+SHORT_ID_CHARS = 8  # Length of the short session/ref id in the provenance prefix.
+MAX_LABEL_CHARS = 32  # Max length of the repo label in the provenance prefix.
 
 # Claude Code's own placeholder markers for pasted text, images, and truncated
 # text. This mirrors the exact regex the live bundle uses to detect them.
@@ -53,6 +57,24 @@ UNTERMINATED_FENCE_RE = re.compile(
 
 # Three or more consecutive newlines (excess blank lines).
 BLANK_LINES_RE = re.compile(r"\n{3,}")
+
+# Characters not allowed in a compact metadata value (stripped from the prefix).
+METADATA_VALUE_RE = re.compile(r"[^A-Za-z0-9._/@:-]+")
+# Leading 8 hex digits of a UUID-like id (e.g. a session_id), used as a short id.
+UUID_RE = re.compile(r"\b([0-9a-fA-F]{8})-[0-9a-fA-F-]{8,}\b")
+# Trailing repo name in a git remote URL (tolerates optional ".git" or slash).
+GIT_REMOTE_PATH_RE = re.compile(r"[:/]([^/:]+?)(?:\.git)?/?$")
+
+CWD_KEYS = ("cwd", "working_dir", "workingDirectory", "project_path", "projectPath")
+SESSION_ID_KEYS = (
+    "session_id",
+    "sessionId",
+    "conversation_id",
+    "conversationId",
+    "thread_id",
+    "threadId",
+)
+NESTED_METADATA_KEYS = ("session", "conversation", "thread", "turn", "workspace")
 
 
 def _collapse_size(text: str) -> str:
@@ -86,6 +108,137 @@ def sanitize_prompt(prompt: str) -> str:
     return text.strip()
 
 
+def _first_string(data: dict[str, Any], keys: tuple[str, ...]) -> str:
+    """Return the first non-empty string found at top level or one level deep."""
+    for key in keys:
+        value = data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+    for parent_key in NESTED_METADATA_KEYS:
+        parent = data.get(parent_key)
+        if not isinstance(parent, dict):
+            continue
+        for key in keys:
+            value = parent.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+
+    return ""
+
+
+def _safe_metadata_value(value: str, max_chars: int) -> str:
+    """Normalize a metadata value for a compact bracketed prefix."""
+    text = re.sub(r"\s+", "-", value.strip())
+    text = METADATA_VALUE_RE.sub("", text)
+    return text[:max_chars].strip("-")
+
+
+def _short_identifier(value: str) -> str:
+    """Return a short readable identifier from a session/thread-ish value."""
+    match = UUID_RE.search(value)
+    if match:
+        return match.group(1).lower()
+
+    return _safe_metadata_value(value, SHORT_ID_CHARS)
+
+
+def _session_cwd(data: dict[str, Any]) -> Path:
+    """Return the session cwd from hook data when present, otherwise process cwd."""
+    value = _first_string(data, CWD_KEYS)
+    if not value:
+        return Path.cwd()
+
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = Path.cwd() / path
+    return path
+
+
+def _git_output(cwd: Path, *args: str) -> str:
+    """Run a short git query and return stripped stdout, or empty on failure."""
+    try:
+        return subprocess.check_output(
+            ["git", "-C", str(cwd), *args],
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=1,
+        ).strip()
+    except (OSError, subprocess.SubprocessError):
+        return ""
+
+
+def _repo_root(cwd: Path) -> Path:
+    """Return the git root for cwd, falling back to cwd."""
+    root = _git_output(cwd, "rev-parse", "--show-toplevel")
+    if root:
+        return Path(root)
+    return cwd
+
+
+def _repo_label(cwd: Path, repo_root: Path) -> str:
+    """Return a compact repo label, preferring remote origin over folder name."""
+    remote = _git_output(cwd, "config", "--get", "remote.origin.url")
+    match = GIT_REMOTE_PATH_RE.search(remote)
+    if match:
+        label = _safe_metadata_value(match.group(1), MAX_LABEL_CHARS)
+        if label:
+            return label
+
+    return _safe_metadata_value(repo_root.name or str(repo_root), MAX_LABEL_CHARS)
+
+
+def _transcript_identifier(data: dict[str, Any]) -> str:
+    """Return a short identifier from Claude's transcript path when available."""
+    value = data.get("transcript_path")
+    if not isinstance(value, str) or not value.strip():
+        return ""
+
+    return _short_identifier(Path(value).stem)
+
+
+def _path_reference(path: Path) -> str:
+    """Return a short stable reference for non-git directories."""
+    try:
+        value = str(path.resolve())
+    except OSError:
+        value = str(path)
+    return hashlib.sha1(value.encode("utf-8"), usedforsecurity=False).hexdigest()[:SHORT_ID_CHARS]
+
+
+def build_metadata_prefix(data: dict[str, Any]) -> str:
+    """Build a short provenance prefix for clipboard history."""
+    cwd = _session_cwd(data)
+    repo_root = _repo_root(cwd)
+    project = _repo_label(cwd, repo_root)
+
+    parts = []
+    if project:
+        parts.append(f"repo:{project}")
+
+    session_id = _short_identifier(_first_string(data, SESSION_ID_KEYS))
+    transcript_id = _transcript_identifier(data)
+    if session_id:
+        parts.append(f"session:{session_id}")
+    elif transcript_id:
+        parts.append(f"session:{transcript_id}")
+    else:
+        ref = _git_output(cwd, "rev-parse", "--short=8", "HEAD")
+        parts.append(f"ref:{ref or _path_reference(repo_root)}")
+
+    return f"[{' '.join(parts)}]" if parts else ""
+
+
+def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
+    """Sanitize a prompt and prepend compact source metadata."""
+    text = sanitize_prompt(prompt)
+    if not text:
+        return ""
+
+    prefix = build_metadata_prefix(data)
+    return f"{prefix}\n{text}" if prefix else text
+
+
 def _maybe_debug(raw: str) -> None:
     """Append raw stdin to a debug log when CLAUDE_CLIP_DEBUG=1 (best effort)."""
     if os.environ.get("CLAUDE_CLIP_DEBUG") != "1":
@@ -115,7 +268,11 @@ def main() -> None:
     if not isinstance(prompt, str):
         sys.exit(0)
 
-    text = sanitize_prompt(prompt)
+    try:
+        text = format_clipboard_prompt(prompt, data)
+    except Exception as e:  # noqa: BLE001 - hook must fail open.
+        print(f"Warning: metadata prefix failed: {e}", file=sys.stderr)
+        text = sanitize_prompt(prompt)
     if not text:
         sys.exit(0)  # Nothing meaningful; don't clobber the clipboard.
 

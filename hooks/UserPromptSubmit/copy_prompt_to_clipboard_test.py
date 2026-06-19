@@ -74,6 +74,94 @@ class TestSanitizePrompt:
         assert hook.sanitize_prompt("   \n\n   ") == ""
 
 
+class TestMetadataPrefix:
+    """Test compact clipboard provenance metadata."""
+
+    def test_builds_metadata_with_session_id(self):
+        """Test that Claude's session_id is shortened into the prefix."""
+        data = {
+            "cwd": "/tmp/work/my repo/subdir",
+            "session_id": "00893aaf-19fa-41d2-8238-13269b9b3ca0",
+        }
+
+        with patch.object(hook, "_git_output", side_effect=["/tmp/work/my repo", ""]):
+            assert hook.build_metadata_prefix(data) == "[repo:my-repo session:00893aaf]"
+
+    def test_prefers_remote_repo_name(self):
+        """Test that git remote names beat ambiguous folder names."""
+        data = {
+            "cwd": "/tmp/work/.claude",
+            "session_id": "00893aaf-19fa-41d2-8238-13269b9b3ca0",
+        }
+
+        with patch.object(
+            hook,
+            "_git_output",
+            side_effect=[
+                "/tmp/work/.claude",
+                "git@github.com:PaulRBerg/dot-claude.git",
+            ],
+        ):
+            assert hook.build_metadata_prefix(data) == "[repo:dot-claude session:00893aaf]"
+
+    def test_builds_metadata_with_nested_session_id(self):
+        """Test that one-level nested metadata is accepted."""
+        data = {
+            "cwd": "/tmp/work/demo",
+            "session": {"sessionId": "claude-session-1234567890"},
+        }
+
+        with patch.object(hook, "_git_output", side_effect=["/tmp/work/demo", ""]):
+            assert hook.build_metadata_prefix(data) == "[repo:demo session:claude-s]"
+
+    def test_builds_metadata_with_transcript_path_when_session_missing(self):
+        """Test transcript path stem is a useful session fallback."""
+        data = {
+            "cwd": "/tmp/work/demo",
+            "transcript_path": "/Users/me/.claude/projects/demo/00893aaf-19fa.jsonl",
+        }
+
+        with patch.object(hook, "_git_output", side_effect=["/tmp/work/demo", ""]):
+            assert hook.build_metadata_prefix(data) == "[repo:demo session:00893aaf]"
+
+    def test_builds_metadata_with_git_ref_when_session_missing(self):
+        """Test git HEAD is used when no session-like id exists."""
+        data = {"cwd": "/tmp/work/demo"}
+
+        with patch.object(
+            hook,
+            "_git_output",
+            side_effect=["/tmp/work/demo", "", "dd66016a"],
+        ):
+            assert hook.build_metadata_prefix(data) == "[repo:demo ref:dd66016a]"
+
+    def test_builds_metadata_with_path_ref_when_git_unavailable(self):
+        """Test non-git directories still get a short stable reference."""
+        data = {"cwd": "/tmp/work/demo"}
+
+        with patch.object(hook, "_git_output", return_value=""):
+            with patch.object(hook, "_path_reference", return_value="deadbeef"):
+                assert hook.build_metadata_prefix(data) == "[repo:demo ref:deadbeef]"
+
+    def test_formats_clipboard_prompt_with_metadata(self):
+        """Test formatter prepends metadata to sanitized prompt."""
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            return_value="[repo:demo session:00893aaf]",
+        ):
+            assert (
+                hook.format_clipboard_prompt("hello **world**", {})
+                == "[repo:demo session:00893aaf]\nhello **world**"
+            )
+
+    def test_format_skips_metadata_when_prompt_is_empty(self):
+        """Test empty prompts never build metadata or touch clipboard text."""
+        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
+            assert hook.format_clipboard_prompt("   \n", {}) == ""
+            mock_prefix.assert_not_called()
+
+
 class TestMain:
     """Test main() entry point."""
 
@@ -85,13 +173,18 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "hello world"}))
         mock_stdin.seek(0)
 
-        with pytest.raises(SystemExit) as exc_info:
-            hook.main()
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            return_value="[repo:demo session:00893aaf]",
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                hook.main()
 
         assert exc_info.value.code == 0
         mock_run.assert_called_once()
         assert mock_run.call_args.args[0] == [hook.PBCOPY]
-        assert mock_run.call_args.kwargs["input"] == "hello world"
+        assert mock_run.call_args.kwargs["input"] == "[repo:demo session:00893aaf]\nhello world"
 
     @patch("subprocess.run")
     @patch("sys.stdin", new_callable=StringIO)
@@ -101,8 +194,13 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "hello world"}))
         mock_stdin.seek(0)
 
-        with pytest.raises(SystemExit):
-            hook.main()
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            return_value="[repo:demo session:00893aaf]",
+        ):
+            with pytest.raises(SystemExit):
+                hook.main()
 
         assert capsys.readouterr().out == ""
 
@@ -113,11 +211,13 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "   "}))
         mock_stdin.seek(0)
 
-        with pytest.raises(SystemExit) as exc_info:
-            hook.main()
+        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
+            with pytest.raises(SystemExit) as exc_info:
+                hook.main()
 
         assert exc_info.value.code == 0
         mock_run.assert_not_called()
+        mock_prefix.assert_not_called()
 
     @patch("subprocess.run")
     @patch("sys.stdin", new_callable=StringIO)
@@ -164,8 +264,13 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "hi"}))
         mock_stdin.seek(0)
 
-        with pytest.raises(SystemExit) as exc_info:
-            hook.main()
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            return_value="[repo:demo session:00893aaf]",
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                hook.main()
 
         assert exc_info.value.code == 0
 
@@ -177,7 +282,32 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "hi"}))
         mock_stdin.seek(0)
 
-        with pytest.raises(SystemExit) as exc_info:
-            hook.main()
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            return_value="[repo:demo session:00893aaf]",
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                hook.main()
 
         assert exc_info.value.code == 0
+
+    @patch("subprocess.run")
+    @patch("sys.stdin", new_callable=StringIO)
+    def test_metadata_failure_copies_sanitized_prompt(self, mock_stdin, mock_run, capsys):
+        """Test provenance errors do not prevent copying the prompt."""
+        mock_run.return_value = MagicMock(returncode=0, stderr="")
+        mock_stdin.write(json.dumps({"prompt": "hello world"}))
+        mock_stdin.seek(0)
+
+        with patch.object(
+            hook,
+            "build_metadata_prefix",
+            side_effect=RuntimeError("boom"),
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                hook.main()
+
+        assert exc_info.value.code == 0
+        assert mock_run.call_args.kwargs["input"] == "hello world"
+        assert "Warning: metadata prefix failed" in capsys.readouterr().err
