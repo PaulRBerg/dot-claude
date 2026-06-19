@@ -32,6 +32,7 @@ PBCOPY = "/usr/bin/pbcopy"
 LONG_LINE_CHARS = 400  # A single line longer than this collapses to "[Pasted]".
 MAX_CHARS = 1500  # Whole prompt longer than this keeps a bounded head.
 MAX_LINES = 20  # Whole prompt with more lines than this keeps a bounded head.
+MIN_CHARS = 200  # Sanitized prompts shorter than this are too trivial to log.
 SHORT_ID_CHARS = 8  # Length of the short session/ref id in the provenance prefix.
 MAX_LABEL_CHARS = 32  # Max length of the repo label in the provenance prefix.
 
@@ -230,9 +231,14 @@ def build_metadata_prefix(data: dict[str, Any]) -> str:
 
 
 def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
-    """Sanitize a prompt and prepend compact source metadata."""
+    """Sanitize a prompt and prepend compact source metadata.
+
+    Short prompts (sanitized content under ``MIN_CHARS``) are dropped — the
+    metadata prefix doesn't count toward the floor — so trivial one-liners don't
+    flood clipboard history.
+    """
     text = sanitize_prompt(prompt)
-    if not text:
+    if len(text) < MIN_CHARS:
         return ""
 
     prefix = build_metadata_prefix(data)
