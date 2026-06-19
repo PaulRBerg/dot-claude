@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Configured-DE7356)](https://github.com/anthropics/claude-code)
 
-PRB's `.claude` directory.
+PRB's personal Claude Code config, mounted at `~/.claude`.
 
 ## Quick Start
 
@@ -59,8 +59,8 @@ Settings layout:
 
 ### Context
 
-Global instructions are in `CLAUDE.md` (communication style, code preferences, scope preservation, git safety, shell
-escaping).
+`CLAUDE.md` is user-level context loaded by Claude Code across all projects. Keep repo-specific guidance in project
+`CLAUDE.md` / `AGENTS.md` files; keep only durable personal workflow defaults here.
 
 ### Flags
 
@@ -89,11 +89,10 @@ which enables namespaced patterns like `/yeet:issue-cc` and `/agents-context:bra
 ### Skills
 
 Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-agents) and installed via Vercel's
-[skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks to `~/.agents/skills/`. See dot-agents for
-installation guidance.
+[skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`.
+See dot-agents for installation guidance.
 
-Examples: **commit**, **code-review**, **code-polish**, **vitest**, **effect-ts**, **web3-foundry**, **biome-js**,
-**cli-gh**, **yeet**.
+Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **find-tool**, **yeet**.
 
 ### Agents
 
@@ -112,20 +111,17 @@ MCP servers are configured in `.mcp.json` (currently none). Permission rules for
 
 Hooks provide event-driven Claude Code automation. See [hooks/README.md](hooks/README.md).
 
-Active hooks:
+Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
-- **sync_global_settings.py**: sync global settings across machines (`SessionEnd`)
-- **sync_local_settings.py**: sync local project settings (`SessionEnd`)
+- **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
 
-Optional (commented out): **ai-flags** (prompt flag parsing), **ai-notify** (desktop notifications).
+Available hook scripts also include settings sync helpers under `hooks/SessionEnd/`.
 
 ### Plugins
 
-Two official plugins are enabled via `settings/plugins.jsonc`:
-
-- **claude-md-management**: CLAUDE.md auditing and improvement
-- **plugin-dev**: plugin development tools (commands, skills, hooks, agents)
+No plugins are enabled in `settings/plugins.jsonc`. `plugins/` stores marketplace metadata and caches; refresh them with
+`just update-plugins`.
 
 ## Utilities
 
