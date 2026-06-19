@@ -1,11 +1,11 @@
 [project]
   dependencies = [
-    "mdformat",
-    "mdformat-frontmatter",
-    "mdformat-gfm",
-    "pytest",
-    "pyright",
-    "ruff",
+    "mdformat>=1.0,<2",
+    "mdformat-frontmatter>=2.1.2,<3",
+    "mdformat-gfm>=1.0,<2",
+    "pytest>=9.1.1,<10",
+    "pyright>=1.1.410,<2",
+    "ruff>=0.15.18,<0.16",
   ]
   description = "Root .claude directory."
   name = "dot-claude"

@@ -9,6 +9,14 @@ import pytest
 
 import copy_prompt_to_clipboard as hook
 
+# A prompt that survives sanitization unchanged and clears MIN_CHARS (200), so it
+# exercises the copy path rather than the short-prompt floor.
+LONG_PROMPT = (
+    "Please review the authentication refactor and confirm the session handling, "
+    "token refresh, and error paths behave correctly across every supported provider "
+    "before we merge this into the main branch and cut the next release."
+)
+
 
 class TestSanitizePrompt:
     """Test sanitize_prompt() and its pipeline."""
@@ -151,9 +159,15 @@ class TestMetadataPrefix:
             return_value="[repo:demo session:00893aaf]",
         ):
             assert (
-                hook.format_clipboard_prompt("hello **world**", {})
-                == "[repo:demo session:00893aaf]\nhello **world**"
+                hook.format_clipboard_prompt(LONG_PROMPT, {})
+                == f"[repo:demo session:00893aaf]\n{LONG_PROMPT}"
             )
+
+    def test_format_skips_short_prompt(self):
+        """Test that prompts under MIN_CHARS are dropped before metadata."""
+        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
+            assert hook.format_clipboard_prompt("hello **world**", {}) == ""
+            mock_prefix.assert_not_called()
 
     def test_format_skips_metadata_when_prompt_is_empty(self):
         """Test empty prompts never build metadata or touch clipboard text."""
@@ -170,7 +184,7 @@ class TestMain:
     def test_copies_sanitized_prompt(self, mock_stdin, mock_run):
         """Test that the sanitized prompt is piped to pbcopy."""
         mock_run.return_value = MagicMock(returncode=0, stderr="")
-        mock_stdin.write(json.dumps({"prompt": "hello world"}))
+        mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
         with patch.object(
@@ -184,14 +198,14 @@ class TestMain:
         assert exc_info.value.code == 0
         mock_run.assert_called_once()
         assert mock_run.call_args.args[0] == [hook.PBCOPY]
-        assert mock_run.call_args.kwargs["input"] == "[repo:demo session:00893aaf]\nhello world"
+        assert mock_run.call_args.kwargs["input"] == f"[repo:demo session:00893aaf]\n{LONG_PROMPT}"
 
     @patch("subprocess.run")
     @patch("sys.stdin", new_callable=StringIO)
     def test_writes_nothing_to_stdout(self, mock_stdin, mock_run, capsys):
         """Test stdout discipline — the hook must emit nothing on stdout."""
         mock_run.return_value = MagicMock(returncode=0, stderr="")
-        mock_stdin.write(json.dumps({"prompt": "hello world"}))
+        mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
         with patch.object(
@@ -261,7 +275,7 @@ class TestMain:
     def test_handles_pbcopy_failure(self, mock_stdin, mock_run):
         """Test graceful exit when pbcopy cannot be launched."""
         mock_run.side_effect = OSError("pbcopy not found")
-        mock_stdin.write(json.dumps({"prompt": "hi"}))
+        mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
         with patch.object(
@@ -279,7 +293,7 @@ class TestMain:
     def test_handles_pbcopy_nonzero_exit(self, mock_stdin, mock_run):
         """Test graceful exit when pbcopy returns a non-zero status."""
         mock_run.return_value = MagicMock(returncode=1, stderr="nope")
-        mock_stdin.write(json.dumps({"prompt": "hi"}))
+        mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
         with patch.object(
@@ -297,7 +311,7 @@ class TestMain:
     def test_metadata_failure_copies_sanitized_prompt(self, mock_stdin, mock_run, capsys):
         """Test provenance errors do not prevent copying the prompt."""
         mock_run.return_value = MagicMock(returncode=0, stderr="")
-        mock_stdin.write(json.dumps({"prompt": "hello world"}))
+        mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
         with patch.object(
@@ -309,5 +323,5 @@ class TestMain:
                 hook.main()
 
         assert exc_info.value.code == 0
-        assert mock_run.call_args.kwargs["input"] == "hello world"
+        assert mock_run.call_args.kwargs["input"] == LONG_PROMPT
         assert "Warning: metadata prefix failed" in capsys.readouterr().err
