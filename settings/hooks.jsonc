@@ -12,6 +12,16 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/UserPromptSubmit/copy_prompt_to_clipboard.py",
+            "type": "command"
+          }
+        ]
+      }
     ]
   }
 }

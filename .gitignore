@@ -42,10 +42,15 @@
 !skills/**
 
 # Re-ignore generated files inside allowed directories
-.DS_Store
+
+# directories
 __pycache__/
+node_modules/
+skills/.system/
+
+# files
+.DS_Store
 *.pyc
 *.log*
 .coverage
-node_modules/
-skills/.system/
+.debug.jsonl

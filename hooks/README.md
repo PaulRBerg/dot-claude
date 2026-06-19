@@ -8,7 +8,7 @@ events during execution.
 Several hooks provide event-driven automation across different Claude Code events:
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
-- **ai-flags** - Parse flags from prompts to trigger behaviors (UserPromptSubmit)
+- **copy_prompt_to_clipboard** - Copy each submitted prompt to the macOS clipboard (UserPromptSubmit)
 
 ## Hook Events
 
@@ -43,96 +43,30 @@ See [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for installat
 
 See the [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for setup instructions and configuration options.
 
-## 2. ai-flags (UserPromptSubmit)
+## 2. copy_prompt_to_clipboard (UserPromptSubmit)
 
-Standalone CLI tool that parses trailing flags from prompts to trigger different behaviors. Distributed as a Python
-package and installed globally via uv. Flags must appear at the end of prompts with no other text after them.
+Copies every submitted prompt to the macOS clipboard via `pbcopy` so it shows up in
+[Raycast](https://www.raycast.com)'s clipboard history — a searchable log of what you asked.
 
-### Prerequisites
+### Sanitization
 
-- Python 3.12 or higher
-- Installed via uv: `uv tool install ai-flags`
-- See [ai-flags repository](https://github.com/PaulRBerg/ai-flags) for installation instructions
+Raw prompts are noisy, so the text is sanitized before it reaches the clipboard:
 
-### Supported Flags
+- **Claude Code markers** (`[Pasted text #N +M lines]`, `[Image #N]`, `[...Truncated text #N]`) are normalized to
+  `Pasted`.
+- **Fenced code blocks** (3+ backticks, terminated or not) collapse to `[code]`.
+- **Oversized content** — any line longer than `LONG_LINE_CHARS` collapses to `[Pasted]`; prompts exceeding `MAX_LINES`
+  or `MAX_CHARS` keep a bounded head and mark the rest `[Pasted]`.
+- Excess blank lines are squeezed; an empty result skips `pbcopy` so the clipboard is never clobbered.
 
-- **`-s`** (subagent): Injects [SUBAGENTS.md](UserPromptSubmit/SUBAGENTS.md) instructions, forcing Claude to delegate
-  work to specialized subagents instead of doing everything itself. Mandates parallel delegation for independent
-  subtasks, single agent for sequential work.
+The thresholds are module-level constants at the top of the script, easy to tune.
 
-- **`-c`** (commit): Instructs Claude to execute `/commit` slash command after completing the task.
+### Notes
 
-- **`-t`** (test): Adds testing emphasis context, requiring comprehensive test coverage including unit tests,
-  integration tests, and edge cases.
-
-- **`-d`** (debug): Invokes the debugger subagent for systematic root cause analysis with a 5-step debugging workflow.
-
-- **`-n`** (no-lint): Skip linting and type-checking during development.
-
-### Configuration
-
-Configuration is managed via `~/.config/ai-flags/config.yaml`. Each flag can be enabled/disabled or customized:
-
-```bash
-# View current configuration
-ai-flags config show
-
-# Enable or disable a flag
-ai-flags config set s enabled
-ai-flags config set n disabled
-
-# Edit configuration in your editor
-ai-flags config edit
-
-# Reset to defaults
-ai-flags config reset
-```
-
-Users can override default flag instructions by setting custom `content` in the YAML configuration file.
-
-### Composability
-
-Flags combine naturally into complete workflows:
-
-- `implement payment API -s -t -c` → delegate to agents, emphasize tests, commit when done
-- `fix memory leak -d -c` → debug mode, commit fix
-- `add OAuth flow -s -c` → orchestrate implementation, auto-commit
-
-**Order independence**: `-s -c -t` works identically to `-t -c -s`.
-
-### Usage Examples
-
-```bash
-# Use subagents for complex task
-claude "refactor authentication system -s"
-
-# Add tests and commit when done
-claude "implement user validation -t -c"
-
-# Full workflow: delegate, test, and commit
-claude "add payment integration -s -t -c"
-
-# Debug mode with auto-commit
-claude "fix memory leak in cache -d -c"
-
-# Skip linting during rapid development
-claude "prototype new feature -n"
-```
-
-### Testing
-
-Test flag parsing and behavior using the CLI:
-
-```bash
-# Test flag parsing (displays parsed flags and injected context)
-ai-flags handle "implement feature -s -c"
-
-# Test with hook mode (JSON input/output for integration testing)
-echo '{"prompt": "my task -t -c"}' | ai-flags handle
-
-# Verify current configuration
-ai-flags config show
-```
+- `UserPromptSubmit` hooks inject **stdout** into the model context, so this hook writes nothing to stdout — it only
+  copies as a side effect and always exits 0.
+- Set `CLAUDE_CLIP_DEBUG=1` to append raw stdin to `UserPromptSubmit/.debug.jsonl` for a one-shot check of how a paste
+  is represented.
 
 ## Development
 
