@@ -1,9 +1,8 @@
 {
-  // Read permissions for specific files
+  // Read denials for sensitive files
   // NOTE: to add reading directories, use the additional-dirs.jsonc file
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": ["Read(~/.zshrc)"],
     "deny": ["Read(~/Drive/Secrets/**)", "Read(~/.ssh/**)"]
   }
 }
