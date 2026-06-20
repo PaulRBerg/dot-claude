@@ -32,7 +32,7 @@ PBCOPY = "/usr/bin/pbcopy"
 LONG_LINE_CHARS = 400  # A single line longer than this collapses to "[Pasted]".
 MAX_CHARS = 1500  # Whole prompt longer than this keeps a bounded head.
 MAX_LINES = 20  # Whole prompt with more lines than this keeps a bounded head.
-MIN_CHARS = 200  # Sanitized prompts shorter than this are too trivial to log.
+MIN_CHARS = 120  # Sanitized prompts shorter than this are too trivial to log.
 SHORT_ID_CHARS = 8  # Length of the short session/ref id in the provenance prefix.
 MAX_LABEL_CHARS = 32  # Max length of the repo label in the provenance prefix.
 
