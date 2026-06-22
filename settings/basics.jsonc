@@ -11,7 +11,6 @@
   "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
-  "model": "default",
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
   "skipAutoPermissionPrompt": true,
