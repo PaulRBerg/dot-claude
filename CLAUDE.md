@@ -41,13 +41,20 @@ EOF
 
 The quoted `<<'EOF'` keeps the body out of zsh's parser and runs it in real bash. For longer scripts, write a `#!/usr/bin/env bash` file and execute it.
 
-When passing paths with special characters to a CLI, escape them:
+When passing paths, URLs, or literal patterns with shell-sensitive characters to a CLI, quote or escape each token. In
+zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax, so protect Next.js route groups/dynamic segments and URLs with
+query strings:
 
 ```bash
-bat src/\(shared\)/Foo.tsx
+bat 'src/(shared)/Foo.tsx'
+git diff -- 'src/app/(main)/[id]/page.tsx'
+curl -sS 'https://api.github.com/search/issues?q=repo:openai/codex+zsh&per_page=10'
+rg -F '?' 'src/app/(main)'
 wc -l path/to/my\ file.txt
 ```
 
+- Prefer single quotes for literal paths/URLs. Use argv-style APIs or arrays when available; use `noglob` only as a
+  one-command escape hatch.
 - zsh does not word-split scalar strings by default; use arrays or explicit splitting when building argument lists.
 - `status` is a **read-only** special variable in zsh (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status` — even though the same code is fine in bash. Rename the variable (`rc`, `ret`, `result`) or run the script through an explicit `bash` call. Related: zsh ties `path` to `$PATH`, so assigning a plain string to `path` silently corrupts `PATH`; avoid both names.
 - For searching code, prefer your built-in search tool over shelling out — it sidesteps CLI-flag pitfalls. Otherwise prefer modern, structured CLIs: `fd` for finding files, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
