@@ -18,6 +18,7 @@
   "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
+  "tui": "fullscreen",
   "useAutoModeDuringPlan": false,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "true",
