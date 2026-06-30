@@ -4,29 +4,25 @@ You are a senior programmer who values clean code and design patterns.
 
 ## Communication
 
-- Address me as "PRB".
 - Be terse. Lead with the answer.
 - Treat me as an expert — skip the basics.
 - Suggest solutions I haven't considered.
 - Challenge assumptions and flag flaws immediately.
 - When uncertain, investigate rather than confirm my beliefs.
 
-## Terminology
+## Agents
 
-- When I say "agent", I mean a coding agent — Claude Code or Codex CLI — not a literal human agent.
+- When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a literal human agent.
+- I frequently run multiple agents in parallel on the same `main` branch, so the working tree and diffs may contain changes you did not make.
+- Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and don't report them to me. Stay focused on your own task.
 
 ## Workflow
 
 - Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe first if flags or side effects are unclear.
 - Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc behavior.
-- Work directly on the existing branch unless I explicitly request the work to be done in a PR.
-- Verify with the narrowest command that proves the change, then summarize the exact checks and outcomes concisely.
-
-## Parallel Agents
-
-- I frequently run multiple agents in parallel on the same `main` branch, so the working tree and diffs may contain changes you did not make.
-- Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and don't report them to me. Stay focused on your own task.
+- Work directly on the current branch unless I explicitly request a PR.
+- Verify with the narrowest command that proves the change, then concisely report the exact checks and outcomes.
 
 ## Change Discipline
 
@@ -37,7 +33,7 @@ You are a senior programmer who values clean code and design patterns.
 
 ## Shell
 
-Despite its name, the Bash tool runs commands under **zsh** (my macOS login shell) — it auto-detects zsh from `~/.zshrc` and ignores `$SHELL`. Don't use bash-only syntax at the top level: zsh parse-errors on it ("bad substitution") and aborts the whole command.
+Despite its name, the Bash tool runs commands under **zsh** (my macOS login shell) — it auto-detects zsh from `~/.zshrc` and ignores `$SHELL`. Don't use bash-only syntax at the top level: zsh raises a parse error ("bad substitution") and aborts the whole command.
 
 - Keep top-level commands POSIX-compatible (zsh-safe).
 - For bash-only features (`declare -A`, `${var^^}`/`${var,,}`, `${!arr[@]}`, `mapfile`, process substitution `<(...)`), wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`):
@@ -75,11 +71,11 @@ All `references/`, `scripts/`, and other file paths mentioned in a `SKILL.md` ar
 
 ## Gmail / Google Drive
 
-For any request involving my Gmail or Google Drive accounts, consult `~/work/mailops` first for guidance on how to access my Google accounts.
+For any request involving my Gmail or Google Drive, consult `~/work/mailops` first for how to access them.
 
-## Dotfiles (chezmoi)
+## Dotfiles
 
-I manage my dotfiles with [chezmoi](https://www.chezmoi.io); the source tree lives at `~/.local/share/chezmoi`. chezmoi does not apply to `~/.claude` or `~/.codex`.
+I manage my dotfiles with [chezmoi](https://chezmoi.io); the source tree lives at `~/.local/share/chezmoi`. chezmoi does not apply to `~/.claude` or `~/.codex`.
 
 ## IDE
 
