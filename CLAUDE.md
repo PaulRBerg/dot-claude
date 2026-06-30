@@ -65,6 +65,20 @@ wc -l path/to/my\ file.txt
 - `status` is a **read-only** special variable in zsh (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status` — even though the same code is fine in bash. Rename the variable (`rc`, `ret`, `result`) or run the script through an explicit `bash` call. Related: zsh ties `path` to `$PATH`, so assigning a plain string to `path` silently corrupts `PATH`; avoid both names.
 - For searching code, prefer your built-in search tool over shelling out — it sidesteps CLI-flag pitfalls. Otherwise prefer modern, structured CLIs: `fd` for finding files, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
 
+## Node.js
+
+- Run one-off scripts as ES modules. Top-level `await` needs ESM; `require` only works in CommonJS — mix them and Node rejects the script. Use `import`, not `require`.
+- File scripts: use a `.mjs` extension (or `"type": "module"` in the nearest `package.json`), then `node script.mjs`.
+- Inline scripts via stdin/heredoc or `-e` default to CommonJS — pass `node --input-type=module` and use `import`:
+
+```bash
+node --input-type=module <<'EOF'
+import { readFile } from 'node:fs/promises';
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+console.log(pkg.name);
+EOF
+```
+
 ## Skills
 
 All `references/`, `scripts/`, and other file paths mentioned in a `SKILL.md` are relative to the skill installation directory (where `SKILL.md` lives).
