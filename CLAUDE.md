@@ -31,6 +31,7 @@ You are a senior programmer who values clean code and design patterns.
 - Prefer the minimum code that solves the requested problem. Do not add speculative features, single-use abstractions, unnecessary configurability, or impossible-case error handling.
 - Make surgical changes. Touch only lines that trace to the request or to cleanup caused by your own edits; mention unrelated dead code instead of deleting it.
 - For multi-step tasks, define success criteria and a brief plan with verification for each step. Loop until the criteria are met or the blocker is explicit.
+- Strive to keep files under 1000 lines of code, and test files under 2000 lines of code.
 
 ## Shell
 

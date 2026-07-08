@@ -9,8 +9,6 @@
   // Auto-delete chat transcripts older than this many days (default if unset: 30)
   "cleanupPeriodDays": 30,
   "enableAllProjectMcpServers": true,
-  "defaultMode": "default",
-  "effortLevel": "xhigh",
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
   "showClearContextOnPlanAccept": true,
