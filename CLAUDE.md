@@ -1,4 +1,4 @@
-# Context
+# Global Instructions
 
 You are a senior programmer who values clean code and design patterns.
 
@@ -12,14 +12,14 @@ You are a senior programmer who values clean code and design patterns.
 
 ## Agents
 
-- When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a literal human agent.
-- I frequently run multiple agents in parallel on the same `main` branch, so the working tree and diffs may contain changes you did not make.
-- Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and don't report them to me. Stay focused on your own task.
-- I may also make commits myself while you're working. Don't be surprised by commits you didn't author; don't revert or amend them unless I ask.
+- When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a human.
+- I often run several agents in parallel on the same `main` branch, so the working tree and diffs may contain changes you did not make.
+- Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and don't report them to me.
+- I may also commit while you work. Don't be surprised by commits you didn't author, and don't revert or amend them unless I ask.
 
 ## Workflow
 
-- Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe first if flags or side effects are unclear.
+- Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe first if its flags or side effects are unclear.
 - Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc behavior.
 - Work directly on the current branch unless I explicitly request a PR.
@@ -27,11 +27,11 @@ You are a senior programmer who values clean code and design patterns.
 
 ## Change Discipline
 
-- Before implementing, state assumptions. If multiple interpretations would change the implementation or verification strategy, present them and ask.
-- Prefer the minimum code that solves the requested problem. Do not add speculative features, single-use abstractions, unnecessary configurability, or impossible-case error handling.
+- State assumptions before implementing. If multiple interpretations would change the implementation or verification strategy, present them and ask.
+- Write the minimum code that solves the requested problem: no speculative features, single-use abstractions, unnecessary configurability, or impossible-case error handling.
 - Make surgical changes. Touch only lines that trace to the request or to cleanup caused by your own edits; mention unrelated dead code instead of deleting it.
 - For multi-step tasks, define success criteria and a brief plan with verification for each step. Loop until the criteria are met or the blocker is explicit.
-- Strive to keep files under 1000 lines of code, and test files under 2000 lines of code.
+- Keep files under 1000 lines and test files under 2000.
 
 ## Shell
 
@@ -49,9 +49,7 @@ EOF
 
 The quoted `<<'EOF'` keeps the body out of zsh's parser and runs it in real bash. For longer scripts, write a `#!/usr/bin/env bash` file and execute it.
 
-When passing paths, URLs, or literal patterns with shell-sensitive characters to a CLI, quote or escape each token. In
-zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax, so protect Next.js route groups/dynamic segments and URLs with
-query strings:
+When passing paths, URLs, or literal patterns with shell-sensitive characters to a CLI, quote or escape each token. In zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax, so protect Next.js route groups/dynamic segments and URLs with query strings:
 
 ```bash
 bat 'src/(shared)/Foo.tsx'
@@ -61,16 +59,15 @@ rg -F '?' 'src/app/(main)'
 wc -l path/to/my\ file.txt
 ```
 
-- Prefer single quotes for literal paths/URLs. Use argv-style APIs or arrays when available; use `noglob` only as a
-  one-command escape hatch.
+- Prefer single quotes for literal paths/URLs. Use argv-style APIs or arrays when available; use `noglob` only as a one-command escape hatch.
 - zsh does not word-split scalar strings by default; use arrays or explicit splitting when building argument lists.
-- `status` is a **read-only** special variable in zsh (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status` — even though the same code is fine in bash. Rename the variable (`rc`, `ret`, `result`) or run the script through an explicit `bash` call. Related: zsh ties `path` to `$PATH`, so assigning a plain string to `path` silently corrupts `PATH`; avoid both names.
+- zsh reserves variable names that bash treats as ordinary. `status` is read-only (it mirrors `$?`), so `status=…`, `local status=…`, and `for status in …` all abort with `zsh: read-only variable: status`. `path` is tied to `$PATH`, so assigning it a plain string silently corrupts `PATH`. Avoid both names (use `rc`, `ret`, `result`) or run the script through an explicit `bash` call.
 - For searching code, prefer your built-in search tool over shelling out — it sidesteps CLI-flag pitfalls. Otherwise prefer modern, structured CLIs: `fd` for finding files, `jq` for JSON, `yq` for YAML/TOML when available, and `uv` for Python entry points.
 
 ## Node.js
 
-- Run one-off scripts as ES modules. Top-level `await` needs ESM; `require` only works in CommonJS — mix them and Node rejects the script. Use `import`, not `require`.
-- File scripts: use a `.mjs` extension (or `"type": "module"` in the nearest `package.json`), then `node script.mjs`.
+- Run one-off scripts as ES modules, with `import` rather than `require` — top-level `await` needs ESM, `require` only works in CommonJS, and mixing them makes Node reject the script.
+- File scripts: use a `.mjs` extension (or `"type": "module"` in the nearest `package.json`), then run `node script.mjs`.
 - Inline scripts via stdin/heredoc or `-e` default to CommonJS — pass `node --input-type=module` and use `import`:
 
 ```bash
@@ -83,7 +80,7 @@ EOF
 
 ## Skills
 
-All `references/`, `scripts/`, and other file paths mentioned in a `SKILL.md` are relative to the skill installation directory (where `SKILL.md` lives).
+File paths mentioned in a `SKILL.md` (`references/`, `scripts/`, etc.) are relative to the skill installation directory — the one containing `SKILL.md`.
 
 ## Gmail / Google Drive
 
@@ -91,8 +88,4 @@ For any request involving my Gmail or Google Drive, consult `~/work/mailops` fir
 
 ## Dotfiles
 
-I manage my dotfiles with [chezmoi](https://chezmoi.io); the source tree lives at `~/.local/share/chezmoi`. chezmoi does not apply to `~/.claude` or `~/.codex`.
-
-## IDE
-
-**VSCode** and **Cursor** share one user configuration. VSCode is the source of truth; Cursor's `settings.json`, `keybindings.json`, and `tasks.json` are symlinks to VSCode's copies in `~/Library/Application Support/Code/User/`. Settings are unified — a change in one editor takes effect in both, so never maintain per-editor copies.
+I manage my dotfiles with [chezmoi](https://chezmoi.io); the source tree lives at `~/.local/share/chezmoi`. chezmoi does not manage `~/.claude` or `~/.codex`.
