@@ -15,6 +15,7 @@ You are a senior programmer who values clean code and design patterns.
 - When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a literal human agent.
 - I frequently run multiple agents in parallel on the same `main` branch, so the working tree and diffs may contain changes you did not make.
 - Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and don't report them to me. Stay focused on your own task.
+- I may also make commits myself while you're working. Don't be surprised by commits you didn't author; don't revert or amend them unless I ask.
 
 ## Workflow
 
