@@ -24,8 +24,7 @@
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "uniqueItems": true
+      }
     },
     "verification": {
       "type": "array",
