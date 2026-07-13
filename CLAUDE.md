@@ -38,6 +38,7 @@ patterns only when they reduce overall complexity.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc behavior.
 - Work directly on the current branch unless I explicitly request a PR.
 - Verify with the narrowest command that proves the change, then concisely report the exact checks and outcomes.
+- I keep personal todos in `TODO.md` files across projects. These are private notes, not task specs: don't read or reference them unless I explicitly point you at one.
 
 ## Change Discipline
 
