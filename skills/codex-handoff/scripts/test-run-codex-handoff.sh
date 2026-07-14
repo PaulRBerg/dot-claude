@@ -13,6 +13,7 @@ args_file="$tmp_dir/args"
 prompt_file="$tmp_dir/prompt"
 stdout_file="$tmp_dir/stdout"
 stderr_file="$tmp_dir/stderr"
+result_artifact="$tmp_dir/result.json"
 
 cleanup() {
   rm -rf "$tmp_dir"
@@ -176,6 +177,17 @@ grep -Fxq -- '--ignore-user-config' "$args_file" && fail "runner ignored user co
 grep -Fxq -- '--json' "$args_file" && fail "runner passed --json without --progress-file"
 [[ "$(cat "$prompt_file")" == 'approved implementation' ]] || fail "prompt was not forwarded exactly"
 
+# Artifact mode keeps raw result JSON out of background-task output.
+(
+  cd "$repo"
+  printf '%s\n' 'approved implementation' | PATH="$fake_path" "$runner" \
+    --model gpt-5.6-sol --effort high --timeout-seconds 5 \
+    --result-file "$result_artifact"
+) >"$stdout_file" 2>"$stderr_file"
+[[ ! -s "$stdout_file" ]] || fail "artifact mode must keep stdout empty"
+[[ "$(cat "$result_artifact")" == "$expected_result" ]] || fail "artifact mode wrote an unexpected result"
+assert_file_contains 'codex-handoff: elapsed=' "$stderr_file"
+
 bypass_line="$(grep -nFx -- '--dangerously-bypass-approvals-and-sandbox' "$args_file" | cut -d: -f1)"
 exec_line="$(grep -nFx -- 'exec' "$args_file" | cut -d: -f1)"
 [[ $bypass_line -lt $exec_line ]] || fail "--dangerously-bypass-approvals-and-sandbox must precede exec"
@@ -197,6 +209,12 @@ exec_line="$(grep -nFx -- 'exec' "$args_file" | cut -d: -f1)"
     "$runner" --model gpt-5.6-sol --effort high --timeout-seconds 5
   expect_failure 69 'lacks required flag: --output-schema' env PATH="$fake_path" FAKE_HELP_MISSING=--output-schema \
     "$runner" --model gpt-5.6-sol --effort high --timeout-seconds 5
+  expect_failure 64 'must be different paths' env PATH="$fake_path" \
+    "$runner" --model gpt-5.6-sol --effort high --timeout-seconds 5 \
+    --progress-file "$tmp_dir/same-output" --result-file "$tmp_dir/same-output"
+  expect_failure 66 'cannot create result file' env PATH="$fake_path" \
+    "$runner" --model gpt-5.6-sol --effort high --timeout-seconds 5 \
+    --result-file "$tmp_dir/missing-result-dir/result.json"
   expect_failure 17 'simulated codex failure' env PATH="$fake_path" FAKE_EXIT=17 \
     "$runner" --model gpt-5.6-sol --effort high --timeout-seconds 5
   expect_failure 70 'without a structured result' env PATH="$fake_path" FAKE_NO_RESULT=1 \
@@ -238,15 +256,16 @@ set -e
 [[ $missing_codex_rc -eq 69 ]] || fail "missing codex should exit 69"
 assert_file_contains 'codex not found' "$stderr_file"
 
-# Progress mode: success path streams events, appends one sentinel, keeps stdout clean.
+# Progress plus artifact mode streams events, appends one sentinel, and keeps stdout empty.
 success_progress="$tmp_dir/success.progress.jsonl"
 (
   cd "$repo"
   printf '%s\n' 'approved implementation' | PATH="$fake_path" "$runner" \
     --model gpt-5.6-terra --effort high --timeout-seconds 5 \
-    --progress-file "$success_progress"
+    --progress-file "$success_progress" --result-file "$result_artifact"
 ) >"$stdout_file" 2>"$stderr_file"
-[[ "$(cat "$stdout_file")" == "$expected_result" ]] || fail "progress mode must keep result JSON as sole stdout"
+[[ ! -s "$stdout_file" ]] || fail "progress plus artifact mode must keep stdout empty"
+[[ "$(cat "$result_artifact")" == "$expected_result" ]] || fail "progress plus artifact mode lost the result"
 assert_arg --json
 assert_file_contains '"type":"thread.started"' "$success_progress"
 assert_file_contains '"type":"turn.completed"' "$success_progress"

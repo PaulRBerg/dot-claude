@@ -4,7 +4,7 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--progress-file PATH]
+Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--progress-file PATH] [--result-file PATH]
 
 Read an approved implementation prompt from stdin and run one ephemeral Codex
 implementation session in the current Git worktree.
@@ -12,6 +12,9 @@ implementation session in the current Git worktree.
 With --progress-file, Codex runs with --json and streams JSONL events to PATH;
 the wrapper appends one terminal {"type":"handoff.completed"|"handoff.failed"}
 sentinel line and leaves the file in place for inspection.
+
+With --result-file, the structured result is written to PATH and stdout stays
+empty so background-task interfaces do not display raw JSON.
 
 Allowed models: gpt-5.6-sol, gpt-5.6-terra
 Allowed efforts: medium, high, xhigh, max
@@ -22,6 +25,7 @@ model=""
 effort=""
 timeout_seconds=""
 progress_file=""
+result_output_file=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -59,6 +63,15 @@ while [[ $# -gt 0 ]]; do
     ;;
   --progress-file=*)
     progress_file="${1#*=}"
+    shift
+    ;;
+  --result-file)
+    [[ $# -ge 2 ]] || { echo "ERROR: --result-file requires a value" >&2; exit 64; }
+    result_output_file="$2"
+    shift 2
+    ;;
+  --result-file=*)
+    result_output_file="${1#*=}"
     shift
     ;;
   -h | --help)
@@ -130,6 +143,17 @@ done
 if [[ -n "$progress_file" ]]; then
   if ! : >"$progress_file" 2>/dev/null; then
     echo "ERROR: cannot create progress file: $progress_file" >&2
+    exit 66
+  fi
+fi
+
+if [[ -n "$result_output_file" ]]; then
+  if [[ "$result_output_file" == "$progress_file" ]]; then
+    echo "ERROR: --result-file and --progress-file must be different paths" >&2
+    exit 64
+  fi
+  if ! : >"$result_output_file" 2>/dev/null; then
+    echo "ERROR: cannot create result file: $result_output_file" >&2
     exit 66
   fi
 fi
@@ -290,10 +314,19 @@ if [[ ! -s "$result_file" ]]; then
   exit 70
 fi
 
-cat "$result_file"
-# Codex writes the result without a trailing newline; add one so the JSON stays
-# on its own line when stdout and stderr land in a shared task output file.
-[[ -z "$(tail -c 1 "$result_file")" ]] || echo
+if [[ -n "$result_output_file" ]]; then
+  if ! cp "$result_file" "$result_output_file"; then
+    emit_sentinel "{\"type\":\"handoff.failed\",\"reason\":\"error\",\"rc\":74,\"elapsed_seconds\":$elapsed}"
+    report_elapsed
+    echo "ERROR: cannot write result file: $result_output_file" >&2
+    exit 74
+  fi
+else
+  cat "$result_file"
+  # Codex writes the result without a trailing newline; add one so the JSON
+  # stays on its own line when stdout and stderr share a terminal.
+  [[ -z "$(tail -c 1 "$result_file")" ]] || echo
+fi
 
 output_tokens=""
 if [[ -n "$progress_file" ]]; then

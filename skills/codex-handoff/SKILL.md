@@ -87,9 +87,10 @@ target repository. Each invocation is one ephemeral Codex agent.
 The runner deliberately disables Codex approvals and sandboxing. Use it only when the user has accepted that agents can
 read, modify, or delete any files accessible to the host account.
 
-For every agent, create a per-agent progress path such as `"${TMPDIR:-/tmp}/codex-handoff.<agent-id>.progress.jsonl"`,
-convert its approved whole-minute timeout to seconds only at the wrapper boundary, then start the runner from anywhere
-inside the target Git worktree as a background Bash task (`run_in_background: true`) with a description like
+For every agent, create separate per-agent artifact paths ending in `<agent-id>.progress.jsonl`,
+`<agent-id>.result.json`, and `<agent-id>.stderr.log` under `${TMPDIR:-/tmp}`. Convert its approved whole-minute timeout
+to seconds only at the wrapper boundary, then start the runner from anywhere inside the target Git worktree as a
+background Bash task (`run_in_background: true`) with a description like
 `Codex A1/3: <scope> (<model>, <effort>, ≤<minutes>m)`:
 
 ```bash
@@ -97,14 +98,18 @@ bash <skill-dir>/scripts/run-codex-handoff.sh \
   --model <agent-model> \
   --effort <agent-effort> \
   --timeout-seconds <agent-minutes-times-60> \
-  --progress-file <agent-progress-file> <<'CODEX_PROMPT'
+  --progress-file <agent-progress-file> \
+  --result-file <agent-result-file> \
+  2> <agent-stderr-file> <<'CODEX_PROMPT'
 <agent implementation prompt>
 CODEX_PROMPT
 ```
 
-Do not set a Bash tool timeout; the wrapper's `--timeout-seconds` is the sole timeout authority and the wrapper always
-terminates itself. Start sequential agents only after reconciling their dependencies. Start every agent in a parallel
-wave in the same turn. After launching a wave, post the 🚀 kickoff block (see Status Reporting).
+`--result-file` keeps structured JSON out of stdout, and redirecting stderr keeps wrapper diagnostics out of the
+background task's display. Do not set a Bash tool timeout; the wrapper's `--timeout-seconds` is the sole timeout
+authority and the wrapper always terminates itself. Start sequential agents only after reconciling their dependencies.
+Start every agent in a parallel wave in the same turn. After launching a wave, post the 🚀 kickoff block (see Status
+Reporting).
 
 Build a self-contained, outcome-first prompt for each agent containing:
 
@@ -138,17 +143,22 @@ optional and distinct from an independent server-side policy reroute, which may 
 
 ### Collect
 
-When an agent's sentinel arrives, read that background task's output file (use the Read tool, not deprecated
-TaskOutput): stdout is one JSON object matching `references/result.schema.json`; stderr carries a
-`codex-handoff: elapsed=<seconds>s` line and, on failure, the agent's last recorded activity. Treat each agent's
-`changed_files` as its authoritative post-pass scope. After every wave, reconcile all results with the manifest and the
-visible working tree without folding in unrelated concurrent changes. Unexpected out-of-scope edits or overlap between
-agents in the same parallel wave are blockers; do not start their dependents or polish.
+When an agent's sentinel arrives, read its result artifact, which is one JSON object matching
+`references/result.schema.json`, and its stderr artifact for the `codex-handoff: elapsed=<seconds>s` line or failure
+forensics. Do not read or print the background task output; artifact-mode stdout is intentionally empty. Treat each
+agent's `changed_files` as its authoritative post-pass scope. After every wave, reconcile all results with the manifest
+and the visible working tree without folding in unrelated concurrent changes. Unexpected out-of-scope edits or overlap
+between agents in the same parallel wave are blockers; do not start their dependents or polish.
 
 ## Status Reporting
 
+These dashboards are mandatory user-facing output. Host-rendered `Background command`, `Task Output`, and
+`Monitor event` banners are transport notifications, not status reports, and their chrome cannot be restyled by this
+skill. Do not echo their task IDs, raw JSON, sentinels, or monitor payloads. Keep task output empty through the artifact
+paths above, then immediately follow each relevant host event with the appropriate dashboard below.
+
 Use this legend consistently: 🚀 kickoff · ⏳ running · ✅ completed · ⛔ blocked · ⏱️ timed out · 💥 runner error · 🧹
-polish · 🏁 final report. Keep every update to one short block — no walls of text.
+polish · 🏁 final report. Keep every update to one compact block and render the tables; do not replace them with prose.
 
 Prefix every wave-scoped kickoff, digest, and completion update with a 10-cell Unicode progress bar and percentage.
 Progress means agent settlement, not estimated implementation completion:
@@ -164,6 +174,12 @@ Kickoff, once per wave:
 
 ```markdown
 ### 🚀 Wave 1/2 [░░░░░░░░░░] 0% (0/3 settled) — 3 agents launched
+
+| Agent | Scope               | Model · effort        | Budget | State       |
+| ----- | ------------------- | --------------------- | ------ | ----------- |
+| A1    | `internal/pricing`  | `gpt-5.6-sol` · high  | ≤30m   | 🚀 launched |
+| A2    | `internal/backfill` | `gpt-5.6-sol` · high  | ≤30m   | 🚀 launched |
+| A3    | `internal/evidence` | `gpt-5.6-sol` · xhigh | ≤40m   | 🚀 launched |
 ```
 
 Follow it with the wave's manifest rows (agent, scope, model, effort, timeout), one `tail -f <progress-file>` line per
@@ -198,7 +214,40 @@ heading and agent rows must show the failure status rather than implying success
   began, automatically invoke `$commit` from each additional repository after its work, validation, and any required
   polish are complete. Scope each invocation to the files changed there, do not ask for separate confirmation, and do
   not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user explicitly requested it.
-- Finish with a 🏁 report: the strategy, agent count, and per agent — requested model, effort, timeout budget vs actual
-  elapsed (from `elapsed=`/the sentinel), output tokens when available, status, and summary — plus the combined changed
-  files and verification, the polish result when run, any automatic cross-repository commit hashes, blockers, and
-  residual risks.
+- Finish with the rendered 🏁 report below. Include the strategy, agent count, and per agent — requested model, effort,
+  timeout budget vs actual elapsed (from `elapsed=`/the sentinel), output tokens when available, status, and summary —
+  plus the combined changed files and verification, the polish result when run, any automatic cross-repository commit
+  hashes, blockers, and residual risks. Omit inapplicable subsections; write `none` for an applicable empty value. Never
+  expose the result JSON.
+
+````markdown
+### 🏁 Codex handoff [██████████] 100% (3/3 settled) — completed
+
+`parallel` · `3 agents` · `1 wave`
+
+| Agent | Result       | Model · effort        | Budget → actual | Tokens | Summary                |
+| ----- | ------------ | --------------------- | --------------- | ------ | ---------------------- |
+| A1    | ✅ completed | `gpt-5.6-sol` · high  | 30m → 11m 42s   | 8,421  | Fixed price inversion  |
+| A2    | ✅ completed | `gpt-5.6-sol` · high  | 30m → 18m 05s   | 12,804 | Added backfill library |
+| A3    | ✅ completed | `gpt-5.6-sol` · xhigh | 40m → 22m 19s   | 15,117 | Added evidence checks  |
+
+**📦 Changed**
+
+```text
+├── internal/pricing/invert.go
+├── internal/backfill/backfill.go
+└── internal/evidence/check.go
+```
+
+**🧪 Verification**
+
+```text
+├── ✅ go test ./internal/pricing/...
+├── ✅ go test ./internal/backfill/...
+└── ✅ go test ./internal/evidence/...
+```
+
+**🧹 Polish** — not required
+
+**⚠️ Risks / blockers** — none
+````

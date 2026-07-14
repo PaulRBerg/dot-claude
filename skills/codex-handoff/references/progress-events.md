@@ -2,7 +2,8 @@
 
 When `run-codex-handoff.sh` is invoked with `--progress-file PATH`, the file is a live JSONL stream: every line Codex
 emits under `codex exec --json`, followed by exactly one wrapper-authored sentinel line on exit. Tail it for real-time
-watching; grep it for digests and post-mortems.
+watching; grep it for digests and post-mortems. Pass `--result-file PATH` separately to keep the final structured result
+in an artifact and leave background-task stdout empty.
 
 ## Codex events
 
@@ -46,7 +47,8 @@ The wrapper appends exactly one terminal line per run; its presence — not proc
 | `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                         |
 | `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                    |
 
-Match sentinels with `grep '"type":"handoff\.'`. The result JSON itself is on the wrapper's stdout, not in this file.
+Match sentinels with `grep '"type":"handoff\.'`. The result JSON itself is in the path passed to `--result-file`, not in
+this progress file. Without `--result-file`, the wrapper writes the result to stdout for backward compatibility.
 
 ## Useful filters
 
