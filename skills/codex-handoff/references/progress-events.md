@@ -23,6 +23,18 @@ Item types: `agent_message` (assistant text), `reasoning`, `command_execution` (
 { "type": "item.completed", "item": { "id": "item_3", "type": "agent_message", "text": "Repo contains docs and sdk." } }
 ```
 
+### Intentional visibility gap
+
+The app-server protocol documents separate `model/safetyBuffering/updated` and `model/rerouted` notifications
+([turn events](https://learn.chatgpt.com/docs/app-server#turn-events)), but they are not part of the documented
+`codex exec --json` event set and Codex CLI 0.144.3 does not forward them to this stream. Do not invent equivalent JSONL
+events or infer a safety check from silence. A quiet period may be ordinary work or transient buffering, and an
+independent server-side policy reroute may leave the responding model unknowable.
+
+In status digests, say `no recent activity` and keep watching until the wrapper sentinel or approved timeout. Do not
+cancel, retry, extend, downgrade to a suggested faster model, or relaunch because the stream is quiet; preserve normal
+timeout and failure handling.
+
 ## Wrapper sentinel
 
 The wrapper appends exactly one terminal line per run; its presence — not process state — is the completion signal:
