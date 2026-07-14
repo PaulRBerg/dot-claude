@@ -76,7 +76,8 @@ EOF
 
 ## Gmail / Google Drive
 
-For any request involving my Gmail or Google Drive, consult `~/work/mailops` first for how to access them.
+Use the installed `mailops` CLI to access Gmail and Google Drive from any directory: `mailops login <alias>` and
+`mailops <alias> gmail …`. Consult `~/work/mailops` for account aliases and detailed workflows.
 
 ## Dotfiles
 
