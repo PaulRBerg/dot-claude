@@ -96,9 +96,7 @@ Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, 
 
 ### Agents
 
-`agents/` includes specialized subagents:
-
-- **docs-finder**: find library/framework documentation
+`agents/` includes specialized subagents.
 
 Invoke via `-s` or the Task tool.
 
