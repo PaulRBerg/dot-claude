@@ -1,11 +1,12 @@
 # directories
 .serena/
 .venv/
-agents/
-commands/
+memory/
+plans/
 plugins/
 skills/
+**/cache/**
+**/node_modules/**
 
 # files
 .claude/settings.local.json
-*.md

@@ -5,7 +5,6 @@
 !.gitignore
 !.lintstagedrc.js
 !.mcp.json
-!.mdformat.toml
 !.prettierignore
 !.prettierrc.yml
 !CLAUDE.md

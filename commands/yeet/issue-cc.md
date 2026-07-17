@@ -1,5 +1,5 @@
 ---
-argument-hint: '[description]'
+argument-hint: "[description]"
 description: Create an issue in anthropics/claude-code
 model: opus
 ---
@@ -14,4 +14,5 @@ model: opus
 
 ## Task
 
-Activate the `yeet` skill to create an issue in `anthropics/claude-code` Github repository. Follow the workflow in `~/.agents/skills/yeet/references/issue-claude-code.md`.
+Activate the `yeet` skill to create an issue in `anthropics/claude-code` Github repository. Follow the workflow in
+`~/.agents/skills/yeet/references/issue-claude-code.md`.

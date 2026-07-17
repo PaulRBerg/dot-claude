@@ -1,5 +1,7 @@
+# yaml-language-server: $schema=https://json.schemastore.org/prettierrc
+# https://prettier.io/docs/configuration
+printWidth: 120
 overrides:
-  - files: ["*.json", "*.jsonc"]
+  - files: "*.md"
     options:
-      printWidth: 100
-      trailingComma: "none"
+      proseWrap: always

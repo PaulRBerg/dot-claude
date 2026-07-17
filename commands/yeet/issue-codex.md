@@ -1,5 +1,5 @@
 ---
-argument-hint: '[description]'
+argument-hint: "[description]"
 description: Create an issue in openai/codex
 model: opus
 ---
@@ -13,4 +13,5 @@ model: opus
 
 ## Task
 
-Activate the `yeet` skill to create an issue in `openai/codex` Github repository. Follow the workflow in `~/.agents/skills/yeet/references/issue-codex-cli.md`.
+Activate the `yeet` skill to create an issue in `openai/codex` Github repository. Follow the workflow in
+`~/.agents/skills/yeet/references/issue-codex-cli.md`.

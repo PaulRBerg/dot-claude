@@ -1,5 +1,5 @@
 ---
-argument-hint: '[repository] [description] [--check]'
+argument-hint: "[repository] [description] [--check]"
 description: Create a GitHub discussion with automatic category selection
 ---
 
@@ -12,4 +12,5 @@ description: Create a GitHub discussion with automatic category selection
 
 ## Task
 
-Activate the `yeet` skill to create a GitHub discussion. Follow the workflow in `~/.agents/skills/yeet/references/create-discussion.md`.
+Activate the `yeet` skill to create a GitHub discussion. Follow the workflow in
+`~/.agents/skills/yeet/references/create-discussion.md`.

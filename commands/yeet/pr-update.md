@@ -1,5 +1,5 @@
 ---
-argument-hint: '[update-instructions]'
+argument-hint: "[update-instructions]"
 description: Update an existing GitHub pull request with semantic change analysis
 ---
 
@@ -13,4 +13,5 @@ description: Update an existing GitHub pull request with semantic change analysi
 
 ## Task
 
-Activate the `yeet` skill to update an existing GitHub pull request. Follow the workflow in `~/.agents/skills/yeet/references/update-pr.md`.
+Activate the `yeet` skill to update an existing GitHub pull request. Follow the workflow in
+`~/.agents/skills/yeet/references/update-pr.md`.

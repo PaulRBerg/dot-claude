@@ -45,8 +45,8 @@ See the [ai-notify repository](https://github.com/PaulRBerg/ai-notify) for setup
 
 ## 2. copy_prompt_to_clipboard (UserPromptSubmit)
 
-Copies every submitted prompt to the macOS clipboard via `pbcopy` so it shows up in
-[Raycast](https://www.raycast.com)'s clipboard history — a searchable log of what you asked.
+Copies every submitted prompt to the macOS clipboard via `pbcopy` so it shows up in [Raycast](https://www.raycast.com)'s
+clipboard history — a searchable log of what you asked.
 
 ### Sanitization
 

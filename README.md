@@ -47,8 +47,8 @@ claude           # Run Claude
 
 All JSONC files in `settings/*` merge into `settings.json` on commit via Husky + lint-staged.
 
-Edit only `settings/**/*.jsonc` (never `settings.json` directly). Merging happens on commit, or run `just merge-settings`
-manually.
+Edit only `settings/**/*.jsonc` (never `settings.json` directly). Merging happens on commit, or run
+`just merge-settings` manually.
 
 Settings layout:
 
@@ -89,8 +89,8 @@ which enables namespaced patterns like `/yeet:issue-cc` and `/agents-context:bra
 ### Skills
 
 Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-agents) and installed via Vercel's
-[skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`.
-See dot-agents for installation guidance.
+[skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`. See
+dot-agents for installation guidance.
 
 Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **find-tool**, **yeet**.
 
@@ -123,9 +123,8 @@ No plugins are enabled in `settings/plugins.jsonc`. `plugins/` stores marketplac
 
 ## Utilities
 
-> [!NOTE]
-> The `claude` wrapper runs Claude with `--dangerously-skip-permissions` and auto-loads MCP servers from `.mcp.json`.
-> See [this issue](https://github.com/anthropics/claude-code/issues/3321).
+> [!NOTE] The `claude` wrapper runs Claude with `--dangerously-skip-permissions` and auto-loads MCP servers from
+> `.mcp.json`. See [this issue](https://github.com/anthropics/claude-code/issues/3321).
 
 Optional shell utilities from `utils.sh`:
 

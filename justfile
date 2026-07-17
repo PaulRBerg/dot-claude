@@ -17,7 +17,8 @@ uv := require("uv")
 #                                   CONSTANTS                                  #
 # ---------------------------------------------------------------------------- #
 
-GLOBS_PRETTIER := "\"**/*.{json,jsonc,yaml,yml}\""
+prettier := "bunx --no-install prettier"
+prettier_globs := "\"**/*.md\""
 
 # ---------------------------------------------------------------------------- #
 #                                   COMMANDS                                   #
@@ -77,7 +78,7 @@ alias ss := sync-section
 # Run all code checks
 [group("checks")]
 @full-check:
-    just rws mdformat-check
+    just rws prettier-check
     just rws ruff-check
     just rws pyright-check
     echo ""
@@ -87,23 +88,33 @@ alias fc := full-check
 # Run all code fixes
 [group("checks")]
 @full-write:
-    just rws mdformat-write
+    just rws prettier-write
     just rws ruff-write
     echo ""
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
 
-# Check Markdown formatting (exclusions in .mdformat.toml)
+# Check Markdown formatting (exclusions in .prettierignore)
 [group("checks")]
-@mdformat-check +paths=".":
-    uv run mdformat --check {{ paths }}
-alias mc := mdformat-check
+@prettier-check +globs=prettier_globs:
+    {{ prettier }} \
+        --check \
+        --cache \
+        --log-level warn \
+        --no-error-on-unmatched-pattern \
+        {{ globs }}
+alias pc := prettier-check
 
-# Format Markdown files (exclusions in .mdformat.toml)
+# Format Markdown files (exclusions in .prettierignore)
 [group("checks")]
-@mdformat-write +paths=".":
-    uv run mdformat {{ paths }}
-alias mw := mdformat-write
+@prettier-write +globs=prettier_globs:
+    {{ prettier }} \
+        --write \
+        --cache \
+        --log-level warn \
+        --no-error-on-unmatched-pattern \
+        {{ globs }}
+alias pw := prettier-write
 
 # Check Python type hints
 [group("checks")]
