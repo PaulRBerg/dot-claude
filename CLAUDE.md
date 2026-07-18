@@ -23,12 +23,24 @@ complexity.
 ## Agents
 
 - When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a human.
-- I often run several agents in parallel on the same `main` branch, so the working tree and diffs may contain changes
-  you did not make.
+- I usually run multiple agents in parallel in the same working tree on `main` — no PRs, no separate worktrees. Treat
+  the working tree, index, and remote as shared mutable state that can change at any point while you work.
 - Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and
   don't report them to me.
-- I may also commit while you work. Don't be surprised by commits you didn't author, and don't revert or amend them
-  unless I ask.
+- I may also commit and push while you work. Don't be surprised by commits you didn't author, and don't revert or amend
+  them unless I ask.
+- Stage and commit only files you edited this session. Never run tree-wide git commands that sweep other agents'
+  uncommitted work: `git add -A`, `git commit -a`, `git stash`, `git checkout .` / `git restore .`, `git reset --hard`,
+  `git clean`.
+- Stay on the current branch. Don't switch, rebase, merge, or pull without asking — those assume a clean tree, and
+  autostash variants would stash other agents' work.
+- On a git `index.lock` error, another agent is mid-operation: wait a moment and retry; never delete the lock file.
+- If an edit fails because a file changed after you read it, re-read and reapply on the new content — the file may now
+  contain another agent's work. Never force-overwrite a whole file to win the race.
+- Attribute failures before debugging them: if a repo-wide check fails only in files you didn't touch, it's likely
+  another agent's in-flight work — confirm your own files pass and move on.
+- Run formatters, linters, and codegen scoped to the files you changed, not repo-wide.
+- Commit finished work promptly so it doesn't entangle with other agents' concurrent edits.
 
 ## Workflow
 
