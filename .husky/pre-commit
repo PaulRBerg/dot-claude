@@ -1,1 +1,1 @@
-bunx lint-staged --config .lintstagedrc.js
+bunx lint-staged --config .lintstagedrc.js --concurrent false
