@@ -1,6 +1,8 @@
 ---
 argument-hint: "[task]"
-compatibility: Requires Claude Code Plan mode, Git, /bin/bash, and an authenticated Codex CLI with dangerous bypass support. Claude Code >= 2.1.98 recommended for live progress via the Monitor tool.
+compatibility:
+  Requires Claude Code Plan mode, Git, /bin/bash, and an authenticated Codex CLI with dangerous bypass support. Claude
+  Code >= 2.1.98 recommended for live progress via the Monitor tool.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
@@ -118,9 +120,16 @@ Build a self-contained, outcome-first prompt for each agent containing:
    results.
 3. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
    make external writes, or broaden scope.
-4. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
+4. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
+   bypass flag — non-interactive runs reject `prompt`-gated commands outright. Baseline: use `rg`, not
+   `grep`/`egrep`/`fgrep`; use `uv run python` and `uv add`/`uv run --with`, never bare `python`/`python3` or `pip`;
+   keep Bash-only constructs (`declare -A`, `mapfile`, `readarray`, `shopt`) inside an explicit `bash <<'EOF'` block;
+   avoid `rm -r`, worktree-destroying or history-rewriting git, secret-reading commands, and package deploy/release
+   scripts. When the rules files exist, they are authoritative — skim them for restrictions beyond this baseline and
+   reflect them in the prompt. Apply the same conventions to planned completion-evidence commands.
+5. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
    with evidence instead of proposing a replacement plan.
-5. A requirement to report only files Codex actually touched and every validation command it ran.
+6. A requirement to report only files Codex actually touched and every validation command it ran.
 
 ### Watch
 
