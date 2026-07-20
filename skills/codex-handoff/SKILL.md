@@ -98,7 +98,8 @@ target repository. Each invocation is one ephemeral Codex agent.
 ### Launch
 
 The runner deliberately disables Codex approvals and sandboxing. Use it only when the user has accepted that agents can
-read, modify, or delete any files accessible to the host account.
+read, modify, or delete any files accessible to the host account. It pins every Codex process to the `default` service
+tier, overriding any inherited fast or priority selection without changing the host's persisted Codex configuration.
 
 For every agent, create separate per-agent artifact paths ending in `<agent-id>.progress.jsonl`,
 `<agent-id>.result.json`, and `<agent-id>.stderr.log` under `${TMPDIR:-/tmp}`. Convert its approved whole-minute timeout

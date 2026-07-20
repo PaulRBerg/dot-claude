@@ -239,6 +239,7 @@ codex_args=(--dangerously-bypass-approvals-and-sandbox exec
   -C "$repo_root"
   -m "$model"
   -c "model_reasoning_effort=\"$effort\""
+  -c 'service_tier="default"'
   --output-schema "$schema_file"
   --output-last-message "$result_file")
 codex_stdout="$stdout_file"

@@ -167,6 +167,7 @@ assert_arg -m
 assert_arg gpt-5.6-terra
 assert_arg -c
 assert_arg 'model_reasoning_effort="max"'
+assert_arg 'service_tier="default"'
 assert_arg --output-schema
 assert_arg --output-last-message
 assert_arg -
