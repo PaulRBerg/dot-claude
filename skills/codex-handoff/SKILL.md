@@ -41,6 +41,7 @@ Produce a decision-complete plan with this section:
 
 - Strategy: `<sequential|parallel|hybrid>`
 - Agents: `<1-5>` — `<why this is the smallest effective count>`
+- Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
 
 | Agent | Wave | Depends on | Scope              | Model                          | Effort                       | Timeout             | Implementation brief                                   | Completion evidence                 |
 | ----- | ---- | ---------- | ------------------ | ------------------------------ | ---------------------------- | ------------------- | ------------------------------------------------------ | ----------------------------------- |
@@ -58,9 +59,18 @@ Choose the execution shape from repository evidence and the approved work:
 - Use hybrid execution for dependency-ordered waves: run independent agents within a wave in parallel, reconcile the
   entire wave, then start its dependents.
 
+A wave finishes with its slowest agent. Keep the highest-tier agent's scope minimal and move deferrable validation to
+the validation owner.
+
 The five-agent limit applies to the entire handoff, not each wave. Assign every agent a stable ID, exact dependencies,
 an implementation scope, and its own configuration and stopping criteria. If parallel work does not collectively prove
 the overall plan, reserve a later sequential agent for integration and aggregate validation.
+
+Assign aggregate validation to exactly one owner per handoff: package-wide or repo-wide checks (full test suites,
+whole-package typecheck or lint, catalog-wide checks) run once — by the integration agent when one exists, otherwise by
+Claude during post-wave reconciliation. Every other agent's completion evidence must be the narrowest checks that prove
+its own edits: file-scoped lint, format, or typecheck plus targeted tests for the files it touched. Duplicate aggregate
+runs across a wave's agents are wasted wall-clock time, not extra assurance.
 
 Select configuration deliberately:
 
@@ -72,7 +82,8 @@ Select configuration deliberately:
 | Exceptional, high-risk implementation    | `gpt-5.6-sol`                    | `max`              | 60 minutes       |
 
 Never select GPT-5.6 Luna, `low`, or `ultra`. Adjust the timeout when repository evidence shows that required validation
-needs materially more or less time.
+needs materially more or less time. The timeout is a kill-switch, not pacing: Codex never sees it and an early finish
+costs nothing, so never tighten it hoping for speed — size it only to bound how long a hung agent can block its wave.
 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
@@ -118,18 +129,20 @@ Build a self-contained, outcome-first prompt for each agent containing:
 1. The approved overall outcome plus that agent's implementation brief, dependencies, and completion evidence.
 2. Its exact write scope, relevant repository constraints, known dirty-work boundaries, and any prerequisite agent
    results.
-3. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
+3. Its validation assignment: the scoped checks it must run, and — for every agent other than the validation owner — the
+   aggregate checks it must not run because the validation owner runs them once after the wave.
+4. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
    make external writes, or broaden scope.
-4. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
+5. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
    bypass flag — non-interactive runs reject `prompt`-gated commands outright. Baseline: use `rg`, not
    `grep`/`egrep`/`fgrep`; use `uv run python` and `uv add`/`uv run --with`, never bare `python`/`python3` or `pip`;
    keep Bash-only constructs (`declare -A`, `mapfile`, `readarray`, `shopt`) inside an explicit `bash <<'EOF'` block;
    avoid `rm -r`, worktree-destroying or history-rewriting git, secret-reading commands, and package deploy/release
    scripts. When the rules files exist, they are authoritative — skim them for restrictions beyond this baseline and
    reflect them in the prompt. Apply the same conventions to planned completion-evidence commands.
-5. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
+6. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
    with evidence instead of proposing a replacement plan.
-6. A requirement to report only files Codex actually touched and every validation command it ran.
+7. A requirement to report only files Codex actually touched and every validation command it ran.
 
 ### Watch
 
@@ -156,8 +169,10 @@ When an agent's sentinel arrives, read its result artifact, which is one JSON ob
 `references/result.schema.json`, and its stderr artifact for the `codex-handoff: elapsed=<seconds>s` line or failure
 forensics. Do not read or print the background task output; artifact-mode stdout is intentionally empty. Treat each
 agent's `changed_files` as its authoritative post-pass scope. After every wave, reconcile all results with the manifest
-and the visible working tree without folding in unrelated concurrent changes. Unexpected out-of-scope edits or overlap
-between agents in the same parallel wave are blockers; do not start their dependents or polish.
+and the visible working tree without folding in unrelated concurrent changes. When Claude is the validation owner, run
+the assigned aggregate checks once during this reconciliation. Unexpected out-of-scope edits, overlap between agents in
+the same parallel wave, or an aggregate-check failure are blockers; do not start their dependents or polish, and do not
+silently take over implementation.
 
 ## Status Reporting
 
