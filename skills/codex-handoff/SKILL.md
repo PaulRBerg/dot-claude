@@ -132,7 +132,8 @@ Build a self-contained, outcome-first prompt for each agent containing:
 3. Its validation assignment: the scoped checks it must run, and — for every agent other than the validation owner — the
    aggregate checks it must not run because the validation owner runs them once after the wave.
 4. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
-   make external writes, or broaden scope.
+   make external writes, or broaden scope — even when repository or host instructions favor committing finished work
+   promptly. Committing stays with the orchestrator after reconciliation.
 5. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
    bypass flag — non-interactive runs reject `prompt`-gated commands outright. Baseline: use `rg`, not
    `grep`/`egrep`/`fgrep`; use `uv run python` and `uv add`/`uv run --with`, never bare `python`/`python3` or `pip`;
@@ -170,9 +171,11 @@ When an agent's sentinel arrives, read its result artifact, which is one JSON ob
 forensics. Do not read or print the background task output; artifact-mode stdout is intentionally empty. Treat each
 agent's `changed_files` as its authoritative post-pass scope. After every wave, reconcile all results with the manifest
 and the visible working tree without folding in unrelated concurrent changes. When Claude is the validation owner, run
-the assigned aggregate checks once during this reconciliation. Unexpected out-of-scope edits, overlap between agents in
-the same parallel wave, or an aggregate-check failure are blockers; do not start their dependents or polish, and do not
-silently take over implementation.
+the assigned aggregate checks once during this reconciliation. Attribute aggregate-check failures before treating them
+as blockers: a failure confined to files outside every agent's scope is unrelated concurrent work — confirm the
+handoff's own files still pass and continue. Unexpected out-of-scope edits, overlap between agents in the same parallel
+wave, or an aggregate-check failure attributable to the handoff's changes are blockers; do not start their dependents or
+polish, and do not silently take over implementation.
 
 ## Status Reporting
 
