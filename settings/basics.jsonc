@@ -11,6 +11,7 @@
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
+  "model": "fable",
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
   "skipAutoPermissionPrompt": true,

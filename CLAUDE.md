@@ -40,7 +40,9 @@ complexity.
 - Attribute failures before debugging them: if a repo-wide check fails only in files you didn't touch, it's likely
   another agent's in-flight work — confirm your own files pass and move on.
 - Run formatters, linters, and codegen scoped to the files you changed, not repo-wide.
-- Commit finished work promptly so it doesn't entangle with other agents' concurrent edits.
+- Commit finished work promptly so it doesn't entangle with other agents' concurrent edits. For large tasks that touch
+  many files, make checkpoint commits at coherent intermediate points instead of one big commit at the end — the working
+  tree shouldn't stay dirty for long.
 
 ## Workflow
 
