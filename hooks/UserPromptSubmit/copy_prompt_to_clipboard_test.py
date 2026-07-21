@@ -17,6 +17,15 @@ LONG_PROMPT = (
     "before we merge this into the main branch and cut the next release."
 )
 
+TASK_NOTIFICATION_PROMPT = """<task-notification>
+<task-id>a260896bd64023e94</task-id>
+<tool-use-id>toolu_01H9VhksTUfcNuAjQhnpJgQX</tool-use-id>
+<output-file>/private/tmp/claude-501/tasks/a260896bd64023e94.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore onchain exporter conventions" finished</summary>
+<result>Structured facts below.</result>
+</task-notification>"""
+
 
 class TestSanitizePrompt:
     """Test sanitize_prompt() and its pipeline."""
@@ -175,6 +184,23 @@ class TestMetadataPrefix:
             assert hook.format_clipboard_prompt("   \n", {}) == ""
             mock_prefix.assert_not_called()
 
+    def test_format_skips_task_notification(self):
+        """Test Claude's internal task envelopes never reach clipboard history."""
+        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
+            assert hook.format_clipboard_prompt(TASK_NOTIFICATION_PROMPT, {}) == ""
+            mock_prefix.assert_not_called()
+
+    def test_format_keeps_user_prompt_that_mentions_task_notification(self):
+        """Test ordinary requests containing the tag literal remain eligible."""
+        prompt = (
+            "Fix the clipboard hook so an internal <task-notification> envelope "
+            "is not copied. Keep ordinary user prompts containing that literal "
+            "tag, including this request, and add focused regression coverage."
+        )
+
+        with patch.object(hook, "build_metadata_prefix", return_value=""):
+            assert hook.format_clipboard_prompt(prompt, {}) == prompt
+
 
 class TestMain:
     """Test main() entry point."""
@@ -238,6 +264,19 @@ class TestMain:
     def test_skips_pbcopy_when_prompt_missing(self, mock_stdin, mock_run):
         """Test that a missing prompt key is treated as empty and skipped."""
         mock_stdin.write(json.dumps({"session_id": "abc"}))
+        mock_stdin.seek(0)
+
+        with pytest.raises(SystemExit) as exc_info:
+            hook.main()
+
+        assert exc_info.value.code == 0
+        mock_run.assert_not_called()
+
+    @patch("subprocess.run")
+    @patch("sys.stdin", new_callable=StringIO)
+    def test_skips_pbcopy_for_task_notification(self, mock_stdin, mock_run):
+        """Test internal task envelopes do not invoke pbcopy."""
+        mock_stdin.write(json.dumps({"prompt": TASK_NOTIFICATION_PROMPT}))
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:

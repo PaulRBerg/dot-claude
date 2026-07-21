@@ -65,6 +65,10 @@ METADATA_VALUE_RE = re.compile(r"[^A-Za-z0-9._/@:-]+")
 UUID_RE = re.compile(r"\b([0-9a-fA-F]{8})-[0-9a-fA-F-]{8,}\b")
 # Trailing repo name in a git remote URL (tolerates optional ".git" or slash).
 GIT_REMOTE_PATH_RE = re.compile(r"[:/]([^/:]+?)(?:\.git)?/?$")
+AGENT_NOTIFICATION_RE = re.compile(
+    r"\A\s*<(?:subagent_notification|task-notification)(?=[\s>])",
+    re.IGNORECASE,
+)
 
 CWD_KEYS = ("cwd", "working_dir", "workingDirectory", "project_path", "projectPath")
 SESSION_ID_KEYS = (
@@ -237,6 +241,9 @@ def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
     metadata prefix doesn't count toward the floor — so trivial one-liners don't
     flood clipboard history.
     """
+    if AGENT_NOTIFICATION_RE.match(prompt):
+        return ""
+
     text = sanitize_prompt(prompt)
     if len(text) < MIN_CHARS:
         return ""
