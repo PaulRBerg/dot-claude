@@ -26,6 +26,8 @@ TASK_NOTIFICATION_PROMPT = """<task-notification>
 <result>Structured facts below.</result>
 </task-notification>"""
 
+OSC_COLOR_RESPONSE = "\x1b]11;rgb:2f4f/3403/3f33\x1b\\"
+
 
 class TestSanitizePrompt:
     """Test sanitize_prompt() and its pipeline."""
@@ -85,6 +87,11 @@ class TestSanitizePrompt:
     def test_squeezes_blank_lines(self):
         """Test that runs of 3+ newlines collapse to a single blank line."""
         assert hook.sanitize_prompt("a\n\n\n\n\nb") == "a\n\nb"
+
+    def test_strips_terminal_control_traffic(self):
+        """Test terminal color responses and C0 bytes are not copied."""
+        prompt = f"p{OSC_COLOR_RESPONSE}resent\x00 text"
+        assert hook.sanitize_prompt(prompt) == "present text"
 
     def test_empty_after_sanitize_returns_empty(self):
         """Test that whitespace-only input sanitizes to an empty string."""
@@ -190,6 +197,18 @@ class TestMetadataPrefix:
             assert hook.format_clipboard_prompt(TASK_NOTIFICATION_PROMPT, {}) == ""
             mock_prefix.assert_not_called()
 
+    def test_format_skips_task_notification_split_by_terminal_response(self):
+        """Test terminal traffic inside the opening tag cannot evade filtering."""
+        prompt = TASK_NOTIFICATION_PROMPT.replace(
+            "<task-notification>",
+            f"<task-notifi{OSC_COLOR_RESPONSE}cation>",
+            1,
+        )
+
+        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
+            assert hook.format_clipboard_prompt(prompt, {}) == ""
+            mock_prefix.assert_not_called()
+
     def test_format_keeps_user_prompt_that_mentions_task_notification(self):
         """Test ordinary requests containing the tag literal remain eligible."""
         prompt = (
@@ -277,6 +296,28 @@ class TestMain:
     def test_skips_pbcopy_for_task_notification(self, mock_stdin, mock_run):
         """Test internal task envelopes do not invoke pbcopy."""
         mock_stdin.write(json.dumps({"prompt": TASK_NOTIFICATION_PROMPT}))
+        mock_stdin.seek(0)
+
+        with pytest.raises(SystemExit) as exc_info:
+            hook.main()
+
+        assert exc_info.value.code == 0
+        mock_run.assert_not_called()
+
+    @patch("subprocess.run")
+    @patch("sys.stdin", new_callable=StringIO)
+    def test_skips_pbcopy_for_control_corrupted_task_notification(
+        self,
+        mock_stdin,
+        mock_run,
+    ):
+        """Test terminal responses inside an envelope never invoke pbcopy."""
+        prompt = TASK_NOTIFICATION_PROMPT.replace(
+            "<task-notification>",
+            f"<task-notifi{OSC_COLOR_RESPONSE}cation>",
+            1,
+        )
+        mock_stdin.write(json.dumps({"prompt": prompt}))
         mock_stdin.seek(0)
 
         with pytest.raises(SystemExit) as exc_info:

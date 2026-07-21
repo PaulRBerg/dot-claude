@@ -58,6 +58,8 @@ UNTERMINATED_FENCE_RE = re.compile(
 
 # Three or more consecutive newlines (excess blank lines).
 BLANK_LINES_RE = re.compile(r"\n{3,}")
+TERMINAL_ESCAPE_RE = re.compile(r"\x1b(?:\][^\x07\x1b]*(?:\x07|\x1b\\)|\[[0-?]*[ -/]*[@-~]|[@-_])")
+CONTROL_CHARACTER_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 
 # Characters not allowed in a compact metadata value (stripped from the prefix).
 METADATA_VALUE_RE = re.compile(r"[^A-Za-z0-9._/@:-]+")
@@ -66,7 +68,10 @@ UUID_RE = re.compile(r"\b([0-9a-fA-F]{8})-[0-9a-fA-F-]{8,}\b")
 # Trailing repo name in a git remote URL (tolerates optional ".git" or slash).
 GIT_REMOTE_PATH_RE = re.compile(r"[:/]([^/:]+?)(?:\.git)?/?$")
 AGENT_NOTIFICATION_RE = re.compile(
-    r"\A\s*<(?:subagent_notification|task-notification)(?=[\s>])",
+    r"\A\s*"
+    r"(?:\[(?=[^\]\n]*\brepo:)(?=[^\]\n]*\b(?:session|thread|ref):)"
+    r"[^\]\n]+\]\s*)?"
+    r"<(?:subagent_notification|task-notification)(?=[\s>])",
     re.IGNORECASE,
 )
 
@@ -98,6 +103,12 @@ def _collapse_size(text: str) -> str:
     return text
 
 
+def _strip_terminal_controls(text: str) -> str:
+    """Remove terminal responses and control bytes from captured prompt text."""
+    text = TERMINAL_ESCAPE_RE.sub("", text)
+    return CONTROL_CHARACTER_RE.sub("", text)
+
+
 def sanitize_prompt(prompt: str) -> str:
     """Sanitize a submitted prompt for clipboard history.
 
@@ -105,7 +116,8 @@ def sanitize_prompt(prompt: str) -> str:
     oversized content, then squeeze blank lines. Returns an empty string when
     nothing meaningful remains (the caller should then skip pbcopy).
     """
-    text = CC_MARKER_RE.sub("Pasted", prompt)
+    text = _strip_terminal_controls(prompt)
+    text = CC_MARKER_RE.sub("Pasted", text)
     text = FENCE_RE.sub("[code]", text)
     text = UNTERMINATED_FENCE_RE.sub("[code]", text)
     text = _collapse_size(text)
@@ -241,7 +253,7 @@ def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
     metadata prefix doesn't count toward the floor — so trivial one-liners don't
     flood clipboard history.
     """
-    if AGENT_NOTIFICATION_RE.match(prompt):
+    if AGENT_NOTIFICATION_RE.match(_strip_terminal_controls(prompt)):
         return ""
 
     text = sanitize_prompt(prompt)
