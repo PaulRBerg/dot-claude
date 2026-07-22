@@ -47,46 +47,20 @@ The wrapper appends exactly one terminal line per run; its presence — not proc
 | `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                         |
 | `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                    |
 
-Match sentinels with `grep '"type":"handoff\.'`. The result JSON itself is in the path passed to `--result-file`, not in
-this progress file. Without `--result-file`, the wrapper writes the result to stdout for backward compatibility.
+The result JSON itself is in the path passed to `--result-file`, not in this progress file. Without `--result-file`, the
+wrapper writes the result to stdout for backward compatibility.
 
-## Useful filters
+## Wave watcher
 
-- Completion: `grep -m1 '"type":"handoff\.' FILE`
-- Last significant activity for a digest: `grep -E '"type":"(command_execution|file_change)"' FILE | tail -n 1`
-- Failure forensics: `grep -E '"type":"(turn\.failed|error|agent_message)"' FILE | tail -n 5`
-- Activity volume: `wc -l < FILE`
-
-## Sample wave watch (Monitor tool)
-
-One watch per wave: emit each sentinel immediately, plus a per-agent digest roughly every 300 seconds; exit when every
-agent has reported. Pass the wave's progress files as arguments.
+Use one bundled watcher per wave. Pass repeated agent ID, budget-seconds, and progress-file triples:
 
 ```sh
-digest_at=$(($(date +%s) + 300))
-done_list=""
-while :; do
-  all_done=1
-  for f in "$@"; do
-    case " $done_list " in *" $f "*) continue ;; esac
-    sentinel=$(grep -m1 '"type":"handoff\.' "$f" 2>/dev/null || true)
-    if [ -n "$sentinel" ]; then
-      echo "DONE $f $sentinel"
-      done_list="$done_list $f"
-    else
-      all_done=0
-    fi
-  done
-  [ "$all_done" -eq 1 ] && exit 0
-  if [ "$(date +%s)" -ge "$digest_at" ]; then
-    for f in "$@"; do
-      case " $done_list " in *" $f "*) continue ;; esac
-      events=$(wc -l <"$f" 2>/dev/null || echo 0)
-      last=$(grep -E '"type":"(command_execution|file_change)"' "$f" 2>/dev/null | tail -n 1 | cut -c1-200)
-      echo "DIGEST $f events=$events last=$last"
-    done
-    digest_at=$(($(date +%s) + 300))
-  fi
-  sleep 5
-done
+bash scripts/watch-codex-wave.sh \
+  --agent A1 1200 /tmp/A1.progress.jsonl \
+  --agent A2 2400 /tmp/A2.progress.jsonl
 ```
+
+Its stdout is machine-readable JSONL. `watcher.digest` reports elapsed/budget, event count, last relevant activity, and
+delayed-file state. `watcher.sentinel` preserves the wrapper sentinel and reason. `watcher.settlement` supplies exact
+settled counts, percentage, and ten-cell bar. A completed wave exits `0`; any failed agent sentinel settles normally and
+makes the watcher exit `1` after all agents settle. Malformed progress is an invariant failure, not an agent result.

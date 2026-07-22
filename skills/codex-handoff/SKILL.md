@@ -149,14 +149,23 @@ Build a self-contained, outcome-first prompt for each agent containing:
 ### Watch
 
 Each progress file streams Codex JSONL events and ends with exactly one wrapper sentinel — `handoff.completed` or
-`handoff.failed` with reason `timeout`, `error`, or `cancelled` (vocabulary, filters, and a ready-made watch loop:
-`references/progress-events.md`). The sentinel, not process state, is the completion signal.
+`handoff.failed` with reason `timeout`, `error`, or `cancelled`. The sentinel, not process state, is the completion
+signal. Read `references/progress-events.md` for event semantics and quiet/failure handling.
 
-Arm ONE Monitor per wave that tails every progress file in the wave and emits each sentinel immediately plus a per-agent
-digest roughly every 300 seconds (elapsed vs budget, event count, last `command_execution` or `file_change` activity),
-exiting once all sentinels are seen. Set the Monitor `timeout_ms` above the wave's largest agent timeout. On each
-digest, post one short ⏳ wave-status block. If the Monitor tool is unavailable in the host, poll each progress file for
-its sentinel with short foreground Bash checks instead.
+Resolve `scripts/watch-codex-wave.sh` from this `SKILL.md`. Arm ONE Monitor per wave around one watcher invocation,
+passing each agent's stable ID, budget in seconds, and progress path as a repeated triple:
+
+```sh
+bash <skill-dir>/scripts/watch-codex-wave.sh \
+  --agent A1 <budget-seconds> <A1.progress.jsonl> \
+  --agent A2 <budget-seconds> <A2.progress.jsonl>
+```
+
+The watcher tolerates delayed file creation and emits stable JSONL `watcher.digest`, `watcher.sentinel`, and
+`watcher.settlement` records. It owns elapsed time, event counts, last command/file activity, settled percentage, and
+the ten-cell bar. Set the Monitor `timeout_ms` above the wave's largest budget. On each watcher digest or settlement,
+post one short wave-status block using those exact facts. If Monitor is unavailable, run the same watcher in a
+foreground command; do not recreate its loop or arithmetic.
 
 Continue monitoring through quiet periods until the wrapper sentinel or approved timeout. The non-interactive
 `codex exec --json` stream does not expose app-server safety-buffering or model-rerouting notifications, so silence
@@ -188,15 +197,9 @@ paths above, then immediately follow each relevant host event with the appropria
 Use this legend consistently: 🚀 kickoff · ⏳ running · ✅ completed · ⛔ blocked · ⏱️ timed out · 💥 runner error · 🧹
 polish · 🏁 final report. Keep every update to one compact block and render the tables; do not replace them with prose.
 
-Prefix every wave-scoped kickoff, digest, and completion update with a 10-cell Unicode progress bar and percentage.
-Progress means agent settlement, not estimated implementation completion:
-
-- `settled` is the number of agents whose wrapper sentinel has arrived, regardless of the structured result status or
-  sentinel reason.
-- Percentage is `round(100 * settled / agents)`. Filled cells are `floor(10 * settled / agents + 0.5)`; render filled
-  cells as `█` and remaining cells as `░`.
-- Use the exact structure `[<10 cells>] <percentage>% (<settled>/<agents> settled)`. Never derive the percentage from
-  elapsed time, event count, or recent activity. Keep failures visible through the existing status emoji and agent row.
+Prefix every wave-scoped kickoff, digest, and completion update with the watcher's exact 10-cell bar, percentage, and
+settled counts. Progress means sentinel settlement, including failed sentinels; never infer it from elapsed time, event
+count, or activity. Keep failures visible through the existing status emoji and agent row.
 
 Kickoff, once per wave:
 
@@ -226,8 +229,8 @@ Wave status, on each digest or completion:
 | A3    | ⏳ 15m/20m | no recent activity         |
 ```
 
-At full settlement, render `[██████████] 100% (3/3 settled)`. A wave that settled with failures still reaches 100%; its
-heading and agent rows must show the failure status rather than implying successful completion.
+At full settlement, use the final watcher settlement record. A wave that settled with failures still reaches 100%; its
+heading and agent rows must show the failure rather than imply success.
 
 ## Completion
 
