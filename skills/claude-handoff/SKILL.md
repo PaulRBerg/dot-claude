@@ -86,7 +86,8 @@ Do not spawn subagents until the user approves the plan and Claude leaves Plan m
 Launch each agent with the Agent tool: `subagent_type: "general-purpose"`, `model: "sonnet"`, and a description like
 `A1/3: <scope>`. Start every agent in a parallel wave in the same message as parallel tool calls; start sequential
 agents only after reconciling their dependencies. Claude Code renders subagent progress natively — do not build bespoke
-progress dashboards, polling loops, or status tables around the calls.
+progress dashboards, polling loops, or status tables around the calls. After launch, post one compact
+`🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves` line; then rely on native progress.
 
 Subagents receive none of the planning conversation. Build a self-contained, outcome-first prompt for each agent
 containing:
@@ -128,6 +129,7 @@ changes are blockers; do not start their dependents or polish, and do not silent
   began, automatically invoke `$commit` from each additional repository after its work, validation, and any required
   polish are complete. Scope each invocation to the files changed there, do not ask for separate confirmation, and do
   not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user explicitly requested it.
-- Finish with a concise prose summary: strategy and agent count, each agent's status with a one-line summary, the
-  combined changed files, the verification evidence, the polish result when run, any automatic cross-repository commit
-  hashes, and remaining risks or blockers.
+- Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
+  result table. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`, `### 🧹 Polish` when run, automatic
+  cross-repository commit hashes when any, and `### ⚠️ Risks / blockers` when non-empty. Use `⛔ blocked` as the result
+  for failed required work. Keep paths, commands, hashes, and subagent-return fields exact and undecorated.

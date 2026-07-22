@@ -210,8 +210,9 @@ Kickoff, once per wave:
 | A3    | `internal/evidence` | `gpt-5.6-sol` · xhigh | ≤40m   | 🚀 launched |
 ```
 
-Follow it with the wave's manifest rows (agent, scope, model, effort, timeout), one `tail -f <progress-file>` line per
-agent for real-time watching in another pane, and a note that `/tasks` lists and stops running agents.
+Follow it with one `tail -f <progress-file>` line per agent for real-time watching in another pane and a note that
+`/tasks` lists and stops running agents. The kickoff table already contains the wave's manifest rows; do not repeat
+them.
 
 Wave status, on each digest or completion:
 
