@@ -13,6 +13,9 @@ description: Orchestrate one to five Codex CLI agents to implement an approved C
 
 # Codex Handoff
 
+If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
+do not invoke this skill again through a skill tool.
+
 Plan in Claude Code, then hand the approved implementation to one to five Codex CLI agents in the sequence the task
 requires. The runner uses `--dangerously-bypass-approvals-and-sandbox`, so agents can write anywhere the host user can,
 including outside the worktree.

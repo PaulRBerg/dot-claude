@@ -11,6 +11,9 @@ description: Orchestrate one to five Sonnet or Opus subagents to implement an ap
 
 # Claude Handoff
 
+If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
+do not invoke this skill again through a skill tool.
+
 Plan in Claude Code with the session's planning model, then hand the approved implementation to one to five subagents in
 the sequence the task requires. Subagents run in-session through the Agent tool with the host session's permissions, so
 they can write anywhere the session can. Use this skill to keep Claude on thinking, orchestration, and verification
