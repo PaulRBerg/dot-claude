@@ -31,6 +31,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/PostToolUse/plan_claim.py",
+            "type": "command"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -59,6 +68,14 @@
         "hooks": [
           {
             "command": "~/.claude/hooks/UserPromptSubmit/copy_prompt_to_clipboard.py",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/UserPromptSubmit/agent_presence.py",
             "type": "command"
           }
         ]
