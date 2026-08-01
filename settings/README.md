@@ -23,7 +23,7 @@ The `settings.json` file is automatically generated from modular JSONC source fi
 The `settings.json` file is automatically regenerated:
 
 - **On every commit** - Pre-commit hook runs `helpers/merge_settings.sh`
-- **After npm install** - `package.json` prepare script
+- **After `bun install`** - `package.json` prepare script
 - **Manually** - Run `just merge-settings` or `bash helpers/merge_settings.sh`
 
 ### Merge Logic
@@ -43,7 +43,7 @@ The merge script (`helpers/merge_settings.sh`):
 1. Edit the appropriate `.jsonc` file in `settings/` or `settings/permissions/`
 2. (Optional) Run `just merge-settings` to preview changes
 3. Commit your changes - `settings.json` regenerates automatically
-4. Push - other developers' `settings.json` will regenerate on their machines
+4. Push - on other machines, `settings.json` regenerates on the next `bun install` or commit
 
 ## Why JSONC?
 
@@ -55,4 +55,4 @@ JSONC (JSON with Comments) allows:
 
 ## Local Overrides
 
-Machine-specific settings go in `.claude/settings.local.json` (gitignored, not merged).
+Machine-specific settings go in `~/.claude/settings.local.json` (gitignored, not merged).

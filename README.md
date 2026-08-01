@@ -21,7 +21,7 @@ See [Installation](#installation) for full setup and [Configuration](#configurat
 
 ### Prerequisites
 
-- **Node.js**: Husky/lint-staged automation (`npm install`)
+- **Bun**: JS dependencies and Husky/lint-staged automation (`bun install`)
 - **Just**: command runner for build scripts (`brew install just`)
 - **Python 3.13+** and [uv](https://github.com/astral-sh/uv): Python package/project manager
 
@@ -30,7 +30,7 @@ See [Installation](#installation) for full setup and [Configuration](#configurat
 ```bash
 git clone git@github.com:PaulRBerg/dot-claude.git ~/.claude
 cd ~/.claude
-just install  # Node deps, Python deps, and CLI utilities
+just install  # JS deps, Python deps, and CLI utilities
 ```
 
 ### Verify
@@ -55,24 +55,12 @@ Settings layout:
 - `basics.jsonc`: core config, env vars, status line
 - `hooks.jsonc`: event hooks
 - `plugins.jsonc`: enabled plugins
-- `permissions/*.jsonc`: permission rules (bash, mcp, read, write, tools)
+- `permissions/*.jsonc`: permission rules (additional-dirs, bash, read)
 
 ### Context
 
 `CLAUDE.md` is user-level context loaded by Claude Code across all projects. Keep repo-specific guidance in project
 `CLAUDE.md` / `AGENTS.md` files; keep only durable personal workflow defaults here.
-
-### Flags
-
-Append flags to prompts to trigger behavior:
-
-- `-s`: subagents
-- `-c`: auto-commit
-- `-t`: testing
-- `-d`: debug
-- `-n`: skip linting
-
-Flags compose, e.g. `implement API -s -t -c`.
 
 ### Justfile
 
@@ -96,14 +84,11 @@ Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, 
 
 ### Agents
 
-`agents/` includes specialized subagents.
-
-Invoke via `-s` or the Task tool.
+`agents/` can hold specialized subagents invoked via the Task tool (currently none).
 
 ### MCP servers
 
-MCP servers are configured in `.mcp.json` (currently none). Permission rules for MCP tools live in
-`settings/permissions/mcp.jsonc`.
+MCP servers are configured in `.mcp.json` (currently none).
 
 ### Hooks
 
@@ -112,14 +97,13 @@ Hooks provide event-driven Claude Code automation. See [hooks/README.md](hooks/R
 Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
+- **ai-notify**: desktop notifications via the external [ai-notify](https://github.com/PaulRBerg/ai-notify) CLI
+  (`Notification`, `PermissionRequest`, `PreToolUse`, `Stop`, `UserPromptSubmit`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
-
-Available hook scripts also include settings sync helpers under `hooks/SessionEnd/`.
 
 ### Plugins
 
-No plugins are enabled in `settings/plugins.jsonc`. `plugins/` stores marketplace metadata and caches; refresh them with
-`just update-plugins`.
+No plugins are enabled in `settings/plugins.jsonc`. `plugins/` stores marketplace metadata and caches.
 
 ## Utilities
 

@@ -9,6 +9,7 @@ Several hooks provide event-driven automation across different Claude Code event
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
 - **copy_prompt_to_clipboard** - Copy each submitted prompt to the macOS clipboard (UserPromptSubmit)
+- **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
 
 ## Hook Events
 
@@ -16,6 +17,7 @@ Hooks can respond to events like these:
 
 - **UserPromptSubmit** - User submits a prompt
 - **PreToolUse** - Before a tool is executed
+- **PostToolUse** - After a tool has executed
 - **PermissionRequest** - Permission requested for an action
 - **Notification** - Claude sends a notification
 - **Stop** - Session ends or is interrupted
@@ -27,6 +29,7 @@ Desktop notifications for Claude Code events via [ai-notify](https://github.com/
 ### Monitored Events
 
 - **UserPromptSubmit** - When you submit a prompt
+- **PreToolUse** (`AskUserQuestion` matcher) - When Claude asks you a question
 - **PermissionRequest** - When Claude requests permission
 - **Notification** - When Claude sends a notification
 - **Stop** - When session ends or is interrupted
@@ -71,6 +74,12 @@ The thresholds are module-level constants at the top of the script, easy to tune
 - Set `CLAUDE_CLIP_DEBUG=1` to append raw stdin to `UserPromptSubmit/.debug.jsonl` for a one-shot check of how a paste
   is represented.
 
+## 3. add_plan_frontmatter (PostToolUse)
+
+Intercepts Write tool executions and adds YAML frontmatter (metadata such as the creation timestamp and git branch) to
+plan files in any `.claude/plans/` directory — both `~/.claude/plans/` and project-local ones. See
+[claude-code#12378](https://github.com/anthropics/claude-code/issues/12378).
+
 ## Development
 
 ### Testing Hooks
@@ -92,7 +101,7 @@ just test-hooks
 1. Check hook is enabled in `settings/hooks.jsonc`
 2. Verify hook script is executable: `ls -la hooks/*/your-hook`
 3. Check hook output in Claude Code logs
-4. Test hook independently: `python hooks/UserPromptSubmit/your-hook/your-hook.py`
+4. Test hook independently: `python hooks/<Event>/<hook>.py`
 
 ### Permission Errors
 
@@ -100,20 +109,14 @@ Hooks must be executable:
 
 ```bash
 chmod +x hooks/**/*.py
-chmod +x hooks/**/*.sh
 ```
 
 ### Optional Dependencies Missing
 
-Hooks with optional dependencies (zk, ai-notify) gracefully degrade if dependencies are unavailable. Check installation:
+Hooks with optional dependencies (ai-notify) gracefully degrade if dependencies are unavailable. Check installation:
 
 ```bash
-# Check zk
-which zk
-
-# Check ai-notify
 which ai-notify
-
 ```
 
 ## Resources
@@ -121,4 +124,3 @@ which ai-notify
 - [ai-notify](https://github.com/PaulRBerg/ai-notify)
 - [Claude Code Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks) - Official Anthropic
   documentation
-- [zk - Zettelkasten CLI](https://github.com/zk-org/zk)
