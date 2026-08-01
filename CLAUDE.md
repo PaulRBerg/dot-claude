@@ -56,7 +56,8 @@ complexity.
 Before starting any task — in standard mode and plan mode alike — check the repo state with `git status`. Dirty
 uncommitted changes are likely another agent's in-flight work: reason through whether your task would collide with it
 (same files or modules, overlapping refactors, shared codegen outputs). Use the `agents-status` skill to see active AI
-agent session counts and working directories. The goal is smarter parallelization of agents on the same `main` branch.
+agent session counts and working directories in the current repository; use its machine-wide view only when
+cross-repository coordination matters. The goal is smarter parallelization of agents on the same `main` branch.
 
 - No overlap with your task → proceed normally (per the bullet above: ignore unrelated changes).
 - Potential conflict → keep analyzing and planning the task (reading is always safe), but do not edit any files yet.
