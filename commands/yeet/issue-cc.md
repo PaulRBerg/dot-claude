@@ -1,7 +1,6 @@
 ---
 argument-hint: "[description]"
 description: Create an issue in anthropics/claude-code
-model: opus
 ---
 
 ## Context

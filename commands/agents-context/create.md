@@ -1,7 +1,6 @@
 ---
 argument-hint: "[path?] [description?] [--root-only] [--minimal] [--full] [--dry-run] [--force]"
 description: Create missing README.md and AGENTS.md context files
-model: opus
 ---
 
 ## Context

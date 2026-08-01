@@ -1,7 +1,6 @@
 ---
 argument-hint: "[path?] [skill-name ...] [--root-only] [--preserve] [--minimal] [--thorough] [--dry-run]"
 description: Polish README.md, AGENTS.md, CLAUDE.md symlinks, and existing project skills
-model: opus
 ---
 
 ## Context

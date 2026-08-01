@@ -1,7 +1,6 @@
 ---
 argument-hint: "[description]"
 description: Create an issue in openai/codex
-model: opus
 ---
 
 ## Context

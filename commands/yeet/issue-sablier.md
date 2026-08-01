@@ -1,7 +1,6 @@
 ---
 argument-hint: "[repo] [description]"
 description: Create an issue in a sablier-labs repository
-model: opus
 ---
 
 ## Context
