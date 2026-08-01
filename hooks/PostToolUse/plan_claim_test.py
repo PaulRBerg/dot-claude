@@ -69,9 +69,9 @@ class TestPlanTextFromPayload:
         data = {"tool_input": {"plan": PLAN}}
         assert plan_claim._plan_text_from_payload(data) == PLAN
 
-    def test_falls_back_to_tool_response_content(self):
-        data = {"tool_input": {}, "tool_response": {"content": PLAN}}
-        assert plan_claim._plan_text_from_payload(data) == PLAN
+    def test_ignores_tool_response(self):
+        data = {"tool_input": {}, "tool_response": {"plan": PLAN}}
+        assert plan_claim._plan_text_from_payload(data) is None
 
     def test_ignores_blank_plan(self):
         assert plan_claim._plan_text_from_payload({"tool_input": {"plan": "  "}}) is None

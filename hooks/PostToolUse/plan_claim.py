@@ -7,11 +7,10 @@ the just-approved plan's H1 and hands it to ``agent_session_status.py claim``
 ``agents-status`` see the plan's title as this session's label between plan
 approval and its first edit.
 
-Plan text is preferred straight from the payload (``tool_input.plan`` — Claude
-Code passes the full plan markdown, frontmatter included once
-``add_plan_frontmatter.py`` stamps it). Failing that, ``~/.claude/plans/*.md``
-is scanned for frontmatter whose ``session_id`` matches; the most recently
-modified match wins.
+Plan text is read from ``tool_input.plan`` (the documented ExitPlanMode
+payload field). Failing that, ``~/.claude/plans/*.md`` is scanned for
+frontmatter (stamped by ``add_plan_frontmatter.py``) whose ``session_id``
+matches; the most recently modified match wins.
 
 Silent on success and on any failure — a hook must never break the tool
 chain. Always exits 0.
@@ -70,15 +69,13 @@ def _extract_h1(text: str) -> str | None:
 
 
 def _plan_text_from_payload(data: dict[str, Any]) -> str | None:
-    """Return inline plan markdown from the payload, when the hook carries one."""
-    for container_key in ("tool_input", "tool_response"):
-        container = data.get(container_key)
-        if not isinstance(container, dict):
-            continue
-        for key in ("plan", "content"):
-            value = container.get(key)
-            if isinstance(value, str) and value.strip():
-                return value
+    """Return the plan markdown from ``tool_input.plan``, when present."""
+    tool_input = data.get("tool_input")
+    if not isinstance(tool_input, dict):
+        return None
+    plan = tool_input.get("plan")
+    if isinstance(plan, str) and plan.strip():
+        return plan
     return None
 
 

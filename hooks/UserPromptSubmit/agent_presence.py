@@ -25,7 +25,9 @@ AGENT_STATUS_SCRIPT = (
 )
 STATUS_TIMEOUT_SECONDS = 2.0
 GIT_TIMEOUT_SECONDS = 2.0
-MAX_LABEL_CHARS = 40
+# Matches plan_claim.py's claim truncation so labels written by that hook
+# survive intact; anything longer is hostile or degenerate input.
+MAX_LABEL_CHARS = 80
 
 
 def _repo_root(cwd: str) -> str:
