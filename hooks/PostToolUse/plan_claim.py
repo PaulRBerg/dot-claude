@@ -24,7 +24,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-AGENT_STATUS_SCRIPT = Path.home() / ".codex" / "hooks" / "AgentSessionStatus" / "agent_session_status.py"
+AGENT_STATUS_SCRIPT = (
+    Path.home() / ".codex" / "hooks" / "AgentSessionStatus" / "agent_session_status.py"
+)
 PLANS_DIR = Path.home() / ".claude" / "plans"
 CLAIM_TIMEOUT_SECONDS = 5.0
 MAX_LABEL_CHARS = 80

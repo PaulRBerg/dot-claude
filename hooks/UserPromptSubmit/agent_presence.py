@@ -4,8 +4,10 @@
 Runs ``agent_session_status.py status --json`` (see
 https://github.com/PaulRBerg/dot-codex) and reports, in one line, how many
 *other* sessions share this repo and how many pending notes exist for it.
-Note *content* is never surfaced — only counts — so a note can't be used to
-inject arbitrary text into another session's context (prompt-injection guard).
+Note *content* is never surfaced — only counts — and session labels/names
+(cross-session text, stored verbatim by the helper) are collapsed to a single
+line and truncated before injection, so neither channel can be used to inject
+arbitrary text into another session's context (prompt-injection guard).
 
 Silent (no stdout, exit 0) when solo with no notes, or on any error/timeout —
 a hook must never break a prompt. UserPromptSubmit hooks inject plain stdout
@@ -18,9 +20,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-AGENT_STATUS_SCRIPT = Path.home() / ".codex" / "hooks" / "AgentSessionStatus" / "agent_session_status.py"
+AGENT_STATUS_SCRIPT = (
+    Path.home() / ".codex" / "hooks" / "AgentSessionStatus" / "agent_session_status.py"
+)
 STATUS_TIMEOUT_SECONDS = 2.0
 GIT_TIMEOUT_SECONDS = 2.0
+MAX_LABEL_CHARS = 40
 
 
 def _repo_root(cwd: str) -> str:
@@ -66,23 +71,34 @@ def _load_status() -> dict[str, Any] | None:
 def _path_within(path: Path, root: Path) -> bool:
     """Return whether path is root itself or nested under it."""
     try:
-        resolved_path = path.resolve()
-        resolved_root = root.resolve()
+        path, root = path.resolve(), root.resolve()
     except OSError:
-        resolved_path, resolved_root = path, root
-    try:
-        resolved_path.relative_to(resolved_root)
-    except ValueError:
-        return False
-    return True
+        pass
+    return path.is_relative_to(root)
+
+
+def _sanitize_label(text: str) -> str:
+    """Flatten cross-session text to one bounded printable line.
+
+    Labels/names are written by *other* sessions and stored verbatim, so they
+    must not carry newlines, control characters, or unbounded length into this
+    session's context.
+    """
+    printable = "".join(ch if ch.isprintable() else " " for ch in text)
+    collapsed = " ".join(printable.split())
+    if len(collapsed) > MAX_LABEL_CHARS:
+        return collapsed[: MAX_LABEL_CHARS - 1].rstrip() + "…"
+    return collapsed
 
 
 def _session_label(session: dict[str, Any]) -> str:
     """Identify a session by claim label or name, else <client>/<short-id>."""
     for key in ("label", "name"):
         value = session.get(key)
-        if isinstance(value, str) and value:
-            return value
+        if isinstance(value, str):
+            sanitized = _sanitize_label(value)
+            if sanitized:
+                return sanitized
     client = session.get("client", "")
     session_id = session.get("session_id", "")
     return f"{client}/{session_id[:8]}"
