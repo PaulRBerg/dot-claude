@@ -4,8 +4,8 @@
 #
 # Run from this repo's pre-commit lint-staged step (.lintstagedrc.js), after
 # `just build` regenerates ~/.codex/AGENTS.md from the root CLAUDE.md. Commits
-# AGENTS.md in the ~/.codex repo, but only if it's the sole dirty path there —
-# skips if AGENTS.md is unchanged or if anything else in ~/.codex is dirty.
+# AGENTS.md in the ~/.codex repo when it changed. The commit is constructed
+# with an isolated index so concurrent work in that repository is untouched.
 #
 # Usage: commit_codex_agents.sh
 
@@ -23,21 +23,25 @@ while IFS= read -r git_env_var; do
 done <<<"$git_env_vars"
 unset git_env_var git_env_vars
 
-status_output=$(git -C "$codex_repo" status --porcelain=v1)
-[[ -n "$status_output" ]] || exit 0
+if git -C "$codex_repo" diff --quiet HEAD -- AGENTS.md; then
+  exit 0
+fi
 
-agents_changed=false
-other_dirty=false
-while IFS= read -r line; do
-  path="${line:3}"
-  if [[ "$path" == "AGENTS.md" ]]; then
-    agents_changed=true
-  else
-    other_dirty=true
-  fi
-done <<<"$status_output"
+temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/commit-codex-agents.XXXXXX")
+isolated_index="$temp_dir/index"
 
-[[ "$agents_changed" == true && "$other_dirty" == false ]] || exit 0
+cleanup() {
+  rm -f "$isolated_index" "$isolated_index.lock"
+  rmdir "$temp_dir" 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
 
-git -C "$codex_repo" add AGENTS.md
-git -C "$codex_repo" commit -m "Sync AGENTS.md from ~/.claude commit"
+head_commit=$(git -C "$codex_repo" rev-parse --verify 'HEAD^{commit}')
+branch_ref=$(git -C "$codex_repo" symbolic-ref -q HEAD)
+
+GIT_INDEX_FILE="$isolated_index" git -C "$codex_repo" read-tree "$head_commit"
+GIT_INDEX_FILE="$isolated_index" git -C "$codex_repo" add -- AGENTS.md
+tree=$(GIT_INDEX_FILE="$isolated_index" git -C "$codex_repo" write-tree)
+commit=$(printf '%s\n' "Sync AGENTS.md from ~/.claude commit" |
+  git -C "$codex_repo" commit-tree "$tree" -p "$head_commit")
+git -C "$codex_repo" update-ref "$branch_ref" "$commit" "$head_commit"

@@ -58,5 +58,42 @@ def test_ignores_calling_repositories_git_environment(tmp_path: Path) -> None:
     )
 
     assert result.returncode == 0, result.stderr
-    assert git(codex_repo, "status", "--porcelain=v1") == ""
     assert git(codex_repo, "show", "HEAD:AGENTS.md") == "new instructions"
+
+
+def test_commits_agents_only_with_other_dirty_and_staged_paths(tmp_path: Path) -> None:
+    claude_repo = tmp_path / "claude"
+    codex_repo = tmp_path / ".codex"
+    init_repo(claude_repo)
+    init_repo(codex_repo)
+
+    (codex_repo / "AGENTS.md").write_text("old instructions\n")
+    foreign_file = codex_repo / "foreign.txt"
+    foreign_file.write_text("base\n")
+    commit_all(codex_repo, "Initialize Codex fixture")
+
+    (codex_repo / "AGENTS.md").write_text("new instructions\n")
+    foreign_file.write_text("staged change\n")
+    git(codex_repo, "add", "foreign.txt")
+    foreign_file.write_text("unstaged change\n")
+    index_before = git(codex_repo, "hash-object", ".git/index")
+    staged_diff_before = git(codex_repo, "diff", "--cached", "--", "foreign.txt")
+    unstaged_diff_before = git(codex_repo, "diff", "--", "foreign.txt")
+    environment = os.environ.copy()
+    environment["HOME"] = str(tmp_path)
+    result = subprocess.run(
+        ["bash", str(SCRIPT)],
+        capture_output=True,
+        cwd=claude_repo,
+        env=environment,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert git(codex_repo, "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD") == "AGENTS.md"
+    assert git(codex_repo, "show", "HEAD:AGENTS.md") == "new instructions"
+    assert git(codex_repo, "hash-object", ".git/index") == index_before
+    assert foreign_file.read_text() == "unstaged change\n"
+    assert git(codex_repo, "show", ":foreign.txt") == "staged change"
+    assert git(codex_repo, "diff", "--cached", "--", "foreign.txt") == staged_diff_before
+    assert git(codex_repo, "diff", "--", "foreign.txt") == unstaged_diff_before
