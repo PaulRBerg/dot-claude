@@ -6,8 +6,7 @@
   "autoMemoryEnabled": false,
   // Disable the session recap / away summary shown when returning to a session
   "awaySummaryEnabled": false,
-  // Auto-delete chat transcripts older than this many days (default if unset: 30)
-  "cleanupPeriodDays": 30,
+  "cleanupPeriodDays": 0,
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
