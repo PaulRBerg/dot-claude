@@ -75,7 +75,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/hooks/UserPromptSubmit/agent_presence.py",
+            "command": "~/.codex/hooks/AgentSessionStatus/agent_session_status.py presence",
             "type": "command"
           }
         ]
