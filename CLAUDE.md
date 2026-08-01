@@ -47,6 +47,9 @@ complexity.
   waiting for the task to fully finish. Many small commits are good — never batch them into one big commit at the end.
   Uncommitted work is what blocks other agents from starting conflicting tasks, so the working tree should return to
   clean as fast as you can get it there.
+- After committing, also push to the remote if the repository's GitHub owner is `PaulRBerg` and the local branch has no
+  unpulled changes (i.e., isn't behind its upstream) — `git fetch` and compare against `@{upstream}` first. If it's
+  behind, skip the push and leave it for me rather than pulling to reconcile.
 
 ### Conflict detection before starting
 
