@@ -6,7 +6,8 @@
   "autoMemoryEnabled": false,
   // Disable the session recap / away summary shown when returning to a session
   "awaySummaryEnabled": false,
-  "cleanupPeriodDays": 0,
+  // We need to set this because 0doesn't work
+  "cleanupPeriodDays": 9999,
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
