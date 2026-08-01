@@ -240,6 +240,7 @@ codex_args=(--dangerously-bypass-approvals-and-sandbox exec
   -m "$model"
   -c "model_reasoning_effort=\"$effort\""
   -c 'service_tier="default"'
+  -c 'notify=[]'
   --output-schema "$schema_file"
   --output-last-message "$result_file")
 codex_stdout="$stdout_file"
