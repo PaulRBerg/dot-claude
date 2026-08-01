@@ -142,7 +142,7 @@ alias rw := ruff-write
 # Run all tests
 [group("test")]
 @test *args:
-    just test-hooks {{ args }}
+    uv run pytest hooks helpers {{ args }}
 alias t := test
 
 # Run pytest tests
@@ -162,4 +162,3 @@ alias th := test-hooks
     just {{ recipe }}
     echo -e '{{ GREEN }}✓ {{ recipe }} completed{{ NORMAL }}'
 alias rws := _run_with-status
-

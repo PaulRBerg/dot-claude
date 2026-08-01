@@ -15,6 +15,14 @@ codex_repo="$HOME/.codex"
 
 [[ -d "$codex_repo/.git" ]] || exit 0
 
+# Hooks inherit repository-local variables from the calling Git process, and
+# `git -C` does not replace values such as GIT_INDEX_FILE for a foreign repo.
+git_env_vars=$(git rev-parse --local-env-vars)
+while IFS= read -r git_env_var; do
+  [[ -n "$git_env_var" ]] && unset "$git_env_var"
+done <<<"$git_env_vars"
+unset git_env_var git_env_vars
+
 status_output=$(git -C "$codex_repo" status --porcelain=v1)
 [[ -n "$status_output" ]] || exit 0
 
