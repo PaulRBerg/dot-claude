@@ -15,8 +15,6 @@ complexity.
 
 ## Authority
 
-- For answers, reviews, diagnosis, and plans: inspect and report; do not change files unless requested.
-- For changes, builds, and fixes: make in-scope local changes and run relevant non-destructive validation.
 - Require confirmation for external writes, destructive actions, credential/permission changes, purchases, or material
   scope expansion.
 
