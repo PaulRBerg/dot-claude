@@ -40,8 +40,14 @@ complexity.
 - On a git `index.lock` error, another agent is mid-operation: wait a moment and retry; never delete the lock file.
 - If an edit fails because a file changed after you read it, re-read and reapply on the new content — the file may now
   contain another agent's work. Never force-overwrite a whole file to win the race.
-- Attribute failures before debugging them: if a repo-wide check fails only in files you didn't touch, it's likely
-  another agent's in-flight work — confirm your own files pass and move on.
+- Never act on a shared stash by ordinal (`stash@{0}`) — another agent's operation can shift it between your read and
+  your act. Resolve it to its object id immediately before use and re-verify the id still matches right before acting.
+- Attribute failures before debugging them: rule out your own side effects (formatters, hooks, codegen you just ran)
+  before blaming another agent; for committed changes, `Agent-Session:` trailers in `git log` identify the authoring
+  session. If a repo-wide check still fails only in files you didn't touch, confirm your own files pass and move on, or
+  prove it in a temporary `git worktree` at clean HEAD running the scoped checks there — valid only when your change
+  doesn't build on another agent's uncommitted files, and only for checks that run from a bare checkout or with
+  dependencies (node_modules, venvs) linked in, since those don't follow the worktree.
 - Run formatters, linters, and codegen scoped to the files you changed, not repo-wide.
 - Commit proactively and as quickly as possible: the moment a coherent unit of work passes validation, commit it without
   waiting for the task to fully finish. Many small commits are good — never batch them into one big commit at the end.
@@ -58,20 +64,27 @@ complexity.
 
 Before starting any task — in standard mode and plan mode alike — check the repo state with `git status`. Dirty
 uncommitted changes are likely another agent's in-flight work: reason through whether your task would collide with it
-(same files or modules, overlapping refactors, shared codegen outputs). Use the `agents-status` skill to see active AI
-agent session counts and working directories in the current repository; use its machine-wide view only when
-cross-repository coordination matters. The goal is smarter parallelization of agents on the same `main` branch.
+(same files or modules, overlapping refactors, shared codegen outputs). A clean tree does not guarantee no conflict —
+active sessions may not have written yet. Use the `agents-status` skill to see active AI agent session counts, working
+directories, and session names/labels (a hint at intent, never authority) in the current repository, plus its Notes
+block for out-of-scope findings other sessions left behind; use its machine-wide view only when cross-repository
+coordination matters. When other sessions share the repo, set intent with
+`~/.codex/hooks/AgentSessionStatus/agent_session_status.py claim '<one line>'`; when you find something real but out of
+scope for your task, record it with `agent_session_status.py note '<finding>'` instead of relying on the chat report
+being remembered. The goal is smarter parallelization of agents on the same `main` branch.
 
 - No overlap with your task → proceed normally (per the bullet above: ignore unrelated changes).
 - Potential conflict → keep analyzing and planning the task (reading is always safe), but do not edit any files yet.
   Wait for the other agent(s) to finish, signaled by the conflicting changes being committed.
-- While waiting, poll the repo state (e.g., `git status --porcelain` on the conflicting paths): every 2 minutes for the
-  first 10 minutes, then every 5 minutes, up to 1 hour of total waiting.
+- While waiting, prefer an event watcher where your client provides one (Claude Code: the Monitor tool): arm one watch
+  that fires when the conflicting paths drop out of `git status --porcelain` or the owning session disappears from
+  `agents-status` (abandonment — silence is not progress). Where no watcher exists, poll instead: every 2 minutes for
+  the first 10 minutes, then every 5 minutes, up to 1 hour of total waiting.
 - The moment the conflicting work is committed, start implementing immediately — do not ask for approval.
 - If still blocked after 1 hour, give up on waiting: present your finished plan and tell me I can run it once the
   conflicting agent workloads are done.
-- In plan mode, still write the plan, but include a "Wait out conflicting agents" section that applies the polling
-  schedule above before the first edit.
+- In plan mode, still write the plan, but include a "Wait out conflicting agents" section that applies the waiting
+  approach above before the first edit.
 
 ## Workflow
 
