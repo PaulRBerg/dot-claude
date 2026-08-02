@@ -10,10 +10,12 @@ export default {
   // Format markdown files with Prettier
   '*.md': 'bunx --no-install prettier --write --cache --log-level warn',
   // Rebuild Codex instructions when the root CLAUDE.md changed, then commit
-  // the regenerated AGENTS.md in ~/.codex if it's the only thing dirty there
+  // the regenerated AGENTS.md in ~/.codex and ~/.agents if it's the only
+  // thing dirty in those repos
   './CLAUDE.md': [
     () => `just --justfile ${JSON.stringify(codexJustfile)} build`,
     'bash helpers/commit_codex_agents.sh',
+    'bash helpers/commit_agents_repo.sh',
   ],
   // Always regenerate settings.json from JSONC sources on every commit
   '*': [
