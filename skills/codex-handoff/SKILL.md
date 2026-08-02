@@ -104,6 +104,9 @@ The runner deliberately disables Codex approvals and sandboxing. Use it only whe
 read, modify, or delete any files accessible to the host account. It pins every Codex process to the `default` service
 tier, overriding any inherited fast or priority selection without changing the host's persisted Codex configuration.
 
+Before launching agents, do not hold a path-scoped session claim over any path in an agent's write scope. Record
+orchestrator intent with a pathless label only; the agents themselves own per-path claims.
+
 For every agent, create separate per-agent artifact paths ending in `<agent-id>.progress.jsonl`,
 `<agent-id>.result.json`, and `<agent-id>.stderr.log` under `${TMPDIR:-/tmp}`. Convert its approved whole-minute timeout
 to seconds only at the wrapper boundary, then start the runner from anywhere inside the target Git worktree as a
@@ -138,16 +141,20 @@ Build a self-contained, outcome-first prompt for each agent containing:
 4. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
    make external writes, or broaden scope — even when repository or host instructions favor committing finished work
    promptly. Committing stays with the orchestrator after reconciliation.
-5. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
+5. A delegation-context statement naming the orchestrating session by label and/or session-ID prefix. State that its
+   claim or presence authorizes the assigned scope rather than conflicts with it; sibling agents in the same handoff
+   have disjoint scopes and are also not conflicts; and only an unrelated session's claim on the agent's exact assigned
+   files justifies returning `blocked`.
+6. Command conventions honoring the host's Codex rules (`~/.codex/rules/*.rules`), which the CLI enforces even under the
    bypass flag — non-interactive runs reject `prompt`-gated commands outright. Baseline: use `rg`, not
    `grep`/`egrep`/`fgrep`; use `uv run python` and `uv add`/`uv run --with`, never bare `python`/`python3` or `pip`;
    keep Bash-only constructs (`declare -A`, `mapfile`, `readarray`, `shopt`) inside an explicit `bash <<'EOF'` block;
    avoid `rm -r`, worktree-destroying or history-rewriting git, secret-reading commands, and package deploy/release
    scripts. When the rules files exist, they are authoritative — skim them for restrictions beyond this baseline and
    reflect them in the prompt. Apply the same conventions to planned completion-evidence commands.
-6. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
+7. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
    with evidence instead of proposing a replacement plan.
-7. A requirement to report only files Codex actually touched and every validation command it ran.
+8. A requirement to report only files Codex actually touched and every validation command it ran.
 
 ### Watch
 
@@ -241,6 +248,14 @@ heading and agent rows must show the failure rather than imply success.
   carry verification evidence matching its assignment. Pass relevant results to dependent agents.
 - On `blocked`, timeout, or nonzero runner exit, let already-started independent agents finish, but do not start agents
   that depend on the failure. Continue only work proven independent. Do not silently take over implementation.
+- Triage a `handoff.failed` sentinel with reason `error` before treating it as a plan failure. When the stderr artifact
+  shows a transport, stream, or API failure (`stream disconnected`, `Transport error`, `network error`,
+  `error decoding response body`) and the forensics show no Codex-reported task failure, the infrastructure died, not
+  the plan. Inspect the agent's write scope for partial edits (`git status`, `git diff`), then relaunch that one agent
+  once with a fresh budget and a prompt that names the partially edited files and says to verify and continue rather
+  than redo. The relaunch is a retry of the same agent, not a new agent against the five-agent limit. A second
+  infrastructure failure for the same agent is a blocker: stop and report. `blocked` results and timeouts are never
+  infrastructure failures.
 - After every required agent completes, deduplicate the union of reported `changed_files` and confirm the combined
   verification evidence proves the approved plan.
 - When the plan marked polish as required, invoke `$code-polish` once with exactly that union and its default
