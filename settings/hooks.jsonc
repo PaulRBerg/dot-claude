@@ -8,39 +8,40 @@
         "hooks": [
           {
             "command": "ai-notify event notification",
-            "type": "command"
-          }
-        ]
-      }
+            "type": "command",
+          },
+        ],
+      },
     ],
     "PermissionRequest": [
       {
         "hooks": [
           {
             "command": "ai-notify event permission-request",
-            "type": "command"
-          }
-        ]
-      }
+            "type": "command",
+          },
+        ],
+      },
     ],
     "PostToolUse": [
       {
         "hooks": [
           {
             "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
-            "type": "command"
-          }
-        ]
+            "type": "command",
+          },
+        ],
       },
       {
         "matcher": "ExitPlanMode",
         "hooks": [
           {
-            "command": "~/.claude/hooks/PostToolUse/plan_claim.py",
-            "type": "command"
-          }
-        ]
-      }
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
     ],
     "PreToolUse": [
       {
@@ -48,46 +49,100 @@
         "hooks": [
           {
             "command": "ai-notify event ask-user-question",
-            "type": "command"
-          }
-        ]
-      }
+            "type": "command",
+          },
+        ],
+      },
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 3,
+            "type": "command",
+          },
+        ],
+      },
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
     ],
     "Stop": [
       {
         "hooks": [
           {
             "command": "ai-notify event stop",
-            "type": "command"
-          }
-        ]
-      }
+            "type": "command",
+          },
+        ],
+      },
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
     ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "command": "~/.claude/hooks/UserPromptSubmit/copy_prompt_to_clipboard.py",
-            "type": "command"
-          }
-        ]
+            "type": "command",
+          },
+        ],
       },
       {
         "hooks": [
           {
-            "command": "~/.codex/hooks/AgentSessionStatus/agent_session_status.py presence",
-            "type": "command"
-          }
-        ]
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
       },
       {
         "hooks": [
           {
             "command": "ai-notify event user-prompt-submit",
-            "type": "command"
-          }
-        ]
-      }
-    ]
-  }
+            "type": "command",
+          },
+        ],
+      },
+    ],
+  },
 }
