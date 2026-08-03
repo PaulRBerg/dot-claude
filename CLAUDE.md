@@ -78,15 +78,18 @@ codegen outputs). A clean tree does not guarantee no conflict — active session
 intent, never authority) in the current repository, plus its Notes block for out-of-scope findings other sessions left
 behind; use its machine-wide view only when cross-repository coordination matters. Before the first edit, acquire
 literal repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`. Only a `READY` result
-authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` or `UNKNOWN dirty:...` means ownership cannot
-be established, while `BLOCKED` means the work is queued behind an intersecting claim. Release active, queued, or
-intent-only work with `ai-coord done` as soon as that work is complete. The goal is smarter parallelization of agents on
-the same `main` branch.
+authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` means ownership cannot be established;
+`UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the existing
+wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an intersecting
+claim. Release active, queued, or intent-only work with `ai-coord done` as soon as that work is complete. The goal is
+smarter parallelization of agents on the same `main` branch.
 
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
   or re-run `agents-status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
-- `READY` → proceed normally (per the bullet above: ignore unrelated changes).
+- `READY` → proceed normally; a `stale-dirt:<paths>` advisory means preserve those pre-existing hunks byte-for-byte and
+  exclude them from commits. For an affected file, use the commit skill's baseline exclusion after `ai-coord baseline`
+  to capture its OID.
 - `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. In Claude
   Code, the `ai-coord` waker hook wakes the session automatically when the claim is promoted, a message or note arrives,
   or the waker times out; do not arm Monitor. In Codex, run `ai-coord wait` in the foreground; it blocks for up to 300
