@@ -46,9 +46,9 @@ Produce a decision-complete plan with this section:
 - Agents: `<1-5>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
 
-| Agent | Wave | Depends on | Scope              | Model                          | Effort                       | Timeout             | Implementation brief                                   | Completion evidence                 |
-| ----- | ---- | ---------- | ------------------ | ------------------------------ | ---------------------------- | ------------------- | ------------------------------------------------------ | ----------------------------------- |
-| `A1`  | `1`  | `none`     | `<files/behavior>` | `<gpt-5.6-terra\|gpt-5.6-sol>` | `<medium\|high\|xhigh\|max>` | `<minutes> minutes` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
+| Agent | Wave | Depends on | Scope              | Model                                        | Effort                       | Timeout             | Implementation brief                                   | Completion evidence                 |
+| ----- | ---- | ---------- | ------------------ | -------------------------------------------- | ---------------------------- | ------------------- | ------------------------------------------------------ | ----------------------------------- |
+| `A1`  | `1`  | `none`     | `<files/behavior>` | `<gpt-5.6-luna\|gpt-5.6-terra\|gpt-5.6-sol>` | `<medium\|high\|xhigh\|max>` | `<minutes> minutes` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
 
 - Code polish: `<required|not required>` — `<reason>`
 ```
@@ -77,16 +77,18 @@ runs across a wave's agents are wasted wall-clock time, not extra assurance.
 
 Select configuration deliberately:
 
-| Work                                     | Model                            | Effort             | Baseline timeout |
-| ---------------------------------------- | -------------------------------- | ------------------ | ---------------- |
-| Bounded, routine implementation          | `gpt-5.6-terra`                  | `medium` or `high` | 10 minutes       |
-| Involved multi-file implementation       | `gpt-5.6-terra` or `gpt-5.6-sol` | `high`             | 20 minutes       |
-| Semantic or cross-cutting implementation | `gpt-5.6-sol`                    | `xhigh`            | 40 minutes       |
-| Exceptional, high-risk implementation    | `gpt-5.6-sol`                    | `max`              | 60 minutes       |
+| Work                                     | Model           | Effort             | Baseline timeout |
+| ---------------------------------------- | --------------- | ------------------ | ---------------- |
+| Bounded, routine implementation          | `gpt-5.6-luna`  | `medium`           | 10 minutes       |
+| Everyday or involved implementation      | `gpt-5.6-terra` | `medium` or `high` | 20 minutes       |
+| Semantic or cross-cutting implementation | `gpt-5.6-sol`   | `xhigh`            | 40 minutes       |
+| Exceptional, high-risk implementation    | `gpt-5.6-sol`   | `max`              | 60 minutes       |
 
-Never select GPT-5.6 Luna, `low`, or `ultra`. Adjust the timeout when repository evidence shows that required validation
-needs materially more or less time. The timeout is a kill-switch, not pacing: Codex never sees it and an early finish
-costs nothing, so never tighten it hoping for speed — size it only to bound how long a hung agent can block its wave.
+Use Luna for efficient, high-volume routine work; Terra for balanced everyday work; and Sol for flagship capability on
+the hardest work. Never select `low` or `ultra`. Adjust the timeout when repository evidence shows that required
+validation needs materially more or less time. The timeout is a kill-switch, not pacing: Codex never sees it and an
+early finish costs nothing, so never tighten it hoping for speed — size it only to bound how long a hung agent can block
+its wave.
 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.

@@ -16,7 +16,7 @@ sentinel line and leaves the file in place for inspection.
 With --result-file, the structured result is written to PATH and stdout stays
 empty so background-task interfaces do not display raw JSON.
 
-Allowed models: gpt-5.6-sol, gpt-5.6-terra
+Allowed models: gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna
 Allowed efforts: medium, high, xhigh, max
 EOF
 }
@@ -87,9 +87,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$model" in
-gpt-5.6-sol | gpt-5.6-terra) ;;
+gpt-5.6-sol | gpt-5.6-terra | gpt-5.6-luna) ;;
 *)
-  echo "ERROR: --model must be gpt-5.6-sol or gpt-5.6-terra" >&2
+  echo "ERROR: --model must be gpt-5.6-sol, gpt-5.6-terra, or gpt-5.6-luna" >&2
   exit 64
   ;;
 esac

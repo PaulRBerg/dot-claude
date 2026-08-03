@@ -143,7 +143,11 @@ export FAKE_PROMPT_FILE="$prompt_file"
 fake_path="$fake_bin:$PATH"
 expected_result='{"status":"completed","summary":"done","changed_files":[],"verification":[],"residual_risks":[],"blockers":[]}'
 
-for model in gpt-5.6-sol gpt-5.6-terra; do
+help_output="$("$runner" --help)"
+[[ "$help_output" == *'Allowed models: gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna'* ]] ||
+  fail "runner help omits a supported model"
+
+for model in gpt-5.6-sol gpt-5.6-terra gpt-5.6-luna; do
   for effort in medium high xhigh max; do
     actual_result="$(
       cd "$repo"
@@ -163,7 +167,7 @@ assert_arg never
 assert_arg -C
 assert_arg "$repo_root"
 assert_arg -m
-assert_arg gpt-5.6-terra
+assert_arg gpt-5.6-luna
 assert_arg -c
 assert_arg 'model_reasoning_effort="max"'
 assert_arg 'service_tier="default"'
@@ -196,8 +200,8 @@ exec_line="$(grep -nFx -- 'exec' "$args_file" | cut -d: -f1)"
 
 (
   cd "$repo"
-  expect_failure 64 'must be gpt-5.6-sol or gpt-5.6-terra' env PATH="$fake_path" \
-    "$runner" --model gpt-5.6-luna --effort high --timeout-seconds 5
+  expect_failure 64 'must be gpt-5.6-sol, gpt-5.6-terra, or gpt-5.6-luna' env PATH="$fake_path" \
+    "$runner" --model gpt-5.6-unknown --effort high --timeout-seconds 5
   expect_failure 64 'must be medium, high, xhigh, or max' env PATH="$fake_path" \
     "$runner" --model gpt-5.6-sol --effort low --timeout-seconds 5
   expect_failure 64 'must be medium, high, xhigh, or max' env PATH="$fake_path" \
