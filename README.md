@@ -59,8 +59,10 @@ Settings layout:
 
 ### Context
 
-`CLAUDE.md` is user-level context loaded by Claude Code across all projects. Keep repo-specific guidance in project
-`CLAUDE.md` / `AGENTS.md` files; keep only durable personal workflow defaults here.
+`CLAUDE.md` is user-level context loaded by Claude Code across all projects. It is generated from
+[PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-agents)'s `AGENTS.md` — the canonical source — via that repo's
+Husky + lint-staged pre-commit hook; do not hand-edit it here. Keep repo-specific guidance in project `CLAUDE.md` /
+`AGENTS.md` files.
 
 ### Justfile
 
