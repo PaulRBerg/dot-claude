@@ -1,5 +1,5 @@
 ---
-argument-hint: "[path?] [description?] [--root-only] [--minimal] [--full] [--dry-run] [--force]"
+argument-hint: "[path?] [--root-only] [--minimal] [--thorough|--full] [--dry-run] [--force]"
 description: Create missing README.md and AGENTS.md context files
 ---
 
@@ -13,4 +13,5 @@ description: Create missing README.md and AGENTS.md context files
 
 ## Task
 
-Activate the `agents-context` skill and run the `create` workflow. Follow `references/create-docs.md` from that skill.
+Activate the `agents-context-management` skill and run the `create` workflow. Follow `references/create-docs.md` from
+that skill.

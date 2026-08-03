@@ -1,5 +1,5 @@
 ---
-argument-hint: "[path?] [skill-name ...] [--root-only] [--preserve] [--minimal] [--thorough] [--dry-run]"
+argument-hint: "[path?] [target ...] [--root-only] [--preserve] [--minimal] [--thorough|--full] [--dry-run]"
 description: Polish README.md, AGENTS.md, CLAUDE.md symlinks, and existing project skills
 ---
 
@@ -15,4 +15,5 @@ description: Polish README.md, AGENTS.md, CLAUDE.md symlinks, and existing proje
 
 ## Task
 
-Activate the `agents-context` skill and run the `polish` workflow. Follow `references/brain-polish.md` from that skill.
+Activate the `agents-context-management` skill and run the `polish` workflow. Follow `references/brain-polish.md` from
+that skill.
