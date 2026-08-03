@@ -81,9 +81,8 @@ literal repository-relative file or directory scopes with `ai-coord start '<labe
 authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` means ownership cannot be established;
 `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the existing
 wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an intersecting
-claim. Release active, queued, or
-intent-only work with `ai-coord done` as soon as that work is complete. The goal is smarter parallelization of agents on
-the same `main` branch.
+claim. Release active, queued, or intent-only work with `ai-coord done` as soon as that work is complete. The goal is
+smarter parallelization of agents on the same `main` branch.
 
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
   or re-run `agents-status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
