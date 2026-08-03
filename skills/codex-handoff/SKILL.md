@@ -96,7 +96,7 @@ Do not invoke Codex until the user approves the plan and Claude leaves Plan mode
 ## Execution Phase
 
 Resolve `scripts/run-codex-handoff.sh` to an absolute path relative to this `SKILL.md`; never search for it in the
-target repository. Each invocation is one ephemeral Codex agent.
+target repository. Each invocation is one Codex agent.
 
 ### Launch
 

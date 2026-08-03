@@ -129,7 +129,7 @@ exec_help="$("$codex_bin" exec --help 2>/dev/null || true)"
   exit 69
 }
 
-required_flags="--ephemeral --color --cd --model --output-schema --output-last-message"
+required_flags="--color --cd --model --output-schema --output-last-message"
 if [[ -n "$progress_file" ]]; then
   required_flags="$required_flags --json"
 fi
@@ -234,7 +234,6 @@ if [[ ! -s "$prompt_file" ]]; then
 fi
 
 codex_args=(--dangerously-bypass-approvals-and-sandbox exec
-  --ephemeral
   --color never
   -C "$repo_root"
   -m "$model"

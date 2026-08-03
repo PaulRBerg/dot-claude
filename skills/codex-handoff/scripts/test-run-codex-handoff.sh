@@ -77,7 +77,7 @@ if [[ "${1:-}" == "--help" ]]; then
 fi
 
 if [[ "${1:-}" == "exec" && "${2:-}" == "--help" ]]; then
-  for flag in --ephemeral --color --cd --model --output-schema --output-last-message --json; do
+  for flag in --color --cd --model --output-schema --output-last-message --json; do
     print_flag "$flag"
   done
   exit 0
@@ -158,7 +158,6 @@ done
 
 assert_arg --dangerously-bypass-approvals-and-sandbox
 assert_arg exec
-assert_arg --ephemeral
 assert_arg --color
 assert_arg never
 assert_arg -C
@@ -176,6 +175,7 @@ grep -Fxq -- '--ask-for-approval' "$args_file" && fail "runner configured a sepa
 grep -Fxq -- '--sandbox' "$args_file" && fail "runner configured a sandbox alongside dangerous bypass"
 grep -Fxq -- '--search' "$args_file" && fail "runner enabled search"
 grep -Fxq -- '--ignore-user-config' "$args_file" && fail "runner ignored user config"
+grep -Fxq -- '--ephemeral' "$args_file" && fail "runner disabled session persistence"
 grep -Fxq -- '--json' "$args_file" && fail "runner passed --json without --progress-file"
 [[ "$(cat "$prompt_file")" == 'approved implementation' ]] || fail "prompt was not forwarded exactly"
 
