@@ -87,9 +87,10 @@ the same `main` branch.
   or re-run `agents-status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
 - `READY` → proceed normally (per the bullet above: ignore unrelated changes).
-- `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. Run
-  `ai-coord wait` in the foreground or under Claude's Monitor tool; it blocks for up to 300 seconds by default and
-  returns `READY` when ownership transfers. A message, note, or timeout also wakes it so you can inspect the new state
+- `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. In Claude
+  Code, the `ai-coord` waker hook wakes the session automatically when the claim is promoted, a message or note arrives,
+  or the waker times out; do not arm Monitor. In Codex, run `ai-coord wait` in the foreground; it blocks for up to 300
+  seconds by default and returns `READY` when ownership transfers. After any wake without `READY`, inspect the new state
   and re-arm. Silence is not progress.
 - When blocked, run `ai-coord msg <target> '<one line>'` to contact a holder; `<target>` is a session-ID prefix, label
   or name substring, or `repo` broadcast. When finishing work others may be waiting on, message the waiters.
