@@ -42,19 +42,6 @@
           },
         ],
       },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord waker claude",
-            "timeout": 3600,
-            "if": "Bash(ai-coord start *)",
-            "async": true,
-            "asyncRewake": true,
-          },
-        ],
-      },
     ],
     "PreToolUse": [
       {
@@ -164,6 +151,21 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord waker claude",
+            "timeout": 3600,
+            "if": "Bash(ai-coord start *)",
+            "async": true,
+            "asyncRewake": true,
           },
         ],
       },
