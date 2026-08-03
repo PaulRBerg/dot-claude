@@ -4,10 +4,12 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--progress-file PATH] [--result-file PATH]
+Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--read-only] [--progress-file PATH] [--result-file PATH]
 
 Read an approved implementation prompt from stdin and run one ephemeral Codex
 implementation session in the current Git worktree.
+
+With --read-only, Codex runs a read-only research session instead.
 
 With --progress-file, Codex runs with --json and streams JSONL events to PATH;
 the wrapper appends one terminal {"type":"handoff.completed"|"handoff.failed"}
@@ -26,6 +28,7 @@ effort=""
 timeout_seconds=""
 progress_file=""
 result_output_file=""
+read_only=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -74,6 +77,10 @@ while [[ $# -gt 0 ]]; do
     result_output_file="${1#*=}"
     shift
     ;;
+  --read-only)
+    read_only=1
+    shift
+    ;;
   -h | --help)
     usage
     exit 0
@@ -109,6 +116,9 @@ fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 schema_file="$script_dir/../references/result.schema.json"
+if [[ $read_only -eq 1 ]]; then
+  schema_file="$script_dir/../references/research-result.schema.json"
+fi
 [[ -f "$schema_file" ]] || { echo "ERROR: missing result schema: $schema_file" >&2; exit 66; }
 
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
@@ -124,8 +134,13 @@ fi
 
 top_help="$("$codex_bin" --help 2>/dev/null || true)"
 exec_help="$("$codex_bin" exec --help 2>/dev/null || true)"
-[[ "$top_help" == *"--dangerously-bypass-approvals-and-sandbox"* ]] || {
-  echo "ERROR: codex lacks --dangerously-bypass-approvals-and-sandbox" >&2
+if [[ $read_only -eq 1 ]]; then
+  required_top_flag="--sandbox"
+else
+  required_top_flag="--dangerously-bypass-approvals-and-sandbox"
+fi
+[[ "$top_help" == *"$required_top_flag"* ]] || {
+  echo "ERROR: codex lacks $required_top_flag" >&2
   exit 69
 }
 
@@ -233,7 +248,12 @@ if [[ ! -s "$prompt_file" ]]; then
   exit 64
 fi
 
-codex_args=(--dangerously-bypass-approvals-and-sandbox exec
+if [[ $read_only -eq 1 ]]; then
+  codex_args=(--sandbox read-only exec)
+else
+  codex_args=(--dangerously-bypass-approvals-and-sandbox exec)
+fi
+codex_args+=(
   --color never
   -C "$repo_root"
   -m "$model"

@@ -6,7 +6,9 @@ metadata:
   install-targets: claude-code
 name: claude-handoff
 user-invocable: true
-description: Orchestrate one to five Sonnet or Opus subagents to implement an approved Claude Code plan.
+description:
+  Orchestrate read-only Explore research subagents during planning and one to five Sonnet or Opus subagents to implement
+  the approved plan.
 ---
 
 # Claude Handoff
@@ -14,26 +16,58 @@ description: Orchestrate one to five Sonnet or Opus subagents to implement an ap
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
 
-Plan in Claude Code with the session's planning model, then hand the approved implementation to one to five subagents in
-the sequence the task requires. Subagents run in-session through the Agent tool with the host session's permissions, so
-they can write anywhere the session can. Use this skill to keep Claude on thinking, orchestration, and verification
-while each agent implements on the model its brief warrants: Sonnet by default, Opus where reasoning difficulty demands
-it.
+For complex tasks, investigate through up to three read-only Explore subagents before planning. Then hand the approved
+implementation to one to five subagents in the sequence the task requires. Implementation subagents run in-session
+through the Agent tool with the host session's permissions, so they can write anywhere the session can. Use this skill
+to keep Claude on thinking, orchestration, and verification while each implementation agent uses the model its brief
+warrants: Sonnet by default, Opus where reasoning difficulty demands it.
 
 ## Contract
 
 - Run only after the user explicitly invokes this skill in Plan mode. If Plan mode is not active, ask the user to switch
   and stop.
-- Claude owns discovery, decisions, the implementation plan, and agent orchestration. Do not consult subagents while
-  planning.
-- Each subagent implements its assigned part of the approved plan. It may inspect, edit, and validate, but must not
-  redesign the solution or return another plan.
-- Use the smallest effective team. One agent remains valid; use additional agents only when decomposition materially
-  improves latency, correctness, or verification. Never exceed five agents total across the handoff.
+- Claude owns decisions, the final implementation plan, and agent orchestration. For complex tasks, delegate
+  investigation to read-only research subagents before writing the plan.
+- Research agents gather evidence and report findings. They never edit files, make design decisions, or return plans of
+  their own.
+- Each implementation agent implements its assigned part of the approved plan. It may inspect, edit, and validate, but
+  must not redesign the solution or return another plan.
+- Use the smallest effective implementation team. One implementation agent remains valid; use additional agents only
+  when decomposition materially improves latency, correctness, or verification. Never exceed five implementation agents
+  across the handoff.
+- Use at most three research agents with stable IDs `R1` through `R3`. Count them separately from the five
+  implementation agents.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
   pass.
 
 Use `$ARGUMENTS` as the task when present; otherwise use the active user request.
+
+## Research Phase
+
+Trigger research when scope is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on
+evidence that would be materially slower for Claude to gather serially. Skip this phase entirely for straightforward
+tasks; zero research agents remains the default.
+
+Claude alone decides whether research runs from the task and repository evidence available at invocation time. The user
+never opts in, names research agents, or is asked whether research should run. Either launch the research wave
+immediately or proceed straight to planning.
+
+When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately during Plan mode
+through the Agent tool with `subagent_type: "Explore"`. The read-only Explore toolset makes this launch legitimate
+during Plan mode. Launch all selected agents in parallel as Agent calls in one message, post
+`🔎 Research started — <n> agents`, then rely on native subagent progress rendering; do not build dashboards.
+
+Give each research agent a self-contained prompt containing the open questions to answer, its exact investigation scope,
+and the read-only boundary. Require findings, evidence, open questions, and blockers; explicitly prohibit returning a
+plan or design.
+
+Use the default Explore agent for bounded surveys. Set the Agent tool's `model` override to `opus` only for genuinely
+hard synthesis, consistent with the implementation model-escalation rules below. Agent count and repository size alone
+do not justify escalation.
+
+When the research wave settles, read every result and fold its findings and evidence into the implementation plan.
+Surface open questions or blockers through `AskUserQuestion` only when they change scope or approach. Do not reconcile
+the working tree: research agents change nothing. Flag any research result reporting edits as a contract violation.
 
 ## Plan Phase
 
@@ -42,6 +76,7 @@ Produce a decision-complete plan with this section:
 ```markdown
 ## Claude Handoff
 
+- Research: `<none | R1..Rn — key findings used>`
 - Strategy: `<sequential|parallel|hybrid>`
 - Agents: `<1-5>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
@@ -65,9 +100,9 @@ Choose the execution shape from repository evidence and the approved work:
 A wave finishes with its slowest agent. Keep the Opus agents' scope minimal and move deferrable validation to the
 validation owner.
 
-The five-agent limit applies to the entire handoff, not each wave. Assign every agent a stable ID, exact dependencies,
-an implementation scope, and its own stopping criteria. If parallel work does not collectively prove the overall plan,
-reserve a later sequential agent for integration and aggregate validation.
+The five-implementation-agent limit applies to the entire handoff, not each wave. Assign every implementation agent a
+stable ID, exact dependencies, an implementation scope, and its own stopping criteria. If parallel work does not
+collectively prove the overall plan, reserve a later sequential agent for integration and aggregate validation.
 
 Assign aggregate validation to exactly one owner per handoff: package-wide or repo-wide checks (full test suites,
 whole-package typecheck or lint, catalog-wide checks) run once — by the integration agent when one exists, otherwise by
@@ -95,7 +130,8 @@ controls, so per-agent model choice and scope decomposition are the only levers 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
 
-Do not spawn subagents until the user approves the plan and Claude leaves Plan mode.
+Do not spawn implementation subagents until the user approves the plan and Claude leaves Plan mode. The read-only
+research phase above is the only pre-approval exception.
 
 ## Execution Phase
 

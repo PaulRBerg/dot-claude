@@ -8,7 +8,9 @@ metadata:
   install-targets: claude-code
 name: codex-handoff
 user-invocable: true
-description: Orchestrate one to five Codex CLI agents to implement an approved Claude Code plan.
+description:
+  Orchestrate read-only Codex research agents during planning and one to five Codex CLI agents to implement the approved
+  plan.
 ---
 
 # Codex Handoff
@@ -16,24 +18,82 @@ description: Orchestrate one to five Codex CLI agents to implement an approved C
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
 
-Plan in Claude Code, then hand the approved implementation to one to five Codex CLI agents in the sequence the task
-requires. The runner uses `--dangerously-bypass-approvals-and-sandbox`, so agents can write anywhere the host user can,
+For complex tasks, investigate through up to three read-only Codex CLI research agents before planning. Then hand the
+approved implementation to one to five Codex CLI agents in the sequence the task requires. The implementation runner
+uses `--dangerously-bypass-approvals-and-sandbox`, so implementation agents can write anywhere the host user can,
 including outside the worktree.
 
 ## Contract
 
 - Run only after the user explicitly invokes this skill in Plan mode. If Plan mode is not active, ask the user to switch
   and stop.
-- Claude owns discovery, decisions, the implementation plan, and agent orchestration. Do not consult Codex while
-  planning.
-- Each Codex agent implements its assigned part of the approved plan. It may inspect, edit, and validate, but must not
-  redesign the solution or return another plan.
-- Use the smallest effective team. One agent remains valid; use additional agents only when decomposition materially
-  improves latency, correctness, or verification. Never exceed five agents total across the handoff.
+- Claude owns decisions, the final implementation plan, and agent orchestration. For complex tasks, delegate
+  investigation to read-only Codex research agents before writing the plan.
+- Research agents gather evidence and report findings. They never edit files, make design decisions, or return plans of
+  their own.
+- Each implementation agent implements its assigned part of the approved plan. It may inspect, edit, and validate, but
+  must not redesign the solution or return another plan.
+- Use the smallest effective implementation team. One implementation agent remains valid; use additional agents only
+  when decomposition materially improves latency, correctness, or verification. Never exceed five implementation agents
+  across the handoff.
+- Use at most three research agents with stable IDs `R1` through `R3`. Count them separately from the five
+  implementation agents.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
   pass.
 
 Use `$ARGUMENTS` as the task when present; otherwise use the active user request.
+
+## Research Phase
+
+Trigger research when scope is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on
+evidence that would be materially slower for Claude to gather serially. Skip this phase entirely for straightforward
+tasks; zero research agents remains the default.
+
+Claude alone decides whether research runs from the task and repository evidence available at invocation time. The user
+never opts in, names research agents, or is asked whether research should run. Either launch the research wave
+immediately or proceed straight to planning.
+
+When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately during Plan mode.
+Resolve `scripts/run-codex-handoff.sh` relative to this `SKILL.md`, use the Execution Phase launch template with
+`--read-only`, and give every agent separate `<agent-id>.progress.jsonl`, `<agent-id>.result.json`, and
+`<agent-id>.stderr.log` artifacts. Start all selected agents as background Bash tasks (`run_in_background: true`) in the
+same turn, then watch the wave through the same `watch-codex-wave.sh` and Monitor flow used for implementation. The
+runner's enforced read-only sandbox makes this launch legitimate during Plan mode.
+
+```bash
+bash <skill-dir>/scripts/run-codex-handoff.sh \
+  --read-only \
+  --model <agent-model> \
+  --effort <agent-effort> \
+  --timeout-seconds <agent-minutes-times-60> \
+  --progress-file <agent-progress-file> \
+  --result-file <agent-result-file> \
+  2> <agent-stderr-file> <<'CODEX_PROMPT'
+<agent research prompt>
+CODEX_PROMPT
+```
+
+Give each research agent a self-contained prompt containing the open questions to answer, its exact investigation scope,
+the read-only boundary, and the Codex command conventions under Execution Phase. Require findings, evidence, open
+questions, and blockers matching `references/research-result.schema.json`; explicitly prohibit returning a plan or
+design.
+
+Select research configuration from the same tiers used for implementation:
+
+| Investigation                          | Model           | Effort             | Baseline timeout |
+| -------------------------------------- | --------------- | ------------------ | ---------------- |
+| Bounded, routine survey                | `gpt-5.6-luna`  | `medium`           | 10 minutes       |
+| Involved survey across unfamiliar code | `gpt-5.6-terra` | `medium` or `high` | 15 minutes       |
+| Deep, cross-cutting investigation      | `gpt-5.6-sol`   | `xhigh`            | 20 minutes       |
+
+Use Luna or Terra for bounded surveys and Sol at `xhigh` for deep cross-cutting investigation. Never select `low` or
+`ultra`. Research should normally use shorter budgets than implementation; keep the baseline between 10 and 20 minutes
+unless repository evidence requires otherwise.
+
+When the research wave settles, read every result artifact and fold its findings and evidence into the implementation
+plan. Surface `open_questions` or `blockers` through `AskUserQuestion` only when they change scope or approach. Do not
+reconcile the working tree: research agents change nothing. Flag any research result reporting edits as a contract
+violation.
 
 ## Plan Phase
 
@@ -42,6 +102,7 @@ Produce a decision-complete plan with this section:
 ```markdown
 ## Codex Handoff
 
+- Research: `<none | R1..Rn — key findings used>`
 - Strategy: `<sequential|parallel|hybrid>`
 - Agents: `<1-5>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
@@ -65,9 +126,10 @@ Choose the execution shape from repository evidence and the approved work:
 A wave finishes with its slowest agent. Keep the highest-tier agent's scope minimal and move deferrable validation to
 the validation owner.
 
-The five-agent limit applies to the entire handoff, not each wave. Assign every agent a stable ID, exact dependencies,
-an implementation scope, and its own configuration and stopping criteria. If parallel work does not collectively prove
-the overall plan, reserve a later sequential agent for integration and aggregate validation.
+The five-implementation-agent limit applies to the entire handoff, not each wave. Assign every implementation agent a
+stable ID, exact dependencies, an implementation scope, and its own configuration and stopping criteria. If parallel
+work does not collectively prove the overall plan, reserve a later sequential agent for integration and aggregate
+validation.
 
 Assign aggregate validation to exactly one owner per handoff: package-wide or repo-wide checks (full test suites,
 whole-package typecheck or lint, catalog-wide checks) run once — by the integration agent when one exists, otherwise by
@@ -93,7 +155,8 @@ its wave.
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
 
-Do not invoke Codex until the user approves the plan and Claude leaves Plan mode.
+Do not invoke implementation agents until the user approves the plan and Claude leaves Plan mode. The read-only research
+phase above is the only pre-approval exception.
 
 ## Execution Phase
 
@@ -102,9 +165,10 @@ target repository. Each invocation is one Codex agent.
 
 ### Launch
 
-The runner deliberately disables Codex approvals and sandboxing. Use it only when the user has accepted that agents can
-read, modify, or delete any files accessible to the host account. It pins every Codex process to the `default` service
-tier, overriding any inherited fast or priority selection without changing the host's persisted Codex configuration.
+These instructions launch implementation agents. Without `--read-only`, the runner deliberately disables Codex approvals
+and sandboxing. Use that mode only when the user has accepted that agents can read, modify, or delete any files
+accessible to the host account. The runner pins every Codex process to the `default` service tier, overriding any
+inherited fast or priority selection without changing the host's persisted Codex configuration.
 
 Before launching agents, do not hold a path-scoped session claim over any path in an agent's write scope. Record
 orchestrator intent with a pathless label only; the agents themselves own per-path claims.
@@ -160,9 +224,10 @@ Build a self-contained, outcome-first prompt for each agent containing:
 
 ### Watch
 
-Each progress file streams Codex JSONL events and ends with exactly one wrapper sentinel — `handoff.completed` or
-`handoff.failed` with reason `timeout`, `error`, or `cancelled`. The sentinel, not process state, is the completion
-signal. Read `references/progress-events.md` for event semantics and quiet/failure handling.
+Implementation and research waves reuse this watcher. Each progress file streams Codex JSONL events and ends with
+exactly one wrapper sentinel — `handoff.completed` or `handoff.failed` with reason `timeout`, `error`, or `cancelled`.
+The sentinel, not process state, is the completion signal. Read `references/progress-events.md` for event semantics and
+quiet/failure handling.
 
 Resolve `scripts/watch-codex-wave.sh` from this `SKILL.md`. Arm ONE Monitor per wave around one watcher invocation,
 passing each agent's stable ID, budget in seconds, and progress path as a repeated triple:
@@ -188,16 +253,19 @@ optional and distinct from an independent server-side policy reroute, which may 
 
 ### Collect
 
-When an agent's sentinel arrives, read its result artifact, which is one JSON object matching
+When an implementation agent's sentinel arrives, read its result artifact, which is one JSON object matching
 `references/result.schema.json`, and its stderr artifact for the `codex-handoff: elapsed=<seconds>s` line or failure
-forensics. Do not read or print the background task output; artifact-mode stdout is intentionally empty. Treat each
-agent's `changed_files` as its authoritative post-pass scope. After every wave, reconcile all results with the manifest
-and the visible working tree without folding in unrelated concurrent changes. When Claude is the validation owner, run
-the assigned aggregate checks once during this reconciliation. Attribute aggregate-check failures before treating them
-as blockers: a failure confined to files outside every agent's scope is unrelated concurrent work — confirm the
-handoff's own files still pass and continue. Unexpected out-of-scope edits, overlap between agents in the same parallel
-wave, or an aggregate-check failure attributable to the handoff's changes are blockers; do not start their dependents or
-polish, and do not silently take over implementation.
+forensics. Research waves reuse this collection flow with `references/research-result.schema.json`, then feed their
+findings into the plan without working-tree reconciliation. Do not read or print the background task output;
+artifact-mode stdout is intentionally empty.
+
+Treat each implementation agent's `changed_files` as its authoritative post-pass scope. After every implementation wave,
+reconcile all results with the manifest and the visible working tree without folding in unrelated concurrent changes.
+When Claude is the validation owner, run the assigned aggregate checks once during this reconciliation. Attribute
+aggregate-check failures before treating them as blockers: a failure confined to files outside every implementation
+agent's scope is unrelated concurrent work — confirm the handoff's own files still pass and continue. Unexpected
+out-of-scope edits, overlap between agents in the same parallel wave, or an aggregate-check failure attributable to the
+handoff's changes are blockers; do not start their dependents or polish, and do not silently take over implementation.
 
 ## Status Reporting
 
@@ -206,8 +274,9 @@ These dashboards are mandatory user-facing output. Host-rendered `Background com
 skill. Do not echo their task IDs, raw JSON, sentinels, or monitor payloads. Keep task output empty through the artifact
 paths above, then immediately follow each relevant host event with the appropriate dashboard below.
 
-Use this legend consistently: 🚀 kickoff · ⏳ running · ✅ completed · ⛔ blocked · ⏱️ timed out · 💥 runner error · 🧹
-polish · 🏁 final report. Keep every update to one compact block and render the tables; do not replace them with prose.
+Use this legend consistently: 🔎 research · 🚀 kickoff · ⏳ running · ✅ completed · ⛔ blocked · ⏱️ timed out · 💥
+runner error · 🧹 polish · 🏁 final report. Keep every update to one compact block and render the tables; do not replace
+them with prose.
 
 Prefix every wave-scoped kickoff, digest, and completion update with the watcher's exact 10-cell bar, percentage, and
 settled counts. Progress means sentinel settlement, including failed sentinels; never infer it from elapsed time, event
@@ -224,6 +293,10 @@ Kickoff, once per wave:
 | A2    | `internal/backfill` | `gpt-5.6-sol` · high  | ≤30m   | 🚀 launched |
 | A3    | `internal/evidence` | `gpt-5.6-sol` · xhigh | ≤40m   | 🚀 launched |
 ```
+
+Research waves reuse these dashboards with investigation scopes in place of implementation scopes. Use 🔎 in every
+research-wave heading, for example `### 🔎 Research wave 1/1 [██████████] 100% (2/2 settled) — 2 agents completed`;
+retain the row-level status icons.
 
 The kickoff table already contains the wave's manifest rows; do not repeat them.
 
