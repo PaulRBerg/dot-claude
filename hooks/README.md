@@ -11,7 +11,7 @@ Several hooks provide event-driven automation across different Claude Code event
 - **copy_prompt_to_clipboard** - Copy each submitted prompt to the macOS clipboard (UserPromptSubmit)
 - **agent presence context line** - Show other agents and pending-note counts in the prompt context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
-- **plan_claim** - Claim an approved plan's title as the session label (PostToolUse, `ExitPlanMode`)
+- **ai-coord** - Track lifecycle, presence, and approved plan intent across Claude Code and Codex
 
 ## Hook Events
 
@@ -84,8 +84,8 @@ sessions share the repository or pending notes exist. Session labels and names a
 prompt context: whitespace is collapsed, control characters are stripped, and identifiers are capped at 80 characters.
 
 Pending notes are represented only by a count; their text is never injected, by design, as a prompt-injection guard. The
-hook is silent when this is a solo session with no notes, and on any error. Its implementation is the `presence` verb of
-dot-codex's shared `AgentSessionStatus` helper, which is also used by Codex sessions.
+hook is silent when this is a solo session with no notes, and on any error. Claude Code and Codex both invoke the
+installed `ai-coord` CLI for lifecycle and presence updates.
 
 ## 4. add_plan_frontmatter (PostToolUse)
 
@@ -93,11 +93,10 @@ Intercepts Write tool executions and adds YAML frontmatter (metadata such as the
 plan files in any `.claude/plans/` directory — both `~/.claude/plans/` and project-local ones. See
 [claude-code#12378](https://github.com/anthropics/claude-code/issues/12378).
 
-## 5. plan_claim (PostToolUse, `ExitPlanMode`)
+## 5. ai-coord plan intent (PostToolUse, `ExitPlanMode`)
 
-Claims the approved plan's first H1, capped at 80 characters, as the Claude session label through the shared helper's
-`claim` verb. It reads `tool_input.plan` when available; otherwise it scans `~/.claude/plans/*.md` for frontmatter whose
-`session_id` matches the hook payload and uses the most recently modified match. It is silent and always exits 0.
+The `ai-coord hook claude` handler records the approved plan's first H1, capped at 80 characters, as a pathless intent
+label. The handler is silent and fail-open; path ownership still requires `ai-coord start` before editing.
 
 ## Development
 
