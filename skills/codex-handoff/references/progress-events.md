@@ -28,8 +28,9 @@ Item types: `agent_message` (assistant text), `reasoning`, `command_execution` (
 
 The app-server protocol documents separate `model/safetyBuffering/updated` and `model/rerouted` notifications
 ([turn events](https://learn.chatgpt.com/docs/app-server#turn-events)), but they are not part of the documented
-`codex exec --json` event set and Codex CLI 0.144.3 does not forward them to this stream. Do not invent equivalent JSONL
-events or infer a safety check from silence. A quiet period may be ordinary work or transient buffering, and an
+`codex exec --json` event set. This was written against Codex CLI 0.144.3; the current version might differ, but the gap
+may still apply — treat the forwarded event set as version-dependent rather than guaranteed. Do not invent equivalent
+JSONL events or infer a safety check from silence. A quiet period may be ordinary work or transient buffering, and an
 independent server-side policy reroute may leave the responding model unknowable.
 
 In status digests, say `no recent activity` and keep watching until the wrapper sentinel or approved timeout. Do not

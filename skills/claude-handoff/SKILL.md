@@ -137,6 +137,9 @@ research phase above is the only pre-approval exception.
 
 ### Launch
 
+Before launching subagents, do not hold a path-scoped session claim over any path in a subagent's write scope. Record
+orchestrator intent with a pathless label only; the subagents' work is covered by the orchestrating session's presence.
+
 Launch each agent with the Agent tool: `subagent_type: "general-purpose"`, `model: "<agent-model>"` taken verbatim from
 that agent's approved manifest row, and a description like `A1/3: <scope> (<model>)`. Start every agent in a parallel
 wave in the same message as parallel tool calls; start sequential agents only after reconciling their dependencies.
@@ -156,9 +159,13 @@ containing:
 4. This authority boundary: inspect, edit within the assigned scope, and validate locally; do not commit, push, deploy,
    make external writes, or broaden scope — even when repository or host instructions favor committing finished work
    promptly. Committing stays with the orchestrator after reconciliation.
-5. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, report blocked
+5. A delegation-context statement naming the orchestrating session by label and/or session-ID prefix. State that its
+   claim or presence authorizes the assigned scope rather than conflicts with it; sibling subagents in the same handoff
+   have disjoint scopes and are also not conflicts; and only an unrelated session's claim on the subagent's exact
+   assigned files justifies reporting `blocked`.
+6. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, report blocked
    with evidence instead of proposing a replacement plan.
-6. A reporting requirement: return only the files it actually touched, every validation command it ran with outcomes,
+7. A reporting requirement: return only the files it actually touched, every validation command it ran with outcomes,
    and any residual risks or blockers.
 
 ### Collect
