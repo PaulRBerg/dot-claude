@@ -36,9 +36,22 @@
         "matcher": "ExitPlanMode",
         "hooks": [
           {
+            "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
+          },
+        ],
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
             "type": "command",
+            "command": "ai-coord waker claude",
+            "timeout": 3600,
+            "if": "Bash(ai-coord start*)",
+            "async": true,
+            "asyncRewake": true,
           },
         ],
       },
@@ -49,28 +62,6 @@
         "hooks": [
           {
             "command": "ai-notify event ask-user-question",
-            "type": "command",
-          },
-        ],
-      },
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "ai-coord hook claude",
-            "timeout": 3,
-            "type": "command",
-          },
-        ],
-      },
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "ai-coord hook claude",
-            "timeout": 5,
             "type": "command",
           },
         ],
@@ -88,31 +79,9 @@
       {
         "hooks": [
           {
+            "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
-            "type": "command",
-          },
-        ],
-      },
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [
-          {
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-            "type": "command",
-          },
-        ],
-      },
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-            "type": "command",
           },
         ],
       },
@@ -129,8 +98,7 @@
       {
         "hooks": [
           {
-            "command": "ai-coord hook claude",
-            "timeout": 5,
+            "command": "ai-notify event user-prompt-submit",
             "type": "command",
           },
         ],
@@ -138,8 +106,64 @@
       {
         "hooks": [
           {
-            "command": "ai-notify event user-prompt-submit",
             "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 3,
+          },
+        ],
+      },
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
           },
         ],
       },
