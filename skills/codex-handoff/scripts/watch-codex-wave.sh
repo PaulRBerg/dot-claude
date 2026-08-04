@@ -26,6 +26,7 @@ def emit(record: dict) -> None:
 agents: list[dict] = []
 digest_seconds = 300.0
 poll_seconds = 1.0
+no_sentinel_grace_seconds = 120.0
 arguments = sys.argv[1:]
 index = 0
 while index < len(arguments):
@@ -54,19 +55,21 @@ while index < len(arguments):
             }
         )
         index += 4
-    elif argument in {"--digest-seconds", "--poll-seconds"}:
+    elif argument in {"--digest-seconds", "--poll-seconds", "--no-sentinel-grace-seconds"}:
         if index + 1 >= len(arguments):
             fail(f"{argument} requires a value")
         try:
             value = float(arguments[index + 1])
         except ValueError:
             fail(f"invalid value for {argument}: {arguments[index + 1]}")
-        if value <= 0:
-            fail(f"{argument} must be positive")
+        if value < 0 or (value == 0 and argument != "--no-sentinel-grace-seconds"):
+            fail(f"{argument} must be {'non-negative' if argument == '--no-sentinel-grace-seconds' else 'positive'}")
         if argument == "--digest-seconds":
             digest_seconds = value
-        else:
+        elif argument == "--poll-seconds":
             poll_seconds = value
+        else:
+            no_sentinel_grace_seconds = value
         index += 2
     else:
         fail(f"unknown argument: {argument}")
@@ -122,10 +125,16 @@ def process_line(agent: dict, line: str) -> None:
         emit({"type": "watcher.failed", "agentId": agent["id"], "reason": "malformed-progress", "line": line, "elapsedSeconds": elapsed()})
         fail(f"{agent['id']} progress contains malformed JSON: {exc}", 65)
     if not isinstance(event, dict):
+        emit({"type": "watcher.failed", "agentId": agent["id"], "reason": "non-object-progress", "elapsedSeconds": elapsed()})
         fail(f"{agent['id']} progress event must be an object", 65)
     event_type = event.get("type")
     if event_type in {"handoff.completed", "handoff.failed"}:
         if agent["settled"]:
+            # A real sentinel landing after the no-sentinel backstop keeps the
+            # backstop verdict; only a second wrapper sentinel is an invariant failure.
+            if agent["sentinel"].get("reason") == "no-sentinel":
+                return
+            emit({"type": "watcher.failed", "agentId": agent["id"], "reason": "duplicate-sentinel", "elapsedSeconds": elapsed()})
             fail(f"{agent['id']} progress contains multiple sentinels", 65)
         agent["settled"] = True
         agent["sentinel"] = event
@@ -145,12 +154,12 @@ def process_line(agent: dict, line: str) -> None:
         return
     agent["events"] += 1
     item = event.get("item") if isinstance(event.get("item"), dict) else {}
-    if item.get("type") in {"command_execution", "file_change"}:
-        agent["lastActivity"] = {
-            "type": item["type"],
-            "command": item.get("command"),
-            "status": item.get("status"),
-        }
+    item_type = item.get("type")
+    if item_type in {"agent_message", "reasoning", "command_execution", "file_change"}:
+        activity = {"type": item_type}
+        if item_type in {"command_execution", "file_change"}:
+            activity.update({"command": item.get("command"), "status": item.get("status")})
+        agent["lastActivity"] = activity
 
 
 def read_new(agent: dict) -> None:
@@ -163,6 +172,7 @@ def read_new(agent: dict) -> None:
             chunk = handle.read()
             agent["offset"] = handle.tell()
     except OSError as exc:
+        emit({"type": "watcher.failed", "agentId": agent["id"], "reason": "unreadable-progress", "elapsedSeconds": elapsed()})
         fail(f"cannot read {path}: {exc}", 66)
     text = agent["partial"] + chunk
     lines = text.split("\n")
@@ -176,6 +186,25 @@ while not all(agent["settled"] for agent in agents):
     for agent in agents:
         read_new(agent)
     now = time.monotonic()
+    for agent in agents:
+        if agent["settled"] or now - started <= agent["budget"] + no_sentinel_grace_seconds:
+            continue
+        sentinel = {"type": "handoff.failed", "reason": "no-sentinel"}
+        agent["settled"] = True
+        agent["sentinel"] = sentinel
+        emit(
+            {
+                "type": "watcher.sentinel",
+                "agentId": agent["id"],
+                "status": "failed",
+                "reason": "no-sentinel",
+                "elapsedSeconds": elapsed(),
+                "budgetSeconds": agent["budget"],
+                "eventCount": agent["events"],
+                "sentinel": sentinel,
+            }
+        )
+        settlement()
     if now >= next_digest and not all(agent["settled"] for agent in agents):
         for agent in agents:
             if agent["settled"]:

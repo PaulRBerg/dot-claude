@@ -70,6 +70,127 @@ class WatchCodexWaveTests(unittest.TestCase):
                 self.assertEqual(records[0]["reason"], reason)
                 self.assertEqual(records[-1]["settled"], 1)
 
+    def test_no_sentinel_backstop_settles_as_failed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            progress = Path(directory) / "missing.progress.jsonl"
+            result = subprocess.run(
+                ["bash", str(SCRIPT), "--agent", "A1", "0.03", str(progress),
+                 "--no-sentinel-grace-seconds", "0.02", "--poll-seconds", "0.01"],
+                text=True,
+                capture_output=True,
+                timeout=2,
+            )
+            self.assertEqual(result.returncode, 1, result.stderr)
+            records = [json.loads(line) for line in result.stdout.splitlines()]
+            sentinel = next(record for record in records if record["type"] == "watcher.sentinel")
+            self.assertEqual(sentinel["status"], "failed")
+            self.assertEqual(sentinel["reason"], "no-sentinel")
+            self.assertEqual(sentinel["sentinel"], {"type": "handoff.failed", "reason": "no-sentinel"})
+            self.assertEqual(records[-1]["type"], "watcher.settlement")
+            self.assertEqual(records[-1]["settled"], 1)
+
+    def test_late_sentinel_after_backstop_is_ignored(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            stalled = root / "stalled.progress.jsonl"
+            healthy = root / "healthy.progress.jsonl"
+            stalled.write_text("")
+            healthy.write_text("")
+
+            def write_progress() -> None:
+                time.sleep(0.15)
+                with stalled.open("a") as handle:
+                    handle.write('{"type":"handoff.completed","elapsed_seconds":1}\n')
+                time.sleep(0.15)
+                with healthy.open("a") as handle:
+                    handle.write('{"type":"handoff.completed","elapsed_seconds":2}\n')
+
+            thread = threading.Thread(target=write_progress)
+            thread.start()
+            result = subprocess.run(
+                ["bash", str(SCRIPT), "--agent", "A1", "0.03", str(stalled), "--agent", "A2", "2", str(healthy),
+                 "--no-sentinel-grace-seconds", "0.02", "--poll-seconds", "0.01"],
+                text=True,
+                capture_output=True,
+                timeout=5,
+            )
+            thread.join()
+            self.assertEqual(result.returncode, 1, result.stderr)
+            records = [json.loads(line) for line in result.stdout.splitlines()]
+            self.assertFalse(any(record["type"] == "watcher.failed" for record in records))
+            sentinels = [record for record in records if record["type"] == "watcher.sentinel"]
+            self.assertEqual([record["agentId"] for record in sentinels], ["A1", "A2"])
+            self.assertEqual(sentinels[0]["reason"], "no-sentinel")
+            self.assertEqual(sentinels[1]["status"], "completed")
+            self.assertEqual(records[-1]["settled"], 2)
+
+    def test_message_and_reasoning_completions_are_activity(self) -> None:
+        for item_type in ("agent_message", "reasoning"):
+            with self.subTest(item_type=item_type), tempfile.TemporaryDirectory() as directory:
+                progress = Path(directory) / f"{item_type}.progress.jsonl"
+                progress.write_text(json.dumps({"type": "item.completed", "item": {"type": item_type}}) + "\n")
+
+                def finish() -> None:
+                    time.sleep(0.08)
+                    with progress.open("a") as handle:
+                        handle.write('{"type":"handoff.completed"}\n')
+
+                thread = threading.Thread(target=finish)
+                thread.start()
+                result = subprocess.run(
+                    ["bash", str(SCRIPT), "--agent", "A1", "2", str(progress),
+                     "--digest-seconds", "0.02", "--poll-seconds", "0.01"],
+                    text=True,
+                    capture_output=True,
+                    timeout=2,
+                )
+                thread.join()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                records = [json.loads(line) for line in result.stdout.splitlines()]
+                digest = next(record for record in records if record["type"] == "watcher.digest")
+                self.assertFalse(digest["noRecentActivity"])
+                self.assertEqual(digest["lastActivity"], {"type": item_type})
+
+    def test_invariant_exits_emit_watcher_failed(self) -> None:
+        cases = {
+            "malformed-progress": "{\n",
+            "non-object-progress": "[]\n",
+            "duplicate-sentinel": '{"type":"handoff.completed"}\n{"type":"handoff.failed"}\n',
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            unreadable = root / "unreadable"
+            unreadable.mkdir()
+            for reason, content in cases.items():
+                with self.subTest(reason=reason):
+                    progress = root / f"{reason}.jsonl"
+                    progress.write_text(content)
+                    result = subprocess.run(
+                        ["bash", str(SCRIPT), "--agent", "A1", "2", str(progress), "--poll-seconds", "0.01"],
+                        text=True,
+                        capture_output=True,
+                        timeout=2,
+                    )
+                    self.assertNotEqual(result.returncode, 0)
+                    records = [json.loads(line) for line in result.stdout.splitlines()]
+                    failure = next(record for record in records if record["type"] == "watcher.failed")
+                    self.assertEqual(failure["agentId"], "A1")
+                    self.assertEqual(failure["reason"], reason)
+                    self.assertIn("elapsedSeconds", failure)
+
+            result = subprocess.run(
+                ["bash", str(SCRIPT), "--agent", "A1", "2", str(unreadable), "--poll-seconds", "0.01"],
+                text=True,
+                capture_output=True,
+                timeout=2,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            records = [json.loads(line) for line in result.stdout.splitlines()]
+            failure = next(record for record in records if record["type"] == "watcher.failed")
+            self.assertEqual(failure["agentId"], "A1")
+            self.assertEqual(failure["reason"], "unreadable-progress")
+            self.assertIn("elapsedSeconds", failure)
+
 
 if __name__ == "__main__":
     unittest.main()

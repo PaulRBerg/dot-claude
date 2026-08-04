@@ -1,9 +1,13 @@
 # Progress Stream Reference
 
 When `run-codex-handoff.sh` is invoked with `--progress-file PATH`, the file is a live JSONL stream: every line Codex
-emits under `codex exec --json`, followed by exactly one wrapper-authored sentinel line on exit. Tail it for real-time
-watching; grep it for digests and post-mortems. Pass `--result-file PATH` separately to keep the final structured result
-in an artifact and leave background-task stdout empty.
+emits under `codex exec --json`, followed by one wrapper-authored sentinel. Pre-launch validation failures exit nonzero
+before the stream exists and write no sentinel; after the run starts, the wrapper writes exactly one. Tail it for
+real-time watching and post-mortems. Pass `--result-file PATH` separately to keep the final structured result in an
+artifact and leave background-task stdout empty.
+
+Sessions persist. Record the `thread.started` session ID, then pass `--resume SESSION_ID` to continue that session with
+the same wrapper controls and a new stdin prompt.
 
 ## Codex events
 
@@ -41,15 +45,16 @@ timeout and failure handling.
 
 The wrapper appends exactly one terminal line per run; its presence — not process state — is the completion signal:
 
-| Sentinel                                                                | Emitted when                                                 |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `{"type":"handoff.completed","elapsed_seconds":N,"output_tokens":M}`    | Success (`output_tokens` best-effort, omitted if unparsable) |
-| `{"type":"handoff.failed","reason":"timeout","elapsed_seconds":N}`      | Wrapper timeout hit                                          |
-| `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                         |
-| `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                    |
+| Sentinel                                                                | Emitted when                                                          |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `{"type":"handoff.completed","elapsed_seconds":N,"output_tokens":M}`    | Success; sums parsed `output_tokens` from `turn.completed` lines only |
+| `{"type":"handoff.failed","reason":"timeout","elapsed_seconds":N}`      | Wrapper timeout hit                                                   |
+| `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                                  |
+| `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                             |
 
 The result JSON itself is in the path passed to `--result-file`, not in this progress file. Without `--result-file`, the
-wrapper writes the result to stdout for backward compatibility.
+wrapper writes the result to stdout for backward compatibility. Token accounting is best-effort; omit `output_tokens`
+when no value parses.
 
 ## Wave watcher
 
@@ -64,4 +69,8 @@ bash scripts/watch-codex-wave.sh \
 Its stdout is machine-readable JSONL. `watcher.digest` reports elapsed/budget, event count, last relevant activity, and
 delayed-file state. `watcher.sentinel` preserves the wrapper sentinel and reason. `watcher.settlement` supplies exact
 settled counts, percentage, and ten-cell bar. A completed wave exits `0`; any failed agent sentinel settles normally and
-makes the watcher exit `1` after all agents settle. Malformed progress is an invariant failure, not an agent result.
+makes the watcher exit `1` after all agents settle. If an unsettled agent exceeds its budget plus a 120-second grace,
+the watcher synthesizes `{"type":"handoff.failed","reason":"no-sentinel"}` and settles it as failed; a wrapper sentinel
+arriving after that settlement is ignored. This only backstops a dead wrapper; the wrapper remains the timeout
+authority. Malformed or otherwise invalid progress emits `watcher.failed` and exits as an invariant failure, not an
+agent result.

@@ -1,14 +1,14 @@
 ---
 argument-hint: "[task]"
-compatibility: Requires Claude Code Plan mode and Agent-tool subagents with Sonnet and Opus model access.
+compatibility: Requires Claude Code Plan mode and Agent-tool subagents with Haiku, Sonnet, and Opus model access.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
 name: claude-handoff
 user-invocable: true
 description:
-  Orchestrate read-only Explore research subagents during planning and one to five Sonnet or Opus subagents to implement
-  the approved plan.
+  Orchestrate read-only Explore research subagents during planning and one to five Haiku, Sonnet, or Opus subagents to
+  implement the approved plan.
 ---
 
 # Claude Handoff
@@ -16,11 +16,8 @@ description:
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
 
-For complex tasks, investigate through up to three read-only Explore subagents before planning. Then hand the approved
-implementation to one to five subagents in the sequence the task requires. Implementation subagents run in-session
-through the Agent tool with the host session's permissions, so they can write anywhere the session can. Use this skill
-to keep Claude on thinking, orchestration, and verification while each implementation agent uses the model its brief
-warrants: Sonnet by default, Opus where reasoning difficulty demands it.
+Follow the Contract below, then use Claude Code's in-session Agent workflow to research during planning and implement
+the approved plan.
 
 ## Contract
 
@@ -45,12 +42,9 @@ Use `$ARGUMENTS` as the task when present; otherwise use the active user request
 ## Research Phase
 
 Trigger research when scope is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on
-evidence that would be materially slower for Claude to gather serially. Skip this phase entirely for straightforward
-tasks; zero research agents remains the default.
-
-Claude alone decides whether research runs from the task and repository evidence available at invocation time. The user
-never opts in, names research agents, or is asked whether research should run. Either launch the research wave
-immediately or proceed straight to planning.
+evidence that would be materially slower for Claude to gather serially. Zero research agents remains the default. Claude
+alone decides from the task and repository evidence whether research runs; never ask the user to opt in or name agents.
+Either launch the research wave immediately or proceed straight to planning.
 
 When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately during Plan mode
 through the Agent tool with `subagent_type: "Explore"`. The read-only Explore toolset makes this launch legitimate
@@ -58,8 +52,8 @@ during Plan mode. Launch all selected agents in parallel as Agent calls in one m
 `🔎 Research started — <n> agents`, then rely on native subagent progress rendering; do not build dashboards.
 
 Give each research agent a self-contained prompt containing the open questions to answer, its exact investigation scope,
-and the read-only boundary. Require findings, evidence, open questions, and blockers; explicitly prohibit returning a
-plan or design.
+the read-only boundary, and a thoroughness hint: `medium` for bounded surveys or `very thorough` for multi-subsystem
+sweeps. Require findings, evidence, open questions, and blockers; explicitly prohibit returning a plan or design.
 
 Use the default Explore agent for bounded surveys. Set the Agent tool's `model` override to `opus` only for genuinely
 hard synthesis, consistent with the implementation model-escalation rules below. Agent count and repository size alone
@@ -81,9 +75,9 @@ Produce a decision-complete plan with this section:
 - Agents: `<1-5>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
 
-| Agent | Wave | Depends on | Scope              | Model            | Implementation brief                                   | Completion evidence                 |
-| ----- | ---- | ---------- | ------------------ | ---------------- | ------------------------------------------------------ | ----------------------------------- |
-| `A1`  | `1`  | `none`     | `<files/behavior>` | `<sonnet\|opus>` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
+| Agent | Wave | Depends on | Scope              | Model                   | Implementation brief                                   | Completion evidence                 |
+| ----- | ---- | ---------- | ------------------ | ----------------------- | ------------------------------------------------------ | ----------------------------------- |
+| `A1`  | `1`  | `none`     | `<files/behavior>` | `<haiku\|sonnet\|opus>` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
 
 - Code polish: `<required|not required>` — `<reason>`
 ```
@@ -100,9 +94,8 @@ Choose the execution shape from repository evidence and the approved work:
 A wave finishes with its slowest agent. Keep the Opus agents' scope minimal and move deferrable validation to the
 validation owner.
 
-The five-implementation-agent limit applies to the entire handoff, not each wave. Assign every implementation agent a
-stable ID, exact dependencies, an implementation scope, and its own stopping criteria. If parallel work does not
-collectively prove the overall plan, reserve a later sequential agent for integration and aggregate validation.
+If parallel work does not collectively prove the overall plan, reserve a later sequential agent for integration and
+aggregate validation.
 
 Assign aggregate validation to exactly one owner per handoff: package-wide or repo-wide checks (full test suites,
 whole-package typecheck or lint, catalog-wide checks) run once — by the integration agent when one exists, otherwise by
@@ -110,19 +103,19 @@ Claude during post-wave reconciliation. Every other agent's completion evidence 
 its own edits: file-scoped lint, format, or typecheck plus targeted tests for the files it touched. Duplicate aggregate
 runs across a wave's agents are wasted wall-clock time, not extra assurance.
 
-Select each agent's model deliberately. Default to `sonnet` and escalate only where the brief's reasoning difficulty
-demands it:
+Select each agent's model from this table:
 
-| Work                                                                   | Model    |
-| ---------------------------------------------------------------------- | -------- |
-| Bounded or mechanical implementation with a clear shape                | `sonnet` |
-| Multi-file implementation that follows established repository patterns | `sonnet` |
-| Semantic or cross-cutting implementation, or subtle invariants         | `opus`   |
-| High-risk implementation, or a brief needing judgment under ambiguity  | `opus`   |
+| Work                                                                               | Model    |
+| ---------------------------------------------------------------------------------- | -------- |
+| Strictly mechanical, low-risk brief with exact instructions and cheap verification | `haiku`  |
+| Bounded implementation with a clear shape                                          | `sonnet` |
+| Multi-file implementation that follows established repository patterns             | `sonnet` |
+| Semantic or cross-cutting implementation, or subtle invariants                     | `opus`   |
+| High-risk implementation, or a brief needing judgment under ambiguity              | `opus`   |
 
-Select only `sonnet` or `opus`. File count, agent count, and wave width alone are not triggers: a large mechanical edit
-stays on `sonnet`, and a single-file change to a concurrency invariant belongs on `opus`. The `$code-polish` triggers
-below are the same risk signals, so an agent whose brief trips one is normally an `opus` agent.
+Select only `haiku`, `sonnet`, or `opus`. Default to `sonnet`; use `haiku` only for the strictly mechanical tier, and
+use `opus` when semantic risk or ambiguity demands it. File count, agent count, and wave width alone are not model
+triggers. The `$code-polish` triggers below are risk signals that force `opus`, never `haiku`.
 
 Every agent runs through the `general-purpose` subagent type; the Agent tool exposes no per-agent effort or timeout
 controls, so per-agent model choice and scope decomposition are the only levers for balancing a wave.
@@ -145,8 +138,8 @@ that agent's approved manifest row, and a description like `A1/3: <scope> (<mode
 wave in the same message as parallel tool calls; start sequential agents only after reconciling their dependencies.
 Claude Code renders subagent progress natively — do not build bespoke progress dashboards, polling loops, or status
 tables around the calls. After launch, post one compact
-`🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves · <n> opus / <n> sonnet` line; then rely on
-native progress.
+`🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves · <n> opus / <n> sonnet / <n> haiku` line;
+then rely on native progress.
 
 Subagents receive none of the planning conversation. Build a self-contained, outcome-first prompt for each agent
 containing:
@@ -165,26 +158,32 @@ containing:
    assigned files justifies reporting `blocked`.
 6. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, report blocked
    with evidence instead of proposing a replacement plan.
-7. A reporting requirement: return only the files it actually touched, every validation command it ran with outcomes,
-   and any residual risks or blockers.
+7. A requirement to end its final message with exactly these named fields: `status` (`completed` or `blocked`),
+   `summary`, `changed files` listing only files it actually touched, `verification` listing every command with its
+   outcome, `residual risks`, and `blockers`.
 
 ### Collect
 
-When an agent returns, treat its reported changed files as its authoritative post-pass scope. After every wave,
-reconcile all results with the plan manifest and the visible working tree without folding in unrelated concurrent
-changes. When Claude is the validation owner, run the assigned aggregate checks once during this reconciliation.
-Attribute aggregate-check failures before treating them as blockers: a failure confined to files outside every agent's
-scope is unrelated concurrent work — confirm the handoff's own files still pass and continue. Unexpected out-of-scope
-edits, overlap between agents in the same parallel wave, or an aggregate-check failure attributable to the handoff's
-changes are blockers; do not start their dependents or polish, and do not silently take over implementation.
+When an agent returns, read the required result fields and treat `changed files` as its authoritative post-pass scope.
+Confirm the reported files exist or were intentionally deleted, stay within the agent's scope, and carry verification
+evidence matching its assignment. After every wave, reconcile all results with the plan manifest and the visible working
+tree without folding in unrelated concurrent changes. When Claude is the validation owner, run the assigned aggregate
+checks once during this reconciliation. Attribute aggregate-check failures before treating them as blockers: a failure
+confined to files outside every agent's scope is unrelated concurrent work — confirm the handoff's own files still pass
+and continue. Unexpected out-of-scope edits, overlap between agents in the same parallel wave, or an aggregate-check
+failure attributable to the handoff's changes are blockers; do not start their dependents or polish, and do not silently
+take over implementation.
 
 ## Completion
 
-- On success, confirm the reported files exist or were intentionally deleted, stay within the agent's scope, and carry
-  verification evidence matching its assignment. Pass relevant results to dependent agents.
-- On a blocked or failed agent, let already-started independent agents finish, but do not start agents that depend on
-  the failure. Continue only work proven independent. Do not silently take over implementation, and do not relaunch the
-  agent on a larger model: report it blocked with evidence and let the user decide.
+- On `status: blocked`, treat the result as a plan problem. Let already-started independent agents finish, gate its
+  dependents, report the evidence, and let the user decide; never silently take over implementation or relaunch the
+  agent on a larger model. Pass relevant completed results to dependent agents.
+- Treat an Agent tool call error or a final message without all required result fields as an infrastructure failure.
+  Inspect the agent's write scope for partial edits with `git status` and `git diff`, then continue that same named
+  agent once through SendMessage with a short verify-and-continue message naming the partially edited files. Its prior
+  context is preserved. This is a retry of the same agent, not a new agent against the five-agent limit. A second
+  infrastructure failure for that agent is a blocker. Never relaunch it on a larger model.
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
   verification evidence proves the approved plan.
 - When the plan marked polish as required, invoke `$code-polish` once with exactly that union and its default
@@ -195,6 +194,6 @@ changes are blockers; do not start their dependents or polish, and do not silent
   not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user explicitly requested it.
 - Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
   result table carrying each agent's model. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`,
-  `### 🧹 Polish` when run, automatic cross-repository commit hashes when any, and `### ⚠️ Risks / blockers` when
-  non-empty. Use `⛔ blocked` as the result for failed required work. Keep paths, commands, hashes, and subagent-return
-  fields exact and undecorated.
+  `### 🧹 Polish` when run, automatic cross-repository commit hashes when any, and an always-present
+  `### ⚠️ Risks / blockers`; write `none` when empty. Use `⛔ blocked` as the result for failed required work. Keep
+  paths, commands, hashes, and subagent-return fields exact and undecorated.

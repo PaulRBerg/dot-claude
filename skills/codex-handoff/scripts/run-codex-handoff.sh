@@ -4,10 +4,11 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--read-only] [--progress-file PATH] [--result-file PATH]
+Usage: run-codex-handoff.sh --model MODEL --effort EFFORT --timeout-seconds SECONDS [--resume SESSION_ID] [--read-only] [--progress-file PATH] [--result-file PATH]
 
-Read an approved implementation prompt from stdin and run one ephemeral Codex
-implementation session in the current Git worktree.
+Read an approved implementation prompt from stdin and run one Codex
+implementation turn in the current Git worktree. Sessions persist; use
+--resume SESSION_ID to continue an existing session.
 
 With --read-only, Codex runs a read-only research session instead.
 
@@ -26,6 +27,7 @@ EOF
 model=""
 effort=""
 timeout_seconds=""
+resume_session=""
 progress_file=""
 result_output_file=""
 read_only=0
@@ -57,6 +59,17 @@ while [[ $# -gt 0 ]]; do
     ;;
   --timeout-seconds=*)
     timeout_seconds="${1#*=}"
+    shift
+    ;;
+  --resume)
+    [[ $# -ge 2 ]] || { echo "ERROR: --resume requires a value" >&2; exit 64; }
+    [[ -n "$2" ]] || { echo "ERROR: --resume session ID must be non-empty" >&2; exit 64; }
+    resume_session="$2"
+    shift 2
+    ;;
+  --resume=*)
+    resume_session="${1#*=}"
+    [[ -n "$resume_session" ]] || { echo "ERROR: --resume session ID must be non-empty" >&2; exit 64; }
     shift
     ;;
   --progress-file)
@@ -218,6 +231,11 @@ report_last_activity() {
 cleanup() {
   if [[ -n "$codex_pid" ]] && kill -0 "$codex_pid" >/dev/null 2>&1; then
     kill -TERM "$codex_pid" >/dev/null 2>&1 || true
+    cleanup_started_at=$SECONDS
+    while kill -0 "$codex_pid" >/dev/null 2>&1 && ((SECONDS - cleanup_started_at < 5)); do
+      sleep 0.2
+    done
+    kill -KILL "$codex_pid" >/dev/null 2>&1 || true
     wait "$codex_pid" >/dev/null 2>&1 || true
   fi
   rm -f "$prompt_file" "$stdout_file" "$stderr_file" "$result_file" "$timeout_marker"
@@ -255,7 +273,11 @@ else
 fi
 codex_args+=(
   --color never
-  -C "$repo_root"
+  -C "$repo_root")
+if [[ -n "$resume_session" ]]; then
+  codex_args+=(resume "$resume_session")
+fi
+codex_args+=(
   -m "$model"
   -c "model_reasoning_effort=\"$effort\""
   -c 'service_tier="default"'
@@ -351,7 +373,8 @@ fi
 
 output_tokens=""
 if [[ -n "$progress_file" ]]; then
-  output_tokens="$(grep -o '"output_tokens":[0-9]*' "$progress_file" 2>/dev/null |
+  output_tokens="$(grep -F '"type":"turn.completed"' "$progress_file" 2>/dev/null |
+    grep -o '"output_tokens":[0-9]*' |
     cut -d: -f2 | awk '{ sum += $1 } END { if (NR > 0) print sum }' || true)"
 fi
 if [[ -n "$output_tokens" ]]; then

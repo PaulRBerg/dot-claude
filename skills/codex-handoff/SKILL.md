@@ -1,8 +1,8 @@
 ---
 argument-hint: "[task]"
 compatibility:
-  Requires Claude Code Plan mode, Git, /bin/bash, and an authenticated Codex CLI with dangerous bypass support. Claude
-  Code >= 2.1.98 recommended for live progress via the Monitor tool.
+  Requires Claude Code Plan mode, Git, /bin/bash, Python 3, and an authenticated Codex CLI with dangerous bypass
+  support. Claude Code >= 2.1.98 recommended for live progress via the Monitor tool.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
@@ -18,10 +18,7 @@ description:
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
 
-For complex tasks, investigate through up to three read-only Codex CLI research agents before planning. Then hand the
-approved implementation to one to five Codex CLI agents in the sequence the task requires. The implementation runner
-uses `--dangerously-bypass-approvals-and-sandbox`, so implementation agents can write anywhere the host user can,
-including outside the worktree.
+Follow the Contract below, then use the Codex CLI workflow to research during planning and implement the approved plan.
 
 ## Contract
 
@@ -46,12 +43,9 @@ Use `$ARGUMENTS` as the task when present; otherwise use the active user request
 ## Research Phase
 
 Trigger research when scope is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on
-evidence that would be materially slower for Claude to gather serially. Skip this phase entirely for straightforward
-tasks; zero research agents remains the default.
-
-Claude alone decides whether research runs from the task and repository evidence available at invocation time. The user
-never opts in, names research agents, or is asked whether research should run. Either launch the research wave
-immediately or proceed straight to planning.
+evidence that would be materially slower for Claude to gather serially. Zero research agents remains the default. Claude
+alone decides from the task and repository evidence whether research runs; never ask the user to opt in or name agents.
+Either launch the research wave immediately or proceed straight to planning.
 
 When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately during Plan mode.
 Resolve `scripts/run-codex-handoff.sh` relative to this `SKILL.md`, use the Execution Phase launch template with
@@ -60,23 +54,10 @@ Resolve `scripts/run-codex-handoff.sh` relative to this `SKILL.md`, use the Exec
 same turn, then watch the wave through the same `watch-codex-wave.sh` and Monitor flow used for implementation. The
 runner's enforced read-only sandbox makes this launch legitimate during Plan mode.
 
-```bash
-bash <skill-dir>/scripts/run-codex-handoff.sh \
-  --read-only \
-  --model <agent-model> \
-  --effort <agent-effort> \
-  --timeout-seconds <agent-minutes-times-60> \
-  --progress-file <agent-progress-file> \
-  --result-file <agent-result-file> \
-  2> <agent-stderr-file> <<'CODEX_PROMPT'
-<agent research prompt>
-CODEX_PROMPT
-```
-
-Give each research agent a self-contained prompt containing the open questions to answer, its exact investigation scope,
-the read-only boundary, and the Codex command conventions under Execution Phase. Require findings, evidence, open
-questions, and blockers matching `references/research-result.schema.json`; explicitly prohibit returning a plan or
-design.
+Apply implementation prompt checklist items 2, 4, 6, and 7 to each self-contained research prompt, adapting write scope
+and edit authority to a read-only investigation scope. Require the agent to answer the open questions, report `status`,
+`findings`, `open_questions`, `evidence`, and `blockers` per `references/research-result.schema.json`, and never return
+a plan or design.
 
 Select research configuration from the same tiers used for implementation:
 
@@ -126,10 +107,8 @@ Choose the execution shape from repository evidence and the approved work:
 A wave finishes with its slowest agent. Keep the highest-tier agent's scope minimal and move deferrable validation to
 the validation owner.
 
-The five-implementation-agent limit applies to the entire handoff, not each wave. Assign every implementation agent a
-stable ID, exact dependencies, an implementation scope, and its own configuration and stopping criteria. If parallel
-work does not collectively prove the overall plan, reserve a later sequential agent for integration and aggregate
-validation.
+If parallel work does not collectively prove the overall plan, reserve a later sequential agent for integration and
+aggregate validation.
 
 Assign aggregate validation to exactly one owner per handoff: package-wide or repo-wide checks (full test suites,
 whole-package typecheck or lint, catalog-wide checks) run once — by the integration agent when one exists, otherwise by
@@ -146,11 +125,9 @@ Select configuration deliberately:
 | Semantic or cross-cutting implementation | `gpt-5.6-sol`   | `xhigh`            | 40 minutes       |
 | Exceptional, high-risk implementation    | `gpt-5.6-sol`   | `max`              | 60 minutes       |
 
-Use Luna for efficient, high-volume routine work; Terra for balanced everyday work; and Sol for flagship capability on
-the hardest work. Never select `low` or `ultra`. Adjust the timeout when repository evidence shows that required
-validation needs materially more or less time. The timeout is a kill-switch, not pacing: Codex never sees it and an
-early finish costs nothing, so never tighten it hoping for speed — size it only to bound how long a hung agent can block
-its wave.
+Never select `low` or `ultra`. Adjust the timeout when repository evidence shows that required validation needs
+materially more or less time. The timeout is a kill-switch, not pacing: Codex never sees it and an early finish costs
+nothing, so never tighten it hoping for speed — size it only to bound how long a hung agent can block its wave.
 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
@@ -220,14 +197,14 @@ Build a self-contained, outcome-first prompt for each agent containing:
    reflect them in the prompt. Apply the same conventions to planned completion-evidence commands.
 7. This stopping rule: implement the approved plan exactly; if it is infeasible or requires redesign, return `blocked`
    with evidence instead of proposing a replacement plan.
-8. A requirement to report only files Codex actually touched and every validation command it ran.
+8. A requirement to complete every `references/result.schema.json` field: `status`, `summary`, `changed_files` listing
+   only files Codex actually touched, `verification` listing every validation command with its outcome,
+   `residual_risks`, and `blockers`.
 
 ### Watch
 
-Implementation and research waves reuse this watcher. Each progress file streams Codex JSONL events and ends with
-exactly one wrapper sentinel — `handoff.completed` or `handoff.failed` with reason `timeout`, `error`, or `cancelled`.
-The sentinel, not process state, is the completion signal. Read `references/progress-events.md` for event semantics and
-quiet/failure handling.
+Implementation and research waves reuse this watcher. Read `references/progress-events.md` for progress-event, sentinel,
+settlement, and quiet/failure semantics.
 
 Resolve `scripts/watch-codex-wave.sh` from this `SKILL.md`. Arm ONE Monitor per wave around one watcher invocation,
 passing each agent's stable ID, budget in seconds, and progress path as a repeated triple:
@@ -240,22 +217,21 @@ bash <skill-dir>/scripts/watch-codex-wave.sh \
 
 The watcher tolerates delayed file creation and emits stable JSONL `watcher.digest`, `watcher.sentinel`, and
 `watcher.settlement` records. It owns elapsed time, event counts, last command/file activity, settled percentage, and
-the ten-cell bar. Set the Monitor `timeout_ms` above the wave's largest budget. On each watcher digest or settlement,
-post one short wave-status block using those exact facts. If Monitor is unavailable, run the same watcher in a
-foreground command; do not recreate its loop or arithmetic.
+the ten-cell bar. Set the Monitor `timeout_ms` above the wave's largest budget plus the 120-second no-sentinel grace. On
+each watcher digest or settlement, post one short wave-status block using those exact facts. If Monitor is unavailable,
+run the same watcher in a foreground command; do not recreate its loop or arithmetic.
 
-Continue monitoring through quiet periods until the wrapper sentinel or approved timeout. The non-interactive
-`codex exec --json` stream does not expose app-server safety-buffering or model-rerouting notifications, so silence
-alone does not establish that either occurred. Report `no recent activity`; never cancel, retry, or relaunch with a
-suggested faster model because of apparent buffering. Preserve the approved timeout and normal failure handling: do not
-extend the run or start a replacement automatically. A faster-model retry offered during transient safety buffering is
-optional and distinct from an independent server-side policy reroute, which may make the responding model unknowable.
+The watcher settles an agent as failed with reason `no-sentinel` once elapsed exceeds its budget plus 120 seconds of
+grace; handle that settlement like any failed sentinel. Silence is never evidence of safety buffering or model
+rerouting. Keep watching until the wrapper sentinel or approved timeout; never cancel, retry, extend, or downgrade
+because of silence. Report `no recent activity` during quiet periods.
 
 ### Collect
 
-When an implementation agent's sentinel arrives, read its result artifact, which is one JSON object matching
-`references/result.schema.json`, and its stderr artifact for the `codex-handoff: elapsed=<seconds>s` line or failure
-forensics. Research waves reuse this collection flow with `references/research-result.schema.json`, then feed their
+When an implementation agent's sentinel arrives, read its result artifact and its stderr artifact for the
+`codex-handoff: elapsed=<seconds>s` line or failure forensics. The `--output-schema` request shapes the result artifact;
+the wrapper does not validate it. Treat a result that does not parse against `references/result.schema.json` as a
+failure. Research waves reuse this collection flow with `references/research-result.schema.json`, then feed their
 findings into the plan without working-tree reconciliation. Do not read or print the background task output;
 artifact-mode stdout is intentionally empty.
 
@@ -269,10 +245,11 @@ handoff's changes are blockers; do not start their dependents or polish, and do 
 
 ## Status Reporting
 
-These dashboards are mandatory user-facing output. Host-rendered `Background command`, `Task Output`, and
-`Monitor event` banners are transport notifications, not status reports, and their chrome cannot be restyled by this
-skill. Do not echo their task IDs, raw JSON, sentinels, or monitor payloads. Keep task output empty through the artifact
-paths above, then immediately follow each relevant host event with the appropriate dashboard below.
+These wave dashboards and the Completion report are mandatory user-facing output. Host-rendered `Background command`,
+`Task Output`, and `Monitor event` banners are transport notifications, not status reports, and their chrome cannot be
+restyled by this skill. Do not echo their task IDs, raw JSON, sentinels, or monitor payloads. Keep task output empty
+through the artifact paths above, then immediately follow each relevant host event with the appropriate wave dashboard
+below.
 
 Use this legend consistently: 🔎 research · 🚀 kickoff · ⏳ running · ✅ completed · ⛔ blocked · ⏱️ timed out · 💥
 runner error · 🧹 polish · 🏁 final report. Keep every update to one compact block and render the tables; do not replace
@@ -319,16 +296,19 @@ heading and agent rows must show the failure rather than imply success.
 
 - On `completed`, confirm the reported files exist or were intentionally deleted, stay within the agent's scope, and
   carry verification evidence matching its assignment. Pass relevant results to dependent agents.
-- On `blocked`, timeout, or nonzero runner exit, let already-started independent agents finish, but do not start agents
-  that depend on the failure. Continue only work proven independent. Do not silently take over implementation.
+- Treat a returned `status: blocked` as a plan problem. Let already-started independent agents finish, gate its
+  dependents, report the evidence, and let the user decide; never silently take over implementation. Treat timeouts,
+  nonzero runner exits, and watcher `no-sentinel` settlements as failed settlements, and continue only work proven
+  independent.
 - Triage a `handoff.failed` sentinel with reason `error` before treating it as a plan failure. When the stderr artifact
-  shows a transport, stream, or API failure (`stream disconnected`, `Transport error`, `network error`,
-  `error decoding response body`) and the forensics show no Codex-reported task failure, the infrastructure died, not
-  the plan. Inspect the agent's write scope for partial edits (`git status`, `git diff`), then relaunch that one agent
-  once with a fresh budget and a prompt that names the partially edited files and says to verify and continue rather
-  than redo. The relaunch is a retry of the same agent, not a new agent against the five-agent limit. A second
-  infrastructure failure for the same agent is a blocker: stop and report. `blocked` results and timeouts are never
-  infrastructure failures.
+  evidences a transport, stream, or API death (`stream disconnected`, `Transport error`, `network error`,
+  `error decoding response body`) and the forensics show no Codex-reported task failure, inspect the agent's write scope
+  for partial edits with `git status` and `git diff`. Extract the session ID from the progress file's `thread.started`
+  event, then relaunch that agent once through the runner's `--resume <session-id>` with a fresh budget and a short
+  verify-and-continue prompt naming the partially edited files. Fall back to one fresh relaunch only when no session ID
+  is recoverable. This is a retry of the same agent, not a new agent against the five-agent limit. A second
+  infrastructure failure for that agent is a blocker. Returned `blocked` results and timeouts are never infrastructure
+  failures.
 - After every required agent completes, deduplicate the union of reported `changed_files` and confirm the combined
   verification evidence proves the approved plan.
 - When the plan marked polish as required, invoke `$code-polish` once with exactly that union and its default
