@@ -180,6 +180,12 @@ EOF
 Use the installed `mailops` CLI to access Gmail and Google Drive from any directory: `mailops login <alias>` and
 `mailops <alias> gmail …`. Consult `~/work/mailops` for account aliases and detailed workflows.
 
+## Skills
+
+My personal skills are authored in `~/projects/agent-skills`; its publish workflow propagates them into the installed
+copies under `~/.agents/skills` and `~/.claude/skills`. Edit skills only in that source repository — direct edits to the
+installed copies are overwritten on the next publish.
+
 ## Dotfiles
 
 I manage my dotfiles with chezmoi; the source tree lives at `~/.local/share/chezmoi`.
