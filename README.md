@@ -82,7 +82,7 @@ Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-ag
 [skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`. See
 dot-agents for installation guidance.
 
-Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **find-tool**, **yeet**.
+Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **tool-finder**, **yeet**.
 
 ### Agents
 
@@ -116,7 +116,7 @@ Optional shell utilities from `utils.sh`:
 
 - **`ccc [args]`**: streamlined commits via `/commit` (defaults to `--all`)
 - **`cccp`**: commit and push (feature branches)
-- **`ccbump [args]`**: quick release bumping via `/bump-release`
+- **`ccbump [args]`**: quick release bumping via `/release-bumper`
 - **`claude [args]`**: enhanced CLI wrapper with MCP auto-loading
 
 Source them in your shell config:

@@ -64,9 +64,9 @@ function cccp() {
 function ccbump() {
   # Proceed with release bump
   if command -v gum &>/dev/null; then
-    gum spin --spinner dot --title "Claude is bumping release..." -- claude --print "/bump-release $*"
+    gum spin --spinner dot --title "Claude is bumping release..." -- claude --print "/release-bumper $*"
   else
-    claude --print "/bump-release $*"
+    claude --print "/release-bumper $*"
   fi
 }
 
