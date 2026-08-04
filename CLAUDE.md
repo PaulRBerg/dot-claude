@@ -15,8 +15,7 @@ complexity.
 
 ## Authority
 
-- Require confirmation for external writes, destructive actions, credential/permission changes, purchases, or material
-  scope expansion.
+- Require confirmation for destructive actions or purchases.
 - When I describe a problem or ask a question without requesting a change, the deliverable is your assessment: report
   findings and stop; don't apply fixes until asked.
 - Otherwise bias to action: proceed without asking on reversible actions that follow from the request, and don't end a
