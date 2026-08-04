@@ -45,16 +45,18 @@ timeout and failure handling.
 
 The wrapper appends exactly one terminal line per run; its presence — not process state — is the completion signal:
 
-| Sentinel                                                                | Emitted when                                                          |
-| ----------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `{"type":"handoff.completed","elapsed_seconds":N,"output_tokens":M}`    | Success; sums parsed `output_tokens` from `turn.completed` lines only |
-| `{"type":"handoff.failed","reason":"timeout","elapsed_seconds":N}`      | Wrapper timeout hit                                                   |
-| `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                                  |
-| `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                             |
+| Sentinel                                                                | Emitted when                                                   |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `{"type":"handoff.completed","elapsed_seconds":N,"output_tokens":M}`    | Success; last `turn.completed` value (thread-cumulative total) |
+| `{"type":"handoff.failed","reason":"timeout","elapsed_seconds":N}`      | Wrapper timeout hit                                            |
+| `{"type":"handoff.failed","reason":"error","rc":R,"elapsed_seconds":N}` | Codex nonzero exit or missing result                           |
+| `{"type":"handoff.failed","reason":"cancelled","elapsed_seconds":N}`    | Wrapper received INT/TERM                                      |
 
 The result JSON itself is in the path passed to `--result-file`, not in this progress file. Without `--result-file`, the
-wrapper writes the result to stdout for backward compatibility. Token accounting is best-effort; omit `output_tokens`
-when no value parses.
+wrapper writes the result to stdout for backward compatibility. Token accounting is best-effort; `output_tokens` is
+omitted when no value parses. `turn.completed` usage is the thread-cumulative total, so a `--resume` run's count
+includes every prior run of that thread — that run's own usage is its sentinel total minus the prior run's sentinel
+total.
 
 ## Wave watcher
 

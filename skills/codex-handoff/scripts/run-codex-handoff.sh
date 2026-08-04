@@ -371,11 +371,13 @@ else
   [[ -z "$(tail -c 1 "$result_file")" ]] || echo
 fi
 
+# turn.completed usage is the thread-cumulative total, so the last value is the
+# run's final count; for resumed sessions it also includes prior runs.
 output_tokens=""
 if [[ -n "$progress_file" ]]; then
   output_tokens="$(grep -F '"type":"turn.completed"' "$progress_file" 2>/dev/null |
     grep -o '"output_tokens":[0-9]*' |
-    cut -d: -f2 | awk '{ sum += $1 } END { if (NR > 0) print sum }' || true)"
+    tail -n 1 | cut -d: -f2 || true)"
 fi
 if [[ -n "$output_tokens" ]]; then
   emit_sentinel "{\"type\":\"handoff.completed\",\"elapsed_seconds\":$elapsed,\"output_tokens\":$output_tokens}"

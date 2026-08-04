@@ -104,7 +104,8 @@ if [[ $emit_json -eq 1 ]]; then
 {"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"echo hi","status":"completed"}}
 {"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"implementation done"}}
 {"type":"item.completed","output_tokens":999,"item":{"id":"item_3","type":"agent_message","text":"token estimate"}}
-{"type":"turn.completed","usage":{"input_tokens":100,"cached_input_tokens":50,"output_tokens":42}}
+{"type":"turn.completed","usage":{"input_tokens":80,"cached_input_tokens":40,"output_tokens":42}}
+{"type":"turn.completed","usage":{"input_tokens":100,"cached_input_tokens":50,"output_tokens":70}}
 EVENTS
 fi
 
@@ -336,8 +337,9 @@ assert_file_contains '"type":"thread.started"' "$success_progress"
 assert_file_contains '"type":"turn.completed"' "$success_progress"
 assert_file_contains 'codex-handoff: elapsed=' "$stderr_file"
 sentinel_line="$(grep '"type":"handoff.completed"' "$success_progress")"
+# The last turn.completed value wins: usage totals are thread-cumulative.
 case "$sentinel_line" in
-*'"elapsed_seconds":'*'"output_tokens":42'*) ;;
+*'"elapsed_seconds":'*'"output_tokens":70'*) ;;
 *) fail "sentinel missing elapsed_seconds/output_tokens: $sentinel_line" ;;
 esac
 sentinel_count="$(grep -c '"type":"handoff\.' "$success_progress")"

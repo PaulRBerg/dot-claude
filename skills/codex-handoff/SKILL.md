@@ -319,6 +319,7 @@ heading and agent rows must show the failure rather than imply success.
   not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user explicitly requested it.
 - Finish with the rendered 🏁 report below. Include the strategy, agent count, and per agent — requested model, effort,
   timeout budget vs actual elapsed (from `elapsed=`/the sentinel), output tokens when available, status, and summary —
+  for a resumed retry, report the resumed sentinel's `output_tokens` minus the prior run's as that attempt's usage —
   plus the combined changed files and verification, the polish result when run, any automatic cross-repository commit
   hashes, blockers, and residual risks. Omit inapplicable subsections; write `none` for an applicable empty value. Never
   expose the result JSON.
