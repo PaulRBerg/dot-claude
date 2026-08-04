@@ -23,6 +23,17 @@
         ],
       },
     ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
     "PostToolUse": [
       {
         "hooks": [
@@ -43,6 +54,21 @@
         ],
       },
     ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord waker claude",
+            "timeout": 3600,
+            "if": "Bash(ai-coord start *)",
+            "async": true,
+            "asyncRewake": true,
+          },
+        ],
+      },
+    ],
     "PreToolUse": [
       {
         "matcher": "AskUserQuestion",
@@ -50,6 +76,28 @@
           {
             "command": "ai-notify event ask-user-question",
             "type": "command",
+          },
+        ],
+      },
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 3,
+          },
+        ],
+      },
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
           },
         ],
       },
@@ -63,6 +111,28 @@
           },
         ],
       },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "SubagentStop": [
       {
         "hooks": [
           {
@@ -96,76 +166,6 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
-          },
-        ],
-      },
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-          },
-        ],
-      },
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 3,
-          },
-        ],
-      },
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-          },
-        ],
-      },
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-          },
-        ],
-      },
-    ],
-    "PostToolBatch": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-          },
-        ],
-      },
-    ],
-    "PostToolUseFailure": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord waker claude",
-            "timeout": 3600,
-            "if": "Bash(ai-coord start *)",
-            "async": true,
-            "asyncRewake": true,
           },
         ],
       },
