@@ -70,10 +70,10 @@ complexity.
 
 ### Conflict detection before starting
 
-Before starting any task that will write — in standard mode and plan mode alike — check the repo state with
-`git status`. Purely read-only work may skip this gate. Dirty uncommitted changes are likely another agent's in-flight
-work: reason through whether your task would collide with it (same files or modules, overlapping refactors, shared
-codegen outputs). A clean tree does not guarantee no conflict — active sessions may not have written yet. Use the
+Before starting any task that will write, check the repo state with `git status`. Dirty uncommitted changes are likely
+another agent's in-flight work: reason through whether your task would collide with it (same files or modules,
+overlapping refactors, shared codegen outputs). A clean tree does not guarantee no conflict — active sessions may not
+have written yet. Use the
 `agents-status` skill to see active AI agent session counts, working directories, and session names/labels (a hint at
 intent, never authority) in the current repository, plus its Notes block for out-of-scope findings other sessions left
 behind; use its machine-wide view only when cross-repository coordination matters. Before the first edit, acquire
@@ -81,8 +81,22 @@ literal repository-relative file or directory scopes with `ai-coord start '<labe
 authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` means ownership cannot be established;
 `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the existing
 wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an intersecting
-claim. Release active, queued, or intent-only work with `ai-coord done` as soon as that work is complete. The goal is
-smarter parallelization of agents on the same `main` branch.
+claim. Release active, queued, or
+intent-only work with `ai-coord done` as soon as that work is complete. The goal is smarter parallelization of agents on
+the same `main` branch.
+
+#### Exemptions
+
+- Plan mode: skip the coordination gate while planning, because planning is read-only. The plan must still list the
+  exact `ai-coord start` scopes, and the gate applies at the first edit after plan approval. The ExitPlanMode hook
+  records the approved plan's H1 as pathless intent automatically; no agent action is needed.
+- Read-only or research tasks: skip the gate entirely; run no `ai-coord` commands.
+- Skills that declare `coordination: exempt` in their `SKILL.md` frontmatter: skip the gate for the skill's own work.
+  If the work escalates beyond the skill's declared write behavior, the gate applies again.
+- Subagents: coordination is session-scoped, not agent-scoped. A parent session's claim covers all work it delegates to
+  subagents; subagents must NEVER run `ai-coord` lifecycle commands (`start`, `wait`, or `done`). With inherited
+  identity, those commands would act as the parent and can collide with the parent's own claim. Hooks record subagents
+  as read-only delegates under the parent session automatically.
 
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
   or re-run `agents-status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
@@ -109,8 +123,8 @@ smarter parallelization of agents on the same `main` branch.
 - The moment the conflicting work is committed, start implementing immediately — do not ask for approval.
 - If still blocked after 1 hour, give up on waiting: present your finished plan and tell me I can run it once the
   conflicting agent workloads are done.
-- In plan mode, still write the plan, but include the exact `ai-coord start` scopes and a "Wait out conflicting agents"
-  section that applies the waiting approach above before the first edit.
+- In plan mode, include the exact `ai-coord start` scopes and a "Wait out conflicting agents" section that applies the
+  waiting approach above before the first edit after plan approval.
 
 ## Workflow
 
