@@ -275,18 +275,19 @@ Research waves reuse these dashboards with investigation scopes in place of impl
 research-wave heading, for example `### 🔎 Research wave 1/1 [██████████] 100% (2/2 settled) — 2 agents completed`;
 retain the row-level status icons.
 
-The kickoff table already contains the wave's manifest rows; do not repeat them.
+The kickoff table already contains the wave's manifest rows; do not repeat them. In every live-status row, pair the
+stable agent ID with that agent's exact approved model and effort as `A1 · gpt-5.6-sol/high`.
 
 Wave status, on each digest or completion:
 
 ```markdown
 ### ⏳ Wave 1/2 [███░░░░░░░] 33% (1/3 settled) — 15m elapsed
 
-| Agent | Status     | Activity                   |
-| ----- | ---------- | -------------------------- |
-| A1    | ⏳ 15m/20m | ran `cargo test`           |
-| A2    | ✅ 8m      | done — 3 files, tests pass |
-| A3    | ⏳ 15m/20m | no recent activity         |
+| Agent · model/effort   | Status     | Activity                   |
+| ---------------------- | ---------- | -------------------------- |
+| A1 · gpt-5.6-sol/high  | ⏳ 15m/20m | ran `cargo test`           |
+| A2 · gpt-5.6-sol/high  | ✅ 8m      | done — 3 files, tests pass |
+| A3 · gpt-5.6-sol/xhigh | ⏳ 15m/20m | no recent activity         |
 ```
 
 At full settlement, use the final watcher settlement record. A wave that settled with failures still reaches 100%; its

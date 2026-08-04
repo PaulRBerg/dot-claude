@@ -134,7 +134,7 @@ Before launching subagents, do not hold a path-scoped session claim over any pat
 orchestrator intent with a pathless label only; the subagents' work is covered by the orchestrating session's presence.
 
 Launch each agent with the Agent tool: `subagent_type: "general-purpose"`, `model: "<agent-model>"` taken verbatim from
-that agent's approved manifest row, and a description like `A1/3: <scope> (<model>)`. Start every agent in a parallel
+that agent's approved manifest row, and a description like `A1 · <model> — <scope>`. Start every agent in a parallel
 wave in the same message as parallel tool calls; start sequential agents only after reconciling their dependencies.
 Claude Code renders subagent progress natively — do not build bespoke progress dashboards, polling loops, or status
 tables around the calls. After launch, post one compact
