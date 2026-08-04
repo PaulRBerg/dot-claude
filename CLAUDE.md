@@ -73,10 +73,11 @@ complexity.
 Before starting any task that will write, check the repo state with `git status`. Dirty uncommitted changes are likely
 another agent's in-flight work: reason through whether your task would collide with it (same files or modules,
 overlapping refactors, shared codegen outputs). A clean tree does not guarantee no conflict — active sessions may not
-have written yet. Use the
-`agents-status` skill to see active AI agent session counts, working directories, and session names/labels (a hint at
+have written yet.
+Run `ai-coord status` to see active AI agent session counts, working directories, and session names/labels (a hint at
 intent, never authority) in the current repository, plus its Notes block for out-of-scope findings other sessions left
-behind; use its machine-wide view only when cross-repository coordination matters. Before the first edit, acquire
+behind; use `ai-coord status --all` only when cross-repository coordination matters. Read its output as reported — do
+not inspect transcripts or query providers directly. Before the first edit, acquire
 literal repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`. Only a `READY` result
 authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` means ownership cannot be established;
 `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the existing
@@ -99,7 +100,7 @@ the same `main` branch.
   as read-only delegates under the parent session automatically.
 
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
-  or re-run `agents-status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
+  or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
 - `READY` → proceed normally; a `stale-dirt:<paths>` advisory means preserve those pre-existing hunks byte-for-byte and
   exclude them from commits. For an affected file, use the commit skill's baseline exclusion after `ai-coord baseline`
