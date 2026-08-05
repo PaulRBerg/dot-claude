@@ -214,8 +214,10 @@ opportunity was found.
   simplify-then-review mode. Skip polish if any required agent failed; do not recompute or broaden scope.
 - If the approved work changes one or more Git repositories on this machine other than the repository where the handoff
   began, automatically invoke `$commit` from each additional repository after its work, validation, and any required
-  polish are complete. Scope each invocation to the files changed there, do not ask for separate confirmation, and do
-  not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user explicitly requested it.
+  polish are complete. `$commit` owns semantic message composition; its `ai-commit` backend owns deterministic
+  transaction, commit, and push mechanics. Scope each invocation to the files changed there, do not ask for separate
+  confirmation, and do not commit incomplete, blocked, unexpected, or out-of-scope changes. Push only when the user
+  explicitly requested it.
 - Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
   result table carrying each agent's model. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`,
   `### 🧹 Polish` when run, automatic cross-repository commit hashes when any, and an always-present
