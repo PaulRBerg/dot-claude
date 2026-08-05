@@ -40,6 +40,11 @@ the approved plan.
   implementation agents.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
   pass.
+- Treat the approved outcome, not the initial agent manifest or its write scopes, as the authorization boundary. When
+  implementation reveals a related in-repository fix or evidence change required to achieve that outcome, Claude is
+  fully authorized to extend the handoff and launch follow-on implementation agents for the newly discovered scope
+  without asking the user again. The subagent that discovered the need must still stop at its assigned scope and return
+  evidence; Claude owns the scope expansion, repository coordination, and delegation.
 
 Use `$ARGUMENTS` as the task when present; otherwise use the active user request.
 
@@ -156,13 +161,16 @@ containing:
 
 When an agent returns, read the required result fields and treat `changed files` as its authoritative post-pass scope.
 Confirm the reported files exist or were intentionally deleted, stay within the agent's scope, and carry verification
-evidence matching its assignment. After every wave, reconcile all results with the plan manifest and the visible working
-tree without folding in unrelated concurrent changes. When Claude is the validation owner, run the assigned aggregate
-checks once during this reconciliation. Attribute aggregate-check failures before treating them as blockers: a failure
-confined to files outside every agent's scope is unrelated concurrent work — confirm the handoff's own files still pass
-and continue. Unexpected out-of-scope edits, overlap between agents in the same parallel wave, or an aggregate-check
-failure attributable to the handoff's changes are blockers; do not start their dependents or polish, and do not silently
-take over implementation.
+evidence matching its assignment. After every wave, reconcile all results with the current manifest and the visible
+working tree without folding in unrelated concurrent changes. Do not add agents or change models, scopes, or validation
+ownership merely because a worker is slow or quiet. Do revise the manifest and launch a narrowly scoped follow-on agent
+when completed work discovers an unplanned prerequisite covered by the approved outcome. Preserve stable IDs, dependency
+order, the eight-agent handoff limit, and one aggregate-validation owner; include follow-on agents in the final counts
+and report. When Claude is the validation owner, run the assigned aggregate checks once during this reconciliation.
+Attribute aggregate-check failures before treating them as blockers: a failure confined to files outside every agent's
+scope is unrelated concurrent work — confirm the handoff's own files still pass and continue. Unexpected out-of-scope
+edits, overlap between agents in the same parallel wave, or an aggregate-check failure attributable to the handoff's
+changes are blockers; do not start their dependents or polish, and do not silently take over implementation.
 
 ## Skill Evolution Review
 
@@ -190,9 +198,15 @@ opportunity was found.
 
 ## Completion
 
-- On `status: blocked`, treat the result as a plan problem. Let already-started independent agents finish, gate its
-  dependents, report the evidence, and let the user decide; never silently take over implementation or relaunch the
-  agent. Pass relevant completed results to dependent agents.
+- When `status: blocked` identifies a related in-repository fix or evidence change outside the subagent's scope that is
+  necessary for the approved outcome, treat it as follow-on work rather than a request for fresh authorization. Let
+  already-started independent agents finish, gate dependents, extend the manifest with the smallest sufficient scope,
+  satisfy repository coordination for that scope, and launch a new or reused implementation agent. Repeat this process
+  until the approved outcome is complete or a genuine authorization boundary is reached.
+- Ask the user only when continuation would change the approved outcome, require a material redesign or unrelated work,
+  or cross an existing confirmation boundary such as destructive action, purchase, deployment, or external write. Never
+  silently take over implementation or relaunch solely on a different model. Pass relevant completed results to
+  dependent agents.
 - Treat an Agent tool call error or a final message without all required result fields as an infrastructure failure.
   Inspect the agent's write scope for partial edits with `git status` and `git diff`, then continue that same named
   agent once through SendMessage with a short verify-and-continue message naming the partially edited files. Its prior
