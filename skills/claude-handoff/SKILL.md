@@ -39,7 +39,7 @@ the approved plan.
 - Use at most three research agents with stable IDs `R1` through `R3`. Count them separately from the eight
   implementation agents.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
-  pass.
+  passes.
 - Treat the approved outcome, not the initial agent manifest or its write scopes, as the authorization boundary. When
   implementation reveals a related in-repository fix or evidence change required to achieve that outcome, Claude is
   fully authorized to extend the handoff and launch follow-on implementation agents for the newly discovered scope
@@ -87,6 +87,7 @@ Produce a decision-complete plan with this section:
 | `A1`  | `1`  | `none`     | `<files/behavior>` | `sonnet` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
 
 - Code polish: `<required|not required>` — `<reason>`
+- Agent-context polish: `<required|not required>` — `<reason>`
 ```
 
 Choose the execution shape from repository evidence and the approved work:
@@ -117,6 +118,11 @@ wave.
 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
+
+Require `$agents-brain polish` when approved work changes a target supported by its polish workflow: README.md,
+AGENTS.md or CLAUDE.md, a durable context doc, or an existing project-installed skill under `.agents/skills`. Source
+catalog skills under `skills/` remain outside that workflow. Mark both passes required when both trigger rules apply;
+mark neither when neither applies.
 
 Do not spawn implementation subagents until the user approves the plan and Claude leaves Plan mode. The read-only
 research phase above is the only pre-approval exception.
@@ -214,8 +220,13 @@ opportunity was found.
   infrastructure failure for that agent is a blocker. Never relaunch it.
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
   verification evidence proves the approved plan.
-- When the plan marked polish as required, invoke `$code-polish` once with exactly that union and its default
-  simplify-then-review mode. Skip polish if any required agent failed; do not recompute or broaden scope.
+- If any required agent failed, skip every planned polish pass. Otherwise, invoke each required pass once with only its
+  applicable paths from that union: `$code-polish` first in its default simplify-then-review mode, then
+  `$agents-brain polish` with its eligible context targets. When only one pass is required, invoke only that one. Do not
+  seed either pass with paths outside the union or let it broaden beyond its declared workflow authority.
+- Reconcile in-scope files actually changed by each polish pass into the final changed-files set and verification. A
+  required polish pass that blocks, fails, or writes outside its supported scope blocks later polish and
+  cross-repository commits.
 - If the approved work changes one or more Git repositories on this machine other than the repository where the handoff
   began, automatically invoke `$commit` from each additional repository after its work, validation, and any required
   polish are complete. `$commit` owns semantic message composition; its `ai-commit` backend owns deterministic
@@ -224,6 +235,6 @@ opportunity was found.
   explicitly requested it.
 - Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
   result table. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`, `### 🧹 Polish` when run, automatic
-  cross-repository commit hashes when any, and an always-present `### ⚠️ Risks / blockers`; write `none` when empty. Use
-  `⛔ blocked` as the result for failed required work. Keep paths, commands, hashes, and subagent-return fields exact
-  and undecorated.
+  cross-repository commit hashes when any, and an always-present `### ⚠️ Risks / blockers`; list each polish pass and
+  outcome, and write `none` when empty. Use `⛔ blocked` as the result for failed required work. Keep paths, commands,
+  hashes, and subagent-return fields exact and undecorated.
