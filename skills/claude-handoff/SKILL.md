@@ -174,6 +174,30 @@ and continue. Unexpected out-of-scope edits, overlap between agents in the same 
 failure attributable to the handoff's changes are blockers; do not start their dependents or polish, and do not silently
 take over implementation.
 
+## Skill Evolution Review
+
+After every required implementation agent has completed successfully and the overall complex task is verified, Claude
+reviews the user's completed task for skill-evolution opportunities. Do not run or report this review for a blocked,
+failed, or partial handoff. Claude makes the judgment itself; research and implementation agents never make the
+user-facing recommendation.
+
+Recommend skill work only when the completed task exposes a stable, reusable workflow credibly likely to recur. Task
+size or difficulty alone does not establish recurrence; reject one-off work, rare contingencies, incidental cleanup, and
+patterns whose future value is speculative.
+
+- For a new skill, state whether it belongs in the repository where the work was done because its reuse is
+  project-specific or globally in `~/projects/agent-skills` because it is useful across projects.
+- For a revision, name every exact existing skill and briefly state why each needs to change.
+
+When a proposal clears this bar, append at most one compact suggestion of no more than two short sentences to Claude's
+existing completion report without otherwise changing its format. State the reusable need and the proposed create or
+revise target, then offer `$task-handoff` as the next action for capturing a decision-complete implementation handoff.
+Leave design choices, file-level changes, acceptance details, and other low-level material to that future handoff.
+
+Never invoke `$task-handoff`, create a handoff, create a skill, or revise a skill automatically during this review. When
+no proposal clears the recurrence bar, remain silent: add no placeholder section and do not report that no skill
+opportunity was found.
+
 ## Completion
 
 - On `status: blocked`, treat the result as a plan problem. Let already-started independent agents finish, gate its
