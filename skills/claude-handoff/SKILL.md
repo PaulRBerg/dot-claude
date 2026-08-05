@@ -104,9 +104,8 @@ Claude during post-wave reconciliation. Every other agent's completion evidence 
 its own edits: file-scoped lint, format, or typecheck plus targeted tests for the files it touched. Duplicate aggregate
 runs across a wave's agents are wasted wall-clock time, not extra assurance.
 
-Every agent runs on `sonnet`; per-agent model escalation is not part of this skill. The Agent tool exposes no per-agent
-reasoning-effort control; if the host ever adds one, never select above `xhigh` — the parent owns the deep thinking,
-subagents implement.
+Every agent runs on `sonnet`; per-agent model escalation is not part of this skill. Do not set a per-agent effort level:
+the Agent tool exposes no such control, so subagents inherit the session's effort.
 
 Every agent runs through the `general-purpose` subagent type; scope decomposition is the only lever for balancing a
 wave.
