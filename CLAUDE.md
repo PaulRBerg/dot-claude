@@ -132,6 +132,12 @@ smarter parallelization of agents on the same `main` branch.
 - I keep personal todos in `TODO.md` files across projects. These are private notes, not task specs: don't read or
   reference them unless I explicitly point you at one.
 
+## Resource Safety
+
+- Scope recursive searches to narrow roots; exclude dependency, build, cache, generated, and state directories.
+- Avoid unbounded per-result commands and output buffering; use bounded batches or streaming, and reap children on
+  cancellation.
+
 ## Change Discipline
 
 - Before implementing, state material assumptions. Ask only when an unresolved choice changes scope, safety,
