@@ -13,5 +13,4 @@ description: Create missing README.md and AGENTS.md context files
 
 ## Task
 
-Activate the `agents-context-management` skill and run the `create` workflow. Follow `references/create-docs.md` from
-that skill.
+Activate the `agents-brain` skill and run the `create` workflow. Follow `references/create-docs.md` from that skill.

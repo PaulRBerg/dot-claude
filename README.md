@@ -74,7 +74,7 @@ command list.
 ### Commands
 
 `commands/` contains thin entry points that invoke skills. Commands still matter because they support directory nesting,
-which enables namespaced patterns like `/yeet:issue-cc` and `/agents-context:brain-polish`.
+which enables namespaced patterns like `/yeet:issue-cc` and `/agents-brain:brain-polish`.
 
 ### Skills
 
@@ -82,7 +82,7 @@ Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-ag
 [skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`. See
 dot-agents for installation guidance.
 
-Examples: **agents-context-management**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **tool-finder**, **yeet**.
+Examples: **agents-brain**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **tool-finder**, **yeet**.
 
 ### Agents
 
