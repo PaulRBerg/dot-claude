@@ -60,9 +60,11 @@ complexity.
   waiting for the task to fully finish. Many small commits are good — never batch them into one big commit at the end.
   Uncommitted work is what blocks other agents from starting conflicting tasks, so the working tree should return to
   clean as fast as you can get it there.
-- After committing, follow the `commit` skill's push workflow. Automatic pushing is authorized for repositories whose
-  GitHub owner is `PaulRBerg`, repositories under `~/work/` or `~/projects/`, and repositories rooted at `~/.claude`,
-  `~/.codex`, `~/.agents`, or `~/.local/share/chezmoi`; the listed paths are mine and require no GitHub-owner check.
+- For semantic, agent-composed commits, use `$commit`; its deterministic Git mechanics must use `ai-commit`. For
+  already-composed fixed-message workflows, call `ai-commit` directly. After committing, follow the `$commit` push
+  workflow. Automatic pushing is authorized for repositories whose GitHub owner is `PaulRBerg`, repositories under
+  `~/work/` or `~/projects/`, and repositories rooted at `~/.claude`, `~/.codex`, `~/.agents`, or
+  `~/.local/share/chezmoi`; the listed paths are mine and require no GitHub-owner check.
 
 ### Conflict detection before starting
 
@@ -98,8 +100,8 @@ smarter parallelization of agents on the same `main` branch.
   or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
 - `READY` → proceed normally; a `stale-dirt:<paths>` advisory means preserve those pre-existing hunks byte-for-byte and
-  exclude them from commits. For an affected file, use the commit skill's baseline exclusion after `ai-coord baseline`
-  to capture its OID.
+  exclude them from commits. For an affected file, capture its OID with `ai-coord baseline` and pass
+  `ai-commit prepare --exclude-baseline '<path>=<oid>'`.
 - `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. In Claude
   Code, the `ai-coord` waker hook wakes the session automatically when the claim is promoted, a message or note arrives,
   or the waker times out; do not arm Monitor. In Codex, run `ai-coord wait` in the foreground; it blocks for up to 300
