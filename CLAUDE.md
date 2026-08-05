@@ -173,7 +173,11 @@ EOF
   scalar strings by default.
 - Avoid `status` and `path` as variable names: `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or
   `result`.
-- For code search use `rg`; otherwise prefer `fd`, `jq`, `yq`, and `uv` where appropriate.
+- For code search, use `rg` against narrow relative roots and trust existing ignore files before reaching for `-u`;
+  otherwise prefer `fd`, `jq`, `yq`, and `uv` where appropriate. Prefer `-F`, `-t`/`-g`, and output modes such as `-l`,
+  `-c`, or `-o` when full matching lines are unnecessary.
+- Preserve ripgrep stderr and distinguish matches (exit 0), no matches (exit 1), and errors (exit >1). Do not filter
+  validation output without preserving the producer's exit status. Checked-in automation must use `rg --no-config`.
 
 ## Gmail / Google Drive
 
