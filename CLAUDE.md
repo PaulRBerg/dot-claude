@@ -75,28 +75,31 @@ have written yet. Run `ai-coord status` to see active AI agent session counts, w
 names/labels (a hint at intent, never authority) in the current repository, plus its Notes block for out-of-scope
 findings other sessions left behind; use `ai-coord status --all` only when cross-repository coordination matters. Read
 its output as reported — do not inspect transcripts or query providers directly. Before the first edit, acquire literal
-repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`. Only a `READY` result
-authorizes editing; `INTENT` is pathless and does not. `UNKNOWN coverage` means ownership cannot be established;
-`UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the existing
-wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an intersecting
-claim. Release active, queued, or intent-only work with `ai-coord done` as soon as that work is complete. The goal is
-smarter parallelization of agents on the same `main` branch.
+repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`, or promote the planning draft
+with `ai-coord start --draft`. Only a `READY` result authorizes editing. `UNKNOWN coverage` means ownership cannot be
+established; `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the
+existing wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an
+intersecting work item. Release draft, active, or queued work with `ai-coord done` as soon as that work is complete. The
+goal is smarter parallelization of agents on the same `main` branch.
 
 #### Exemptions
 
-- Plan mode: skip the coordination gate while planning, because planning is read-only. Keep intended `ai-coord start`
-  scopes as private working state; do not add an exhaustive path list to the user-facing plan solely for coordination.
-  Mention paths only when they materially clarify an implementation step. At the first edit after plan approval, acquire
-  the exact scopes, re-deriving them from the approved plan if needed. The ExitPlanMode hook records the approved plan's
-  H1 as pathless intent automatically; no agent action is needed. The plan must also include a "Wait out conflicting
-  agents" section that applies the waiting approach below before the first edit after plan approval.
+- Plan mode: skip ownership arbitration while planning. Once the intended scopes stabilize, record them as private
+  temporary memory with `ai-coord draft '<label>' '<path>'...`; never add an exhaustive coordination path list to the
+  user-facing plan. Drafts are non-authoritative and reserve nothing. Before the first edit after plan approval, run
+  `ai-coord start --draft` and require `READY`; direct `start` cannot bypass an existing draft, so re-run `draft` when
+  planned scopes change. The plan must also include a "Wait out conflicting agents" section that applies the waiting
+  approach below before that first edit. Provider permissions must allow this state-only planning command; do not modify
+  personal permission configuration. Claude otherwise describes Plan mode as read-only in its
+  [permission-mode documentation](https://code.claude.com/docs/en/permission-modes), while Codex command execution
+  remains governed by its [permissions configuration](https://developers.openai.com/codex/codex-manual.md).
 - Read-only or research tasks: skip the gate entirely; run no `ai-coord` commands.
 - Skills that declare `coordination: exempt` in their `SKILL.md` frontmatter: skip the gate for the skill's own work. If
   the work escalates beyond the skill's declared write behavior, the gate applies again.
-- Subagents: coordination is session-scoped, not agent-scoped. A parent session's claim covers all work it delegates to
-  subagents; subagents must NEVER run `ai-coord` lifecycle commands (`start`, `wait`, or `done`). With inherited
-  identity, those commands would act as the parent and can collide with the parent's own claim. Hooks record subagents
-  as read-only delegates under the parent session automatically.
+- Subagents: coordination is session-scoped, not agent-scoped. A parent session's work item covers all work it delegates
+  to subagents; subagents must NEVER run `ai-coord` lifecycle commands (`draft`, `start`, `wait`, or `done`). With
+  inherited identity, those commands would act as the parent and can collide with the parent's own work. Hooks record
+  subagents as read-only delegates under the parent session automatically.
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
   or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
@@ -104,7 +107,7 @@ smarter parallelization of agents on the same `main` branch.
   exclude them from commits. For an affected file, capture its OID with `ai-coord baseline` and pass
   `ai-commit prepare --exclude-baseline '<path>=<oid>'`.
 - `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. In Claude
-  Code, the `ai-coord` waker hook wakes the session automatically when the claim is promoted, a message or note arrives,
+  Code, the `ai-coord` waker hook wakes the session automatically when the work is promoted, a message or note arrives,
   or the waker times out; do not arm Monitor. In Codex, run `ai-coord wait` in the foreground; it blocks for up to 300
   seconds by default and returns `READY` when ownership transfers. After any wake without `READY`, inspect the new state
   and re-arm. Silence is not progress.
