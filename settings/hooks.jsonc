@@ -23,33 +23,13 @@
         ],
       },
     ],
-    "PostToolBatch": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
-          },
-        ],
-      },
-    ],
+
     "PostToolUse": [
       {
         "hooks": [
           {
             "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
             "type": "command",
-          },
-        ],
-      },
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ai-coord hook claude",
-            "timeout": 5,
           },
         ],
       },
@@ -166,6 +146,17 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
+          },
+        ],
+      },
+    ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "command": "ai-coord hook claude",
+            "timeout": 5,
+            "type": "command",
           },
         ],
       },
