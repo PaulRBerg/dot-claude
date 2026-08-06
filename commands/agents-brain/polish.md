@@ -15,4 +15,4 @@ description: Polish README.md, AGENTS.md, CLAUDE.md symlinks, and existing proje
 
 ## Task
 
-Activate the `agents-brain` skill and run the `polish` workflow. Follow `references/brain-polish.md` from that skill.
+Activate the `agents-brain` skill and run the `polish` workflow. Follow `references/polish.md` from that skill.
