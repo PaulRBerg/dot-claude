@@ -2,6 +2,7 @@
 indent-width = 4
 line-length = 100
 target-version = "py312"
+cache-dir = ".cache/ruff"
 
 exclude = [".pytest_cache", ".ruff_cache", ".venv", "__pycache__"]
 include = ["pyproject.toml", "helpers/**/*.py", "hooks/**/*.py"]
