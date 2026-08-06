@@ -84,11 +84,12 @@ smarter parallelization of agents on the same `main` branch.
 
 #### Exemptions
 
-- Plan mode: skip the coordination gate while planning, because planning is read-only. The plan must still list the
-  exact `ai-coord start` scopes, and the gate applies at the first edit after plan approval. The ExitPlanMode hook
-  records the approved plan's H1 as pathless intent automatically; no agent action is needed. The plan must also include
-  a "Wait out conflicting agents" section that applies the waiting approach below before the first edit after plan
-  approval.
+- Plan mode: skip the coordination gate while planning, because planning is read-only. Keep intended `ai-coord start`
+  scopes as private working state; do not add an exhaustive path list to the user-facing plan solely for coordination.
+  Mention paths only when they materially clarify an implementation step. At the first edit after plan approval, acquire
+  the exact scopes, re-deriving them from the approved plan if needed. The ExitPlanMode hook records the approved plan's
+  H1 as pathless intent automatically; no agent action is needed. The plan must also include a "Wait out conflicting
+  agents" section that applies the waiting approach below before the first edit after plan approval.
 - Read-only or research tasks: skip the gate entirely; run no `ai-coord` commands.
 - Skills that declare `coordination: exempt` in their `SKILL.md` frontmatter: skip the gate for the skill's own work. If
   the work escalates beyond the skill's declared write behavior, the gate applies again.
