@@ -109,21 +109,15 @@ No plugins are enabled in `settings/plugins.jsonc`. `plugins/` stores marketplac
 
 ## Utilities
 
-> [!NOTE] The `claude` wrapper runs Claude with `--dangerously-skip-permissions` and auto-loads MCP servers from
-> `.mcp.json`. See [this issue](https://github.com/anthropics/claude-code/issues/3321).
-
-Optional shell utilities from `utils.sh`:
+Shell utilities are maintained in the chezmoi-managed `~/.config/prb/agents.sh` module and loaded automatically by
+`~/.zshrc`:
 
 - **`ccc [args]`**: streamlined commits via `/commit` (defaults to `--all`)
 - **`cccp`**: commit and push (feature branches)
+- **`ccs [args]`**: commit only staged changes
+- **`ccsp [args]`**: commit staged changes and push
 - **`ccbump [args]`**: quick release bumping via `/release-bumper`
-- **`claude [args]`**: enhanced CLI wrapper with MCP auto-loading
-
-Source them in your shell config:
-
-```zsh
-source ~/.claude/utils.sh
-```
+- **`ccta [args]`**: archive TODOs via `$todo-archive`
 
 ## License
 
