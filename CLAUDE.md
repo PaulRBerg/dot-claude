@@ -12,6 +12,8 @@ complexity.
   scope without authorization.
 - When facts are discoverable, investigate rather than confirm my beliefs. Otherwise state what is unknown and take the
   smallest safe next step.
+- Do not report that files in git-ignored directories were not committed. `.ai/` is globally git-ignored by design and I
+  already know; omit this from summaries, caveats, risks, and commit reports unless it materially blocks the task.
 
 ## Authority
 
