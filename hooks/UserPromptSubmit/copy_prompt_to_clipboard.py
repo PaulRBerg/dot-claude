@@ -30,8 +30,8 @@ PBCOPY = "/usr/bin/pbcopy"
 
 # Sanitization tunables (module-level for easy adjustment after live pastes).
 LONG_LINE_CHARS = 400  # A single line longer than this collapses to "[Pasted]".
-MAX_CHARS = 1500  # Whole prompt longer than this keeps a bounded head.
-MAX_LINES = 20  # Whole prompt with more lines than this keeps a bounded head.
+MAX_CHARS = 8000  # Whole prompt longer than this keeps a bounded head.
+MAX_LINES = 150  # Whole prompt with more lines than this keeps a bounded head.
 MIN_CHARS = 120  # Sanitized prompts shorter than this are too trivial to log.
 SHORT_ID_CHARS = 8  # Length of the short session/ref id in the provenance prefix.
 MAX_LABEL_CHARS = 32  # Max length of the repo label in the provenance prefix.
@@ -91,16 +91,26 @@ def _collapse_size(text: str) -> str:
     """Collapse oversized content so large pastes don't flood the clipboard.
 
     Over-long single lines become ``[Pasted]``; if the prompt still has too many
-    lines or characters, a bounded head is kept and the rest marked ``[Pasted]``.
+    lines or characters, a bounded head is kept (cut only at line boundaries —
+    never mid-word) and the rest marked ``[Pasted]``.
     """
     lines = ["[Pasted]" if len(line) > LONG_LINE_CHARS else line for line in text.split("\n")]
     text = "\n".join(lines)
 
-    if len(lines) > MAX_LINES or len(text) > MAX_CHARS:
-        head = "\n".join(lines[:MAX_LINES])[:MAX_CHARS].rstrip()
-        text = f"{head} … [Pasted]"
+    if len(lines) <= MAX_LINES and len(text) <= MAX_CHARS:
+        return text
 
-    return text
+    head_lines: list[str] = []
+    head_chars = 0
+    for line in lines[:MAX_LINES]:
+        added = len(line) + (1 if head_lines else 0)  # +1 for the joining newline
+        if head_lines and head_chars + added > MAX_CHARS:
+            break
+        head_lines.append(line)
+        head_chars += added
+
+    head = "\n".join(head_lines).rstrip()
+    return f"{head} … [Pasted]"
 
 
 def _strip_terminal_controls(text: str) -> str:
