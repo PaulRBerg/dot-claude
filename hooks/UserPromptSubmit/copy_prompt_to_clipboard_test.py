@@ -77,12 +77,13 @@ class TestSanitizePrompt:
 
     def test_collapses_over_cap_prompt(self):
         """Test that a prompt with too many lines keeps a bounded head."""
-        prompt = "\n".join(f"line{i}" for i in range(50))
+        prompt = "\n".join(f"line{i}" for i in range(200))
         result = hook.sanitize_prompt(prompt)
         assert result.endswith("[Pasted]")
         assert "line0" in result
-        assert "line20" not in result  # head is the first MAX_LINES (20) lines
-        assert "line49" not in result
+        assert "line149" in result  # head is the first MAX_LINES (150) lines
+        assert "line150" not in result
+        assert "line199" not in result
 
     def test_squeezes_blank_lines(self):
         """Test that runs of 3+ newlines collapse to a single blank line."""
