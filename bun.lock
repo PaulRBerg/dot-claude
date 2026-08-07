@@ -5,9 +5,9 @@
     "": {
       "name": "dot-claude",
       "devDependencies": {
-        "husky": "9.1.7",
+        "husky": "^9.1.7",
         "json5": "^2.2.3",
-        "lint-staged": "17.3.0",
+        "lint-staged": "^17.3.0",
         "prettier": "^3.9.6",
       },
     },
