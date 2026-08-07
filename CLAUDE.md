@@ -77,18 +77,19 @@ overlapping refactors, shared codegen outputs). A clean tree does not guarantee 
 have written yet. Run `ai-coord status` to see active AI agent session counts, working directories, and session
 names/labels (a hint at intent, never authority) in the current repository, plus its Notes block for out-of-scope
 findings other sessions left behind; use `ai-coord status --all` only when cross-repository coordination matters. Read
-its output as reported — do not inspect transcripts or query providers directly. Before the first edit, acquire literal
-repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`, or promote the planning draft
-with `ai-coord start --draft`. Only a `READY` result authorizes editing. `UNKNOWN coverage` means ownership cannot be
-established; `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the
-existing wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an
-intersecting work item. Release draft, active, or queued work with `ai-coord done` as soon as that work is complete. The
-goal is smarter parallelization of agents on the same `main` branch.
+its coordination state as authoritative; current-project transcripts or provider data may still be inspected when they
+offer material task evidence. Before the first edit, acquire literal repository-relative file or directory scopes with
+`ai-coord start '<label>' '<path>'...`, or promote the planning draft with `ai-coord start --draft`. Only a `READY`
+result authorizes editing. `UNKNOWN coverage` means ownership cannot be established; `UNKNOWN dirty-settling:...` is a
+short self-resolving hold (at most ~90 seconds), so keep waiting via the existing wait/waker mechanics and never
+escalate dirt to the user. `BLOCKED` means the work is queued behind an intersecting work item. Release draft, active,
+or queued work with `ai-coord done` as soon as that work is complete. The goal is smarter parallelization of agents on
+the same `main` branch.
 
 #### Exemptions
 
-- Plan mode: skip ownership arbitration while planning. Once the intended scopes stabilize, record them as private
-  temporary memory with `ai-coord draft '<label>' '<path>'...`; never add an exhaustive coordination path list to the
+- Plan mode: skip ownership arbitration while planning. Once the intended scopes stabilize, record them as temporary
+  coordination state with `ai-coord draft '<label>' '<path>'...`; never add an exhaustive coordination path list to the
   user-facing plan. Drafts are non-authoritative and reserve nothing. Before the first edit after plan approval, run
   `ai-coord start --draft` and require `READY`; direct `start` cannot bypass an existing draft, so re-run `draft` when
   planned scopes change. The plan must also include a "Wait out conflicting agents" section that applies the waiting
@@ -138,7 +139,7 @@ goal is smarter parallelization of agents on the same `main` branch.
   constraints, decisions, and risks.
 - Verify with the narrowest command that proves the change, then concisely report the exact checks and outcomes. Claim
   only what a tool result from this session backs; report failures and skipped steps as such.
-- I keep personal todos in `TODO.md` files across projects. These are private notes, not task specs: don't read or
+- I keep personal todos in `TODO.md` files across projects. These are user-owned notes, not task specs: don't read or
   reference them unless I explicitly point you at one.
 
 ## Resource Safety
