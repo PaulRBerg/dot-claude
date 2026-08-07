@@ -5,7 +5,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "test \"$CI\" = 'true' || (husky && bash helpers/merge_settings.sh)"
+    "lint-staged": "lint-staged --concurrent false --no-stash --no-hide-partially-staged",
+    "prepare": "test \"$CI\" = 'true' || (husky && bash helpers/merge_settings.sh)",
+    "pre-commit": "just pre-commit"
   },
   "devDependencies": {
     "husky": "^9.1.7",

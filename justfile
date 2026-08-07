@@ -18,7 +18,8 @@ uv := require("uv")
 # ---------------------------------------------------------------------------- #
 
 prettier := "bunx --no-install prettier"
-prettier_globs := "\"**/*.md\""
+prettier_cache := ".cache/prettier/.prettier-cache"
+prettier_globs := "\"**/*.{md,json,jsonc,yaml,yml}\""
 
 # ---------------------------------------------------------------------------- #
 #                                   COMMANDS                                   #
@@ -94,27 +95,36 @@ alias fc := full-check
     echo -e '{{ GREEN }}All code fixes applied!{{ NORMAL }}'
 alias fw := full-write
 
-# Check Markdown formatting (exclusions in .prettierignore)
+# Check documentation and configuration formatting (exclusions in .prettierignore)
 [group("checks")]
 @prettier-check +globs=prettier_globs:
     {{ prettier }} \
         --check \
         --cache \
+        --cache-location {{ prettier_cache }} \
         --log-level warn \
         --no-error-on-unmatched-pattern \
         {{ globs }}
 alias pc := prettier-check
 
-# Format Markdown files (exclusions in .prettierignore)
+# Format documentation and configuration (exclusions in .prettierignore)
 [group("checks")]
 @prettier-write +globs=prettier_globs:
     {{ prettier }} \
         --write \
         --cache \
+        --cache-location {{ prettier_cache }} \
         --log-level warn \
         --no-error-on-unmatched-pattern \
         {{ globs }}
 alias pw := prettier-write
+
+# Run staged-file checks
+[group("checks")]
+@pre-commit:
+    sh .husky/pre-commit
+
+alias precommit := pre-commit
 
 # Check Python type hints
 [group("checks")]

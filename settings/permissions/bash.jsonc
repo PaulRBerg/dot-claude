@@ -30,7 +30,7 @@
       "Bash(usermod:*)",
       // System Control
       "Bash(reboot:*)",
-      "Bash(shutdown:*)"
-    ]
-  }
+      "Bash(shutdown:*)",
+    ],
+  },
 }

@@ -1,1 +1,45 @@
-bunx lint-staged --config .lintstagedrc.js --concurrent false
+#!/usr/bin/env sh
+set -e
+
+staged=$(git diff --cached --name-only)
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+# lint-staged can only preserve partially staged files by rewriting Git or
+# worktree state. Shared worktrees require whole-file staging instead.
+partially_staged=$(printf '%s\n' "$staged" | while IFS= read -r file; do
+  if ! git diff --quiet -- "$file"; then
+    printf '%s\n' "$file"
+  fi
+done)
+if [ -n "$partially_staged" ]; then
+  printf 'error: partially staged files are unsafe in the shared worktree:\n%s\n' "$partially_staged" >&2
+  exit 1
+fi
+
+attempt=1
+while :; do
+  if lint_staged_output=$(bun run lint-staged 2>&1); then
+    printf '%s\n' "$lint_staged_output"
+    exit 0
+  else
+    lint_staged_rc=$?
+  fi
+
+  case "$lint_staged_output" in
+    *'Failed to get staged files'*) ;;
+    *)
+      printf '%s\n' "$lint_staged_output"
+      exit "$lint_staged_rc"
+      ;;
+  esac
+
+  if [ "$attempt" -ge 3 ]; then
+    printf '%s\n' "$lint_staged_output"
+    exit "$lint_staged_rc"
+  fi
+
+  sleep "$attempt"
+  attempt=$((attempt + 1))
+done
