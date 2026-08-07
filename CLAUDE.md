@@ -141,6 +141,7 @@ the same `main` branch.
   only what a tool result from this session backs; report failures and skipped steps as such.
 - I keep personal todos in `TODO.md` files across projects. These are user-owned notes, not task specs: don't read or
   reference them unless I explicitly point you at one.
+- `PROMPT.md` files across projects are user-owned and off-limits to agents: never read or touch them.
 
 ## Resource Safety
 
