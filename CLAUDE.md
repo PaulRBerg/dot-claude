@@ -27,7 +27,7 @@ complexity.
 
 ## Agents
 
-- When I say "agent", I mean a coding agent (Claude Code or Codex CLI), not a human.
+- When I say "agent", I mean any coding agent CLI I run (e.g. Claude Code, Codex CLI, or omp), not a human.
 - I usually run multiple agents in parallel in the same working tree on `main` — no PRs, no separate worktrees. Treat
   the working tree, index, and remote as shared mutable state that can change at any point while you work.
 - Treat changes unrelated to your task as another agent's work: ignore them, don't let them block or redirect you, and
