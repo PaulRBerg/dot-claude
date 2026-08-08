@@ -1,6 +1,8 @@
 ---
 argument-hint: "[task]"
-compatibility: Requires Claude Code Plan mode and Agent-tool subagents with access to the selected model.
+compatibility:
+  Requires Claude Code Agent-tool subagents with access to the selected model. Plan mode is required for implementation
+  handoffs, but research-only handoffs may run in any mode.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
@@ -11,15 +13,15 @@ skill-dependencies:
   - commit
 user-invocable: true
 description:
-  Orchestrate read-only Explore research subagents during planning and one to eight Claude subagents to implement the
+  Orchestrate read-only Explore research subagents in any mode, or one to eight Claude subagents to implement an
   approved plan.
 ---
 
 # Claude Handoff
 
-Claude-handoff orchestrates implementation within the current session from Plan mode. Task-handoff instead writes a
-decision-complete file for a fresh, separate session; choose it when work continues later or elsewhere, and choose an
-in-session handoff skill when implementing an approved plan now.
+Claude-handoff orchestrates read-only investigation in any mode or implementation within the current session from Plan
+mode. Task-handoff instead writes a decision-complete file for a fresh, separate session; choose it when work continues
+later or elsewhere, and choose an in-session handoff skill when implementing an approved plan now.
 
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
@@ -29,8 +31,10 @@ the approved plan.
 
 ## Contract
 
-- Run only after the user explicitly invokes this skill in Plan mode. If Plan mode is not active, ask the user to switch
-  and stop.
+- Run only after the user explicitly invokes this skill. Classify the task as research-only only when its requested
+  outcome is findings, evidence, or an assessment and it requests neither repository changes nor an implementation plan.
+  A research-only task may run in any mode. Every other task requires Plan mode; if it is not active, ask the user to
+  switch and stop.
 - Claude owns decisions, the final implementation plan, and agent orchestration. For complex tasks, delegate
   investigation to read-only research subagents before writing the plan.
 - Research agents gather evidence and report findings. They never edit files, make design decisions, or return plans of
@@ -62,15 +66,17 @@ Use `$ARGUMENTS` as the task when present; otherwise use the active user request
 
 ## Research Phase
 
-Trigger research when scope is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on
-evidence that would be materially slower for Claude to gather serially. Zero research agents remains the default. Claude
-alone decides from the task and repository evidence whether research runs; never ask the user to opt in or name agents.
-Either launch the research wave immediately or proceed straight to planning.
+For a research-only task, launch one to three research agents and stop after returning the consolidated investigation;
+never enter the Plan Phase or launch implementation agents. For an implementation handoff, trigger research when scope
+is uncertain, the task crosses multiple or unfamiliar subsystems, or the plan depends on evidence that would be
+materially slower for Claude to gather serially. Zero research agents remains the default for implementation handoffs.
+Claude alone decides the research count from the task and repository evidence; never ask the user to opt in or name
+agents. Either launch the research wave immediately or proceed straight to planning.
 
-When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately during Plan mode
-through the Agent tool with `subagent_type: "Explore"`. The read-only Explore toolset makes this launch legitimate
-during Plan mode. Launch all selected agents in parallel as Agent calls in one message, post
-`🔎 Research started — <n> agents`, then rely on native subagent progress rendering; do not build dashboards.
+When triggered, assign up to three agents stable IDs `R1` through `R3` and launch them immediately through the Agent
+tool with `subagent_type: "Explore"`. The read-only Explore toolset makes this launch legitimate in any mode. Launch all
+selected agents in parallel as Agent calls in one message, post `🔎 Research started — <n> agents`, then rely on native
+subagent progress rendering; do not build dashboards.
 
 Give each research agent a self-contained prompt containing the open questions to answer, its exact investigation scope,
 the read-only boundary, and a thoroughness hint: `medium` for bounded surveys or `very thorough` for multi-subsystem
@@ -79,11 +85,19 @@ sweeps. Require findings, evidence, open questions, and blockers; explicitly pro
 Unless the user specified a model preference, use the default Explore agent and do not override its model — research
 gathers evidence, the parent synthesizes.
 
-When the research wave settles, read every result and fold its findings and evidence into the implementation plan.
-Surface open questions or blockers through `AskUserQuestion` only when they change scope or approach. Do not reconcile
-the working tree: research agents change nothing. Flag any research result reporting edits as a contract violation.
+When the research wave settles, read every result and fold its findings and evidence into the implementation plan or the
+research-only response. Surface open questions or blockers through `AskUserQuestion` only when they change scope or
+approach. Do not reconcile the working tree: research agents change nothing. Flag any research result reporting edits as
+a contract violation.
+
+For a research-only task, synthesize the evidence and finish with `### 🔎 Research handoff — <completed|blocked>`, the
+agent count, findings, evidence, open questions, and blockers. This replaces the Plan Phase and the implementation
+completion report. If the investigation shows that changes are needed, report them as findings and stop; do not produce
+an implementation plan or begin edits.
 
 ## Plan Phase
+
+Enter this phase only for an implementation handoff in Plan mode.
 
 Produce a decision-complete plan with this section:
 
