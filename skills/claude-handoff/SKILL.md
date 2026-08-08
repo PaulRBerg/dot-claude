@@ -5,6 +5,10 @@ disable-model-invocation: true
 metadata:
   install-targets: claude-code
 name: claude-handoff
+skill-dependencies:
+  - agents-brain
+  - code-polish
+  - commit
 user-invocable: true
 description:
   Orchestrate read-only Explore research subagents during planning and one to eight Sonnet subagents to implement the
