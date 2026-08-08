@@ -49,10 +49,9 @@ the approved plan.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
   passes.
 - Treat an explicit user model preference, such as Sonnet or Opus, as an orchestration constraint. Apply it to every
-  implementation agent unless the user scopes it more narrowly; do not replace it with the usual model selection based
-  on task complexity. If the Agent tool cannot launch that model, report the incompatibility and ask before using a
-  fallback. Research keeps the default Explore model unless the user explicitly includes research agents in the
-  preference.
+  research and implementation agent unless the user scopes it more narrowly; do not replace it with the usual model
+  selection based on task complexity. If the Agent tool cannot launch that model, report the incompatibility and ask
+  before using a fallback.
 - Treat the approved outcome, not the initial agent manifest or its write scopes, as the authorization boundary. When
   implementation reveals a related in-repository fix or evidence change required to achieve that outcome, Claude is
   fully authorized to extend the handoff and launch follow-on implementation agents for the newly discovered scope
@@ -77,7 +76,8 @@ Give each research agent a self-contained prompt containing the open questions t
 the read-only boundary, and a thoroughness hint: `medium` for bounded surveys or `very thorough` for multi-subsystem
 sweeps. Require findings, evidence, open questions, and blockers; explicitly prohibit returning a plan or design.
 
-Use the default Explore agent and do not override its model — research gathers evidence, the parent synthesizes.
+Unless the user specified a model preference, use the default Explore agent and do not override its model — research
+gathers evidence, the parent synthesizes.
 
 When the research wave settles, read every result and fold its findings and evidence into the implementation plan.
 Surface open questions or blockers through `AskUserQuestion` only when they change scope or approach. Do not reconcile
