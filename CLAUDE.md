@@ -71,55 +71,33 @@ complexity.
 
 ### Conflict detection before starting
 
-Before starting any task that will write, check the repo state with `git status`. Dirty uncommitted changes are likely
-another agent's in-flight work: reason through whether your task would collide with it (same files or modules,
-overlapping refactors, shared codegen outputs). A clean tree does not guarantee no conflict — active sessions may not
-have written yet. Run `ai-coord status` to see active AI agent session counts, working directories, session names/labels
-(a hint at intent, never authority), and current-repository finding counts; use `ai-coord status --all` only when
-cross-repository coordination matters. Read its coordination state as authoritative; current-project transcripts or
-provider data may still be inspected when they offer material task evidence. Before the first edit, acquire literal
-repository-relative file or directory scopes with `ai-coord start '<label>' '<path>'...`, or promote the planning draft
-with `ai-coord start --draft`. Only a `READY` result authorizes editing. `UNKNOWN coverage` means ownership cannot be
-established; `UNKNOWN dirty-settling:...` is a short self-resolving hold (at most ~90 seconds), so keep waiting via the
-existing wait/waker mechanics and never escalate dirt to the user. `BLOCKED` means the work is queued behind an
-intersecting work item. Release draft, active, or queued work with `ai-coord done` as soon as that work is complete. The
-goal is smarter parallelization of agents on the same `main` branch.
+Before any task that will write, inspect `git status` and `ai-coord status`, then acquire literal repository-relative
+file or directory scopes with `ai-coord start '<label>' '<path>'...`, or promote a planning draft with
+`ai-coord start --draft`. Only `READY` authorizes editing. Follow the guidance line printed by each `ai-coord` command
+for the next step, and release draft, active, or queued work with `ai-coord done` as soon as it is complete. Use
+`ai-coord status --all` only when cross-repository coordination matters; treat session names and labels as hints, never
+authority.
 
 #### Exemptions
 
 - Plan mode: skip ownership arbitration while planning. Once the intended scopes stabilize, record them as temporary
   coordination state with `ai-coord draft '<label>' '<path>'...`; never add an exhaustive coordination path list to the
-  user-facing plan. Drafts are non-authoritative and reserve nothing. Before the first edit after plan approval, run
-  `ai-coord start --draft` and require `READY`; direct `start` cannot bypass an existing draft, so re-run `draft` when
-  planned scopes change. The plan must also include a "Wait out conflicting agents" section that applies the waiting
-  approach below before that first edit. Provider permissions must allow this state-only planning command; do not modify
-  personal permission configuration. Claude otherwise describes Plan mode as read-only in its
+  user-facing plan. Drafts are non-authoritative and reserve nothing; re-run `draft` when scopes change. Before the
+  first edit after approval, use `ai-coord start --draft` and require `READY`. The plan must include a "Wait out
+  conflicting agents" section. Provider permissions must allow this state-only command; do not modify personal
+  permission configuration. Claude otherwise describes Plan mode as read-only in its
   [permission-mode documentation](https://code.claude.com/docs/en/permission-modes), while Codex command execution
   remains governed by its [permissions configuration](https://developers.openai.com/codex/codex-manual.md).
 - Read-only or research tasks: skip the gate entirely; run no `ai-coord` commands.
 - Skills that declare `coordination: exempt` in their `SKILL.md` frontmatter: skip the gate for the skill's own work. If
   the work escalates beyond the skill's declared write behavior, the gate applies again.
-- Subagents: coordination is session-scoped, not agent-scoped. A parent session's work item covers all work it delegates
-  to subagents; subagents must NEVER run `ai-coord` lifecycle commands (`draft`, `start`, `wait`, or `done`). With
-  inherited identity, those commands would act as the parent and can collide with the parent's own work. Hooks record
-  subagents as read-only delegates under the parent session automatically.
-- Agent CLIs `ai-coord` doesn't recognize as a provider (only Codex and Claude Code are recognized today; e.g. omp is
-  not): `ai-coord status` still works for advisory visibility since it needs no self-identity, but
-  `ai-coord start`/`draft`/`wait`/`done`/`msg`/`baseline`/`trailer` all require resolving a Codex or Claude session
-  identity and fail outright for these agents. Don't attempt the write-gate protocol on one — check `ai-coord status`
-  for visibility, then rely solely on the manual git-safety rules above (own-files-only staging, no tree-wide
-  destructive commands, re-read before overwriting) since the ledger cannot arbitrate or queue this session's edits.
+- Subagents never run `ai-coord` lifecycle commands; the parent session's work item covers delegated work.
+- Unrecognized provider CLIs may use `ai-coord status` for visibility but cannot use the lifecycle; rely on the manual
+  git-safety rules above instead.
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
-  or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
-  `ai-coord start` returns `READY`.
-- `READY` → proceed normally; a `stale-dirt:<paths>` advisory means preserve those pre-existing hunks byte-for-byte and
-  exclude them from commits. For an affected file, capture its OID with `ai-coord baseline` and pass
-  `ai-commit prepare --exclude-baseline '<path>=<oid>'`.
-- `BLOCKED` → keep analyzing and planning the task (reading is always safe), but do not edit any files yet. In Claude
-  Code, the `ai-coord` waker hook wakes the session automatically when the work is promoted, a message or note arrives,
-  or the waker times out; do not arm Monitor. In Codex, run `ai-coord wait` in the foreground; it blocks for up to 300
-  seconds by default and returns `READY` when ownership transfers. After any wake without `READY`, inspect the new state
-  and re-arm. Silence is not progress.
+  or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts.
+- On a `stale-dirt` advisory, preserve the pre-existing hunks byte-for-byte; `ai-commit prepare` auto-excludes this
+  session's recorded baselines and discloses them in its evidence.
 - When blocked, run `ai-coord msg <target> '<one line>'` to contact a holder; `<target>` is a session-ID prefix, label
   or name substring, or `repo` broadcast. When finishing work others may be waiting on, message the waiters.
 - Presence lines show pending message counts. Run `ai-coord inbox` to read them, then `ai-coord inbox --ack '<id>'` or
@@ -134,8 +112,6 @@ goal is smarter parallelization of agents on the same `main` branch.
   duplicate findings. It may commit directly to local `main` only mechanical documentation, wording, or typo fixes, and
   never push. Code behavior, policy, ambiguous, broad, or risky work must become a decision-complete task handoff, not
   an autonomous fix.
-- The moment the conflicting work is committed, re-run `ai-coord start` with the same scopes; a `READY` result
-  authorizes starting immediately — do not ask for approval.
 - If still blocked after 1 hour, give up on waiting: present your finished plan and tell me I can run it once the
   conflicting agent workloads are done.
 
