@@ -103,6 +103,12 @@ goal is smarter parallelization of agents on the same `main` branch.
   to subagents; subagents must NEVER run `ai-coord` lifecycle commands (`draft`, `start`, `wait`, or `done`). With
   inherited identity, those commands would act as the parent and can collide with the parent's own work. Hooks record
   subagents as read-only delegates under the parent session automatically.
+- Agent CLIs `ai-coord` doesn't recognize as a provider (only Codex and Claude Code are recognized today; e.g. omp is
+  not): `ai-coord status` still works for advisory visibility since it needs no self-identity, but
+  `ai-coord start`/`draft`/`wait`/`done`/`msg`/`baseline`/`trailer` all require resolving a Codex or Claude session
+  identity and fail outright for these agents. Don't attempt the write-gate protocol on one — check `ai-coord status`
+  for visibility, then rely solely on the manual git-safety rules above (own-files-only staging, no tree-wide
+  destructive commands, re-read before overwriting) since the ledger cannot arbitrate or queue this session's edits.
 - A presence line or status output saying coverage is incomplete means the inventory may be missing live sessions. Run
   or re-run `ai-coord status` and treat incomplete coverage as unknown, never as no conflicts; do not edit until
   `ai-coord start` returns `READY`.
