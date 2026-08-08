@@ -1,6 +1,6 @@
 ---
 argument-hint: "[task]"
-compatibility: Requires Claude Code Plan mode and Agent-tool subagents with Sonnet model access.
+compatibility: Requires Claude Code Plan mode and Agent-tool subagents with access to the selected model.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
@@ -11,11 +11,15 @@ skill-dependencies:
   - commit
 user-invocable: true
 description:
-  Orchestrate read-only Explore research subagents during planning and one to eight Sonnet subagents to implement the
+  Orchestrate read-only Explore research subagents during planning and one to eight Claude subagents to implement the
   approved plan.
 ---
 
 # Claude Handoff
+
+Claude-handoff orchestrates implementation within the current session from Plan mode. Task-handoff instead writes a
+decision-complete file for a fresh, separate session; choose it when work continues later or elsewhere, and choose an
+in-session handoff skill when implementing an approved plan now.
 
 If these instructions are already present in the conversation from a slash or dollar invocation, follow them directly;
 do not invoke this skill again through a skill tool.
@@ -44,6 +48,11 @@ the approved plan.
   implementation agents.
 - Keep Claude's implementation work to orchestration, integrity checks, failure handling, and the conditional polish
   passes.
+- Treat an explicit user model preference, such as Sonnet or Opus, as an orchestration constraint. Apply it to every
+  implementation agent unless the user scopes it more narrowly; do not replace it with the usual model selection based
+  on task complexity. If the Agent tool cannot launch that model, report the incompatibility and ask before using a
+  fallback. Research keeps the default Explore model unless the user explicitly includes research agents in the
+  preference.
 - Treat the approved outcome, not the initial agent manifest or its write scopes, as the authorization boundary. When
   implementation reveals a related in-repository fix or evidence change required to achieve that outcome, Claude is
   fully authorized to extend the handoff and launch follow-on implementation agents for the newly discovered scope
@@ -86,9 +95,9 @@ Produce a decision-complete plan with this section:
 - Agents: `<1-8>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
 
-| Agent | Wave | Depends on | Scope              | Model    | Implementation brief                                   | Completion evidence                 |
-| ----- | ---- | ---------- | ------------------ | -------- | ------------------------------------------------------ | ----------------------------------- |
-| `A1`  | `1`  | `none`     | `<files/behavior>` | `sonnet` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
+| Agent | Wave | Depends on | Scope              | Model            | Implementation brief                                   | Completion evidence                 |
+| ----- | ---- | ---------- | ------------------ | ---------------- | ------------------------------------------------------ | ----------------------------------- |
+| `A1`  | `1`  | `none`     | `<files/behavior>` | `<sonnet\|opus>` | `<outcome, edits, constraints, and stopping criteria>` | `<commands and observable results>` |
 
 - Code polish: `<required|not required>` — `<reason>`
 - Agent-context polish: `<required|not required>` — `<reason>`
@@ -114,8 +123,8 @@ Claude during post-wave reconciliation. Every other agent's completion evidence 
 its own edits: file-scoped lint, format, or typecheck plus targeted tests for the files it touched. Duplicate aggregate
 runs across a wave's agents are wasted wall-clock time, not extra assurance.
 
-Every agent runs on `sonnet`; per-agent model escalation is not part of this skill. Do not set a per-agent effort level:
-the Agent tool exposes no such control, so subagents inherit the session's effort.
+When the user has not specified a model preference, use `sonnet` for every implementation agent. Do not set a per-agent
+effort level: the Agent tool exposes no such control, so subagents inherit the session's effort.
 
 Every agent runs through the `general-purpose` subagent type; scope decomposition is the only lever for balancing a
 wave.
@@ -138,10 +147,10 @@ research phase above is the only pre-approval exception.
 Before launching subagents, do not hold a path-scoped session claim over any path in a subagent's write scope. Record
 orchestrator intent with a pathless label only; the subagents' work is covered by the orchestrating session's presence.
 
-Launch each agent with the Agent tool: `subagent_type: "general-purpose"`, `model: "sonnet"` for every agent, and a
-description like `A1 — <scope>`. Start every agent in a parallel wave in the same message as parallel tool calls; start
-sequential agents only after reconciling their dependencies. Claude Code renders subagent progress natively — do not
-build bespoke progress dashboards, polling loops, or status tables around the calls. After launch, post one compact
+Launch each agent with the Agent tool: `subagent_type: "general-purpose"`, the model from its approved manifest row, and
+a description like `A1 — <scope>`. Start every agent in a parallel wave in the same message as parallel tool calls;
+start sequential agents only after reconciling their dependencies. Claude Code renders subagent progress natively — do
+not build bespoke progress dashboards, polling loops, or status tables around the calls. After launch, post one compact
 `🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves` line; then rely on native progress.
 
 Subagents receive none of the planning conversation. Build a self-contained, outcome-first prompt for each agent
