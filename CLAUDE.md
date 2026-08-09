@@ -182,7 +182,7 @@ Use the installed `mailops` CLI to access Gmail and Google Drive from any direct
 
 ## Skills
 
-The `$agents-brain` skill is required: keep it installed and run it as part of every task to keep `AGENTS.md`, skills,
+The `agents-brain` skill is required: keep it installed and run it as part of every task to keep `AGENTS.md`, skills,
 and other agent context synchronized with codebase changes before completion.
 
 My personal skills are authored in `~/projects/agent-skills`; its publish workflow installs them under
