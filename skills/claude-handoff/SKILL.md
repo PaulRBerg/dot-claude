@@ -141,6 +141,8 @@ research phase is the only pre-approval exception.
 
 Before launching subagents, do not hold a path-scoped session claim over any path in a subagent's write scope; record
 orchestrator intent with a pathless label only — subagent work is covered by the orchestrating session's presence.
+Claims belong to the session that performs writes; native subagents inherit the parent session identity, so the parent
+claim covers their paths.
 
 Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the model from its manifest row, and a
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
