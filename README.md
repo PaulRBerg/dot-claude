@@ -98,8 +98,9 @@ Hooks provide event-driven Claude Code automation. See [hooks/README.md](hooks/R
 Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
-- **ai-notify**: desktop notifications via the external [ai-notify](https://github.com/PaulRBerg/ai-notify) CLI
-  (`Notification`, `PermissionRequest`, `PreToolUse`, `Stop`, `UserPromptSubmit`)
+- **ai-notify**: desktop notifications via the external
+  [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
+  `PreToolUse`, `Stop`, `UserPromptSubmit`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
 
 ### Plugins
