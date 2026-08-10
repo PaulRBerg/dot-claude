@@ -11,7 +11,6 @@ skill-dependencies:
   - agents-brain
   - code-polish
   - commit
-user-invocable: true
 description:
   Orchestrate read-only Explore research subagents in any mode, or one to eight Claude subagents to implement an
   approved plan.
