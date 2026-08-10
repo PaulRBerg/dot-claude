@@ -131,7 +131,7 @@ work completes.
   unrelated dead code instead of deleting it.
 - For multi-step work, state a brief plan and validation target. Continue until the success criteria are met or the
   blocker is explicit.
-- Keep files under 1000 lines and test files under 2000.
+- Keep files under 1000 lines and test files under 2000; git-ignored files are exempt.
 
 ## Shell
 
