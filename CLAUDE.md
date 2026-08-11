@@ -78,6 +78,9 @@ coverage, so `ai-coord status` is optional diagnostics when blocked or for cross
 `READY` authorizes editing. Follow the one-sentence guidance each command prints, and run `ai-coord done` as soon as
 work completes.
 
+- A case-sensitive, whitespace-trimmed prompt line exactly equal to `#noc` waives `draft`, `start`, `wait`, and `done`
+  for that prompt. If work may write, re-enter the gate with `draft` or `start` before editing; the next valid untagged
+  prompt restores normal gate behavior.
 - On blocked or dirty-settling results, run `ai-coord wait`; Claude sessions also receive a background waker. Every wake
   still requires a fresh `start` returning `READY`; never use manual sleep/retry loops.
 - In plan mode, record stabilized scopes with `ai-coord draft '<label>' '<path>'...`; never put exhaustive paths in the
