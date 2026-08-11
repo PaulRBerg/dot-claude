@@ -1,8 +1,6 @@
 ---
 argument-hint: "[task]"
-compatibility:
-  Requires Claude Code Agent-tool subagents with access to the selected model. Plan mode is required for implementation
-  handoffs, but research-only handoffs may run in any mode.
+compatibility: Requires Claude Code Agent-tool subagents with access to the selected model.
 disable-model-invocation: true
 metadata:
   install-targets: claude-code
@@ -18,7 +16,7 @@ description:
 
 # Claude Handoff
 
-Orchestrates read-only investigation in any mode, or implementation within the current session from Plan mode.
+Orchestrates read-only investigation or implementation within the current session after explicit plan approval.
 Task-handoff instead writes a decision-complete file for a fresh, separate session — use it for work continuing later or
 elsewhere; use an in-session handoff to implement an approved plan now.
 
@@ -31,8 +29,8 @@ approved plan.
 ## Contract
 
 - Run only after explicit user invocation. Classify a task research-only when its requested outcome is findings,
-  evidence, or an assessment, with no repository changes or implementation plan requested; it may run in any mode. Every
-  other task requires Plan mode — if inactive, ask the user to switch and stop.
+  evidence, or an assessment, with no repository changes or implementation plan requested. All handoffs may run in any
+  host mode; implementation handoffs must pass through the Plan Phase and receive explicit user approval before launch.
 - Claude owns decisions, the final plan, and orchestration; delegate investigation to read-only research subagents
   before writing the plan on complex tasks.
 - Research agents gather evidence and report findings; never edit files, decide design, or return plans.
@@ -83,7 +81,7 @@ investigation shows changes are needed, report them as findings and stop; do not
 
 ## Plan Phase
 
-Enter this phase only for an implementation handoff in Plan mode.
+Enter this phase only for an implementation handoff.
 
 Produce a decision-complete plan with this section:
 
@@ -131,8 +129,8 @@ Require `$agents-brain polish` when approved work changes a target its workflow 
 CLAUDE.md, a durable context doc, or an existing project-installed skill under `.agents/skills` (source catalog skills
 under `skills/` are excluded). Mark both required when both rules apply, neither when neither applies.
 
-Do not spawn implementation subagents until the user approves the plan and Claude leaves Plan mode — the read-only
-research phase is the only pre-approval exception.
+Do not spawn implementation subagents until the user approves the plan — the read-only research phase is the only
+pre-approval exception.
 
 ## Execution Phase
 
