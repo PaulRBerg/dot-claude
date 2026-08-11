@@ -40,8 +40,6 @@ complexity.
 - Stay on the current branch. Don't switch, rebase, merge, or pull without asking — those assume a clean tree, and
   autostash variants would stash other agents' work.
 - On a git `index.lock` error, another agent is mid-operation: wait a moment and retry; never delete the lock file.
-  lint-staged failing with `Failed to get staged files` during another agent's commit is the same transient index
-  contention: wait briefly and retry before treating it as a real hook failure.
 - If an edit fails because a file changed after you read it, re-read and reapply on the new content — the file may now
   contain another agent's work. Never force-overwrite a whole file to win the race.
 - Never act on a shared stash by ordinal (`stash@{0}`) — another agent's operation can shift it between your read and
