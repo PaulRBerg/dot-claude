@@ -3,7 +3,7 @@
 
 # Top-level files
 !.gitignore
-!.lintstagedrc.js
+!.lintstagedrc.mjs
 !.mcp.json
 !.prettierignore
 !.prettierrc.yml
