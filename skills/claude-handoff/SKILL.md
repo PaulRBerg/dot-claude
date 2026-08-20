@@ -42,6 +42,10 @@ approved plan.
   25-30 minutes into parallel disjoint scopes or dependency waves, adding an integration agent as needed.
 - Use at most three research agents, stable IDs `R1`-`R3`, counted separately from the eight implementation agents.
 - Keep Claude's own work to orchestration, integrity checks, failure handling, and conditional polish passes.
+- Let Claude Code choose foreground or background delivery; never pass `run_in_background` to the Agent tool. Only a
+  direct terminal result or error, or a later completion or failure notification, settles an agent — a launch
+  acknowledgement, native task row, quiet period, or surfaced permission prompt does not. Reconcile a wave only after
+  every required terminal outcome arrives.
 - Treat an explicit user model preference (e.g. Sonnet, Opus) as an orchestration constraint on every research and
   implementation agent unless scoped narrower — never substitute complexity-based selection. If the Agent tool cannot
   launch that model, report the incompatibility and ask before falling back.
@@ -66,14 +70,19 @@ inherits the session's (expensive) model. The read-only Explore toolset makes th
 all selected agents in parallel in one message, post `🔎 Research started — <n> agents`, then rely on native subagent
 progress rendering; do not build dashboards.
 
-Give each agent a self-contained prompt: the open questions to answer, its exact investigation scope, the read-only
-boundary, and a thoroughness hint (`medium` for bounded surveys, `very thorough` for multi-subsystem sweeps). Require
-findings, evidence, open questions, and blockers; prohibit returning a plan or design.
+Give each agent a self-contained prompt: the open questions to answer, its exact investigation scope, every
+task-relevant repository constraint, the read-only boundary, and a thoroughness hint (`medium` for bounded surveys,
+`very thorough` for multi-subsystem sweeps). Explore does not load project `CLAUDE.md`, so never assume those
+constraints arrive implicitly. Require findings, evidence, open questions, and blockers; prohibit returning a plan or
+design.
 
 When the wave settles, read every result and fold findings and evidence into the implementation plan or the
 research-only response. Surface open questions or blockers via `AskUserQuestion` only when they change scope or
 approach. Research agents change nothing — do not reconcile the working tree; flag any result reporting edits as a
 contract violation.
+
+Explore agents are one-shot and return no reusable agent ID. Never apply the implementation continuation rule to them;
+treat missing required evidence as an open question or blocker in the consolidated result.
 
 For a research-only task, synthesize the evidence and finish with `### 🔎 Research handoff — <completed|blocked>`, the
 agent count, findings, evidence, open questions, and blockers — replacing the Plan Phase and completion report. If the
@@ -145,7 +154,8 @@ Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the mo
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
 sequential agents only after reconciling their dependencies. Claude Code renders subagent progress natively — no bespoke
 dashboards, polling loops, or status tables. After launch, post one compact
-`🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves` line, then rely on native progress.
+`🚀 Handoff started — <agent count> agents · <strategy> · <wave count> waves` line, then rely on native progress. Record
+the agent ID returned with each completed implementation result for any allowed continuation.
 
 Subagents receive none of the planning conversation. Build a self-contained, outcome-first prompt for each agent
 containing:
@@ -207,10 +217,10 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   cross an existing confirmation boundary (destructive action, purchase, deployment, external write). Never silently
   take over implementation or relaunch solely on a different model; pass relevant completed results to dependent agents.
 - Treat an Agent tool call error or a final message missing required fields as an infrastructure failure: inspect the
-  agent's write scope for partial edits with `git status`/`git diff`, then continue that same named agent once via
-  SendMessage with a short verify-and-continue message naming the partially edited files (prior context preserved). This
-  is a retry, not a new agent against the eight-agent limit. A second infrastructure failure for that agent is a blocker
-  — never relaunch it.
+  agent's write scope for partial edits with `git status`/`git diff`, then continue that same agent once via
+  `SendMessage` addressed to its returned agent ID, with a short verify-and-continue message naming the partially edited
+  files (prior context preserved). This is a retry, not a new agent against the eight-agent limit. If no ID was
+  returned, or the continuation fails, that agent is blocked — never relaunch it.
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
   verification evidence proves the approved plan.
 - If any required agent failed, skip every planned polish pass. Otherwise invoke each required pass once with only its
