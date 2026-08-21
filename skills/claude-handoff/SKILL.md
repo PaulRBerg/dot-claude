@@ -54,7 +54,29 @@ approved plan.
   handoff and launch follow-on agents without asking again. The discovering subagent still stops at its assigned scope
   and returns evidence; Claude owns scope expansion, coordination, and delegation.
 
-Use `$ARGUMENTS` as the task when present; otherwise the active user request.
+Use `$ARGUMENTS` as the task when present; otherwise the active user request. A task naming another skill follows
+Companion Skills.
+
+## Companion Skills
+
+A task that names another skill alongside this handoff — for example,
+`run $fresh-eyes-sweep and delegate the implementation` — is a composition: the companion skill defines the work; this
+handoff owns delegation mechanics.
+
+- Load the companion skill and run its discovery, judgment, and planning phases in Claude. Route read-only discovery
+  through this skill's research agents when materially faster, then fold the companion's method, findings, and
+  constraints into the handoff plan.
+- This contract overrides the companion's overlapping plan approval, agent limits and stable IDs, single validation
+  owner, result fields, failure classification, commit ownership, and completion reporting, even when the companion
+  prescribes its own subagent, validation, or commit mechanics. Its user-decision gates still bind; this skill's plan
+  approval satisfies coincident gates, and a plan-only companion implements only when the combined invocation requested
+  implementation and the user approved the plan.
+- Agents cannot load skills. Never brief one to "use skill X" by name; inline the specific companion instructions,
+  conventions, or excerpts it needs.
+- A companion requirement to run `$code-polish` or `$agents-brain polish` marks that pass required in the Plan Phase; it
+  still runs once, per Completion. Companion commit instructions never add commits.
+- Satisfy both contracts at Completion: produce the companion's required report artifacts (ledgers, tables, verdicts)
+  alongside the completion report.
 
 ## Research Phase
 
@@ -98,6 +120,7 @@ Produce a decision-complete plan with this section:
 ## Claude Handoff
 
 - Research: `<none | R1..Rn — key findings used>`
+- Companion skills: `<none | $x — phases Claude runs / what is folded into briefs>`
 - Strategy: `<sequential|parallel|hybrid>`
 - Agents: `<1-8>` — `<why this is the smallest effective count>`
 - Validation owner: `<agent-id|claude>` — `<aggregate checks it runs once>`
