@@ -254,10 +254,9 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   required pass that blocks, fails, or writes outside its supported scope blocks later polish and cross-repository
   commits.
 - If approved work changes Git repositories other than the one where the handoff began, automatically invoke `$commit`
-  from each additional repository once its work, validation, and required polish are complete. `$commit` owns semantic
-  message composition; its `ai-commit` backend owns deterministic transaction/commit/push mechanics. Scope each
-  invocation to files changed there, skip separate confirmation, and never commit incomplete, blocked, unexpected, or
-  out-of-scope changes. Push only when explicitly requested.
+  from each additional repository once its work, validation, and required polish are complete, scoped to files changed
+  there; skip separate confirmation and never commit incomplete, blocked, unexpected, or out-of-scope changes. Push only
+  when explicitly requested.
 - Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
   result table. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`, `### 🧹 Polish` when run, automatic
   cross-repository commit hashes when any, and an always-present `### ⚠️ Risks / blockers`; list each polish pass and
