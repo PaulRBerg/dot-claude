@@ -157,9 +157,10 @@ scope decomposition is the only lever for balancing a wave.
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes; file count alone is not a trigger.
 
-Require `$agents-brain polish` when approved work changes a target its workflow supports: README.md, AGENTS.md or
-CLAUDE.md, a durable context doc, or an existing project-installed skill under `.agents/skills` (source catalog skills
-under `skills/` are excluded). Mark both required when both rules apply, neither when neither applies.
+Require `$agents-brain polish` when approved work changes a target its polish workflow supports: README.md, AGENTS.md or
+CLAUDE.md, a durable context doc, an existing project-installed skill under `.agents/skills`, or an existing git-tracked
+source-catalog skill under `skills/` where polish is prose-only. Installed copies under managed agent-config roots
+remain excluded. Mark both passes required when both trigger rules apply; mark neither when neither applies.
 
 Do not spawn implementation subagents until the user approves the plan — the read-only research phase is the only
 pre-approval exception.
