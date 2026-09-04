@@ -31,8 +31,8 @@ approved plan.
 - Run only after explicit user invocation. Classify a task research-only when its requested outcome is findings,
   evidence, or an assessment, with no repository changes or implementation plan requested. All handoffs may run in any
   host mode; implementation handoffs must pass through the Plan Phase and receive explicit user approval before launch.
-- Claude owns decisions, the final plan, and orchestration; delegate investigation to read-only research subagents
-  before writing the plan on complex tasks.
+- Claude owns decisions, the final plan, and orchestration. Delegate investigation to read-only research subagents only
+  when task and repository evidence make it useful before planning.
 - Research agents gather evidence and report findings; never edit files, decide design, or return plans.
 - Implementation agents implement their assigned part of the approved plan — inspect, edit, validate — never redesign or
   return another plan.
