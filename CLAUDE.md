@@ -12,6 +12,8 @@ complexity.
   scope without authorization.
 - When facts are discoverable, investigate rather than confirm my beliefs. Otherwise state what is unknown and take the
   smallest safe next step.
+- Give brief progress updates during sustained work; make the final response stand alone with the outcome, verification,
+  and any remaining blocker.
 - Do not report that files in git-ignored directories—for example, `.ai/`, which is globally git-ignored by design—were
   not committed. I already know this; omit it from summaries, caveats, risks, and commit reports unless it materially
   blocks the task.
@@ -19,6 +21,8 @@ complexity.
 ## Authority
 
 - Require confirmation for destructive actions or purchases.
+- Explicit user instructions take precedence over skill guidelines. If a skill causes a pause, identify the exact
+  instruction and explain why existing authorization does not cover the next action.
 - When I describe a problem or ask a question without requesting a change, the deliverable is your assessment: report
   findings and stop; don't apply fixes until asked.
 - Otherwise bias to action: proceed without asking on reversible actions that follow from the request, and don't end a
@@ -100,12 +104,15 @@ work completes.
 - Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe
   first if its flags or side effects are unclear.
 - Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
+- Batch independent reads and tool calls; keep dependent operations and shared-state mutations sequential.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc
   behavior.
 - In plans, do not restate standing instructions or facts from `AGENTS.md` or `CLAUDE.md`; include only task-specific
   constraints, decisions, and risks.
 - Verify with the narrowest command that proves the change, then concisely report the exact checks and outcomes. Claim
   only what a tool result from this session backs; report failures and skipped steps as such.
+- Keep tests proportional to the changed behavior. After required checks pass, broaden or repeat verification only for
+  new changes, failures, or unresolved concerns.
 - I keep personal todos in `TODO.md` files across projects. These are user-owned notes, not task specs: don't read or
   reference them unless I explicitly point you at one.
 - `PROMPT.md` files across projects are user-owned and off-limits to agents: never read or touch them.
