@@ -88,6 +88,10 @@ work completes.
 - Skills declaring `coordination: exempt` in `SKILL.md` skip the gate for their declared work; escalation re-enters it.
 - Subagents never run lifecycle commands; the parent session's work item covers delegated work.
 - Incomplete coverage means unknown, never "no conflicts."
+- If a blocker names an absent holder, verify complete provider coverage and that its session and active work are gone.
+  Back up its exact residual ownership records, remove only those stale records, preserve all file and index contents,
+  then retry `start`. This metadata-only repair is authorized; never reset the ledger or release a live or uncertain
+  owner.
 - On a `stale-dirt` advisory, preserve pre-existing hunks byte-for-byte; `ai-commit prepare` auto-excludes recorded
   baselines.
 - When blocking or blocked, contact holders with `ai-coord msg`; check `ai-coord inbox` when prompted and acknowledge
@@ -97,7 +101,8 @@ work completes.
 - Autonomous triage runs only in repositories whose opt-in is committed at `HEAD`: it may verify or close stale,
   rejected, or duplicate findings and commit only mechanical documentation or typo fixes to local `main`, never push;
   everything else becomes a decision-complete task handoff.
-- If blocked for over one hour, present the finished plan and stop.
+- Do not abandon authorized work because a timer expired. Diagnose stale blockers promptly; for live conflicts, use
+  `wait` and continue independent work. Report a blocker only when no safe progress or authorized repair remains.
 
 ## Workflow
 
