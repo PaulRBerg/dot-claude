@@ -169,10 +169,11 @@ pre-approval exception.
 
 ### Launch
 
-Before launching subagents, do not hold a path-scoped session claim over any path in a subagent's write scope; record
-orchestrator intent with a pathless label only — subagent work is covered by the orchestrating session's presence.
-Claims belong to the session that performs writes; native subagents inherit the parent session identity, so the parent
-claim covers their paths.
+Before launching implementation subagents, acquire a parent-owned coordination claim covering the union of every
+manifest write scope. Name exact files individually and use `--recursive` for directory scopes; require `READY` before
+launch. Native subagents inherit the parent session identity, so that claim authorizes their assigned writes. The parent
+owns all coordination lifecycle commands and holds coverage through reconciliation, required polish, and commits;
+subagents never run lifecycle commands.
 
 Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the model from its manifest row, and a
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
@@ -213,8 +214,9 @@ matching its assignment per the Plan Phase's validation-owner rule. After every 
 manifest and working tree without folding in unrelated concurrent changes. Do not add agents or change models, scopes,
 or validation ownership merely because a worker is slow or quiet; handle discovered follow-on work per Completion below.
 When Claude is the validation owner, run the assigned aggregate checks once during this reconciliation. Attribute
-aggregate-check failures before treating them as blockers: a failure confined to files outside every agent's scope is
-unrelated concurrent work — confirm the handoff's own files still pass and continue. Unexpected out-of-scope edits,
+aggregate-check failures before treating them as blockers: first rule out effects of the handoff's changes, formatters,
+hooks, and generators, including failures in downstream files outside its write scopes. Continue past a failure only
+when evidence establishes that it is unrelated and the handoff's own checks still pass. Unexpected out-of-scope edits,
 overlap between agents in the same parallel wave, or an aggregate-check failure attributable to the handoff's changes
 are blockers; don't start their dependents or polish, and don't silently take over implementation.
 
