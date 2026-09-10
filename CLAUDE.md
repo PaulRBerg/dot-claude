@@ -50,9 +50,8 @@ complexity.
   prerequisite after exhausting safe recovery, or an action requiring approval. Complete independent work and record the
   exact obstacle and needed input before handing work back; size, complexity, or unrelatedness alone never justify
   deferral.
-- Before ending the session, complete every actionable finding discovered during it. When findings were recorded, end
-  with `Findings recorded` and their exact IDs, giving each disposition: resolved with evidence or blocked with its
-  specific remaining obstacle.
+- Before ending the session, complete every actionable finding discovered during it. Report substantive outcomes and
+  blockers; omit routine ledger bookkeeping and finding IDs from user-facing summaries unless I ask for them.
 
 ## Agents
 
