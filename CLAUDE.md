@@ -112,9 +112,9 @@ work completes.
 - Skills declaring `coordination: exempt` in `SKILL.md` skip the gate for their declared work; escalation re-enters it.
 - Subagents never run lifecycle commands; the parent session's work item covers delegated work.
 - Incomplete coverage means unknown, never "no conflicts."
-- If a blocker names an absent holder, verify complete provider coverage and that its session and active work are gone.
-  Back up its exact residual ownership records, remove only those stale records, preserve all file and index contents,
-  then retry `start`. This metadata-only repair is authorized; never reset the ledger or release a live or uncertain
+- `start` reconciles process liveness first and releases ownership, including residual dirt attribution, whose owner
+  session is gone. A blocker naming a holder that `status` cannot show is therefore an ai-coord bug: report it with the
+  `start` and `status` output instead of editing the ledger. Never reset the ledger or release a live or uncertain
   owner.
 - On a `stale-dirt` advisory, preserve pre-existing hunks byte-for-byte; `ai-commit prepare` auto-excludes recorded
   baselines.
