@@ -94,15 +94,20 @@ complexity.
 
 ### Coordination gate
 
-Before a task that writes, acquire exact repository-relative scopes with `ai-coord start '<label>' '<path>'...`: name
-individual files as leaves and directories with repeatable `--recursive '<dir>'`; for example,
-`ai-coord start 'update docs' 'AGENTS.md' --recursive 'docs'`. `start` arbitrates fully and fails closed on incomplete
-coverage, so `ai-coord status` is optional diagnostics when blocked or for cross-repo visibility with `--all`. Only
-`READY` authorizes editing. Follow the one-sentence guidance each command prints, and run `ai-coord done` as soon as
-work completes.
+Apply the gate to intended write targets, not the session cwd. Non-Git work, including browser/app recovery and files
+outside Git worktrees, skips Git-dependent coordination and commit steps without confirmation or `#noc`; report any
+verified findings and validation directly. For mixed tasks, coordinate only the Git-worktree writes. A
+`requires a Git worktree` error for non-Git work confirms this exemption and is not a permission blocker.
+
+Before writing inside a Git worktree, acquire exact repository-relative scopes with
+`ai-coord start '<label>' '<path>'...`: name individual files as leaves and directories with repeatable
+`--recursive '<dir>'`; for example, `ai-coord start 'update docs' 'AGENTS.md' --recursive 'docs'`. `start` arbitrates
+fully and fails closed on incomplete coverage, so `ai-coord status` is optional diagnostics when blocked or for
+cross-repo visibility with `--all`. Only `READY` authorizes edits subject to this gate. Follow the one-sentence guidance
+each command prints, and run `ai-coord done` as soon as work completes.
 
 - A prompt line that is exactly `#noc` waives `draft`, `start`, `wait`, and `done` for that prompt; the next untagged
-  prompt restores normal gate behavior. If work may write, re-enter the gate before editing.
+  prompt restores normal gate behavior. If work is subject to the gate, re-enter it before editing.
 - On blocked or dirty-settling results, run `ai-coord wait`; Claude sessions also receive a background waker. Every wake
   still requires a fresh `start` returning `READY`; never use manual sleep/retry loops.
 - In plan mode, record stabilized scopes with `ai-coord draft '<label>' '<path>'...`; never put exhaustive paths in the
