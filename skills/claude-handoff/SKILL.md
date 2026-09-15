@@ -1,7 +1,7 @@
 ---
 argument-hint: "[task]"
 compatibility: Requires Claude Code Agent-tool subagents with access to the selected model.
-disable-model-invocation: true
+disable-model-invocation: false
 metadata:
   install-targets: claude-code
 name: claude-handoff
