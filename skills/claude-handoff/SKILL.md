@@ -222,6 +222,12 @@ are blockers; don't start their dependents or polish, and don't silently take ov
 
 ## Skill Evolution Review
 
+Keep verified repairs to skills used during the handoff separate from the optional review below. When user or repository
+instructions already authorize repairs, the parent owns their completion; subagents report evidence without expanding
+their write scopes. One verified occurrence is enough, and a blocked main task does not prevent independent repairs.
+Complete the handoff's required work or establish its blocker, then finish independent repairs before the final report
+under the applicable maintenance policy. Plan Mode still prohibits edits.
+
 After every required agent completes successfully and the task is verified — never for a blocked, failed, or partial
 handoff — Claude alone judges (agents never recommend) whether the task exposes a stable, reusable workflow credibly
 likely to recur; reject one-offs, rare contingencies, incidental cleanup, and speculative value, since size or
