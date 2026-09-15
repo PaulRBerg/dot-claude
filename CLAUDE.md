@@ -65,8 +65,11 @@ complexity.
 - Stage and commit only files you edited this session. Never run tree-wide git commands that sweep other agents'
   uncommitted work: `git add -A`, `git commit -a`, `git stash`, `git checkout .` / `git restore .`, `git reset --hard`,
   `git clean`.
-- Stay on the current branch. Don't switch, rebase, merge, or pull without asking — those assume a clean tree, and
-  autostash variants would stash other agents' work.
+- Stay on the current branch. When it is behind its upstream branch, a conflict-free `git pull --rebase --no-autostash`
+  is authorized without asking, provided the working tree and index are clean and no other Git operation is in progress.
+  Fetch and verify these conditions immediately before pulling. If your rebase encounters conflicts, abort only the
+  rebase you started and ask before resolving them; never resolve conflicts automatically. Other branch switches,
+  rebases, merges, or pulls require confirmation. Never use autostash, which could stash other agents' work.
 - On a git `index.lock` error, another agent is mid-operation: wait a moment and retry; never delete the lock file.
 - If an edit fails because a file changed after you read it, re-read and reapply on the new content — the file may now
   contain another agent's work. Never force-overwrite a whole file to win the race.
