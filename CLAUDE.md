@@ -24,7 +24,7 @@ complexity.
 - Explicit user instructions take precedence over skill guidelines. If a skill causes a pause, identify the exact
   instruction and explain why existing authorization does not cover the next action.
 - When I describe a problem or ask a question without requesting a change, the deliverable is your assessment: report
-  findings and stop; don't apply fixes until asked.
+  findings and stop; don't apply fixes until asked, except for skill maintenance under **Skills**.
 - Otherwise bias to action: proceed without asking on reversible actions that follow from the request, and don't end a
   turn on a question or promise you could resolve yourself. Pause only for the cases above or for input only I can
   provide.
@@ -45,11 +45,11 @@ complexity.
 - Acquire the necessary follow-up scopes, then re-read the finding and current files after `READY` so concurrent repairs
   are not repeated. Validate each coherent change and use `$commit --finding <id>` to record commit evidence and resolve
   the finding. Close stale, rejected, or duplicate findings only with concrete evidence.
-- Read-only requests, Plan Mode, explicit user exclusions, protected repository contracts, and approval requirements
-  remain binding. Defer only for a concrete blocker, such as missing user-owned requirements, an unavailable
-  prerequisite after exhausting safe recovery, or an action requiring approval. Complete independent work and record the
-  exact obstacle and needed input before handing work back; size, complexity, or unrelatedness alone never justify
-  deferral.
+- Read-only requests (except for skill maintenance under **Skills**), Plan Mode, explicit user exclusions, protected
+  repository contracts, and approval requirements remain binding. Defer only for a concrete blocker, such as missing
+  user-owned requirements, an unavailable prerequisite after exhausting safe recovery, or an action requiring approval.
+  Complete independent work and record the exact obstacle and needed input before handing work back; size, complexity,
+  or unrelatedness alone never justify deferral.
 - Before ending the session, complete every actionable finding discovered during it. Report substantive outcomes and
   blockers; omit routine ledger bookkeeping and finding IDs from user-facing summaries unless I ask for them.
 
@@ -207,6 +207,30 @@ After implementing a user's task, keep `AGENTS.md` and skill files in sync with 
 My personal skills are authored in `~/projects/agent-skills`; its publish workflow installs them under
 `~/.agents/skills`, with `~/.claude/skills/<name>` symlinked to those installs. Edit skills only in that source
 repository — installed copies are overwritten on the next publish.
+
+### Continuous skill maintenance
+
+Whenever using one of my personal skills reveals outdated information, a bug, unclear or missing instructions, missing
+functionality within its purpose, or avoidable manual work, make the smallest durable improvement to that skill. This is
+standing authorization to maintain `~/projects/agent-skills` from any repository, including during questions, research,
+reviews, and otherwise read-only tasks. Plan Mode is the exception: investigate and include the repair in the plan
+without editing.
+
+- Verify the issue against current evidence and the catalog source. One verified occurrence is enough. Distinguish skill
+  defects from transient failures and project-specific conventions; keep corrections reusable and grounded in the
+  observed need. If the source already contains the correction, refresh the installation through the publish workflow.
+- Read the source repository's instructions and follow the Autonomous maintenance lifecycle there. Repair prerequisites
+  immediately; otherwise finish the requested work first and complete independent skill repairs before ending the
+  session. A blocked main task does not prevent independent repairs.
+- Update the owning instructions, references, or helpers in the source catalog. Complete targeted validation, commit and
+  push the source changes, and publish them to the skill's declared installations. Use the corrected source guidance for
+  the remainder of the current session.
+- Recording a finding or using a local workaround is an intermediate step, not completion. A skill's fixed-scope
+  workflow or recommendation-only ending does not cancel this authorization: finish that workflow, then carry out the
+  repair as separate maintenance.
+- Preserve the skill's purpose and existing approval boundaries. Keep improvements tied to actual use; do not turn
+  routine maintenance into a catalog audit or speculative feature work. Report completed repairs and verification; if a
+  concrete blocker prevents completion, report the remaining work and exact obstacle.
 
 ## Dotfiles
 
