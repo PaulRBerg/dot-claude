@@ -5,7 +5,6 @@ description: Create an issue in a sablier-labs repository
 
 ## Context
 
-- GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Arguments: $ARGUMENTS
 
 ## Task

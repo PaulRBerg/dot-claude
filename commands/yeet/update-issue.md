@@ -1,12 +1,10 @@
 ---
-argument-hint: "[owner/repo#number | url | number] [update instructions]"
+argument-hint: "[owner/repo#number | url | number] [update instructions] [--image <path>]... [--image-release]"
 description: Update an existing GitHub issue (title, body, labels, assignees, state)
 ---
 
 ## Context
 
-- Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "not a repository"`
-- GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - OS: !`~/.agents/skills/yeet/scripts/get-macos-version.sh`
 - Arguments: $ARGUMENTS
 

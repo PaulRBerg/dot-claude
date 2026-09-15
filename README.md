@@ -73,7 +73,7 @@ command list.
 ### Commands
 
 `commands/` contains thin entry points that invoke skills. Commands still matter because they support directory nesting,
-which enables namespaced patterns like `/yeet:issue-cc` and `/agents-brain:brain-polish`.
+which enables namespaced patterns like `/yeet:issue-cc` and `/agents-brain:polish`.
 
 ### Skills
 
@@ -98,6 +98,9 @@ Hooks provide event-driven Claude Code automation. See [hooks/README.md](hooks/R
 Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
+- **ai-coord**: agent coordination via the external
+  [ai-coord](https://github.com/PaulRBerg/agent-toolkit/tree/main/coord) CLI (`PostToolBatch`, `PostToolUseFailure`,
+  `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
 - **ai-notify**: desktop notifications via the external
   [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
   `PreToolUse`, `Stop`, `UserPromptSubmit`)

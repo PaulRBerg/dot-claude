@@ -5,9 +5,9 @@ description: Create an issue in openai/codex
 
 ## Context
 
-- GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Codex version: !`codex --version 2>/dev/null || echo "unknown"`
-- Platform: !`uname -mprs`
+- OS: !`~/.agents/skills/yeet/scripts/get-macos-version.sh`
+- Terminal: !`echo "$TERM_PROGRAM"`
 - Arguments: $ARGUMENTS
 
 ## Task

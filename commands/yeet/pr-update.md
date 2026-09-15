@@ -8,7 +8,6 @@ description: Update an existing GitHub pull request with semantic change analysi
 - Current branch: !`git branch --show-current || echo "unknown"`
 - Remote status: !`git status -b --porcelain | head -1 || echo "No remote tracking"`
 - Recent commits: !`git log --oneline -5 || echo "No commits found"`
-- GitHub CLI auth: !`gh auth status 2>&1 | rg -q "Logged in" && echo "authenticated" || echo "not authenticated"`
 - Arguments: $ARGUMENTS
 
 ## Task
