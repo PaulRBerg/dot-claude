@@ -103,7 +103,7 @@ Active hooks from `settings/hooks.jsonc`:
   `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
 - **ai-notify**: desktop notifications via the external
   [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
-  `PreToolUse`, `Stop`, `UserPromptSubmit`)
+  `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
 
 ### Plugins

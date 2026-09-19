@@ -55,4 +55,5 @@ JSONC (JSON with Comments) allows:
 
 ## Local Overrides
 
-Machine-specific settings go in `~/.claude/settings.local.json` (gitignored, not merged).
+Claude Code supports project-local overrides in `<project>/.claude/settings.local.json`. This global configuration
+remains generated from the JSONC source files in this directory; it does not provide a separate global override file.

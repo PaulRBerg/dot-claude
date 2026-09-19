@@ -101,6 +101,16 @@
         ],
       },
     ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "command": "ai-notify event stop-failure",
+            "type": "command",
+          },
+        ],
+      },
+    ],
     "SubagentStart": [
       {
         "hooks": [
