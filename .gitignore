@@ -45,6 +45,7 @@
 __pycache__/
 node_modules/
 skills/.system/
+skills/synced/
 
 # files
 .DS_Store
