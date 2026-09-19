@@ -153,6 +153,19 @@ each command prints, and run `ai-coord done` as soon as work completes.
   reference them unless I explicitly point you at one.
 - `PROMPT.md` files across projects are user-owned and off-limits to agents: never read or touch them.
 
+## Browser and Computer Use
+
+- For rendered browser UI interaction, inspection, automation, and verification, read `chromium-browser` and use the
+  configured Chrome DevTools tools against shared Chromium.
+- Use web search, HTTP fetches, and purpose-built APIs, CLIs, or connectors for retrieval when they fit; these do not
+  require browser automation.
+- Use available host computer-use/CUA tools for native non-browser app UI. Do not target shared Chromium through generic
+  desktop app control or switch controllers or profiles as an attachment fallback.
+- Installed plugins and examples do not change this default. An explicit user selection of another available browser
+  integration may choose its route, subject to higher-priority host and tool restrictions; follow that integration's
+  contract without mixing controllers.
+- Opening a completed artifact with an OS opener is presentation, not evidence of rendered verification.
+
 ## Resource Safety
 
 - Scope recursive searches to narrow roots; exclude dependency, build, cache, generated, and state directories.
