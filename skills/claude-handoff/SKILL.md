@@ -133,6 +133,17 @@ Produce a decision-complete plan with this section:
 - Agent-context polish: `<required|not required>` — `<reason>`
 ```
 
+While finalizing the plan, record the union of every manifest write scope with
+`ai-coord draft --name <plan-slug> '<label>' '<path>'...`, using `--recursive` only for directory scopes. Derive
+`<plan-slug>` from the plan's short identity (for example `debarrel-lib`): lowercase it, replace characters outside
+`[A-Za-z0-9._-]` with `-`, and truncate to 40 characters. For two or more Git roots, use
+`ai-coord bundle draft --name <plan-slug> '<label>' '<absolute-path>'...`. In the plan's "Wait out conflicting agents"
+section, write the exact promote command `ai-coord start --draft <plan-slug>` (or
+`ai-coord bundle start --draft <plan-slug>`) and retain the explicit `ai-coord start '<label>' '<path>'...` fallback (or
+`ai-coord bundle start '<label>' '<absolute-path>'...`) over the same union. A fresh implementation session must receive
+these commands in the plan itself, without reconstructing scopes from prose. Use the fallback only when promotion
+reports `no draft named ...`. Named drafts grant no authority and expire after seven days.
+
 Choose the execution shape from repository evidence and the approved work:
 
 - Sequential: one agent depends on another, write scopes overlap, or a later agent owns integration/aggregate
@@ -169,11 +180,13 @@ pre-approval exception.
 
 ### Launch
 
-Before launching implementation subagents, acquire a parent-owned coordination claim covering the union of every
-manifest write scope. Name exact files individually and use `--recursive` for directory scopes; require `READY` before
-launch. Native subagents inherit the parent session identity, so that claim authorizes their assigned writes. The parent
-owns all coordination lifecycle commands and holds coverage through reconciliation, required polish, and commits;
-subagents never run lifecycle commands.
+Before launching implementation subagents, promote the plan's named draft using its recorded command to acquire a
+parent-owned claim covering the union of every manifest write scope. Use the recorded explicit start fallback only when
+promotion reports `no draft named ...`. Name exact files individually and use `--recursive` for directory scopes;
+require `READY` before launch. Native subagents inherit the parent session identity, so that claim authorizes their
+assigned writes. The parent owns all coordination lifecycle commands and holds coverage through reconciliation, required
+polish, and commits; subagents never run lifecycle commands. A delegate's lifecycle command is rejected with exit 64
+rather than narrowing the parent's claim.
 
 Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the model from its manifest row, and a
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
