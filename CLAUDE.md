@@ -143,6 +143,8 @@ each command prints, and run `ai-coord done` as soon as work completes.
 - Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe
   first if its flags or side effects are unclear.
 - Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
+- Run project-local package binaries through `na <binary> ...`, which selects the repository's package manager; for
+  example, use `na oxlint`, never `node_modules/.bin/oxlint` or another direct `.bin` path.
 - Batch independent reads and tool calls; keep dependent operations and shared-state mutations sequential.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc
   behavior.
