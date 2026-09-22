@@ -281,6 +281,11 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   when explicitly requested.
 - Finish with `### 🏁 Claude handoff — <completed or blocked>`, the strategy and agent count, and a compact per-agent
   result table. Follow with `### 📦 Changed` as a file tree, `### 🧪 Verification`, `### 🧹 Polish` when run, automatic
-  cross-repository commit hashes when any, and an always-present `### ⚠️ Risks / blockers`; list each polish pass and
-  outcome, `none` when empty. Use `⛔ blocked` for failed required work. Keep paths, commands, hashes, and
+  cross-repository commit hashes when any, and `### Issues and caveats` when present; list each polish pass and outcome,
+  `none` for other applicable empty values. Use `⛔ blocked` for failed required work. Keep paths, commands, hashes, and
   subagent-return fields exact and undecorated.
+- Group issues and caveats as `Resolved` (verified fixes with evidence) and `Open` (remaining problems, limitations, or
+  unverified assumptions, with impact and next step). Omit empty groups and the whole section when empty. Report each
+  item once; put neutral context and agreed decisions under changes or scope. Reserve `blocker` for something preventing
+  required work and `risk` for a specific potential adverse outcome. A workaround leaves an item open when the
+  underlying issue still affects the result.
