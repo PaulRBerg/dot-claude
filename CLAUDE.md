@@ -95,8 +95,8 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
   Uncommitted work blocks other agents from starting conflicting tasks, so return the tree to clean quickly.
 - Use `$commit` for agent-composed commits and call `ai-commit` directly only for already-composed fixed messages;
   follow the `$commit` push workflow after committing. Automatic pushing is authorized for repositories whose GitHub
-  owner is `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/.claude`, `~/.codex`, `~/.agents`, or
-  `~/.local/share/chezmoi`.
+  owner is `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier/files`, `~/.claude`,
+  `~/.codex`, `~/.agents`, or `~/.local/share/chezmoi`.
 
 ### Coordination gate
 
