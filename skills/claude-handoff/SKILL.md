@@ -42,13 +42,12 @@ approved plan.
   25-30 minutes into parallel disjoint scopes or dependency waves, adding an integration agent as needed.
 - Use at most three research agents, stable IDs `R1`-`R3`, counted separately from the eight implementation agents.
 - Keep Claude's own work to orchestration, integrity checks, failure handling, and conditional polish passes.
-- Let Claude Code choose foreground or background delivery; never pass `run_in_background` to the Agent tool. Only a
-  direct terminal result or error, or a later completion or failure notification, settles an agent — a launch
-  acknowledgement, native task row, quiet period, or surfaced permission prompt does not. Reconcile a wave only after
-  every required terminal outcome arrives.
+- Let Claude Code choose foreground or background delivery. Only a direct terminal result or error, or a later
+  completion or failure notification, settles an agent — a launch acknowledgement, native task row, quiet period, or
+  surfaced permission prompt does not. Reconcile a wave only after every required terminal outcome arrives.
 - Treat an explicit user model preference (e.g. Sonnet, Opus) as an orchestration constraint on every research and
-  implementation agent unless scoped narrower — never substitute complexity-based selection. If the Agent tool cannot
-  launch that model, report the incompatibility and ask before falling back.
+  implementation agent unless scoped narrower — never substitute the usual Sonnet/Opus selection. If the Agent tool
+  cannot launch that model, report the incompatibility and ask before falling back.
 - Treat the approved outcome, not the initial manifest or its write scopes, as the authorization boundary: when
   implementation reveals a related in-repository fix or evidence change the outcome requires, Claude may extend the
   handoff and launch follow-on agents without asking again. The discovering subagent still stops at its assigned scope
@@ -87,10 +86,11 @@ slower. Zero research agents is the default for implementation handoffs. Claude 
 repository evidence; never ask the user to opt in or name agents.
 
 When triggered, assign up to three agents stable IDs `R1`-`R3` and launch immediately via the Agent tool with
-`subagent_type: "Explore"` and `model: "sonnet"`, unless the user stated a model preference — the default otherwise
-inherits the session's (expensive) model. The read-only Explore toolset makes this launch legitimate in any mode. Launch
-all selected agents in parallel in one message, post `🔎 Research started — <n> agents`, then rely on native subagent
-progress rendering; do not build dashboards.
+`subagent_type: "Explore"` and an explicit model, unless the user stated a model preference: `sonnet` for bounded
+surveys, `opus` for involved sweeps across unfamiliar or multiple subsystems. Omitting `model` inherits the session's
+model. The read-only Explore toolset makes this launch legitimate in any mode. Launch all selected agents in parallel in
+one message, post `🔎 Research started — <n> agents`, then rely on native subagent progress rendering; do not build
+dashboards.
 
 Give each agent a self-contained prompt: the open questions to answer, its exact investigation scope, every
 task-relevant repository constraint, the read-only boundary, and a thoroughness hint (`medium` for bounded surveys,
@@ -161,9 +161,16 @@ whole-package typecheck/lint, catalog-wide checks) run once — by the integrati
 Claude during post-wave reconciliation. Every other agent's completion evidence must be the narrowest checks proving its
 own edits: file-scoped lint/format/typecheck plus targeted tests for the files it touched.
 
-Absent a stated model preference, use `sonnet` for every implementation agent. The Agent tool exposes no per-agent
-effort control; subagents inherit the session's effort. Every agent runs through the `general-purpose` subagent type;
-scope decomposition is the only lever for balancing a wave.
+Absent a stated model preference, select each implementation agent's model from its work:
+
+| Work                                                                                                          | Model    |
+| ------------------------------------------------------------------------------------------------------------- | -------- |
+| Bounded, routine, or everyday implementation                                                                  | `sonnet` |
+| Semantic, cross-cutting, or hardest implementation: interacting invariants or difficult algorithmic reasoning | `opus`   |
+
+The `sonnet` and `opus` aliases resolve to Sonnet 5 and Opus 5.5 on the Anthropic API. The Agent tool exposes no
+per-call effort control; subagents inherit the session's effort. Every agent runs through the `general-purpose` subagent
+type; model choice and scope decomposition are the levers for balancing a wave.
 
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes; file count alone is not a trigger.
