@@ -18,8 +18,7 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
 - Give brief progress updates during sustained work; make the final response stand alone with the outcome, verification,
   and any remaining blocker.
 - Do not report that files in git-ignored directories—for example, `.ai/`, which is globally git-ignored by design—were
-  not committed. I already know this; omit it from summaries, caveats, risks, and commit reports unless it materially
-  blocks the task.
+  not committed. Omit it from summaries, caveats, risks, and commit reports unless it materially blocks the task.
 
 ## Authority
 
@@ -152,8 +151,8 @@ without editing.
   Uncommitted work blocks other agents from starting conflicting tasks, so return the tree to clean quickly.
 - Use `$commit` for agent-composed commits and call `ai-commit` directly only for already-composed fixed messages;
   follow the `$commit` push workflow after committing. Automatic pushing is authorized for repositories whose GitHub
-  owner is `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier/files`, `~/.claude`,
-  `~/.codex`, `~/.agents`, or `~/.local/share/chezmoi`.
+  owner is `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier`, `~/.claude`, `~/.codex`,
+  `~/.agents`, or `~/.local/share/chezmoi`.
 
 ### Coordination gate
 
