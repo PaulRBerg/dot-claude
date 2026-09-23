@@ -12,7 +12,7 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
   introductions, repetition, and optional background first.
 - Treat me as an expert — skip the basics.
 - Challenge assumptions; surface flaws and materially better alternatives immediately. Scope expansion requires explicit
-  or standing authorization, including the autonomous maintenance policy below.
+  or standing authorization, such as the autonomous maintenance policy below.
 - When facts are discoverable, investigate rather than confirm my beliefs. Otherwise state what is unknown and take the
   smallest safe next step.
 - Give brief progress updates during sustained work; make the final response stand alone with the outcome, verification,
@@ -32,6 +32,35 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
   turn on a question or promise you could resolve yourself. Pause only for the cases above or for input only I can
   provide.
 
+## Change Discipline
+
+- Before implementing, state material assumptions. Ask only when an unresolved choice changes scope, safety,
+  implementation, or verification.
+- For multi-step work, state a brief plan and validation target. Continue until the success criteria are met or the
+  blocker is explicit.
+- Write the minimum code for each requested change or authorized maintenance item: no speculative features, single-use
+  abstractions, unnecessary configurability, or impossible-case error handling.
+- Make surgical changes. Keep requested work and independent maintenance in separate coherent changes, each limited to
+  the lines needed for its objective.
+- Keep files under 1000 lines and test files under 2000; git-ignored files are exempt.
+
+## Workflow
+
+- Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe
+  first if its flags or side effects are unclear. Fall back to direct commands only when no recipe fits, or when a
+  recipe hides the signal you need for debugging.
+- Run project-local package binaries through `na <binary> ...`, which selects the repository's package manager; for
+  example, use `na oxlint`, never `node_modules/.bin/oxlint` or another direct `.bin` path.
+- Batch independent reads and tool calls; keep dependent operations and shared-state mutations sequential.
+- In plans, do not restate standing instructions or facts from `AGENTS.md` or `CLAUDE.md`; include only task-specific
+  constraints, decisions, and risks.
+- Verify with the narrowest command that proves the change, then report the exact checks and outcomes. Claim only what a
+  tool result from this session backs; report failures and skipped steps as such.
+- Keep tests proportional to the changed behavior. After required checks pass, broaden or repeat verification only for
+  new changes, failures, or unresolved concerns.
+- `TODO.md` and `PROMPT.md` files across projects are user-owned. `TODO.md` holds my personal todos, not task specs:
+  don't read or reference one unless I explicitly point you at it. Never read or touch `PROMPT.md`.
+
 ## Autonomous maintenance
 
 - Implementation requests also authorize useful maintenance discovered during that session: unrelated bugs, refactors,
@@ -48,13 +77,41 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
 - Acquire the necessary follow-up scopes, then re-read the finding and current files after `READY` so concurrent repairs
   are not repeated. Validate each coherent change and use `$commit --finding <id>` to record commit evidence and resolve
   the finding. Close stale, rejected, or duplicate findings only with concrete evidence.
-- Read-only requests (except for skill maintenance under **Skills**), Plan Mode, explicit user exclusions, protected
-  repository contracts, and approval requirements remain binding. Defer only for a concrete blocker, such as missing
-  user-owned requirements, an unavailable prerequisite after exhausting safe recovery, or an action requiring approval.
-  Complete independent work and record the exact obstacle and needed input before handing work back; size, complexity,
-  or unrelatedness alone never justify deferral.
+- Read-only requests, Plan Mode, explicit user exclusions, protected repository contracts, and approval requirements
+  remain binding (skill maintenance has its own exception under **Skills**). Defer only for a concrete blocker, such as
+  missing user-owned requirements, an unavailable prerequisite after exhausting safe recovery, or an action requiring
+  approval. Complete independent work and record the exact obstacle and needed input before handing work back; size,
+  complexity, or unrelatedness alone never justify deferral.
 - Before ending the session, complete every actionable finding discovered during it. Report substantive outcomes and
   blockers; omit routine ledger bookkeeping and finding IDs from user-facing summaries unless I ask for them.
+
+## Skills
+
+My personal skills are authored in `~/projects/agent-skills`; its publish workflow installs them under
+`~/.agents/skills`, with `~/.claude/skills/<name>` symlinked to those installs. Edit skills only in that source
+repository — installed copies are overwritten on the next publish.
+
+After implementing a user's task, keep `AGENTS.md` and skill files in sync with the resulting repository state.
+
+### Continuous skill maintenance
+
+Whenever using one of my personal skills reveals outdated information, a bug, unclear or missing instructions, missing
+functionality within its purpose, or avoidable manual work, make the smallest durable improvement to that skill. This is
+standing authorization to maintain `~/projects/agent-skills` from any repository, including during questions, research,
+reviews, and otherwise read-only tasks. Plan Mode is the exception: investigate and include the repair in the plan
+without editing.
+
+- Verify the issue against current evidence and the catalog source. One verified occurrence is enough. Distinguish skill
+  defects from transient failures and project-specific conventions; keep corrections reusable and grounded in the
+  observed need. If the source already contains the correction, refresh the installation through the publish workflow.
+- Read the source repository's instructions and follow the Autonomous maintenance lifecycle there. A blocked main task
+  does not prevent independent skill repairs.
+- Update the owning instructions, references, or helpers in the source catalog, then validate, commit, push, and publish
+  them to the skill's declared installations. Use the corrected source guidance for the rest of the session.
+- A local workaround is not completion, and a skill's fixed-scope workflow or recommendation-only ending does not cancel
+  this authorization: finish that workflow, then carry out the repair as separate maintenance.
+- Preserve the skill's purpose and existing approval boundaries. Keep improvements tied to actual use; do not turn
+  routine maintenance into a catalog audit or speculative feature work.
 
 ## Agents
 
@@ -100,10 +157,11 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
 
 ### Coordination gate
 
-Apply the gate to intended write targets, not the session cwd. Non-Git work, including browser/app recovery and files
-outside Git worktrees, skips Git-dependent coordination and commit steps without confirmation or `#noc`; report any
-verified findings and validation directly. For mixed tasks, coordinate only the Git-worktree writes. A
-`requires a Git worktree` error for non-Git work confirms this exemption and is not a permission blocker.
+Apply the gate to intended write targets, not the session cwd; read-only or research tasks skip it entirely. Non-Git
+work, including browser/app recovery and files outside Git worktrees, skips Git-dependent coordination and commit steps
+without confirmation or `#noc`; report any verified findings and validation directly. For mixed tasks, coordinate only
+the Git-worktree writes. A `requires a Git worktree` error for non-Git work confirms this exemption and is not a
+permission blocker.
 
 Before writing inside a Git worktree, acquire exact repository-relative scopes with
 `ai-coord start '<label>' '<path>'...`: name individual files as leaves and directories with repeatable
@@ -114,12 +172,12 @@ each command prints, and run `ai-coord done` as soon as work completes.
 
 - A prompt line that is exactly `#noc` waives `draft`, `start`, `wait`, and `done` for that prompt; the next untagged
   prompt restores normal gate behavior. If work is subject to the gate, re-enter it before editing.
-- On blocked or dirty-settling results, run `ai-coord wait`; Claude sessions also receive a background waker. Every wake
-  still requires a fresh `start` returning `READY`; never use manual sleep/retry loops.
+- On blocked or dirty-settling results, run `ai-coord wait` and continue independent work; Claude sessions also receive
+  a background waker. Every wake still requires a fresh `start` returning `READY`; never use manual sleep/retry loops.
+  Never abandon authorized work because a timer expired; diagnose stale blockers promptly.
 - In plan mode, record stabilized scopes with `ai-coord draft '<label>' '<path>'...`; never put exhaustive paths in the
   user-facing plan. Plans include a "Wait out conflicting agents" section. Before the first approved edit, run
   `ai-coord start --draft` and require `READY`.
-- Read-only or research tasks skip the gate entirely.
 - Skills declaring `coordination: exempt` in `SKILL.md` skip the gate for their declared work; escalation re-enters it.
 - Subagents never run lifecycle commands; the parent session's work item covers delegated work.
 - Incomplete coverage means unknown, never "no conflicts."
@@ -135,59 +193,6 @@ each command prints, and run `ai-coord done` as soon as work completes.
   close stale, rejected, or duplicate findings and commit only mechanical documentation or typo fixes to local `main`,
   never push; everything else becomes a decision-complete task handoff. These worker limits do not restrict discovering
   sessions acting under the autonomous maintenance policy.
-- Do not abandon authorized work because a timer expired. Diagnose stale blockers promptly; for live conflicts, use
-  `wait` and continue independent work. Report a blocker only when no safe progress or authorized repair remains.
-
-## Workflow
-
-- Prefer `just` recipes for build, test, lint, format, codegen, and release when a `justfile` exists; inspect the recipe
-  first if its flags or side effects are unclear.
-- Fall back to direct commands only when no recipe fits, or when a recipe hides the signal you need for debugging.
-- Run project-local package binaries through `na <binary> ...`, which selects the repository's package manager; for
-  example, use `na oxlint`, never `node_modules/.bin/oxlint` or another direct `.bin` path.
-- Batch independent reads and tool calls; keep dependent operations and shared-state mutations sequential.
-- Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc
-  behavior.
-- In plans, do not restate standing instructions or facts from `AGENTS.md` or `CLAUDE.md`; include only task-specific
-  constraints, decisions, and risks.
-- Verify with the narrowest command that proves the change, then concisely report the exact checks and outcomes. Claim
-  only what a tool result from this session backs; report failures and skipped steps as such.
-- Keep tests proportional to the changed behavior. After required checks pass, broaden or repeat verification only for
-  new changes, failures, or unresolved concerns.
-- I keep personal todos in `TODO.md` files across projects. These are user-owned notes, not task specs: don't read or
-  reference them unless I explicitly point you at one.
-- `PROMPT.md` files across projects are user-owned and off-limits to agents: never read or touch them.
-
-## Browser and Computer Use
-
-- For rendered browser UI interaction, inspection, automation, and verification, read `chromium-browser` and use the
-  configured Chrome DevTools tools against shared Chromium.
-- Use web search, HTTP fetches, and purpose-built APIs, CLIs, or connectors for retrieval when they fit; these do not
-  require browser automation.
-- Use available host computer-use/CUA tools for native non-browser app UI. Do not target shared Chromium through generic
-  desktop app control or switch controllers or profiles as an attachment fallback.
-- Installed plugins and examples do not change this default. An explicit user selection of another available browser
-  integration may choose its route, subject to higher-priority host and tool restrictions; follow that integration's
-  contract without mixing controllers.
-- Opening a completed artifact with an OS opener is presentation, not evidence of rendered verification.
-
-## Resource Safety
-
-- Scope recursive searches to narrow roots; exclude dependency, build, cache, generated, and state directories.
-- Avoid unbounded per-result commands and output buffering; use bounded batches or streaming, and reap children on
-  cancellation.
-
-## Change Discipline
-
-- Before implementing, state material assumptions. Ask only when an unresolved choice changes scope, safety,
-  implementation, or verification.
-- Write the minimum code for each requested change or authorized maintenance item: no speculative features, single-use
-  abstractions, unnecessary configurability, or impossible-case error handling.
-- Make surgical changes. Keep requested work and independent maintenance in separate coherent changes, each limited to
-  the lines needed for its objective.
-- For multi-step work, state a brief plan and validation target. Continue until the success criteria are met or the
-  blocker is explicit.
-- Keep files under 1000 lines and test files under 2000; git-ignored files are exempt.
 
 ## Shell
 
@@ -210,58 +215,38 @@ EOF
   scalar strings by default.
 - Avoid `status` and `path` as variable names: `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or
   `result`.
-- For code search, use `rg` against narrow relative roots and trust existing ignore files before reaching for `-u`;
-  otherwise prefer `fd`, `jq`, `yq`, and `uv` where appropriate. Prefer `-F`, `-t`/`-g`, and output modes such as `-l`,
-  `-c`, or `-o` when full matching lines are unnecessary.
+- Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc
+  behavior.
+- Verify paths and cwd before commands that assume a location: use `test -e`, `rg --files`, or `fd` instead of guessing.
+- Scope recursive searches to narrow relative roots; exclude dependency, build, cache, generated, and state directories.
+  Avoid unbounded per-result commands and output buffering; use bounded batches or streaming, and reap children on
+  cancellation.
+- For code search, use `rg` and trust existing ignore files before reaching for `-u`; otherwise prefer `fd`, `jq`, `yq`,
+  and `uv` where appropriate. Prefer `-F`, `-t`/`-g`, and output modes such as `-l`, `-c`, or `-o` when full matching
+  lines are unnecessary.
 - Preserve ripgrep stderr and distinguish matches (exit 0), no matches (exit 1), and errors (exit >1). Do not filter
   validation output without preserving the producer's exit status. Checked-in automation must use `rg --no-config`.
-
-## Gmail / Google Drive
-
-Use the installed `mailops` CLI to access Gmail and Google Drive from any directory: `mailops login <alias>` and
-`mailops <alias> gmail …`. Consult `~/work/mailops` for account aliases and detailed workflows.
-
-## Skills
-
-After implementing a user's task, keep `AGENTS.md` and skill files in sync with the resulting repository state.
-
-My personal skills are authored in `~/projects/agent-skills`; its publish workflow installs them under
-`~/.agents/skills`, with `~/.claude/skills/<name>` symlinked to those installs. Edit skills only in that source
-repository — installed copies are overwritten on the next publish.
-
-### Continuous skill maintenance
-
-Whenever using one of my personal skills reveals outdated information, a bug, unclear or missing instructions, missing
-functionality within its purpose, or avoidable manual work, make the smallest durable improvement to that skill. This is
-standing authorization to maintain `~/projects/agent-skills` from any repository, including during questions, research,
-reviews, and otherwise read-only tasks. Plan Mode is the exception: investigate and include the repair in the plan
-without editing.
-
-- Verify the issue against current evidence and the catalog source. One verified occurrence is enough. Distinguish skill
-  defects from transient failures and project-specific conventions; keep corrections reusable and grounded in the
-  observed need. If the source already contains the correction, refresh the installation through the publish workflow.
-- Read the source repository's instructions and follow the Autonomous maintenance lifecycle there. Repair prerequisites
-  immediately; otherwise finish the requested work first and complete independent skill repairs before ending the
-  session. A blocked main task does not prevent independent repairs.
-- Update the owning instructions, references, or helpers in the source catalog. Complete targeted validation, commit and
-  push the source changes, and publish them to the skill's declared installations. Use the corrected source guidance for
-  the remainder of the current session.
-- Recording a finding or using a local workaround is an intermediate step, not completion. A skill's fixed-scope
-  workflow or recommendation-only ending does not cancel this authorization: finish that workflow, then carry out the
-  repair as separate maintenance.
-- Preserve the skill's purpose and existing approval boundaries. Keep improvements tied to actual use; do not turn
-  routine maintenance into a catalog audit or speculative feature work. Report completed repairs and verification; if a
-  concrete blocker prevents completion, report the remaining work and exact obstacle.
-
-## Dotfiles
-
-I manage my dotfiles with chezmoi; the source tree lives at `~/.local/share/chezmoi`.
-
-## Speed Traps
-
-- Verify paths and cwd before commands that assume a location: use `test -e`, `rg --files`, or `fd` instead of guessing.
 - For patch-compatible TSV diffs, use `git diff --no-ext-diff --no-textconv -- <paths>`. Never pipe daff-rendered TSV
   diffs into `git apply`.
-- Cap private financial CSV/TSV output. Summarize counts and file refs unless raw rows were explicitly requested.
 - Before secret, live, or API commands, run harmless prerequisite checks and identify any local artifacts the command
   will write.
+- Cap private financial CSV/TSV output. Summarize counts and file refs unless raw rows were explicitly requested.
+
+## Browser and Computer Use
+
+- For rendered browser UI interaction, inspection, automation, and verification, read `chromium-browser` and use the
+  configured Chrome DevTools tools against shared Chromium.
+- Use web search, HTTP fetches, and purpose-built APIs, CLIs, or connectors for retrieval when they fit; these do not
+  require browser automation.
+- Use available host computer-use/CUA tools for native non-browser app UI. Do not target shared Chromium through generic
+  desktop app control or switch controllers or profiles as an attachment fallback.
+- Installed plugins and examples do not change this default. An explicit user selection of another available browser
+  integration may choose its route, subject to higher-priority host and tool restrictions; follow that integration's
+  contract without mixing controllers.
+- Opening a completed artifact with an OS opener is presentation, not evidence of rendered verification.
+
+## Personal Environment
+
+- Dotfiles: I manage them with chezmoi; the source tree lives at `~/.local/share/chezmoi`.
+- Gmail / Google Drive: use the installed `mailops` CLI from any directory: `mailops login <alias>` and
+  `mailops <alias> gmail …`. Consult `~/work/mailops` for account aliases and detailed workflows.
