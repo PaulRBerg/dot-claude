@@ -218,6 +218,9 @@ EOF
   `result`.
 - Keep automation reproducible: never rely on my aliases, shell functions, local prompts, or interactive-only rc
   behavior.
+- Put disposable scripts that import a project's packages in its git-ignored `.ai/` directory, not the scratchpad: Bun
+  and Node resolve bare imports from the script's location, and outside a project Bun silently auto-installs from its
+  global cache. Run any Bun script outside a project with `--no-install`.
 - Verify paths and cwd before commands that assume a location: use `test -e`, `rg --files`, or `fd` instead of guessing.
 - Scope recursive searches to narrow relative roots; exclude dependency, build, cache, generated, and state directories.
   Avoid unbounded per-result commands and output buffering; use bounded batches or streaming, and reap children on
