@@ -12,28 +12,12 @@
           },
         ],
       },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
-          },
-        ],
-      },
     ],
     "PermissionRequest": [
       {
         "hooks": [
           {
             "command": "ai-notify event permission-request",
-            "type": "command",
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
             "type": "command",
           },
         ],
@@ -45,14 +29,6 @@
         "hooks": [
           {
             "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
-            "type": "command",
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
             "type": "command",
           },
         ],
@@ -83,14 +59,6 @@
           },
         ],
       },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
-          },
-        ],
-      },
     ],
     "SessionEnd": [
       {
@@ -102,14 +70,6 @@
           },
         ],
       },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
-          },
-        ],
-      },
     ],
     "SessionStart": [
       {
@@ -118,14 +78,6 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
           },
         ],
       },
@@ -148,28 +100,12 @@
           },
         ],
       },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
-          },
-        ],
-      },
     ],
     "StopFailure": [
       {
         "hooks": [
           {
             "command": "ai-notify event stop-failure",
-            "type": "command",
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
             "type": "command",
           },
         ],
@@ -193,14 +129,6 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
           },
         ],
       },
@@ -228,14 +156,6 @@
             "type": "command",
             "command": "ai-coord hook claude",
             "timeout": 5,
-          },
-        ],
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.config/iterm2/cc-status",
-            "type": "command",
           },
         ],
       },
