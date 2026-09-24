@@ -30,6 +30,8 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
 - Otherwise bias to action: proceed without asking on reversible actions that follow from the request, and don't end a
   turn on a question or promise you could resolve yourself. Pause only for the cases above or for input only I can
   provide.
+- While owed work remains, never end a turn with a summary that announces the next step, an offer to continue, a list of
+  decisions that block nothing, or a milestone report; put status notes and recommendations beside your next tool call.
 
 ## Change Discipline
 
