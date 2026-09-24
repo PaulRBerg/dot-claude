@@ -11,6 +11,7 @@ Several hooks provide event-driven automation across different Claude Code event
 - **copy_prompt_to_clipboard** - Copy each submitted prompt to the macOS clipboard (UserPromptSubmit)
 - **agent presence context line** - Show other agents and pending-note counts in the prompt context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
+- **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
 - **ai-coord** - Track lifecycle, presence, and approved plan intent across Claude Code and Codex
 
 ## Hook Events
@@ -99,6 +100,19 @@ plan files in any `.claude/plans/` directory — both `~/.claude/plans/` and pro
 
 The `ai-coord hook claude` handler records the approved plan's first H1, capped at 80 characters, as a pathless intent
 label. The handler is silent and fail-open; path ownership still requires `ai-coord start` before editing.
+
+## 6. guard_rm (PreToolUse, `Bash(rm *)`)
+
+Sessions run in `bypassPermissions` mode, where Claude Code's built-in critical-path check only prompts for the
+filesystem root, its top-level directories, the home directory, and the working directory with its parents. This hook
+returns an `ask` decision, which still prompts in bypass mode, when a recursive `rm` targets:
+
+- the home directory or one of its direct children, such as `~/work` or `~/Library`
+- a git repository root or `.git` directory outside temp directories
+- the contents of any of these through a trailing glob, such as `repo/*`
+
+It tracks `cd` within the command and expands `~`, `$HOME`, and globs. Other variables, `xargs rm`, and commands it
+cannot tokenize pass through unchecked, so it guards against mistakes, not adversarial commands.
 
 ## Development
 

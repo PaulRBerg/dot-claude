@@ -51,6 +51,17 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/PreToolUse/guard_rm.py",
+            "if": "Bash(rm *)",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
+      {
         "matcher": "AskUserQuestion",
         "hooks": [
           {

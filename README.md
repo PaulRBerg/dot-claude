@@ -105,6 +105,7 @@ Active hooks from `settings/hooks.jsonc`:
   [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
   `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
+- **guard_rm.py**: ask before recursive `rm` of home-level entries and git repositories (`PreToolUse`)
 
 ### Plugins
 
