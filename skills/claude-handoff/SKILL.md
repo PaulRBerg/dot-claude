@@ -218,7 +218,8 @@ containing:
    authorizes the assigned scope rather than conflicts with it; sibling subagents' disjoint scopes are also not
    conflicts; only an unrelated session's claim on the agent's exact assigned files justifies reporting `blocked`.
 7. This stopping rule: implement the approved plan exactly; if infeasible or requiring redesign, report blocked with
-   evidence instead of a replacement plan.
+   evidence instead of a replacement plan. End only with the final result or a genuine blocker — never with a progress
+   summary that announces the next step, an offer to continue, a milestone report, or decisions that block nothing.
 8. A requirement to end its final message with exactly these fields: `status` (`completed`/`blocked`), `summary`,
    `changed files` (only files actually touched), `verification` (every command with its outcome), `residual risks`, and
    `blockers`.
@@ -268,11 +269,12 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
 - Ask the user only when continuation would change the approved outcome, require material redesign or unrelated work, or
   cross an existing confirmation boundary (destructive action, purchase, deployment, external write). Never silently
   take over implementation or relaunch solely on a different model; pass relevant completed results to dependent agents.
-- Treat an Agent tool call error or a final message missing required fields as an infrastructure failure: inspect the
-  agent's write scope for partial edits with `git status`/`git diff`, then continue that same agent once via
-  `SendMessage` addressed to its returned agent ID, with a short verify-and-continue message naming the partially edited
-  files (prior context preserved). This is a retry, not a new agent against the eight-agent limit. If no ID was
-  returned, or the continuation fails, that agent is blocked — never relaunch it.
+- Treat an Agent tool call error or a final message missing required fields, including a progress report that stops with
+  work still open, as an infrastructure failure: inspect the agent's write scope for partial edits with
+  `git status`/`git diff`, then continue that same agent once via `SendMessage` addressed to its returned agent ID, with
+  a short verify-and-continue message naming the partially edited files (prior context preserved). This is a retry, not
+  a new agent against the eight-agent limit. If no ID was returned, or the continuation fails, that agent is blocked —
+  never relaunch it.
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
   verification evidence proves the approved plan.
 - If any required agent failed, skip every planned polish pass. Otherwise invoke each required pass once with only its
