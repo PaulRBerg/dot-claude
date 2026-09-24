@@ -33,7 +33,8 @@ The merge script (`helpers/merge_settings.sh`):
 1. Discovers all `.jsonc` and `.json` files in `settings/` (sorted alphabetically)
 2. Parses JSONC to JSON (strips comments, allows trailing commas)
 3. Merges with special handling:
-   - **Permissions arrays**: Deduplicated across all files (`additionalDirectories`, `allow`, `deny`)
+   - **Permissions arrays**: Unioned and deduplicated across all files (`additionalDirectories`, `allow`, `ask`,
+     `deny`); scalar permission keys such as `defaultMode` follow the later-file-wins rule
    - **Other keys**: Later files override earlier files
    - **Schema field**: Removed from output
 4. Writes merged JSON to `settings.json`
