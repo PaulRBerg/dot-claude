@@ -1,5 +1,5 @@
 ---
-argument-hint: "[repo] [description]"
+argument-hint: "[repo] [description] [--check]"
 description: Create an issue in a sablier-labs repository
 ---
 
