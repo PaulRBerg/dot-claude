@@ -11,6 +11,11 @@
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high",
+    },
+  },
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
   "skipAutoPermissionPrompt": true,
