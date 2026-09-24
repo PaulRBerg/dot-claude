@@ -1,7 +1,10 @@
 {
-  // Bash command permissions - denied shell operations
+  // Bash command permissions. Sessions run in bypassPermissions mode, where allow rules are inert
+  // and only deny rules (block) and ask rules (still prompt) take effect.
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
+    // Destructive but occasionally intended: require confirmation
+    "ask": ["Bash(git push --force*)", "Bash(git push -f*)", "Bash(git push *--force*)", "Bash(git push * -f*)"],
     "deny": [
       // Destructive File Operations
       "Bash(chmod -R:*)",
@@ -9,15 +12,27 @@
       "Bash(rm -rf /:*)",
       "Bash(rm -rf ~:*)",
       // Dangerous Disk Operations
-      "Bash(> /dev/sda*)",
-      "Bash(> /etc/*)",
       "Bash(dd:*)",
       "Bash(mkfs:*)",
       // Process Management
       "Bash(kill -9:*)",
       "Bash(killall:*)",
-      // Git & Version Control
+      // Git & Version Control: tree-wide commands that sweep other agents' uncommitted work
+      "Bash(git add --all*)",
+      "Bash(git add -A*)",
+      "Bash(git add .)",
+      "Bash(git checkout -- .)",
+      "Bash(git checkout .)",
+      "Bash(git clean*)",
+      "Bash(git commit --all*)",
+      "Bash(git commit -a*)",
       "Bash(git reset --hard:*)",
+      "Bash(git restore .)",
+      "Bash(git stash)",
+      "Bash(git stash -*)",
+      "Bash(git stash clear*)",
+      "Bash(git stash push*)",
+      "Bash(git stash save*)",
       // Node.js
       "Bash(npm publish:*)",
       // System Administration

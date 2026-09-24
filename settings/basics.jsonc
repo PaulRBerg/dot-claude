@@ -18,11 +18,13 @@
   },
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
-  "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
   "tui": "fullscreen",
-  "useAutoModeDuringPlan": false,
+  // Start every session in bypass mode, including launches without --dangerously-skip-permissions
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+  },
   "env": {
     "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
     // Activate MCP tool search when tool definitions exceed 5% of context (default: 10%)
