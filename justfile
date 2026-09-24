@@ -48,13 +48,6 @@ install-utils:
 #                                   HELPERS                                    #
 # ---------------------------------------------------------------------------- #
 
-# Add Bash permission to project's local Claude settings (run from project dir)
-[no-cd]
-[group("helpers")]
-@allow-bash:
-    uv run helpers/allow_all_bash.py
-alias ab := allow-bash
-
 # Clean ~/.claude.json by removing conversation history
 [group("helpers")]
 @cleanup:
