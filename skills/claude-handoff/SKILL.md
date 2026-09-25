@@ -52,6 +52,10 @@ approved plan.
   implementation reveals a related in-repository fix or evidence change the outcome requires, Claude may extend the
   handoff and launch follow-on agents without asking again. The discovering subagent still stops at its assigned scope
   and returns evidence; Claude owns scope expansion, coordination, and delegation.
+- Size verification to the requested outcome. Never add validation machinery (gates, manifests, checkpoints, hash pins,
+  journals, receipts) unless the approved plan explicitly calls for it. An explicit user request to hurry or wrap up
+  overrides optional repeat checks and required polish passes: commit the validated work and report what was skipped or
+  left unverified.
 
 Use `$ARGUMENTS` as the task when present; otherwise the active user request. A task naming another skill follows
 Companion Skills.
@@ -64,7 +68,11 @@ handoff owns delegation mechanics.
 
 - Load the companion skill and run its discovery, judgment, and planning phases in Claude. Route read-only discovery
   through this skill's research agents when materially faster, then fold the companion's method, findings, and
-  constraints into the handoff plan.
+  constraints into the handoff plan. A companion missing from the skill list may be installed but hidden by
+  `disable-model-invocation: true`: read `~/.claude/skills/<name>/SKILL.md` directly before concluding it is absent.
+- When the companion's discovery is itself the bulk of the work — an audit or sweep over a whole repository or large
+  file set — Claude maps the scope and slices it instead of reading it inline. After plan approval, each implementation
+  agent audits and fixes its own slice under the companion's rules, inlined in its brief.
 - This contract overrides the companion's overlapping plan approval, agent limits and stable IDs, single validation
   owner, result fields, failure classification, commit ownership, and completion reporting, even when the companion
   prescribes its own subagent, validation, or commit mechanics. Its user-decision gates still bind; this skill's plan
@@ -113,6 +121,10 @@ investigation shows changes are needed, report them as findings and stop; do not
 ## Plan Phase
 
 Enter this phase only for an implementation handoff.
+
+When research — delegated or Claude's own — contradicts a fact the user stated explicitly (quantities, which items,
+which accounts), ask via `AskUserQuestion` before writing the plan; never widen the plan's default scope to fit the
+research.
 
 Produce a decision-complete plan with this section:
 
@@ -190,10 +202,13 @@ pre-approval exception.
 Before launching implementation subagents, promote the plan's named draft using its recorded command to acquire a
 parent-owned claim covering the union of every manifest write scope. Use the recorded explicit start fallback only when
 promotion reports `no draft named ...`. Name exact files individually and use `--recursive` for directory scopes;
-require `READY` before launch. Native subagents inherit the parent session identity, so that claim authorizes their
-assigned writes. The parent owns all coordination lifecycle commands and holds coverage through reconciliation, required
-polish, and commits; subagents never run lifecycle commands. A delegate's lifecycle command is rejected with exit 64
-rather than narrowing the parent's claim.
+require `READY` before launch. When promotion or start queues or blocks instead, never end the turn to pause: run
+`ai-coord wait` with Bash `run_in_background: true` so its return wakes the session. It also returns on non-readiness
+wake events (message, unknown coverage, work release, 300-second default timeout); on each wake, handle `MESSAGE` events
+through `ai-coord inbox`, re-submit the recorded promote or start command, and diagnose stale blockers. Native subagents
+inherit the parent session identity, so that claim authorizes their assigned writes. The parent owns all coordination
+lifecycle commands and holds coverage through reconciliation, required polish, and commits; subagents never run
+lifecycle commands. A delegate's lifecycle command is rejected with exit 64 rather than narrowing the parent's claim.
 
 Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the model from its manifest row, and a
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
@@ -209,7 +224,8 @@ containing:
 2. Its exact write scope, relevant repository constraints, known dirty-work boundaries (other agents/sessions may share
    the tree), and any prerequisite agent results.
 3. Its validation assignment per the Plan Phase's validation-owner rule: the scoped checks it must run, and — for every
-   agent but the owner — that it must not run the aggregate checks the owner runs once after the wave.
+   agent but the owner — that it must not run the aggregate checks the owner runs once after the wave. Never brief new
+   validation machinery the approved plan does not call for.
 4. A soft time budget matching its manifest sizing: report blocked with partial evidence rather than grinding past it.
 5. This authority boundary: inspect, edit within scope, validate locally; never commit, push, deploy, make external
    writes, or broaden scope, even when repository or host instructions favor committing promptly — committing stays with
@@ -266,6 +282,8 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   scope, satisfy repository coordination for that scope, and launch a new or reused agent. Repeat until the outcome is
   complete or a genuine authorization boundary is reached. Preserve stable IDs, dependency order, the eight-agent limit,
   and one aggregate-validation owner; include follow-on agents in final counts and report.
+- Before the completion report, fix remaining same-pattern sites the approved outcome covers this way; never list them
+  as optional or out-of-scope items.
 - Ask the user only when continuation would change the approved outcome, require material redesign or unrelated work, or
   cross an existing confirmation boundary (destructive action, purchase, deployment, external write). Never silently
   take over implementation or relaunch solely on a different model; pass relevant completed results to dependent agents.
@@ -274,13 +292,16 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   `git status`/`git diff`, then continue that same agent once via `SendMessage` addressed to its returned agent ID, with
   a short verify-and-continue message naming the partially edited files (prior context preserved). This is a retry, not
   a new agent against the eight-agent limit. If no ID was returned, or the continuation fails, that agent is blocked —
-  never relaunch it.
+  never relaunch it — except after a harness stall (e.g. `Agent stalled: no progress for 600s`) whose write scope
+  `git status`/`git diff` shows untouched: relaunch it exactly once, fresh, with the same brief, outside the eight-agent
+  limit.
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
   verification evidence proves the approved plan.
-- If any required agent failed, skip every planned polish pass. Otherwise invoke each required pass once with only its
-  applicable paths from that union — `$code-polish` first (default simplify-then-review mode), then
-  `$agents-brain polish` with its eligible context targets; invoke only the one required pass if just one applies. Don't
-  seed either pass with paths outside the union or let it broaden beyond its declared workflow authority.
+- If any required agent failed, or the user explicitly asked to hurry or wrap up, skip every planned polish pass and
+  report the skip. Otherwise invoke each required pass once with only its applicable paths from that union —
+  `$code-polish` first (default simplify-then-review mode), then `$agents-brain polish` with its eligible context
+  targets; invoke only the one required pass if just one applies. Don't seed either pass with paths outside the union or
+  let it broaden beyond its declared workflow authority.
 - Reconcile in-scope files actually changed by each polish pass into the final changed-files set and verification. A
   required pass that blocks, fails, or writes outside its supported scope blocks later polish and cross-repository
   commits.
