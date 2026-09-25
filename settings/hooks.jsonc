@@ -33,6 +33,19 @@
           },
         ],
       },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "asyncRewake": true,
+            "command": "ai-coord waker claude",
+            "if": "Bash(ai-coord start *)",
+            "timeout": 3600,
+            "type": "command",
+          },
+        ],
+        "matcher": "Bash",
+      },
     ],
     "PostToolUseFailure": [
       {
