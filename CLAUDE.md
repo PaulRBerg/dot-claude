@@ -169,7 +169,9 @@ Before writing inside a Git worktree, acquire exact repository-relative scopes w
 `--recursive '<dir>'`; for example, `ai-coord start 'update docs' 'AGENTS.md' --recursive 'docs'`. `start` arbitrates
 fully and fails closed on incomplete coverage, so `ai-coord status` is optional diagnostics when blocked or for
 cross-repo visibility with `--all`. Only `READY` authorizes edits subject to this gate. Follow the one-sentence guidance
-each command prints, and run `ai-coord done` as soon as work completes.
+each command prints, and run `ai-coord done` as soon as work completes. A task that writes in two or more Git roots
+acquires one `ai-coord bundle start '<label>' '<absolute-path>'...` claim with absolute paths instead, because ordinary
+`start` cannot add or move claims across roots.
 
 - A prompt line that is exactly `#noc` waives `draft`, `start`, `wait`, and `done` for that prompt; the next untagged
   prompt restores normal gate behavior. If work is subject to the gate, re-enter it before editing.
