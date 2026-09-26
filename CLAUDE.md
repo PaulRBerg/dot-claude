@@ -105,7 +105,7 @@ without editing.
 - Verify the issue against current evidence and the catalog source. One verified occurrence is enough. Distinguish skill
   defects from transient failures and project-specific conventions; keep corrections reusable and grounded in the
   observed need. If the source already contains the correction, refresh the installation through the publish workflow.
-- Read the source repository's instructions and follow the Autonomous maintenance lifecycle there. A blocked main task
+- Read the source repository's instructions and follow the Autonomous maintenance lifecycle above. A blocked main task
   does not prevent independent skill repairs.
 - Update the owning instructions, references, or helpers in the source catalog, then validate, commit, push, and publish
   them to the skill's declared installations. Use the corrected source guidance for the rest of the session.
