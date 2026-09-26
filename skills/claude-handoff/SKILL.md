@@ -1,7 +1,6 @@
 ---
 argument-hint: "[task]"
 compatibility: Requires Claude Code Agent-tool subagents with access to the selected model.
-disable-model-invocation: false
 metadata:
   install-targets: claude-code
 name: claude-handoff
@@ -208,7 +207,9 @@ wake events (message, unknown coverage, work release, 300-second default timeout
 through `ai-coord inbox`, re-submit the recorded promote or start command, and diagnose stale blockers. Native subagents
 inherit the parent session identity, so that claim authorizes their assigned writes. The parent owns all coordination
 lifecycle commands and holds coverage through reconciliation, required polish, and commits; subagents never run
-lifecycle commands. A delegate's lifecycle command is rejected with exit 64 rather than narrowing the parent's claim.
+lifecycle commands. The delegate guard cannot enforce this: a Claude subagent inherits the parent's session identity and
+is indistinguishable from it, so its lifecycle command would act on the parent's claim. Every brief must forbid
+lifecycle commands, and subagents must never run them.
 
 Launch each agent via the Agent tool: `subagent_type: "general-purpose"`, the model from its manifest row, and a
 description like `A1 — <scope>`. Start every parallel-wave agent in the same message as parallel tool calls; start
