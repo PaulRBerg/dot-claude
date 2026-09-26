@@ -48,22 +48,11 @@ install-utils:
 #                                   HELPERS                                    #
 # ---------------------------------------------------------------------------- #
 
-# Clean ~/.claude.json by removing conversation history
-[group("helpers")]
-@cleanup:
-    uv run helpers/cleanup.py
-
 # Merge JSONC settings files into settings.json
 [group("helpers")]
 @merge-settings:
     gum spin --spinner dot --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
 alias ms := merge-settings
-
-# Sync a section from template across projects (default: ## Lint Rules)
-[group("helpers")]
-sync-section section="":
-    uv run helpers/sync_context_section.py --section "{{ section }}"
-alias ss := sync-section
 
 # ---------------------------------------------------------------------------- #
 #                                    CHECKS                                    #

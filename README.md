@@ -77,9 +77,9 @@ which enables namespaced patterns like `/yeet:issue-cc` and `/agents-brain:polis
 
 ### Skills
 
-Skills are managed in [PaulRBerg/dot-agents](https://github.com/PaulRBerg/dot-agents) and installed via Vercel's
-[skills CLI](https://github.com/vercel-labs/skills). This repo keeps symlinks from `skills/` to `~/.agents/skills/`. See
-dot-agents for installation guidance.
+Skills are authored in `~/projects/agent-skills` and installed by its `publish-skills` workflow into `~/.agents/skills`,
+with `~/.claude/skills/<name>` symlinked to those installs — except Claude-only skills, which are installed as real
+directories here. External skills (e.g. `find-skills`) come from `~/.agents`.
 
 Examples: **agents-brain**, **commit**, **vitest**, **effect-ts**, **cli-gh**, **tool-finder**, **yeet**.
 
@@ -99,8 +99,8 @@ Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
 - **ai-coord**: agent coordination via the external
-  [ai-coord](https://github.com/PaulRBerg/agent-toolkit/tree/main/coord) CLI (`PostToolBatch`, `PostToolUseFailure`,
-  `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
+  [ai-coord](https://github.com/PaulRBerg/agent-toolkit/tree/main/coord) CLI (`PostToolBatch`, `PostToolUse`,
+  `PostToolUseFailure`, `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
 - **ai-notify**: desktop notifications via the external
   [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
   `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)

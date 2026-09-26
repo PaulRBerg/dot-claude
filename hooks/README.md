@@ -12,7 +12,7 @@ Several hooks provide event-driven automation across different Claude Code event
 - **agent presence context line** - Show other agents and pending-note counts in the prompt context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
 - **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
-- **ai-coord** - Track lifecycle, presence, and approved plan intent across Claude Code and Codex
+- **ai-coord** - Track lifecycle and presence across Claude Code and Codex
 
 ## Hook Events
 
@@ -37,6 +37,7 @@ Desktop notifications for Claude Code events via
 - **PermissionRequest** - When Claude requests permission
 - **Notification** - When Claude sends a notification
 - **Stop** - When session ends or is interrupted
+- **StopFailure** - When the session stops on a failure
 
 ### Prerequisites
 
@@ -81,10 +82,9 @@ The thresholds are module-level constants at the top of the script, easy to tune
 
 ## 3. agent presence context line (UserPromptSubmit)
 
-Injects a compact line such as
-`agents: 2 other sessions in this repo (refactor, codex/abcd1234); 1 note pending — run agents-status` when other
-sessions share the repository or pending notes exist. Session labels and names are sanitized before they reach the
-prompt context: whitespace is collapsed, control characters are stripped, and identifiers are capped at 80 characters.
+Injects a compact line such as `ai-coord: Peers: 2; queued work: 1; unread messages: 1.` when other sessions share the
+repository, work is queued, or messages are unread. Session labels and names are sanitized before they reach the prompt
+context: whitespace is collapsed, control characters are stripped, and identifiers are capped at 80 characters.
 
 Pending notes are represented only by a count; their text is never injected, by design, as a prompt-injection guard. The
 hook is silent when this is a solo session with no notes, and on any error. Claude Code and Codex both invoke the
@@ -96,12 +96,7 @@ Intercepts Write tool executions and adds YAML frontmatter (metadata such as the
 plan files in any `.claude/plans/` directory — both `~/.claude/plans/` and project-local ones. See
 [claude-code#12378](https://github.com/anthropics/claude-code/issues/12378).
 
-## 5. ai-coord plan intent (PostToolUse, `ExitPlanMode`)
-
-The `ai-coord hook claude` handler records the approved plan's first H1, capped at 80 characters, as a pathless intent
-label. The handler is silent and fail-open; path ownership still requires `ai-coord start` before editing.
-
-## 6. guard_rm (PreToolUse, `Bash(rm *)`)
+## 5. guard_rm (PreToolUse, `Bash(rm *)`)
 
 Sessions run in `bypassPermissions` mode, where Claude Code's built-in critical-path check only prompts for the
 filesystem root, its top-level directories, the home directory, and the working directory with its parents. This hook

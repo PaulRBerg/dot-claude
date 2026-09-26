@@ -20,7 +20,7 @@ fi
 
 attempt=1
 while :; do
-  if lint_staged_output=$(bun run lint-staged 2>&1); then
+  if lint_staged_output=$(bun run lint-staged --no-stash --no-hide-partially-staged 2>&1); then
     printf '%s\n' "$lint_staged_output"
     exit 0
   else
