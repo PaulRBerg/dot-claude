@@ -43,7 +43,8 @@ def split_commands(command: str) -> list[list[str]]:
             commands.append([])
         else:
             commands[-1].append(token)
-    return [strip_prefixes(words) for words in commands if words]
+    stripped = (strip_prefixes(words) for words in commands)
+    return [words for words in stripped if words]
 
 
 def strip_prefixes(words: list[str]) -> list[str]:

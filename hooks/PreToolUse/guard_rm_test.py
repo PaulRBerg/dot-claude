@@ -72,6 +72,9 @@ class TestFindProtected:
             "ls -rf ~/work",
             "echo rm -rf ~/work",
             "rm -rf 'unterminated",
+            "S=/tmp/x",
+            "f=$(fd x | tail -1); echo $f",
+            "D=/tmp/x && echo $D",
         ],
     )
     def test_allowed(self, home, command):
