@@ -1,5 +1,5 @@
 ---
-argument-hint: "[base-branch] [title] [reviewers=<name>] [--draft] [--test-plan]"
+argument-hint: '[to <base> | base=<base>] ["title"] [reviewers=<name>] [--draft] [--test-plan]'
 description: Create a GitHub pull request with semantic change analysis
 ---
 

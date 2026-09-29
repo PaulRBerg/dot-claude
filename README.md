@@ -89,7 +89,7 @@ Examples: **agents-brain**, **commit**, **vitest**, **effect-ts**, **cli-gh**, *
 
 ### MCP servers
 
-MCP servers are configured in `.mcp.json` (currently none).
+MCP servers are user-scope entries in `~/.claude.json` (currently `chrome-devtools` and `serena`), not tracked here.
 
 ### Hooks
 
@@ -121,7 +121,7 @@ Shell utilities are maintained in the chezmoi-managed `~/.config/prb/agents.sh` 
 - **`ccs [args]`**: commit only staged changes
 - **`ccsp [args]`**: commit staged changes and push
 - **`ccbump [args]`**: quick release bumping via `/release-bumper`
-- **`ccta [args]`**: archive TODOs via `$todo-archive`
+- **`ccta [args]`**: archive TODOs by running the `todo-archive` skill's `archive_todo.py` directly
 
 ## License
 

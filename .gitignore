@@ -20,6 +20,8 @@
 !uv.lock
 
 # Directories
+!.agents/
+!.agents/commit.toml
 !.github/
 !.github/**
 !.husky/

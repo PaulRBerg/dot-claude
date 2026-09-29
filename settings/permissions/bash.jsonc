@@ -26,6 +26,8 @@
       "Bash(git clean*)",
       "Bash(git commit --all*)",
       "Bash(git commit -a*)",
+      "Bash(git pull *--autostash*)",
+      "Bash(git rebase *--autostash*)",
       "Bash(git reset --hard:*)",
       "Bash(git restore .)",
       "Bash(git stash)",

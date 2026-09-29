@@ -8,6 +8,7 @@
         "hooks": [
           {
             "command": "ai-notify event notification",
+            "timeout": 5,
             "type": "command",
           },
         ],
@@ -18,6 +19,7 @@
         "hooks": [
           {
             "command": "ai-notify event permission-request",
+            "timeout": 5,
             "type": "command",
           },
         ],
@@ -29,9 +31,11 @@
         "hooks": [
           {
             "command": "~/.claude/hooks/PostToolUse/add_plan_frontmatter.py",
+            "timeout": 10,
             "type": "command",
           },
         ],
+        "matcher": "Write",
       },
       {
         "hooks": [
@@ -79,6 +83,7 @@
         "hooks": [
           {
             "command": "ai-notify event ask-user-question",
+            "timeout": 5,
             "type": "command",
           },
         ],
@@ -111,6 +116,7 @@
         "hooks": [
           {
             "command": "ai-notify event stop",
+            "timeout": 5,
             "type": "command",
           },
         ],
@@ -130,6 +136,7 @@
         "hooks": [
           {
             "command": "ai-notify event stop-failure",
+            "timeout": 5,
             "type": "command",
           },
         ],
@@ -162,6 +169,7 @@
         "hooks": [
           {
             "command": "~/.claude/hooks/UserPromptSubmit/copy_prompt_to_clipboard.py",
+            "timeout": 10,
             "type": "command",
           },
         ],
@@ -170,6 +178,7 @@
         "hooks": [
           {
             "command": "ai-notify event user-prompt-submit",
+            "timeout": 5,
             "type": "command",
           },
         ],

@@ -9,7 +9,8 @@ Several hooks provide event-driven automation across different Claude Code event
 
 - **ai-notify** - Desktop notifications for events (All events, optional)
 - **copy_prompt_to_clipboard** - Copy each submitted prompt to the macOS clipboard (UserPromptSubmit)
-- **agent presence context line** - Show other agents and pending-note counts in the prompt context (UserPromptSubmit)
+- **agent presence context line** - Show other agents, finding counts, and the scope-acquisition reminder in the prompt
+  context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
 - **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
 - **ai-coord** - Track lifecycle and presence across Claude Code and Codex
@@ -82,13 +83,26 @@ The thresholds are module-level constants at the top of the script, easy to tune
 
 ## 3. agent presence context line (UserPromptSubmit)
 
-Injects a compact line such as `ai-coord: Peers: 2; queued work: 1; unread messages: 1.` when other sessions share the
-repository, work is queued, or messages are unread. Session labels and names are sanitized before they reach the prompt
-context: whitespace is collapsed, control characters are stripped, and identifiers are capped at 80 characters.
+Injects a compact line such as:
 
-Pending notes are represented only by a count; their text is never injected, by design, as a prompt-injection guard. The
-hook is silent when this is a solo session with no notes, and on any error. Claude Code and Codex both invoke the
-installed `ai-coord` CLI for lifecycle and presence updates.
+```text
+ai-coord: Findings: pending=1; triaging=0; handed-off=0. Peers: 2; queued work: 1; unread messages: 1. Acquire scopes with `ai-coord start` before the first edit.
+```
+
+It is built from up to three fragments, in this order:
+
+- `Findings: pending=N; triaging=N; handed-off=N.` when the repository has any recorded findings
+- `Peers: N; queued work: N; unread messages: N.` when other sessions share the repository, work is queued, or messages
+  are unread
+- The reminder ``Acquire scopes with `ai-coord start` before the first edit.`` when the coordination gate applies
+  (another session has active or queued work, or uncommitted changes belong to no claim) and the line still fits
+
+The line is sanitized before it reaches the prompt context: whitespace is collapsed, control characters are stripped,
+and the whole line is capped at 200 characters.
+
+Findings are represented only by state counts; their text is never injected, by design, as a prompt-injection guard. The
+hook is silent when there are no findings, peers, queued work, unread messages, or gate reminder, and on any error.
+Claude Code and Codex both invoke the installed `ai-coord` CLI for lifecycle and presence updates.
 
 ## 4. add_plan_frontmatter (PostToolUse)
 
