@@ -10,6 +10,12 @@ set unstable
 # Bun: https://bun.sh
 bun := require("bun")
 
+# fd: https://github.com/sharkdp/fd
+fd := require("fd")
+
+# jq: https://jqlang.org
+jq := require("jq")
+
 # UV: https://github.com/astral-sh/uv
 uv := require("uv")
 
@@ -51,7 +57,7 @@ install-utils:
 # Merge JSONC settings files into settings.json
 [group("helpers")]
 @merge-settings:
-    gum spin --spinner dot --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
+    gum spin --spinner dot --show-error --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
 alias ms := merge-settings
 
 # ---------------------------------------------------------------------------- #

@@ -40,15 +40,17 @@ fi
 # The json5 tool allows comments and trailing commas in JSON files
 # Using a single Bun process is much faster than calling bunx per file, and Bun
 # resolves json5 itself (a separate `node` binary can't see bunx's temp install)
-# If a file fails to parse, fall back to empty object
+# If any file fails to parse, name it on stderr and exit non-zero so settings.json is
+# never regenerated from partial input (a dropped file would silently lose rules)
 parsed_json=$(bunx -p json5 bun -e "
 const fs = require('fs');
 const JSON5 = require('json5');
 process.argv.slice(1).forEach(file => {
   try {
     console.log(JSON.stringify(JSON5.parse(fs.readFileSync(file, 'utf8'))));
-  } catch {
-    console.log('{}');
+  } catch (error) {
+    console.error('error: failed to parse ' + file + ': ' + error.message);
+    process.exitCode = 1;
   }
 });
 " $settings_files)
