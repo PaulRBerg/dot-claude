@@ -12,6 +12,7 @@ Several hooks provide event-driven automation across different Claude Code event
 - **agent presence context line** - Show other agents, finding counts, and the scope-acquisition reminder in the prompt
   context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
+- **git_guard** - Deny shared-worktree git sweeps and ask before force pushes, in any option order (PreToolUse)
 - **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
 - **ai-coord** - Track lifecycle and presence across Claude Code and Codex
 
@@ -122,6 +123,19 @@ returns an `ask` decision, which still prompts in bypass mode, when a recursive 
 
 It tracks `cd` within the command and expands `~`, `$HOME`, and globs. Other variables, `xargs rm`, and commands it
 cannot tokenize pass through unchecked, so it guards against mistakes, not adversarial commands.
+
+## 6. git_guard (PreToolUse, `Bash`)
+
+The git entries in `settings/permissions/bash.jsonc` match options only in fixed positions, so `git commit -m x -a`,
+`git add -v .`, `git reset HEAD~1 --hard`, or `git -C repo stash` slip past them. This hook parses every git invocation
+in a Bash command, including compound commands, `$(...)`, wrappers such as `env` or `sudo`, and `bash -c` scripts, and:
+
+- denies bare `git stash` and stash push/save/clear, `git add -A`/`--all`/`.`/pathless `-u`, `git commit -a`/`--all`,
+  `git checkout .`, `git restore .`, `git reset --hard`, `git clean`, and autostash on pull, rebase, or merge;
+- asks before any force push, including `git -C repo push --force` and `+refspec` pushes.
+
+`git stash list`/`show`/`pop` stay usable. It runs without an `if` filter because git can follow wrappers that prefix
+patterns miss. Commands it cannot tokenize pass through to the permission rules.
 
 ## Development
 

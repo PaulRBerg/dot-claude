@@ -79,6 +79,17 @@
         ],
       },
       {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            // No `if` filter: git can follow wrappers, assignments, or `bash -c`, which prefix patterns miss.
+            "command": "~/.claude/hooks/PreToolUse/git_guard.py",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+      },
+      {
         "matcher": "AskUserQuestion",
         "hooks": [
           {
