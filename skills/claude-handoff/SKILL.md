@@ -179,7 +179,7 @@ Absent a stated model preference, select each implementation agent's model from 
 | Bounded, routine, or everyday implementation                                                                  | `sonnet` |
 | Semantic, cross-cutting, or hardest implementation: interacting invariants or difficult algorithmic reasoning | `opus`   |
 
-The `sonnet` and `opus` aliases resolve to Sonnet 5 and Opus 5.5 on the Anthropic API. The Agent tool exposes no
+The `sonnet` and `opus` aliases resolve to Sonnet 5.5 and Opus 5.5 on the Anthropic API. The Agent tool exposes no
 per-call effort control; subagents inherit the session's effort. Every agent runs through the `general-purpose` subagent
 type; model choice and scope decomposition are the levers for balancing a wave.
 
