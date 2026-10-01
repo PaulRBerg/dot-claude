@@ -90,7 +90,9 @@ Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs 
 
 My personal skills are authored in `~/projects/agent-skills`; its publish workflow installs them under
 `~/.agents/skills`, with `~/.claude/skills/<name>` symlinked to those installs. Edit skills only in that source
-repository — installed copies are overwritten on the next publish.
+repository — installed copies are overwritten on the next publish. The `ai-commit`, `ai-coord`, `ai-handoff`,
+`ai-notify`, and `ai-skillet` CLIs that these instructions and skills rely on live in that repository's `toolkit/`;
+`just toolkit::install-cli` there installs or refreshes them.
 
 After implementing a user's task, keep `AGENTS.md` and skill files in sync with the resulting repository state.
 
