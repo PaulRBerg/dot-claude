@@ -30,6 +30,8 @@ approved plan.
 - Run only after explicit user invocation. Classify a task research-only when its requested outcome is findings,
   evidence, or an assessment, with no repository changes or implementation plan requested. All handoffs may run in any
   host mode; implementation handoffs must pass through the Plan Phase and receive explicit user approval before launch.
+- Reuse an already approved plan when the outcome and material constraints are unchanged. Explicit user instructions
+  take precedence over skill defaults; ask again only for an unresolved decision or action outside that authorization.
 - Claude owns decisions, the final plan, and orchestration. Delegate investigation to read-only research subagents only
   when task and repository evidence make it useful before planning.
 - Research agents gather evidence and report findings; never edit files, decide design, or return plans.
@@ -227,7 +229,8 @@ containing:
 3. Its validation assignment per the Plan Phase's validation-owner rule: the scoped checks it must run, and — for every
    agent but the owner — that it must not run the aggregate checks the owner runs once after the wave. Never brief new
    validation machinery the approved plan does not call for.
-4. A soft time budget matching its manifest sizing: report blocked with partial evidence rather than grinding past it.
+4. A pacing estimate matching its manifest sizing and any user- or adapter-imposed hard runtime limit. A soft estimate
+   alone is not a stop condition; report partial evidence and the concrete blocker or exhausted hard limit when blocked.
 5. This authority boundary: inspect, edit within scope, validate locally; never commit, push, deploy, make external
    writes, or broaden scope, even when repository or host instructions favor committing promptly — committing stays with
    the orchestrator after reconciliation.
@@ -308,8 +311,8 @@ nothing qualifies, stay silent — no placeholder, no "nothing found" note.
   commits.
 - If approved work changes Git repositories other than the one where the handoff began, automatically invoke `$commit`
   from each additional repository once its work, validation, and required polish are complete, scoped to files changed
-  there; skip separate confirmation and never commit incomplete, blocked, unexpected, or out-of-scope changes. Push only
-  when explicitly requested.
+  there; skip separate confirmation and never commit incomplete, blocked, unexpected, or out-of-scope changes. Push when
+  the request or standing user instructions authorize it.
 - When the handoff pushed commits and the repository defines CI workflows, such as `.github/workflows`, watch the pushed
   head's runs before the completion report (`gh run list --commit <sha>`, then `gh run watch <run-id>`, in the
   background when the host supports it). Fix failures attributable to the handoff as follow-on work and report the CI
