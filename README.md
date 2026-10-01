@@ -99,11 +99,11 @@ Active hooks from `settings/hooks.jsonc`:
 
 - **add_plan_frontmatter.py**: add YAML frontmatter to plan files (`PostToolUse`)
 - **ai-coord**: agent coordination via the external
-  [ai-coord](https://github.com/PaulRBerg/agent-toolkit/tree/main/coord) CLI (`PostToolBatch`, `PostToolUse`,
+  [ai-coord](https://github.com/PaulRBerg/agent-skills/tree/main/toolkit/coord) CLI (`PostToolBatch`, `PostToolUse`,
   `PostToolUseFailure`, `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
 - **ai-notify**: desktop notifications via the external
-  [ai-notify](https://github.com/PaulRBerg/agent-toolkit/tree/main/notify) CLI (`Notification`, `PermissionRequest`,
-  `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)
+  [ai-notify](https://github.com/PaulRBerg/agent-skills/tree/main/toolkit/notify) CLI (`Notification`,
+  `PermissionRequest`, `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
 - **git_guard.py**: deny shared-worktree git sweeps and ask before force pushes, with options in any order
   (`PreToolUse`)
