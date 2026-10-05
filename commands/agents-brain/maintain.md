@@ -11,6 +11,10 @@ description: Maintain repo context and task-backed skills, including warranted c
 
 ## Task
 
-Activate the `agents-brain` skill and run its sole `maintain` workflow. Follow `references/maintain.md` from that skill,
-loading `references/create-docs.md` for context creation or regeneration and `references/maintain-skills.md` for
+Activate the `agents-brain` skill. Run its sole `maintain` workflow and follow `references/maintain.md` from that skill.
+
+Before writing or changing agent-facing prose, read the skill's `references/asd-ste100.md` completely. Apply its
+STE-based profile during writing. Complete its meaning and style review before finishing.
+
+Load `references/create-docs.md` for context creation or regeneration. Load `references/maintain-skills.md` for
 task-backed skill lifecycle changes. Keep review and edits inside the selected repository scope.
