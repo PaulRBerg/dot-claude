@@ -14,3 +14,5 @@ description: Update an existing GitHub pull request with semantic change analysi
 
 Activate the `yeet` skill to update an existing GitHub pull request. Follow the workflow in
 `~/.agents/skills/yeet/references/update-pr.md`.
+
+Apply `~/.agents/skills/yeet/references/posting.md > Model Co-signature` to authored bodies and comments.

@@ -12,3 +12,5 @@ description: Create a GitHub discussion with automatic category selection
 
 Activate the `yeet` skill to create a GitHub discussion. Follow the workflow in
 `~/.agents/skills/yeet/references/create-discussion.md`.
+
+Apply `~/.agents/skills/yeet/references/posting.md > Model Co-signature` to authored bodies and comments.

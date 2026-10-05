@@ -14,3 +14,5 @@ description: Create a GitHub pull request with semantic change analysis
 
 Activate the `yeet` skill to create a GitHub pull request. Follow the workflow in
 `~/.agents/skills/yeet/references/create-pr.md`.
+
+Apply `~/.agents/skills/yeet/references/posting.md > Model Co-signature` to authored bodies and comments.

@@ -14,3 +14,5 @@ description: Create an issue in openai/codex
 
 Activate the `yeet` skill to create an issue in `openai/codex` Github repository. Follow the workflow in
 `~/.agents/skills/yeet/references/issue-codex-cli.md`.
+
+Apply `~/.agents/skills/yeet/references/posting.md > Model Co-signature` to authored bodies and comments.
