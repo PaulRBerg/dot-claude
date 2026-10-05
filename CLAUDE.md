@@ -94,6 +94,10 @@ repository — installed copies are overwritten on the next publish. The `ai-com
 `ai-notify`, and `ai-skillet` CLIs that these instructions and skills rely on live in that repository's `toolkit/`;
 `just toolkit::install-cli` there installs or refreshes them.
 
+To find where skills are installed, duplicated, or referenced, run `ai-skillet map` instead of hand-scanning `~`; to
+validate skill metadata, run `ai-skillet doctor --root <dir>`. Read each command's `--help` first: it documents scan
+defaults and exclusions, when to pass `--root` or `--portfolio-root`, the `--fix-safe` boundary, and exit codes.
+
 After implementing a user's task, keep `AGENTS.md` and skill files in sync with the resulting repository state.
 
 ### Continuous skill maintenance
