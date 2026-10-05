@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# settings.json is git-ignored and otherwise regenerated only on commit; rebuild it
+# when a pull or merge brings in settings/ changes made elsewhere.
+if ! git diff --quiet ORIG_HEAD HEAD -- settings; then
+  bash helpers/merge_settings.sh
+fi

@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# `git pull --rebase` triggers post-rewrite instead of post-merge.
+[ "$1" = rebase ] || exit 0
+exec sh .husky/post-merge
