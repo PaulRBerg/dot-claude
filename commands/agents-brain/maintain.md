@@ -1,6 +1,6 @@
 ---
-argument-hint: "[path?] [target ...] [--dry-run]"
-description: Maintain repo-local skills from task evidence by deleting, merging, or creating skills
+argument-hint: "[path?] [target ...] [--root-only] [--preserve] [--minimal] [--thorough|--full] [--dry-run] [--force]"
+description: Maintain repo context and task-backed skills, including warranted creation, merging, and deletion
 ---
 
 ## Context
@@ -11,5 +11,6 @@ description: Maintain repo-local skills from task evidence by deleting, merging,
 
 ## Task
 
-Activate the `agents-brain` skill and run the `maintain` workflow. Follow `references/maintain-skills.md` from that
-skill. Use evidence from the current task and keep review and edits inside its repository boundary.
+Activate the `agents-brain` skill and run its sole `maintain` workflow. Follow `references/maintain.md` from that skill,
+loading `references/create-docs.md` for context creation or regeneration and `references/maintain-skills.md` for
+task-backed skill lifecycle changes. Keep review and edits inside the selected repository scope.
