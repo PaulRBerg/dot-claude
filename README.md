@@ -44,9 +44,10 @@ claude           # Run Claude
 
 ### Settings
 
-All JSONC files in `settings/*` merge into `settings.json` on commit via Husky + lint-staged.
+All JSONC files in `settings/*` merge into `settings.json` on commit via Husky + lint-staged, and after any pull, merge,
+or rebase that changes `settings/` (Husky `post-merge` and `post-rewrite`).
 
-Edit only `settings/**/*.jsonc` (never `settings.json` directly). Merging happens on commit, or run
+Edit only `settings/**/*.jsonc` (never `settings.json` directly). Merging happens automatically, or run
 `just merge-settings` manually.
 
 Settings layout:
