@@ -14,3 +14,5 @@ description: Create missing README.md and AGENTS.md context files
 ## Task
 
 Activate the `agents-brain` skill and run the `create` workflow. Follow `references/create-docs.md` from that skill.
+When asked to establish continuous repo-local skill maintenance, include the standing instruction from
+`references/maintain-skills.md` in the generated repository context.

@@ -16,4 +16,6 @@ description: Polish README.md, AGENTS.md, CLAUDE.md symlinks, existing skills, a
 
 ## Task
 
-Activate the `agents-brain` skill and run the `polish` workflow. Follow `references/polish.md` from that skill.
+Activate the `agents-brain` skill and run the `polish` workflow. Follow `references/polish.md` from that skill. Complete
+any separately authorized task-driven skill lifecycle work afterward through `maintain`, following
+`references/maintain-skills.md`.
