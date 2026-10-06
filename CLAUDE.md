@@ -97,6 +97,10 @@ the resulting repository state.
 - When instructions name a skill that your skill list does not show, the skill is scoped to a subdirectory or marked
   user-invoked. Find its `SKILL.md` in the repository's skill directories or under `~/.agents/skills`, and read it
   directly. Run a user-invoked skill only when I invoke or name it.
+- For questions about Claude Code or Codex behavior or configuration, and before editing skills, hooks, or settings,
+  consult `$agents-docs` instead of answering from memory or using the built-in `claude-code-guide` agent.
+- Before adding a new dependency, CLI, or service, or when choosing between them, use `$tool-finder` to check current
+  options. Version bumps of existing dependencies do not require it.
 
 ### Continuous skill maintenance
 
