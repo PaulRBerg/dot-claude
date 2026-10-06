@@ -98,6 +98,10 @@ When an `ai-*` CLI is missing, or when you need to locate or validate skill inst
 After implementing a user's task, use `$agents-brain maintain` to align affected repository context and skill files with
 the resulting repository state.
 
+- When instructions name a skill that your skill list does not show, the skill is scoped to a subdirectory or marked
+  user-invoked. Find its `SKILL.md` in the repository's skill directories or under `~/.agents/skills`, and read it
+  directly. Run a user-invoked skill only when I invoke or name it.
+
 ### Continuous skill maintenance
 
 If using one of my personal skills reveals a problem below, make the smallest durable improvement to that skill:
