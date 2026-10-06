@@ -165,8 +165,8 @@ steps for the repair.
   `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier`, `~/.claude`, `~/.codex`, `~/.agents`,
   or `~/.local/share/chezmoi`.
 
-- Use `$orchestration` for delegated research or implementation. By default, Claude spawns Claude subagents and Codex
-  spawns Codex subagents. An explicit user choice of agent or model overrides that default.
+- Use `$orchestration` for delegated research or implementation. By default, Claude Code spawns Claude subagents. Codex
+  and other harnesses spawn Codex subagents. An explicit user choice of agent or model overrides that default.
 - Before starting a task, assess its complexity. Run `$orchestration` without waiting for me to ask when the task spans
   several independent workstreams, requires broad research across many files or sources, or benefits from parallel
   exploration or independent review. Handle small, tightly coupled, or strictly sequential tasks directly.
