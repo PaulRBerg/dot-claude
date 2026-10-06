@@ -9,33 +9,35 @@ skill-dependencies:
   - code-polish
   - commit
 description:
-  Orchestrate read-only Explore research subagents in any mode, or one to eight Claude subagents to implement an
-  approved plan.
+  Orchestrate read-only Explore research or one to eight Claude subagents to plan and implement requested work without a
+  separate plan approval step.
 ---
 
 # Claude Handoff
 
-This skill orchestrates read-only investigation or implementation within the current session after explicit plan
-approval. Task-handoff writes a decision-complete file for a fresh, separate session. Use task-handoff for work
-continuing later or elsewhere. Use an in-session handoff to implement an approved plan now.
+This skill orchestrates read-only investigation or plans and implements requested work within the current session.
+Task-handoff writes a decision-complete file for a fresh, separate session. Use task-handoff for work continuing later
+or elsewhere. Use an in-session handoff to implement requested work now.
 
 If a slash or dollar invocation already supplied these instructions, follow them directly. In that case, do not invoke
 this skill again through a skill tool.
 
-Follow the Contract, then use Claude Code's in-session Agent workflow to research during planning and implement the
-approved plan.
+Follow the Contract, then use Claude Code's in-session Agent workflow to research, plan, and implement requested work.
 
 ## Contract
 
 - Run only after explicit user invocation. Classify a task research-only when its requested outcome is findings,
   evidence, or an assessment, with no repository changes or implementation plan requested. All handoffs may run in any
-  host mode. Implementation handoffs must pass through the Plan Phase and receive explicit user approval before launch.
-- Reuse an already approved plan when the outcome and material constraints are unchanged. Explicit user instructions
-  take precedence over skill defaults. Ask again only for an unresolved decision or action outside that authorization.
+  host mode. Implementation handoffs must pass through the Plan Phase, then launch without a separate user approval
+  step.
+- Treat the implementation request as authorization to plan, delegate, and complete that outcome. Reuse an existing plan
+  when the outcome and material constraints are unchanged. Explicit user instructions take precedence over skill
+  defaults. Preserve host Plan Mode restrictions and confirmation requirements imposed outside this skill. Ask only when
+  required input is missing or an action exceeds existing authorization.
 - Claude owns decisions, the final plan, and orchestration. Delegate investigation to read-only research subagents only
   when task and repository evidence make it useful before planning.
 - Research agents gather evidence and report findings. They never edit files, decide design, or return plans.
-- Implementation agents inspect, edit, and validate their assigned part of the approved plan. They never redesign or
+- Implementation agents inspect, edit, and validate their assigned part of the finalized plan. They never redesign or
   return another plan.
 - Use the smallest effective team. One agent is valid. Add agents only when decomposition materially improves latency,
   correctness, or verification. Never exceed eight implementation agents per handoff.
@@ -50,12 +52,12 @@ approved plan.
 - Treat an explicit user model preference (e.g. Sonnet, Opus) as an orchestration constraint on every research and
   implementation agent unless scoped narrower. Within that scope, never substitute the usual Sonnet/Opus selection. If
   the Agent tool cannot launch that model, report the incompatibility and ask before falling back.
-- Treat the approved outcome as the authorization boundary, rather than the initial manifest or its write scopes. When
+- Treat the requested outcome as the authorization boundary, rather than the initial manifest or its write scopes. When
   implementation reveals a related in-repository fix or evidence change the outcome requires, Claude may extend the
   handoff. Claude may launch follow-on agents for that required work without asking again. The discovering subagent
   still stops at its assigned scope and returns evidence. Claude owns scope expansion, coordination, and delegation.
 - Size verification to the requested outcome. Never add validation machinery (gates, manifests, checkpoints, hash pins,
-  journals, receipts) unless the approved plan explicitly calls for it. An explicit user request to hurry or wrap up
+  journals, receipts) unless the finalized plan explicitly calls for it. An explicit user request to hurry or wrap up
   overrides optional repeat checks and required polish passes. In that case, commit the validated work and report what
   was skipped or left unverified.
 
@@ -73,13 +75,14 @@ handoff owns delegation mechanics.
   constraints into the handoff plan. A companion missing from the skill list may be installed but hidden by
   `disable-model-invocation: true`. Read `~/.claude/skills/<name>/SKILL.md` directly before concluding it is absent.
 - When the companion's discovery is itself the bulk of the work — an audit or sweep over a whole repository or large
-  file set — Claude maps and divides the scope instead of reading it inline. After plan approval, each implementation
-  agent audits and fixes its own slice under the companion's rules, inlined in its brief.
+  file set — Claude maps and divides the scope instead of reading it inline. After planning, each implementation agent
+  audits and fixes its own slice under the companion's rules, inlined in its brief.
 - This contract overrides the companion's overlapping plan approval, agent limits and stable IDs, single validation
   owner, and result fields. It also overrides failure classification, commit ownership, and completion reporting. These
-  overrides apply even when the companion prescribes its own subagent, validation, or commit mechanics. Its
-  user-decision gates still bind. This skill's plan approval satisfies coincident gates. A plan-only companion
-  implements only when the combined invocation requested implementation and the user approved the plan.
+  overrides apply even when the companion prescribes its own subagent, validation, or commit mechanics. Its substantive
+  user-decision gates still bind when existing instructions do not settle them. Do not repeat a companion's routine plan
+  approval step. A plan-only companion implements only when the combined invocation requested implementation and the
+  host permits writes.
 - Agents cannot load skills. Never brief one to "use skill X" by name. Inline the specific companion instructions,
   conventions, or excerpts it needs.
 - A companion requirement to run `$code-polish` or `$agents-brain maintain` marks that pass required in the Plan Phase.
@@ -166,7 +169,7 @@ A fresh implementation session must receive these commands in the plan itself, w
 Use the fallback only when promotion reports `no draft named ...`. Named drafts grant no authority and expire after
 seven days.
 
-Choose the execution shape from repository evidence and the approved work:
+Choose the execution shape from repository evidence and the requested work:
 
 - Sequential: one agent depends on another, write scopes overlap, or a later agent owns integration/aggregate
   validation.
@@ -197,14 +200,14 @@ type. Model choice and scope decomposition balance a wave.
 Require `$code-polish` for nonlocal invariants, concurrency or state machines, migrations or parsing, auth or security,
 retry or error semantics, and public API or data-contract changes. File count alone is not a trigger.
 
-Require `$agents-brain maintain` when approved work changes a target its maintenance workflow supports: README.md,
+Require `$agents-brain maintain` when requested work changes a target its maintenance workflow supports: README.md,
 AGENTS.md or CLAUDE.md, a durable context doc, an existing project-installed skill under `.agents/skills`, or an
 existing git-tracked source-catalog skill under `skills/` where factual context corrections are prose-only. Installed
 copies under managed agent-config roots remain excluded. When both trigger rules apply, mark both passes required. When
 neither applies, mark neither required.
 
-Do not spawn implementation subagents until the user approves the plan. The read-only research phase is the only
-pre-approval exception.
+Present the plan as a progress update, then continue directly to coordination and implementation launch. Do not end the
+turn to request plan approval. If the user requested only a plan or the host prohibits writes, stop after planning.
 
 ## Execution Phase
 
@@ -239,12 +242,12 @@ continuation.
 Subagents receive none of the planning conversation. Build a self-contained, outcome-first prompt for each agent
 containing:
 
-1. The approved overall outcome plus that agent's implementation brief, dependencies, and completion evidence.
+1. The requested overall outcome plus that agent's implementation brief, dependencies, and completion evidence.
 2. Its exact write scope, relevant repository constraints, known dirty-work boundaries (other agents/sessions may share
    the tree), and any prerequisite agent results.
 3. Its validation assignment per the Plan Phase's validation-owner rule: the scoped checks it must run. For every agent
    but the owner, state that it must not run the aggregate checks the owner runs once after the wave. Never brief new
-   validation machinery the approved plan does not call for.
+   validation machinery the finalized plan does not call for.
 4. A pacing estimate matching its manifest sizing and any user- or adapter-imposed hard runtime limit. A soft estimate
    alone is not a stop condition. When blocked, report partial evidence and the concrete blocker or exhausted hard
    limit.
@@ -254,7 +257,7 @@ containing:
 6. A delegation-context statement naming the orchestrating session by label/session-ID prefix: its claim or presence
    authorizes the assigned scope rather than conflicts with it. Sibling subagents' disjoint scopes are also not
    conflicts. Only an unrelated session's claim on the agent's exact assigned files justifies reporting `blocked`.
-7. This stopping rule: implement the approved plan exactly. If infeasible or requiring redesign, report blocked with
+7. This stopping rule: implement the finalized plan exactly. If infeasible or requiring redesign, report blocked with
    evidence instead of a replacement plan. End only with the final result or a genuine blocker. Never end with a
    progress summary that announces the next step, an offer to continue, a milestone report, or decisions that block
    nothing.
@@ -304,7 +307,7 @@ silent — no placeholder, no "nothing found" note.
 
 ## Completion
 
-- When `status: blocked` or completed work identifies a related in-repository fix or evidence change the approved
+- When `status: blocked` or completed work identifies a related in-repository fix or evidence change the requested
   outcome needs, treat it as follow-on work under the Contract's authorization-boundary rule, not fresh authorization.
   For that work, let already-started independent agents finish and gate dependents. Extend the manifest with the
   smallest sufficient scope. Satisfy repository coordination for that scope. Then launch a new or reused agent. Repeat
@@ -313,10 +316,10 @@ silent — no placeholder, no "nothing found" note.
   Preserve stable IDs, dependency order, the eight-agent limit, and one aggregate-validation owner. Include follow-on
   agents in final counts and report.
 
-- Before the completion report, fix remaining same-pattern sites the approved outcome covers this way. Never list those
+- Before the completion report, fix remaining same-pattern sites the requested outcome covers this way. Never list those
   sites as optional or out-of-scope items.
-- Ask the user only when continuation would change the approved outcome, require material redesign or unrelated work, or
-  cross an existing confirmation boundary (destructive action, purchase, deployment, external write). Never silently
+- Ask the user only when continuation would change the requested outcome, require material redesign or unrelated work,
+  or cross an existing confirmation boundary (destructive action, purchase, deployment, external write). Never silently
   take over implementation or relaunch solely on a different model. Pass relevant completed results to dependent agents.
 - Treat an Agent tool call error or a final message missing required fields as an infrastructure failure. This includes
   a progress report that stops with work still open. For that failure, inspect the agent's write scope for partial edits
@@ -330,7 +333,7 @@ silent — no placeholder, no "nothing found" note.
   outside the eight-agent limit.
 
 - After every required agent completes, deduplicate the union of reported changed files and confirm the combined
-  verification evidence proves the approved plan.
+  verification evidence proves the finalized plan.
 - If any required agent failed, or the user explicitly asked to hurry or wrap up, skip every planned polish pass and
   report the skip. Otherwise invoke each required pass once with only its applicable paths from that union:
   `$code-polish` first (default simplify-then-review mode), then `$agents-brain maintain` with its eligible context
@@ -339,7 +342,7 @@ silent — no placeholder, no "nothing found" note.
 - Reconcile in-scope files actually changed by each polish pass into the final changed-files set and verification. A
   required pass that blocks, fails, or writes outside its supported scope blocks later polish and cross-repository
   commits.
-- If approved work changes Git repositories other than the one where the handoff began, automatically invoke `$commit`
+- If requested work changes Git repositories other than the one where the handoff began, automatically invoke `$commit`
   from each additional repository once its work, validation, and required polish are complete, scoped to files changed
   there. For those commits, skip separate confirmation. Never commit incomplete, blocked, unexpected, or out-of-scope
   changes. Push when the request or standing user instructions authorize it.
