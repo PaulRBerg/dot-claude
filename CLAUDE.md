@@ -1,25 +1,21 @@
 # Global Instructions
 
-Prefer simple, conventional, readable designs. Introduce abstractions or patterns only when they reduce overall
-complexity.
+## Agentic Setup
 
-Edit shared global instructions in `~/.agents/AGENTS.md`. Its commit hook syncs `~/.codex/AGENTS.md` and
+Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `~/.codex/AGENTS.md` and
 `~/.claude/CLAUDE.md`. Do not edit those copies by hand.
 
 ## Communication
 
+- Treat me as an expert. Skip the basics.
 - Lead with the conclusion. Include the evidence needed for the decision, material caveats, and next action. Trim
   introductions, repetition, and optional background first.
-- Treat me as an expert. Skip the basics.
 - Challenge assumptions. Report flaws and materially better alternatives immediately. Scope expansion requires explicit
   or standing authorization, such as the autonomous maintenance policy below.
 - When you can discover facts, investigate rather than confirm my beliefs. Otherwise state what is unknown and take the
   smallest safe next step.
 - Give brief progress updates during sustained work. Make the final response stand alone with the outcome, verification,
   and any remaining blocker.
-- Do not report that files in git-ignored directories were not committed. For example, `.ai/` is globally git-ignored by
-  design. Unless the lack of a commit materially blocks the task, omit this fact from summaries, caveats, risks, and
-  commit reports.
 
 ## Authority
 
@@ -120,7 +116,7 @@ steps for the repair.
 
 ## Agents
 
-- When I say "agent", I mean any coding agent CLI I run (e.g. Claude Code, Codex CLI, or omp), not a human.
+- When I say "agent", I mean any coding agent CLI I run, not a human.
 - I usually run multiple agents in parallel in the same working tree on `main`, without PRs or separate worktrees. Treat
   the working tree, index, and remote as shared mutable state that can change at any point while you work.
 - Treat changes unrelated to your task as another agent's work. Ignore them. Do not let them block or redirect you. Do
@@ -215,22 +211,12 @@ top level.
 
 - Keep top-level commands POSIX-compatible (zsh-safe).
 - For bash-only features (`declare -A`, `${var^^}`/`${var,,}`, `${!arr[@]}`, `mapfile`, process substitution `<(...)`),
-  wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`):
-
-```bash
-bash <<'EOF'
-declare -A color=([sky]=blue [sun]=yellow)
-echo "${color[sky]} / ${color[sun]^^}"   # blue / YELLOW
-EOF
-```
-
+  wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`)
 - Quote literal paths, URLs, and patterns with single quotes. In zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax.
 - When available, use argv-style APIs or arrays. Use `noglob` only as a one-command escape hatch. zsh does not
   word-split scalar strings by default.
 - Avoid `status` and `path` as variable names. `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or
   `result`.
-- Keep automation reproducible. Never rely on my aliases, shell functions, local prompts, or interactive-only rc
-  behavior.
 - Put disposable scripts that import a project's packages in its git-ignored `.ai/` directory, not the scratchpad. Bun
   and Node resolve bare imports from the script's location. Outside a project, Bun silently auto-installs from its
   global cache. Run any Bun script outside a project with `--no-install`.
@@ -246,25 +232,16 @@ EOF
   validation output without preserving the producer's exit status. Checked-in automation must use `rg --no-config`.
 - For patch-compatible TSV diffs, use `git diff --no-ext-diff --no-textconv -- <paths>`. Never pipe daff-rendered TSV
   diffs into `git apply`.
-- Before secret, live, or API commands, run harmless prerequisite checks and identify any local artifacts the command
-  will write.
-- Cap private financial CSV/TSV output. Summarize counts and file refs unless raw rows were explicitly requested.
 
 ## Browser and Computer Use
 
-- For rendered browser UI interaction, inspection, automation, and verification, read `chromium-browser` and use the
+- For rendered browser UI interaction, inspection, automation, and verification, use `chromium-browser` and the
   configured Chrome DevTools tools against shared Chromium.
-- When they fit, use web search, HTTP fetches, and purpose-built APIs, CLIs, or connectors for retrieval. These do not
-  require browser automation.
 - Use available host computer-use/CUA tools for native non-browser app UI. Do not target shared Chromium through generic
   desktop app control or switch controllers or profiles as an attachment fallback.
-- Installed plugins and examples do not change this default. Subject to higher-priority host and tool restrictions, an
-  explicit user selection of another available browser integration may choose its route. Follow that integration's
-  contract without mixing controllers.
-- Opening a completed artifact with an OS opener is presentation, not evidence of rendered verification.
 
 ## Personal Environment
 
 - Dotfiles: I manage them with chezmoi. The source tree lives at `~/.local/share/chezmoi`.
-- Gmail / Google Drive: use the installed `mailops` CLI from any directory with `mailops login <alias>` and
-  `mailops <alias> gmail …`. Consult `~/work/mailops` for account aliases and detailed workflows.
+- Gmail/Google: use the installed `mailops` CLI from any directory with `mailops login <alias>` and
+  `mailops <alias> gmail …`. Consult `~/work/mailops` for detailed workflows.
