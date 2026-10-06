@@ -153,6 +153,9 @@ steps for the repair.
   change. Repo-wide generators include other agents' or the user's uncommitted inputs in your generated output. Treat
   generated hunks derived from inputs you do not own as their work. Exclude them from staging and NEVER remove them with
   a reverse patch.
+- Stop every background process you start (dev servers, watchers, `anvil`, watch-mode test runners) before ending the
+  task, unless I ask to keep it running. Record its PID at launch, kill that PID, and confirm it exited. Listing it with
+  `pgrep` is not stopping it. An orphaned Next.js dev server once wrote 550 GB to the SSD overnight.
 - Key plans and mappings to content identifiers (paths, names, stable tuples), never to line numbers or ordinals.
   Concurrent commits invalidate positional references.
 - Commit each coherent unit of work as soon as it passes validation. Make many small commits, never one batch at the
