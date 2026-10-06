@@ -169,6 +169,9 @@ steps for the repair.
   `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier`, `~/.claude`, `~/.codex`, `~/.agents`,
   or `~/.local/share/chezmoi`.
 
+- Use `$orchestration` for delegated research or implementation. By default, Claude spawns Claude subagents and Codex
+  spawns Codex subagents. An explicit user choice of agent or model overrides that default.
+
 ### Coordination gate
 
 Apply the gate to intended write targets, not the session cwd. Read-only or research tasks skip it entirely. Non-Git
