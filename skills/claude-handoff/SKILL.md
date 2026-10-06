@@ -100,6 +100,9 @@ with `subagent_type: "Explore"` and an explicit model, unless the user stated a 
 preference, use `sonnet` for bounded surveys and `opus` for involved sweeps across unfamiliar or multiple subsystems.
 Omitting `model` inherits the session's model. The read-only Explore toolset makes this launch legitimate in any mode.
 
+When a host Plan Mode prescribes its own exploration and planning subagents, this skill's research agents are the
+exploration. Claude writes the plan itself and launches no planning subagents.
+
 Launch all selected agents in parallel in one message. Post `🔎 Research started — <n> agents`. Then rely on native
 subagent progress rendering. Do not build dashboards.
 
@@ -147,6 +150,8 @@ Produce a decision-complete plan with this section:
 - Code polish: `<required|not required>` — `<reason>`
 - Agent-context maintenance: `<required|not required>` — `<reason>`
 ```
+
+Keep each manifest table cell to one line. When a brief needs more, put it under a per-agent heading below the table.
 
 While finalizing the plan, record the union of every manifest write scope with
 `ai-coord draft --name <plan-slug> '<label>' '<path>'...`, using `--recursive` only for directory scopes. Derive
