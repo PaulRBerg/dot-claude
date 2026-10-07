@@ -26,6 +26,8 @@
     "defaultMode": "bypassPermissions",
   },
   "env": {
+    // Auto-compact at 80% of the auto-compact window (can only lower the default)
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80",
     "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
     // Activate MCP tool search when tool definitions exceed 5% of context (default: 10%)
     "ENABLE_TOOL_SEARCH": "auto:5",
