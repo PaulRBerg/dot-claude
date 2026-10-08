@@ -92,7 +92,8 @@ When an `ai-*` CLI is missing, or when you need to locate or validate skill inst
 `~/.agents/docs/skill-maintenance.md` first.
 
 After implementing a user's task, use `$agents-brain maintain` to align affected repository context and skill files with
-the resulting repository state.
+the resulting repository state. When I correct you, record the durable rule in the owning steering file or skill in the
+same session.
 
 - When instructions name a skill that your skill list does not show, the skill is scoped to a subdirectory or marked
   user-invoked. Find its `SKILL.md` in the repository's skill directories or under `~/.agents/skills`, and read it
@@ -220,6 +221,8 @@ top level.
 - For bash-only features (`declare -A`, `${var^^}`/`${var,,}`, `${!arr[@]}`, `mapfile`, process substitution `<(...)`),
   wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`)
 - Quote literal paths, URLs, and patterns with single quotes. In zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax.
+- Quote separator strings, for example `echo '====='` or `printf '%s\n' '====='`. In zsh, an unquoted word that starts
+  with `=` is command-path expansion, so `echo =====` fails with `==== not found`.
 - When available, use argv-style APIs or arrays. Use `noglob` only as a one-command escape hatch. zsh does not
   word-split scalar strings by default.
 - Avoid `status` and `path` as variable names. `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or
