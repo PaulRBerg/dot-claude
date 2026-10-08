@@ -50,6 +50,14 @@ or rebase that changes `settings/` (Husky `post-merge` and `post-rewrite`).
 Edit only `settings/**/*.jsonc` (never `settings.json` directly). Merging happens automatically, or run
 `just merge-settings` manually.
 
+Run `just settings-drift` to compare `settings.json` with the sources. The recipe merges `settings/` in a temporary
+directory and prints a diff grouped by top-level key. Lines marked `-` exist only in `settings.json`. Lines marked `+`
+exist only in the sources. It exits 1 on drift and 0 when clean. Run `just settings-drift --self-test` to test the
+recipe against fixtures.
+
+When drift shows a change made outside the sources, port the change into the owning `settings/*.jsonc` file. Then rerun
+`just settings-drift`. Do this before `just merge-settings`, because the merge overwrites `settings.json`.
+
 Settings layout:
 
 - `basics.jsonc`: core config, env vars, status line

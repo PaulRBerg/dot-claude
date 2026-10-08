@@ -60,6 +60,12 @@ install-utils:
     gum spin --spinner dot --show-error --title "Merging JSONC settings..." -- bash -c './helpers/merge_settings.sh'
 alias ms := merge-settings
 
+# Diff settings.json against the settings/ sources (exit 1 on drift)
+[group("helpers")]
+@settings-drift *args:
+    ./helpers/settings_drift.sh {{ args }}
+alias sd := settings-drift
+
 # ---------------------------------------------------------------------------- #
 #                                    CHECKS                                    #
 # ---------------------------------------------------------------------------- #
