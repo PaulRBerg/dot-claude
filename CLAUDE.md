@@ -201,6 +201,8 @@ claim with absolute paths instead. Ordinary `start` cannot add or move claims ac
 - On blocked or dirty-settling results, run `ai-coord wait` and continue independent work. Claude sessions also receive
   a background waker. Every wake still requires a fresh `start` returning `READY`. Never use manual sleep/retry loops.
   Never abandon authorized work because a timer expired. Diagnose stale blockers promptly.
+- If `start` expands active work and reports `update-unknown:dirty-settling`, re-run the same `start` after the settle
+  time that it prints. `ai-coord wait` does not recheck a pending expansion.
 - In plan mode, record stabilized scopes with `ai-coord draft '<label>' '<path>'...`. Never put exhaustive paths in the
   user-facing plan. Plans include a "Wait out conflicting agents" section. Before the first approved edit, run
   `ai-coord start --draft` and require `READY`.
