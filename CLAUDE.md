@@ -207,34 +207,22 @@ claim with absolute paths instead. Ordinary `start` cannot add or move claims ac
 
 ## Shell
 
-The Bash tool runs commands under **zsh** (my macOS login shell), ignoring `$SHELL`. Do not use bash-only syntax at the
-top level.
+The Bash tool runs commands under **zsh** (my macOS login shell). `~/.zshenv` sets `no_nomatch`, `no_equals`, and
+`no_aliases` when `CLAUDECODE` or `CODEX_THREAD_ID` is set, so unmatched globs, `echo =====`, and function names that
+match my aliases behave as in bash. Everything else is zsh.
 
-- Keep top-level commands POSIX-compatible (zsh-safe).
-- For bash-only features (`declare -A`, `${var^^}`/`${var,,}`, `${!arr[@]}`, `mapfile`, process substitution `<(...)`),
-  wrap them in an explicit `bash` call (Homebrew bash 5.x is on `PATH`)
-- Quote literal paths, URLs, and patterns with single quotes. In zsh, unquoted `?`, `*`, `[]`, and `()` are glob syntax.
-- Quote separator strings, for example `echo '====='` or `printf '%s\n' '====='`. In zsh, an unquoted word that starts
-  with `=` is command-path expansion, so `echo =====` fails with `==== not found`.
-- When available, use argv-style APIs or arrays. Use `noglob` only as a one-command escape hatch. zsh does not
-  word-split scalar strings by default.
-- Avoid `status` and `path` as variable names. `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or
-  `result`.
+- `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or `result` as variable names.
+- zsh does not word-split scalar strings, and arrays are 1-indexed. Prefer arrays and argv-style APIs over space-joined
+  strings.
+- Wrap bash-only syntax (`${!arr[@]}`, `${var^^}`/`${var,,}`, `mapfile`/`readarray`, `read -p`) in an explicit `bash`
+  call. Homebrew bash 5.x is on `PATH`.
 - Put disposable scripts that import a project's packages in its git-ignored `.ai/` directory, not the scratchpad. Bun
   and Node resolve bare imports from the script's location. Outside a project, Bun silently auto-installs from its
   global cache. Run any Bun script outside a project with `--no-install`.
-- Before commands that assume a location, verify paths and cwd. Use `test -e`, `rg --files`, or `fd` instead of
-  guessing.
-- Scope recursive searches to narrow relative roots. Exclude dependency, build, cache, generated, and state directories.
-  Avoid unbounded per-result commands and output buffering. Use bounded batches or streaming. On cancellation, reap
-  child processes.
 - For code search, use `rg` and trust existing ignore files before using `-u`. Otherwise, prefer `fd`, `jq`, `yq`, and
-  `uv` where appropriate. When full matching lines are unnecessary, prefer `-F`, `-t`/`-g`, and output modes such as
-  `-l`, `-c`, or `-o`.
-- Preserve ripgrep stderr and distinguish matches (exit 0), no matches (exit 1), and errors (exit >1). Do not filter
-  validation output without preserving the producer's exit status. Checked-in automation must use `rg --no-config`.
-- For patch-compatible TSV diffs, use `git diff --no-ext-diff --no-textconv -- <paths>`. Never pipe daff-rendered TSV
-  diffs into `git apply`.
+  `uv` where appropriate.
+- `RIPGREP_CONFIG_PATH` adds `--hidden` and excludes `.git`, so checked-in automation must use `rg --no-config`.
+  Preserve ripgrep stderr and distinguish matches (exit 0), no matches (exit 1), and errors (exit >1).
 
 ## Browser and Computer Use
 
