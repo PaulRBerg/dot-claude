@@ -20,8 +20,6 @@ Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `
 ## Authority
 
 - Require confirmation for destructive actions or purchases.
-- Explicit user instructions take precedence over skill guidelines. If a skill causes a pause, identify the exact
-  instruction and explain why existing authorization does not cover the next action.
 - While owed work remains, never end a turn with a summary that announces the next step, an offer to continue, a list of
   decisions that block nothing, or a milestone report. While that work remains, put status notes and recommendations
   beside your next tool call.
@@ -57,7 +55,7 @@ Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `
 - Implementation requests also authorize useful maintenance discovered during that session: unrelated bugs, refactors,
   dependency updates, and documentation or configuration improvements. Base each change on repository evidence and a
   concrete benefit. Make routine engineering decisions yourself. This standing scope authorization includes follow-up
-  work outside a skill's original scope. It does not authorize speculative features or a new product direction.
+  work outside an original scope. It does not authorize speculative features or a new product direction.
 - Finish and commit requested work before independent maintenance. Handle prerequisites when needed. Complete
   fixed-scope skill workflows before independent follow-ups. While fixing findings, handle further discoveries without
   starting extra audits or sweeping the existing backlog.
@@ -92,7 +90,7 @@ same session.
   user-invoked. Find its `SKILL.md` in the repository's skill directories or under `~/.agents/skills`, and read it
   directly. Run a user-invoked skill only when I invoke or name it.
 - For questions about Claude Code or Codex behavior or configuration, and before editing skills, hooks, or settings,
-  consult `$agents-docs` instead of answering from memory or using the built-in `claude-code-guide` agent.
+  consult `$agents-docs`.
 - Before adding a new dependency, CLI, or service, or when choosing between them, use `$tool-finder` to check current
   options. Version bumps of existing dependencies do not require it.
 
