@@ -22,10 +22,6 @@ Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `
 - Require confirmation for destructive actions or purchases.
 - Explicit user instructions take precedence over skill guidelines. If a skill causes a pause, identify the exact
   instruction and explain why existing authorization does not cover the next action.
-- When I describe a problem or ask a question without requesting a change, deliver your assessment. Report findings and
-  stop. Do not apply fixes until asked, except for skill maintenance under **Skills**.
-- Otherwise, prefer action. Proceed without asking on reversible actions that follow from the request. Do not end a turn
-  on a question or promise you could resolve yourself. Pause only for the cases above or for input only I can provide.
 - While owed work remains, never end a turn with a summary that announces the next step, an offer to continue, a list of
   decisions that block nothing, or a milestone report. While that work remains, put status notes and recommendations
   beside your next tool call.
@@ -34,8 +30,6 @@ Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `
 
 - Before implementing, state material assumptions. Ask only when an unresolved choice changes scope, safety,
   implementation, or verification.
-- For multi-step work, state a brief plan and validation target. Continue until you meet the success criteria or
-  identify an explicit blocker.
 - Write the minimum code for each requested change or authorized maintenance item. Do not add speculative features,
   single-use abstractions, unnecessary configurability, or error handling for impossible cases.
 - Make surgical changes. Keep requested work and independent maintenance in separate coherent changes, each limited to
@@ -44,20 +38,19 @@ Shared global instructions are in `~/.agents/AGENTS.md`. Its commit hook syncs `
 
 ## Workflow
 
-- When a `justfile` exists, prefer `just` recipes for build, test, lint, format, codegen, and release. If a recipe's
-  flags or side effects are unclear, inspect it first. Use direct commands only when no recipe fits, or when a recipe
-  hides the signal you need for debugging.
+- When a `justfile` exists, prefer `just` recipes for build, test, lint, format, codegen, etc. If a recipe's flags or
+  side effects are unclear, inspect it first. Use direct commands only when no recipe fits, or when a recipe hides the
+  signal you need for debugging.
 - Run project-local package binaries through `na <binary> ...`, which selects the repository's package manager. For
-  example, use `na oxlint`, never `node_modules/.bin/oxlint` or another direct `.bin` path.
-- Batch independent reads and tool calls. Keep dependent operations and changes to shared state sequential.
+  example, use `na oxlint`.
 - In plans, do not restate standing instructions or facts from `AGENTS.md` or `CLAUDE.md`. Include only task-specific
   constraints, decisions, and risks.
 - Verify with the narrowest command that proves the change. Then report the exact checks and outcomes. Claim only what a
   tool result from this session supports. Report failures and skipped steps as such.
 - Keep tests proportional to the changed behavior. After required checks pass, broaden or repeat verification only for
   new changes, failures, or unresolved concerns.
-- I own `TODO.md` and `PROMPT.md` files across projects. `TODO.md` holds my personal todos, not task specs. Unless I
-  explicitly point you at one, do not read or reference it. Never read or touch `PROMPT.md`.
+- I own `TODO.md` and `PROMPT.md` files. `TODO.md` holds my personal todos, not task specs. Unless I explicitly point
+  you at one, do not read or reference it. Never read or touch `PROMPT.md`.
 
 ## Autonomous maintenance
 
@@ -121,16 +114,11 @@ steps for the repair.
 
 ## Agents
 
-- When I say "agent", I mean any coding agent CLI I run, not a human.
-- I usually run multiple agents in parallel in the same working tree on `main`, without PRs or separate worktrees. Treat
-  the working tree, index, and remote as shared mutable state that can change at any point while you work.
+- When I say "agent", I mean any coding agent CLI/harness I run, not a human.
+- I may run multiple agents in parallel in the same working tree on `main`, without PRs or separate worktrees. Treat the
+  working tree, index, and remote as shared mutable state that can change at any point while you work.
 - Treat changes unrelated to your task as another agent's work. Ignore them. Do not let them block or redirect you. Do
   not report them to me.
-- I may also commit and push while you work. Do not be surprised by commits you did not author. Unless I ask, do not
-  revert or amend them.
-- Stage and commit only files you edited this session. Never run tree-wide git commands that sweep other agents'
-  uncommitted work: `git add -A`, `git commit -a`, `git stash`, `git checkout .` / `git restore .`, `git reset --hard`,
-  `git clean`.
 - Stay on the current branch. A conflict-free `git pull --rebase --no-autostash` is authorized without asking only under
   these conditions: the branch is behind its upstream, the working tree and index are clean, and no other Git operation
   is in progress. Fetch and verify these conditions immediately before pulling. If your rebase encounters conflicts,
@@ -143,7 +131,7 @@ steps for the repair.
   file.
 - If an edit fails because a file changed after you read it, re-read the file and reapply the edit to the new content.
   The file may now contain another agent's work. Never force-overwrite a whole file to win the race.
-- Never act on a shared stash by ordinal (`stash@{0}`). Another agent's operation can shift it between your read and
+- Do not act on a shared stash by ordinal (`stash@{0}`). Another agent's operation can shift it between your read and
   your action. Resolve it to its object id immediately before use. Immediately before acting, re-verify that the id
   still matches.
 - Attribute failures before debugging them. Before blaming another agent, rule out your own side effects from
@@ -165,16 +153,21 @@ steps for the repair.
   Concurrent commits invalidate positional references.
 - Commit each coherent unit of work as soon as it passes validation. Make many small commits, never one batch at the
   end. Uncommitted work blocks other agents from starting conflicting tasks. Return the tree to a clean state quickly.
+- Use `$orchestration` for delegated research or implementation
+- Before starting a task, assess its complexity. Run `$orchestration` without waiting for me to ask when the task spans
+  several independent workstreams, requires broad research across many files or sources, or benefits from parallel
+  exploration or independent review. Handle small, tightly coupled, or strictly sequential tasks directly.
+
+### Git commits
+
+- I may commit and push while you work. Do not be surprised by commits you did not author. Unless I ask, do not revert
+  or amend them.
+- Stage and commit only files you edited this session. Do not run tree-wide git commands that sweep other agents'
+  uncommitted work.
 - Use `$commit` for agent-composed commits. Call `ai-commit` directly only for already-composed fixed messages. Follow
   the `$commit` push workflow after committing. Automatic pushing is authorized for repositories whose GitHub owner is
   `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier`, `~/.claude`, `~/.codex`, `~/.agents`,
   or `~/.local/share/chezmoi`.
-
-- Use `$orchestration` for delegated research or implementation. By default, Claude Code spawns Claude subagents. Codex
-  and other harnesses spawn Codex subagents. An explicit user choice of agent or model overrides that default.
-- Before starting a task, assess its complexity. Run `$orchestration` without waiting for me to ask when the task spans
-  several independent workstreams, requires broad research across many files or sources, or benefits from parallel
-  exploration or independent review. Handle small, tightly coupled, or strictly sequential tasks directly.
 
 ### Coordination gate
 
