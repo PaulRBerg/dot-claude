@@ -153,6 +153,9 @@ Run `ai-coord done` as soon as work completes.
   change. Repo-wide generators include other agents' or the user's uncommitted inputs in your generated output. Treat
   generated hunks derived from inputs you do not own as their work. Exclude them from staging and NEVER remove them with
   a reverse patch.
+- After every medium or large code change, run `$code-polish` on this session's changed code before committing. Judge
+  size by scope and behavioral complexity, not line count. Skip it for small, localized changes unless I explicitly
+  request it.
 - Verify with the narrowest command that proves the change. Then report the exact checks and outcomes. Claim only what a
   tool result from this session supports. Report failures and skipped steps as such.
 - Keep tests proportional to the changed behavior. After required checks pass, broaden or repeat verification only for
