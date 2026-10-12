@@ -35,8 +35,6 @@ read `~/.agents/docs/skill-maintenance.md` first.
 ## Task Scope and Planning
 
 - Require confirmation for destructive actions or purchases.
-- Scope expansion requires explicit or standing authorization, such as the
-  [Continuous skill maintenance](#continuous-skill-maintenance) policy.
 - Before implementing, state material assumptions. Ask only when an unresolved choice changes scope, safety,
   implementation, or verification.
 - In plans, do not restate standing instructions or facts from `AGENTS.md` or `CLAUDE.md`. Include only task-specific
@@ -50,7 +48,7 @@ read `~/.agents/docs/skill-maintenance.md` first.
 
 - When instructions name a skill that your skill list does not show, the skill is scoped to a subdirectory or marked
   user-invoked. Find its `SKILL.md` in the repository's skill directories or under `~/.agents/skills`, and read it
-  directly. Run a user-invoked skill only when I invoke or name it.
+  directly.
 - For questions about Claude Code or Codex behavior or configuration, and before editing skills, hooks, or settings,
   consult `$agents-docs`.
 - Before adding a new dependency, CLI, or service, or when choosing between them, use `$tool-finder` to check current
