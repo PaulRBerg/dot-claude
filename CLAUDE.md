@@ -129,12 +129,16 @@ Run `ai-coord done` as soon as work completes.
   or amend them.
 - Stage and commit only files you edited this session. Do not run tree-wide git commands that sweep other agents'
   uncommitted work.
+- Exception: in `~/.claude`, `~/.codex`, `~/.agents`, and `~/.omp`, agents and daily maintenance may automatically
+  commit all non-ignored dirty changes, including pre-existing changes, without further approval. Use
+  `ai-commit prepare --all` for these snapshots. Preserve file contents and ignore rules. Coordination and Git conflict
+  safeguards still apply. This exception does not authorize editing installed skills or generated instruction copies.
 - Commit each coherent unit of work as soon as it passes validation. Make many small commits, never one batch at the
   end. Uncommitted work blocks other agents from starting conflicting tasks. Return the tree to a clean state quickly.
 - Use `$commit` for agent-composed commits. Call `ai-commit` directly only for already-composed fixed messages. Follow
   the `$commit` push workflow after committing. Automatic pushing is authorized for repositories whose GitHub owner is
   `PaulRBerg` and for any repository under `~/work/`, `~/projects/`, `~/sablier`, `~/.claude`, `~/.codex`, `~/.agents`,
-  or `~/.local/share/chezmoi`.
+  `~/.omp`, or `~/.local/share/chezmoi`.
 
 ## Implementation and Validation
 
