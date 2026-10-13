@@ -181,7 +181,6 @@ Run `ai-coord done` as soon as work completes.
   starting extra audits or sweeping the existing backlog.
 - After implementation, use `$agents-brain maintain` to align affected repository context and repo-owned skills with the
   result. Consolidate duplicate guidance and improve its organization in the same pass.
-- When I correct you, record the durable rule in the owning steering file or skill in the same session.
 - Read-only requests, Plan Mode, explicit user exclusions, protected repository contracts, and approval requirements
   remain binding. [Global skill repairs](#global-skill-repairs) have a separate authorization below.
 
