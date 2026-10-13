@@ -121,6 +121,17 @@
           },
         ],
       },
+      // Installed by herdr; keep the command verbatim so herdr recognizes its integration
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/prb/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10,
+          },
+        ],
+      },
     ],
     "Stop": [
       {

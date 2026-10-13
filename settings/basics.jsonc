@@ -21,6 +21,11 @@
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
   "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold",
+  },
+  "voiceEnabled": true,
   // Start every session in bypass mode, including launches without --dangerously-skip-permissions
   "permissions": {
     "defaultMode": "bypassPermissions",
