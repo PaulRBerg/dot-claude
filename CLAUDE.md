@@ -146,8 +146,6 @@ Run `ai-coord done` as soon as work completes.
 - When a `justfile` exists, prefer `just` recipes for build, test, lint, format, codegen, etc. If a recipe's flags or
   side effects are unclear, inspect it first. Use direct commands only when no recipe fits, or when a recipe hides the
   signal you need for debugging.
-- Run project-local package binaries through `na <binary> ...`, which selects the repository's package manager. For
-  example, use `na oxlint`.
 - Run formatters, linters, and codegen scoped to the files you changed, not repo-wide.
 - Before generators or broad scripts, snapshot `git status --short`. Afterward, inspect only the paths you expected to
   change. Repo-wide generators include other agents' or the user's uncommitted inputs in your generated output. Treat
@@ -167,9 +165,8 @@ Run `ai-coord done` as soon as work completes.
   this by running the scoped checks in a temporary `git worktree` at clean HEAD. This alternative is valid only when
   your change does not build on another agent's uncommitted files. It is also valid only for checks that run from a bare
   checkout or with dependencies (node_modules, venvs) linked in. Those dependencies do not follow the worktree.
-- Stop every background process you start (dev servers, watchers, `anvil`, watch-mode test runners) before ending the
-  task, unless I ask to keep it running. Record its PID at launch, kill that PID, and confirm it exited. Listing it with
-  `pgrep` is not stopping it.
+- Stop every background process you start (dev servers, watchers, etc.) before ending the task, unless I ask to keep it
+  running. Record its PID at launch, kill that PID, and confirm it exited. Listing it with `pgrep` is not stopping it.
 
 ## Continuous skill maintenance
 
@@ -226,7 +223,9 @@ steps for the repair.
 
 The Bash tool runs commands under **zsh** (my macOS login shell). `~/.zshenv` sets `no_nomatch`, `no_equals`, and
 `no_aliases` when `CLAUDECODE` or `CODEX_THREAD_ID` is set, so unmatched globs, `echo =====`, and function names that
-match my aliases behave as in bash. Everything else is zsh.
+match my aliases behave as in bash. The same block exports `GIT_CONFIG_*` overrides that set `rebase.autoStash=false`
+and `help.autocorrect=never`, so git refuses to rebase a dirty tree and a mistyped subcommand fails instead of running.
+Everything else is zsh.
 
 - `status` is read-only and `path` is tied to `$PATH`. Use `rc`, `ret`, or `result` as variable names.
 - zsh does not word-split scalar strings, and arrays are 1-indexed. Prefer arrays and argv-style APIs over space-joined
