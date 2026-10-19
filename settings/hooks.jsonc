@@ -121,6 +121,16 @@
           },
         ],
       },
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/SessionStart/enable_computer_use.py",
+            "timeout": 5,
+            "type": "command",
+          },
+        ],
+        "matcher": "startup",
+      },
       // Installed by herdr; keep the command verbatim so herdr recognizes its integration
       {
         "matcher": "^(startup|resume|clear|compact|fork)$",

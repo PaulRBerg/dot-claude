@@ -14,6 +14,7 @@ Several hooks provide event-driven automation across different Claude Code event
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
 - **git_guard** - Deny shared-worktree git sweeps and ask before force pushes, in any option order (PreToolUse)
 - **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
+- **enable_computer_use** - Enable the built-in `computer-use` MCP server for the session's project (SessionStart)
 - **ai-coord** - Track lifecycle and presence across Claude Code and Codex
 
 ## Hook Events
@@ -137,6 +138,14 @@ in a Bash command, including compound commands, `$(...)`, wrappers such as `env`
 
 `git stash list`/`show`/`pop` stay usable. It runs without an `if` filter because git can follow wrappers that prefix
 patterns miss. Commands it cannot tokenize pass through to the permission rules.
+
+## 7. enable_computer_use (SessionStart, `startup`)
+
+The built-in `computer-use` MCP server is off until a project lists it in `~/.claude.json` →
+`projects[<path>].enabledMcpServers`, which `/mcp` writes one project at a time. No settings.json key enables it
+globally. This hook adds the entry for the session's project (git root, else cwd), and the CLI picks up the change. It
+skips projects the CLI has not recorded yet, so a brand-new project gets it from its second session. Backfill every
+known project with `hooks/SessionStart/enable_computer_use.py --all`.
 
 ## Development
 
