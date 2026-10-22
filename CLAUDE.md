@@ -264,4 +264,5 @@ Everything else is zsh.
   or one-shot at a set time, lives in `~/projects/circadian` as a LaunchAgent. Follow its `AGENTS.md` to add, edit, or
   remove one. Never create jobs with `crontab`, `at`, a plist written straight into `~/Library/LaunchAgents`, or in
   another repository. This excludes in-session waits and harness schedulers I invoke by name, such as `/loop` and
-  `/schedule`.
+  `/schedule`. Whenever you notice a stale job, such as a finished one-shot or a monitor whose situation resolved,
+  retire it as that file describes.
