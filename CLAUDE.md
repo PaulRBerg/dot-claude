@@ -151,6 +151,11 @@ Run `ai-coord done` as soon as work completes.
   side effects are unclear, inspect it first. Use direct commands only when no recipe fits, or when a recipe hides the
   signal you need for debugging.
 - Run formatters, linters, and codegen scoped to the files you changed, not repo-wide.
+- Treat an inline linter or type-checker suppression (`# noqa`, `# type: ignore`, `# pyright: ignore[...]`,
+  `eslint-disable`) as the last resort, not the fix. First fix the root cause or narrow the types. When a diagnostic is
+  a known false positive, suppress it once in the tool's config at the narrowest rule and path scope, such as a
+  `per-file-ignores` entry or a rule level, instead of repeating the same comment across files. Use an inline
+  suppression only for a one-off, with a reason.
 - Before generators or broad scripts, snapshot `git status --short`. Afterward, inspect only the paths you expected to
   change. Repo-wide generators include other agents' or the user's uncommitted inputs in your generated output. Treat
   generated hunks derived from inputs you do not own as their work. Exclude them from staging and NEVER remove them with
