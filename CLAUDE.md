@@ -260,3 +260,8 @@ Everything else is zsh.
 - Dotfiles: I manage them with chezmoi. The source tree lives at `~/.local/share/chezmoi`.
 - Gmail/Google: use the installed `mailops` CLI from any directory with `mailops login <alias>` and
   `mailops <alias> gmail …`. Consult `~/work/mailops` for detailed workflows.
+- Scheduled jobs: every job that runs on this Mac by schedule, whether recurring (cron-style, interval, login, or wake)
+  or one-shot at a set time, lives in `~/projects/circadian` as a LaunchAgent. Follow its `AGENTS.md` to add, edit, or
+  remove one. Never create jobs with `crontab`, `at`, a plist written straight into `~/Library/LaunchAgents`, or in
+  another repository. This excludes in-session waits and harness schedulers I invoke by name, such as `/loop` and
+  `/schedule`.
