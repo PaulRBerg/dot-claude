@@ -6,7 +6,7 @@
   ]
   description = "Root .claude directory."
   name = "dot-claude"
-  requires-python = ">=3.14"
+  requires-python = ">=3.15"
   version = "1.0.0"
 
 [dependency-groups]

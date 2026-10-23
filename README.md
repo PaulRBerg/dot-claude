@@ -22,7 +22,7 @@ See [Installation](#installation) for full setup and [Configuration](#configurat
 
 - **Bun**: JS dependencies and Husky/lint-staged automation (`bun install`)
 - **Just**: command runner for build scripts (`brew install just`)
-- **Python 3.14+** and [uv](https://github.com/astral-sh/uv): Python package/project manager
+- **Python 3.15+** and [uv](https://github.com/astral-sh/uv): Python package/project manager
 
 ### Setup
 
