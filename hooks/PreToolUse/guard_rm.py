@@ -13,8 +13,6 @@ expands `~`, `$HOME`, and globs, but skips other variables and fails open on
 commands it cannot tokenize.
 """
 
-# ruff: noqa: D103
-
 import glob
 import json
 import os

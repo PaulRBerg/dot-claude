@@ -1,16 +1,14 @@
-#!/usr/bin/env python3
 """Unit tests for add_plan_frontmatter.py hook."""
 
 import json
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from io import StringIO
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 import add_plan_frontmatter
+import pytest
 
 
 class TestGetGitBranch:
@@ -65,7 +63,7 @@ class TestBuildFrontmatter:
     def test_builds_complete_frontmatter(self, mock_datetime, mock_git, mock_home):
         """Test building frontmatter with all fields."""
         mock_home.return_value = Path("/Users/prb")
-        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
+        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=UTC)
         mock_datetime.timezone = timezone
         mock_git.return_value = "feature-branch"
 
@@ -86,7 +84,7 @@ class TestBuildFrontmatter:
     @patch("add_plan_frontmatter.datetime")
     def test_skips_empty_git_branch(self, mock_datetime, mock_git):
         """Test that empty git branch is omitted."""
-        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
+        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=UTC)
         mock_datetime.timezone = timezone
         mock_git.return_value = ""
 
@@ -103,7 +101,7 @@ class TestBuildFrontmatter:
     def test_handles_path_with_spaces(self, mock_datetime, mock_git, mock_home):
         """Test that paths with spaces are properly quoted."""
         mock_home.return_value = Path("/Users/prb")
-        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
+        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=UTC)
         mock_datetime.timezone = timezone
         mock_git.return_value = "main"
 
@@ -118,7 +116,7 @@ class TestBuildFrontmatter:
     @patch("add_plan_frontmatter.datetime")
     def test_escapes_yaml_special_characters(self, mock_datetime, mock_git):
         """Test that quotes and backslashes are escaped for YAML safety."""
-        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=timezone.utc)
+        mock_datetime.now.return_value = datetime(2025, 12, 2, 14, 30, 0, tzinfo=UTC)
         mock_datetime.timezone = timezone
         mock_git.return_value = "feature/test"
 
@@ -247,7 +245,7 @@ class TestMain:
     @patch("sys.stdin", new_callable=StringIO)
     def test_handles_read_error_gracefully(self, mock_stdin, mock_read):
         """Test graceful handling of file read errors."""
-        mock_read.side_effect = IOError("Permission denied")
+        mock_read.side_effect = OSError("Permission denied")
 
         data = {
             "tool_name": "Write",
@@ -269,7 +267,7 @@ class TestMain:
         """Test graceful handling of file write errors."""
         mock_read.return_value = "# Plan"
         mock_build.return_value = "---\n---"
-        mock_write.side_effect = IOError("Disk full")
+        mock_write.side_effect = OSError("Disk full")
 
         data = {
             "tool_name": "Write",

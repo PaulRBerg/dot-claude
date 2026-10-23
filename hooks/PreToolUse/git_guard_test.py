@@ -4,9 +4,8 @@ import json
 from io import StringIO
 from pathlib import Path
 
-import pytest
-
 import git_guard
+import pytest
 
 DENIED = [
     # Bare stash and its implicit or explicit push forms.

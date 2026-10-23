@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
 """Unit tests for copy_prompt_to_clipboard.py hook."""
 
 import json
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 import copy_prompt_to_clipboard as hook
+import pytest
 
 # A prompt that survives sanitization unchanged and clears MIN_CHARS (120), so it
 # exercises the copy path rather than the short-prompt floor.
@@ -164,9 +162,11 @@ class TestMetadataPrefix:
         """Test non-git directories still get a short stable reference."""
         data = {"cwd": "/tmp/work/demo"}
 
-        with patch.object(hook, "_git_output", return_value=""):
-            with patch.object(hook, "_path_reference", return_value="deadbeef"):
-                assert hook.build_metadata_prefix(data) == "[repo:demo ref:deadbeef]"
+        with (
+            patch.object(hook, "_git_output", return_value=""),
+            patch.object(hook, "_path_reference", return_value="deadbeef"),
+        ):
+            assert hook.build_metadata_prefix(data) == "[repo:demo ref:deadbeef]"
 
     def test_formats_clipboard_prompt_with_metadata(self):
         """Test formatter prepends metadata to sanitized prompt."""
@@ -233,13 +233,15 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
-        with patch.object(
-            hook,
-            "build_metadata_prefix",
-            return_value="[repo:demo session:00893aaf]",
+        with (
+            patch.object(
+                hook,
+                "build_metadata_prefix",
+                return_value="[repo:demo session:00893aaf]",
+            ),
+            pytest.raises(SystemExit) as exc_info,
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                hook.main()
+            hook.main()
 
         assert exc_info.value.code == 0
         mock_run.assert_called_once()
@@ -254,13 +256,15 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
-        with patch.object(
-            hook,
-            "build_metadata_prefix",
-            return_value="[repo:demo session:00893aaf]",
+        with (
+            patch.object(
+                hook,
+                "build_metadata_prefix",
+                return_value="[repo:demo session:00893aaf]",
+            ),
+            pytest.raises(SystemExit),
         ):
-            with pytest.raises(SystemExit):
-                hook.main()
+            hook.main()
 
         assert capsys.readouterr().out == ""
 
@@ -271,9 +275,11 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": "   "}))
         mock_stdin.seek(0)
 
-        with patch.object(hook, "build_metadata_prefix") as mock_prefix:
-            with pytest.raises(SystemExit) as exc_info:
-                hook.main()
+        with (
+            patch.object(hook, "build_metadata_prefix") as mock_prefix,
+            pytest.raises(SystemExit) as exc_info,
+        ):
+            hook.main()
 
         assert exc_info.value.code == 0
         mock_run.assert_not_called()
@@ -359,13 +365,15 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
-        with patch.object(
-            hook,
-            "build_metadata_prefix",
-            return_value="[repo:demo session:00893aaf]",
+        with (
+            patch.object(
+                hook,
+                "build_metadata_prefix",
+                return_value="[repo:demo session:00893aaf]",
+            ),
+            pytest.raises(SystemExit) as exc_info,
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                hook.main()
+            hook.main()
 
         assert exc_info.value.code == 0
 
@@ -377,13 +385,15 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
-        with patch.object(
-            hook,
-            "build_metadata_prefix",
-            return_value="[repo:demo session:00893aaf]",
+        with (
+            patch.object(
+                hook,
+                "build_metadata_prefix",
+                return_value="[repo:demo session:00893aaf]",
+            ),
+            pytest.raises(SystemExit) as exc_info,
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                hook.main()
+            hook.main()
 
         assert exc_info.value.code == 0
 
@@ -395,13 +405,15 @@ class TestMain:
         mock_stdin.write(json.dumps({"prompt": LONG_PROMPT}))
         mock_stdin.seek(0)
 
-        with patch.object(
-            hook,
-            "build_metadata_prefix",
-            side_effect=RuntimeError("boom"),
+        with (
+            patch.object(
+                hook,
+                "build_metadata_prefix",
+                side_effect=RuntimeError("boom"),
+            ),
+            pytest.raises(SystemExit) as exc_info,
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                hook.main()
+            hook.main()
 
         assert exc_info.value.code == 0
         assert mock_run.call_args.kwargs["input"] == LONG_PROMPT

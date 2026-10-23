@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Integration tests for the .husky/post-merge and .husky/post-rewrite settings hooks.
 
 Every test runs real merges and rebases in a throwaway git repository whose hooks are copies of

@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
 """Unit tests for guard_rm.py hook."""
 
 import json
 from io import StringIO
 from pathlib import Path
 
-import pytest
-
 import guard_rm
+import pytest
 
 
 @pytest.fixture

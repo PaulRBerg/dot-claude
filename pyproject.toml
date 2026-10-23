@@ -2,7 +2,7 @@
   dependencies = [
     "pytest>=9.1.1,<10",
     "pyright>=1.1.410,<2",
-    "ruff>=0.15.18,<0.16",
+    "ruff>=0.17.1,<0.18",
   ]
   description = "Root .claude directory."
   name = "dot-claude"

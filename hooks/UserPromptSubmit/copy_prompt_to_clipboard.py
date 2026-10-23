@@ -191,7 +191,7 @@ def _git_output(cwd: Path, *args: str) -> str:
             text=True,
             timeout=1,
         ).strip()
-    except (OSError, subprocess.SubprocessError):
+    except OSError, subprocess.SubprocessError:
         return ""
 
 
@@ -322,6 +322,7 @@ def main() -> None:
             encoding="utf-8",
             capture_output=True,
             timeout=5,
+            check=False,
         )
     except (OSError, subprocess.SubprocessError) as e:
         print(f"Warning: pbcopy failed: {e}", file=sys.stderr)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Integration tests for the shared-worktree-safe .husky/pre-commit hook.
 
 Every test runs the hook in a throwaway git repository with stubbed `bun` and `sleep` binaries, so

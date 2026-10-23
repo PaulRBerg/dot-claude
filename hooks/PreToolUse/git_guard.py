@@ -265,7 +265,7 @@ def main() -> int:
         command = payload["tool_input"]["command"]
         script = shlex.join(command) if isinstance(command, list) else command
         result = command_decision(script)
-    except (KeyError, TypeError, ValueError):
+    except KeyError, TypeError, ValueError:
         return 0
     if result:
         decision, reason = result

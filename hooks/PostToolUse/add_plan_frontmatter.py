@@ -8,12 +8,10 @@ Works with both ~/.claude/plans/ and project-local .claude/plans/ directories.
 See https://github.com/anthropics/claude-code/issues/12378
 """
 
-# ruff: noqa: D103
-
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Cache for git branch (unlikely to change during session)
@@ -44,11 +42,12 @@ def get_git_branch(cwd: str) -> str:
             capture_output=True,
             text=True,
             timeout=5,
+            check=False,
         )
         branch = result.stdout.strip() if result.returncode == 0 else ""
         _git_branch_cache[cwd] = branch
         return branch
-    except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError):
+    except subprocess.TimeoutExpired, subprocess.SubprocessError, OSError:
         _git_branch_cache[cwd] = ""
         return ""
 
@@ -76,7 +75,7 @@ def build_frontmatter(data: dict, plan_path: str) -> str:
     # All values are quoted for YAML safety (paths with spaces, special chars)
     # Fields ordered alphabetically
     fields = [
-        ("created", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
+        ("created", datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")),
         ("git_branch", get_git_branch(cwd)),
         ("plan_path", to_tilde_path(plan_path)),
         ("project_directory", to_tilde_path(cwd)),
@@ -125,13 +124,13 @@ def main() -> None:
             for i in range(len(parts))
         ):
             sys.exit(0)
-    except (ValueError, TypeError, OSError):
+    except ValueError, TypeError, OSError:
         sys.exit(0)
 
     # Read file content
     try:
         content = file_path.read_text()
-    except (OSError, IOError):
+    except OSError:
         sys.exit(0)  # Can't read file
 
     # Skip if frontmatter already exists (idempotent)
@@ -143,7 +142,7 @@ def main() -> None:
 
     try:
         file_path.write_text(f"{frontmatter}\n{content}")
-    except (OSError, IOError) as e:
+    except OSError as e:
         print(f"Warning: Failed to add frontmatter: {e}", file=sys.stderr)
 
     sys.exit(0)

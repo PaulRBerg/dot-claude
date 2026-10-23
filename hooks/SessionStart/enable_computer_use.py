@@ -13,8 +13,6 @@ the resolved cwd. The write is skipped when the server is already listed or the
 CLI has not created the project entry yet.
 """
 
-# ruff: noqa: D103
-
 import json
 import os
 import sys

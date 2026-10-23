@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Unit tests for enable_computer_use.py hook."""
 
 import json
@@ -6,9 +5,8 @@ import sys
 from io import StringIO
 from pathlib import Path
 
-import pytest
-
 import enable_computer_use
+import pytest
 
 
 @pytest.fixture
