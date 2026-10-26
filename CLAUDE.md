@@ -250,10 +250,14 @@ Everything else is zsh.
 
 ## Browser and Native Apps
 
-- For rendered browser UI interaction, inspection, automation, and verification, use `chromium-browser` and the
-  configured Chrome DevTools tools against shared Chromium.
-- Use available host computer-use/CUA tools for native non-browser app UI. Do not target shared Chromium through generic
-  desktop app control or switch controllers or profiles as an attachment fallback.
+- Prefer `chromium-browser` and the configured Chrome DevTools tools against shared Chromium for rendered web pages.
+- Use host computer-use/CUA tools for native apps, browser chrome, and browser-internal pages such as
+  `chrome://extensions`. Also use them for a user-requested browser without a usable browser integration. Existing task
+  authorization covers this controller choice. Do not ask for a separate exception when the browser tool lacks the
+  required capability.
+- Use one controller at a time for each browser. Preserve existing profiles, sessions, and unrelated tabs. Do not create
+  another profile or restart a shared browser merely to recover tool attachment. Controller choice does not relax
+  privacy rules or approval requirements for the action itself.
 
 ## Personal Tools and Services
 
