@@ -240,9 +240,12 @@ Everything else is zsh.
   strings.
 - Wrap bash-only syntax (`${!arr[@]}`, `${var^^}`/`${var,,}`, `mapfile`/`readarray`, `read -p`) in an explicit `bash`
   call. Homebrew bash 5.x is on `PATH`.
-- Put disposable scripts that import a project's packages in its git-ignored `.ai/` directory, not the scratchpad. Bun
-  and Node resolve bare imports from the script's location. Outside a project, Bun silently auto-installs from its
-  global cache. Run any Bun script outside a project with `--no-install`.
+- Use the project's git-ignored `.ai/` directory for work files that do not belong in version control. Put files there
+  only when the user may want to inspect them, such as reports, diagrams, screenshots, or useful scripts.
+- Put all other scratch files in a harness-provided scratch directory or the system temporary directory (`$TMPDIR`,
+  falling back to `/tmp`). Use unique paths and respect each tool's permitted write roots.
+- For temporary scripts that need project packages, resolve imports explicitly from that project. Node and Bun resolve
+  bare imports from the script's location. Run any Bun script outside a project with `--no-install`.
 - For code search, use `rg` and trust existing ignore files before using `-u`. Otherwise, prefer `fd`, `jq`, `yq`, and
   `uv` where appropriate.
 - `RIPGREP_CONFIG_PATH` adds `--hidden` and excludes `.git`, so checked-in automation must use `rg --no-config`.
