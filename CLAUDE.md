@@ -265,6 +265,7 @@ Everything else is zsh.
 ## Personal Tools and Services
 
 - Dotfiles: I manage them with chezmoi. The source tree lives at `~/.local/share/chezmoi`.
+- Cloudflare: when interacting with Cloudflare, use the `cf` CLI unless the project has a Wrangler configuration file.
 - Gmail/Google: use the installed `mailops` CLI from any directory with `mailops login <alias>` and
   `mailops <alias> gmail …`. Consult `~/work/mailops` for detailed workflows.
 - Scheduled jobs: every job that runs on this Mac by schedule, whether recurring (cron-style, interval, login, or wake)
