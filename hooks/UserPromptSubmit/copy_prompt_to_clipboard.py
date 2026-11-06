@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Copy each submitted prompt to the macOS clipboard for Raycast history.
+"""Copy user prompts to the macOS clipboard for Raycast history.
 
-This UserPromptSubmit hook mirrors every prompt into the system clipboard via
+This UserPromptSubmit hook copies user prompts to the system clipboard via
 ``pbcopy`` so it surfaces in Raycast's clipboard history — a searchable log of
 what was asked. Raw prompts are noisy, so the text is sanitized first: Claude
 Code paste/image markers are normalized, fenced code blocks are dropped, and
@@ -256,6 +256,18 @@ def build_metadata_prefix(data: dict[str, Any]) -> str:
     return f"[{' '.join(parts)}]" if parts else ""
 
 
+def _should_skip_prompt_event(prompt: str, data: dict[str, Any]) -> bool:
+    """Skip delegated sessions and internal notifications before formatting."""
+    if data.get("agent_id"):
+        return True
+    transcript = data.get("transcript_path")
+    if isinstance(transcript, str):
+        path = Path(transcript)
+        if path.parent.name == "subagents" and path.name.startswith("agent-"):
+            return True
+    return bool(AGENT_NOTIFICATION_RE.match(_strip_terminal_controls(prompt)))
+
+
 def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
     """Sanitize a prompt and prepend compact source metadata.
 
@@ -263,7 +275,7 @@ def format_clipboard_prompt(prompt: str, data: dict[str, Any]) -> str:
     metadata prefix doesn't count toward the floor — so trivial one-liners don't
     flood clipboard history.
     """
-    if AGENT_NOTIFICATION_RE.match(_strip_terminal_controls(prompt)):
+    if _should_skip_prompt_event(prompt, data):
         return ""
 
     text = sanitize_prompt(prompt)
@@ -301,6 +313,8 @@ def main() -> None:
 
     prompt = data.get("prompt", "")
     if not isinstance(prompt, str):
+        sys.exit(0)
+    if _should_skip_prompt_event(prompt, data):
         sys.exit(0)
 
     try:

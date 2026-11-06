@@ -58,8 +58,9 @@ instructions and configuration options.
 
 ## 2. copy_prompt_to_clipboard (UserPromptSubmit)
 
-Copies every submitted prompt to the macOS clipboard via `pbcopy` so it shows up in [Raycast](https://www.raycast.com)'s
-clipboard history — a searchable log of what you asked.
+Copies user prompts to the macOS clipboard via `pbcopy` for [Raycast](https://www.raycast.com) clipboard history. Skips
+events with `agent_id`, subagent transcript paths, and internal notification envelopes. An `agent_type` alone does not
+exclude a prompt because a user can select a top-level agent profile.
 
 ### Sanitization
 

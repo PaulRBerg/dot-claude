@@ -418,3 +418,45 @@ class TestMain:
         assert exc_info.value.code == 0
         assert mock_run.call_args.kwargs["input"] == LONG_PROMPT
         assert "Warning: metadata prefix failed" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "metadata",
+    [
+        {"agent_id": "child", "agent_type": "Explore"},
+        {"transcript_path": "/tmp/session/subagents/agent-child.jsonl"},
+    ],
+)
+def test_subagent_prompt_never_reaches_clipboard_or_fallback(metadata):
+    data = {"prompt": LONG_PROMPT, **metadata}
+    with (
+        patch.object(hook, "build_metadata_prefix") as prefix,
+        patch.object(hook.subprocess, "run") as pbcopy,
+    ):
+        assert hook.format_clipboard_prompt(LONG_PROMPT, data) == ""
+        prefix.assert_not_called()
+        with (
+            patch.object(hook.sys, "stdin", StringIO(json.dumps(data))),
+            patch.object(
+                hook, "format_clipboard_prompt", side_effect=RuntimeError("boom")
+            ) as formatter,
+            pytest.raises(SystemExit) as result,
+        ):
+            hook.main()
+        assert result.value.code == 0
+        formatter.assert_not_called()
+        pbcopy.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "metadata",
+    [
+        {},
+        {"agent_type": "security-reviewer"},
+        {"agent_id": None, "transcript_path": "/tmp/session.jsonl"},
+        {"agent_id": "", "transcript_path": "/tmp/agent-project/session.jsonl"},
+    ],
+)
+def test_user_prompt_survives_agent_profile_and_empty_agent_id(metadata):
+    with patch.object(hook, "build_metadata_prefix", return_value=""):
+        assert hook.format_clipboard_prompt(LONG_PROMPT, metadata) == LONG_PROMPT
