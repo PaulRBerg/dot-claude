@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import copy_prompt_to_clipboard as hook
 import pytest
 
-# A prompt that survives sanitization unchanged and clears MIN_CHARS (120), so it
+# A prompt that survives sanitization unchanged and clears MIN_CHARS, so it
 # exercises the copy path rather than the short-prompt floor.
 LONG_PROMPT = (
     "Please review the authentication refactor and confirm the session handling, "
