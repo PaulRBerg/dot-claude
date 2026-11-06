@@ -240,10 +240,12 @@ Everything else is zsh.
   strings.
 - Wrap bash-only syntax (`${!arr[@]}`, `${var^^}`/`${var,,}`, `mapfile`/`readarray`, `read -p`) in an explicit `bash`
   call. Homebrew bash 5.x is on `PATH`.
-- Use the project's git-ignored `.ai/` directory for work files that do not belong in version control. Put files there
-  only when the user may want to inspect them, such as reports, diagrams, screenshots, or useful scripts.
-- Put all other scratch files in a harness-provided scratch directory or the system temporary directory (`$TMPDIR`,
-  falling back to `/tmp`). Use unique paths and respect each tool's permitted write roots.
+- Report findings, plans, and summaries in chat by default. Use the project's git-ignored `.ai/` directory only for
+  deliverables the user requests or retained evidence an applicable workflow explicitly requires. A suggested `.ai/`
+  path in a skill does not itself require a file. Possible usefulness to the user is not enough reason to retain one.
+- Put temporary scripts, intermediate reports, debugging screenshots, logs, and other scratch files in a
+  harness-provided scratch directory or the system temporary directory (`$TMPDIR`, falling back to `/tmp`). Use unique
+  paths and respect each tool's permitted write roots. Do not create `.ai/` for routine scratch work.
 - For temporary scripts that need project packages, resolve imports explicitly from that project. Node and Bun resolve
   bare imports from the script's location. Run any Bun script outside a project with `--no-install`.
 - For code search, use `rg` and trust existing ignore files before using `-u`. Otherwise, prefer `fd`, `jq`, `yq`, and
