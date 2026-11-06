@@ -264,6 +264,8 @@ Everything else is zsh.
 
 ## Personal Tools and Services
 
+- Apple developer account: use `prberg@proton.me` for every app that needs an account for signing or provisioning.
+  Repair that account's signing setup when provisioning fails instead of switching accounts.
 - Dotfiles: I manage them with chezmoi. The source tree lives at `~/.local/share/chezmoi`.
 - Cloudflare: when interacting with Cloudflare, use the `cf` CLI unless the project has a Wrangler configuration file.
 - Gmail/Google: use the installed `mailops` CLI from any directory with `mailops login <alias>` and
