@@ -25,18 +25,9 @@
         ],
       },
     ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "ai-notify event permission-request",
-            "timeout": 5,
-            "type": "command",
-          },
-        ],
-      },
-    ],
-
+    // No PermissionRequest hooks: one with any matcher makes Claude Code ignore
+    // CLAUDE_CODE_EVEN_MORE_DANGEROUSLY_SKIP_PERMISSIONS and prompt again for dangerous rm commands.
+    // The Notification hook already reports permission prompts.
     "PostToolUse": [
       {
         "hooks": [
@@ -78,23 +69,35 @@
       },
     ],
     "PreToolUse": [
+      // These guards stand in for permission rules. A deny or ask rule for Bash, Edit, or Read would bring back
+      // Claude Code's prompt for dangerous rm commands (see basics.jsonc), and a hook must answer "deny", not
+      // "ask", for a removal. No `if` filters: commands can follow wrappers, assignments, or `bash -c`, which
+      // prefix patterns miss.
       {
         "matcher": "Bash",
         "hooks": [
           {
+            "command": "~/.claude/hooks/PreToolUse/command_guard.py",
+            "timeout": 5,
+            "type": "command",
+          },
+          {
+            "command": "~/.claude/hooks/PreToolUse/git_guard.py",
+            "timeout": 5,
+            "type": "command",
+          },
+          {
             "command": "~/.claude/hooks/PreToolUse/guard_rm.py",
-            "if": "Bash(rm *)",
             "timeout": 5,
             "type": "command",
           },
         ],
       },
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Edit|Glob|Grep|NotebookEdit|Read|Write",
         "hooks": [
           {
-            // No `if` filter: git can follow wrappers, assignments, or `bash -c`, which prefix patterns miss.
-            "command": "~/.claude/hooks/PreToolUse/git_guard.py",
+            "command": "~/.claude/hooks/PreToolUse/path_guard.py",
             "timeout": 5,
             "type": "command",
           },

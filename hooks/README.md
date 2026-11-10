@@ -12,8 +12,10 @@ Several hooks provide event-driven automation across different Claude Code event
 - **agent presence context line** - Show other agents, finding counts, and the scope-acquisition reminder in the prompt
   context (UserPromptSubmit)
 - **add_plan_frontmatter** - Add YAML frontmatter to plan files (PostToolUse)
+- **guard_rm** - Deny recursive `rm` of system, home-level, and git repository directories (PreToolUse)
 - **git_guard** - Deny shared-worktree git sweeps and ask before force pushes, in any option order (PreToolUse)
-- **guard_rm** - Ask before recursive `rm` of home-level entries and git repositories (PreToolUse)
+- **command_guard** - Deny system-level commands such as `sudo`, `dd`, and `kill -9` (PreToolUse)
+- **path_guard** - Deny reads and edits of secrets and user-owned files (PreToolUse)
 - **enable_computer_use** - Enable the built-in `computer-use` MCP server for the session's project (SessionStart)
 - **ai-coord** - Track lifecycle and presence across Claude Code and Codex
 
@@ -37,10 +39,12 @@ Desktop notifications for Claude Code events via
 
 - **UserPromptSubmit** - When you submit a prompt
 - **PreToolUse** (`AskUserQuestion` matcher) - When Claude asks you a question
-- **PermissionRequest** - When Claude requests permission
-- **Notification** - When Claude sends a notification
+- **Notification** - When Claude sends a notification, including a permission prompt
 - **Stop** - When session ends or is interrupted
 - **StopFailure** - When the session stops on a failure
+
+`PermissionRequest` is deliberately not hooked: a hook on that event with any matcher makes Claude Code ignore
+`CLAUDE_CODE_EVEN_MORE_DANGEROUSLY_SKIP_PERMISSIONS` (see [guard_rm](#5-guard_rm-pretooluse-bash)).
 
 ### Prerequisites
 
@@ -114,31 +118,46 @@ Intercepts Write tool executions and adds YAML frontmatter (metadata such as the
 plan files in any `.claude/plans/` directory — both `~/.claude/plans/` and project-local ones. See
 [claude-code#12378](https://github.com/anthropics/claude-code/issues/12378).
 
-## 5. guard_rm (PreToolUse, `Bash(rm *)`)
+## 5. guard_rm (PreToolUse, `Bash`)
 
-Sessions run in `bypassPermissions` mode, where Claude Code's built-in critical-path check only prompts for the
-filesystem root, its top-level directories, the home directory, and the working directory with its parents. This hook
-returns an `ask` decision, which still prompts in bypass mode, when a recursive `rm` targets:
+Sessions run in `bypassPermissions` mode, and `~/.zshenv` exports `CLAUDE_CODE_EVEN_MORE_DANGEROUSLY_SKIP_PERMISSIONS=1`
+so that Claude Code no longer prompts for `rm` on critical paths. Claude Code reads the variable from the launch
+environment only, and ignores it when any of these holds:
 
-- the home directory or one of its direct children, such as `~/work` or `~/Library`
-- a git repository root or `.git` directory outside temp directories
-- the contents of any of these through a trailing glob, such as `repo/*`
+- a deny or ask rule in any settings file names Bash, Edit, or Read
+- a `PermissionRequest` hook is registered
+- a `PreToolUse` hook answers `ask` for a removal
 
-It tracks `cd` within the command and expands `~`, `$HOME`, and globs. Other variables, `xargs rm`, and commands it
-cannot tokenize pass through unchecked, so it guards against mistakes, not adversarial commands.
+So these guards (sections 5, 6, 8, and 9) replace permission rules, and each answers `deny`. A startup line that says
+the variable `has no effect in this session` means one of the conditions above is back.
+
+With the built-in prompt off, guard_rm denies a recursive `rm` of:
+
+- the filesystem root and system top-level directories, such as `/usr` or `/Volumes/<drive>`
+- the home directory, its visible top-level directories, and a fixed list of dot-directories, such as `~/.claude`
+- a git repository root or its `.git` directory, outside temp, cache, and `node_modules` directories
+- the whole contents of any of these through a `*` or `.*` glob, such as `repo/*`
+- a path under an unset variable that lands on one of these when the variable is empty, such as `"$DIR"/*`
+
+Every other `rm` runs unprompted. A denial cannot be approved from a prompt: Claude narrows the path or asks you to run
+the command.
+
+It tracks `cd` and plain assignments within the command and expands `~`, environment variables, `$(pwd)`, and globs.
+`xargs rm`, `find -delete`, and other command substitutions pass through unchecked, so it guards against mistakes, not
+adversarial commands.
 
 ## 6. git_guard (PreToolUse, `Bash`)
 
-The git entries in `settings/permissions/bash.jsonc` match options only in fixed positions, so `git commit -m x -a`,
-`git add -v .`, `git reset HEAD~1 --hard`, or `git -C repo stash` slip past them. This hook parses every git invocation
-in a Bash command, including compound commands, `$(...)`, wrappers such as `env` or `sudo`, and `bash -c` scripts, and:
+This hook parses every git invocation in a Bash command, including compound commands, `$(...)`, wrappers such as `env`,
+and `bash -c` scripts, and checks its options in any order:
 
 - denies bare `git stash` and stash push/save/clear, `git add -A`/`--all`/`.`/pathless `-u`, `git commit -a`/`--all`,
   `git checkout .`, `git restore .`, `git reset --hard`, `git clean`, and autostash on pull, rebase, or merge;
 - asks before any force push, including `git -C repo push --force` and `+refspec` pushes.
 
-`git stash list`/`show`/`pop` stay usable. It runs without an `if` filter because git can follow wrappers that prefix
-patterns miss. Commands it cannot tokenize pass through to the permission rules.
+`git stash list`/`show`/`pop` stay usable. Heredoc bodies are skipped unless they feed a shell, and a command that
+cannot be lexed as a whole is checked line by line. That parsing lives in `shell_commands.py`, which all four guards
+share.
 
 ## 7. enable_computer_use (SessionStart, `startup`)
 
@@ -147,6 +166,27 @@ The built-in `computer-use` MCP server is off until a project lists it in `~/.cl
 globally. This hook adds the entry for the session's project (git root, else cwd), and the CLI picks up the change. It
 skips projects the CLI has not recorded yet, so a brand-new project gets it from its second session. Backfill every
 known project with `hooks/SessionStart/enable_computer_use.py --all`.
+
+## 8. command_guard (PreToolUse, `Bash`)
+
+Denies system-level commands wherever they appear in a Bash command, including behind wrappers and in `bash -c` scripts:
+
+- `sudo`, `doas`, `su`, `passwd`, `userdel`, `usermod`
+- `dd`, `mkfs`, `reboot`, `shutdown`, `systemctl`
+- `killall` and `kill -9`
+- recursive `chmod` and `chown`
+- `npm publish`
+
+It matches the program a command names, so `xargs`, `eval`, or an interpreter can still hide one.
+
+## 9. path_guard (PreToolUse, file tools and `Bash`)
+
+Denies reads and edits of everything under `~/.ssh` and `~/Drive/Secrets`, and of any `PROMPT.md` or `TODO.md`. It
+checks the path a file tool names, the directory Grep and Glob search, and in Bash the operands of file commands such as
+`cat`, `sed`, and `cp`, plus redirection targets. It resolves symlinks.
+
+It does not see a command that reads files without naming them, such as `grep -r pattern .`. Unlike the `Read` deny
+rules it replaces, it does not filter `@file` mentions or the results of a Grep or Glob over a parent directory.
 
 ## Development
 

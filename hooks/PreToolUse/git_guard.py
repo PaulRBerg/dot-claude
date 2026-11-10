@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Deny git commands that sweep other agents' work in a shared worktree.
 
-This PreToolUse hook complements the git entries in ``settings/permissions/bash.jsonc``.
-Permission patterns match options only in fixed positions, so this hook parses every git
-invocation in a shell command and checks its options in any order:
+This PreToolUse hook is the only enforcement of these rules: a deny or ask rule for Bash in
+``settings/`` would bring back Claude Code's prompt for dangerous ``rm`` commands (see
+``settings/basics.jsonc``). It parses every git invocation in a shell command and checks its
+options in any order:
 
 - bare ``git stash`` and stash push/save/clear, while ``git stash list/show/pop`` stay usable;
 - ``git add -A/--all/-u`` without paths, ``git add .``, and ``git commit -a/--all`` anywhere;
@@ -11,35 +12,19 @@ invocation in a shell command and checks its options in any order:
 - ``--autostash`` (flag or config) on pull, rebase, and merge.
 
 Force pushes in any form, including ``git -C <repo> push --force``, get an "ask" decision,
-which still prompts in bypass mode. Parse failures allow the call: the permission rules
-still apply.
+which still prompts in bypass mode. A script that cannot be lexed as a whole is checked line
+by line.
 """
 
 from __future__ import annotations
 
 import json
-import re
 import shlex
 import sys
 from pathlib import PurePath
 
-SEPARATOR_CHARS = ";&|()`\n"
-ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
-REDIRECTION = re.compile(r"^\d*(?:>>?|<<?|>&|<&)(.*)$")
-# Wrapper commands mapped to their options that take the next argument as a value.
-WRAPPERS = {
-    "builtin": set(),
-    "command": set(),
-    "env": {"-C", "-S", "-u", "--chdir", "--split-string", "--unset"},
-    "exec": {"-a"},
-    "nice": {"-n"},
-    "nohup": set(),
-    "noglob": set(),
-    "sudo": {"-C", "-g", "-h", "-p", "-u"},
-    "time": set(),
-    "timeout": {"-k", "-s"},
-}
-SHELLS = {"bash", "dash", "sh", "zsh"}
+from shell_commands import unwrap, walk_commands
+
 GIT_OPTIONS_WITH_VALUE = {"-C", "-c", "--config-env", "--git-dir", "--namespace", "--work-tree"}
 TREE_PATHSPECS = {".", "./", ":/", ":/."}
 STASH_READ_SUBCOMMANDS = {"apply", "branch", "create", "drop", "list", "pop", "show", "store"}
@@ -94,64 +79,6 @@ REASONS = {
     "push": "force-pushes, which rewrites remote history and can drop other agents' or "
     "collaborators' commits; confirm the branch and intent first",
 }
-
-
-def split_commands(script: str) -> list[list[str]]:
-    """Split a shell script into simple commands; raise ValueError when it cannot be lexed."""
-    lexer = shlex.shlex(script, posix=True, punctuation_chars=SEPARATOR_CHARS)
-    lexer.whitespace = " \t\r"
-    lexer.whitespace_split = True
-    commands: list[list[str]] = [[]]
-    for token in lexer:
-        if token and all(char in SEPARATOR_CHARS for char in token):
-            commands.append([])
-        else:
-            commands[-1].append(token)
-    return [strip_redirections(words) for words in commands if words]
-
-
-def strip_redirections(words: list[str]) -> list[str]:
-    kept: list[str] = []
-    skip_next = False
-    for word in words:
-        if skip_next:
-            skip_next = False
-            continue
-        match = REDIRECTION.match(word)
-        if match:
-            skip_next = not match.group(1)
-            continue
-        kept.append(word)
-    return kept
-
-
-def unwrap(words: list[str]) -> list[str]:
-    """Drop leading assignments and wrapper commands such as ``env`` or ``sudo``."""
-    index = 0
-    while index < len(words):
-        word = words[index]
-        if ASSIGNMENT.match(word):
-            index += 1
-        elif PurePath(word).name in WRAPPERS:
-            wrapper = PurePath(word).name
-            index += 1
-            while index < len(words) and words[index].startswith("-"):
-                index += 2 if words[index] in WRAPPERS[wrapper] else 1
-            if wrapper == "timeout":
-                index += 1  # duration
-        else:
-            break
-    return words[index:]
-
-
-def shell_script(words: list[str]) -> str | None:
-    """Return the ``-c`` script of a shell invocation such as ``bash -lc '...'``."""
-    for index, word in enumerate(words[1:], start=1):
-        if not word.startswith("-"):
-            return None
-        if not word.startswith("--") and word.endswith("c"):
-            return words[index + 1] if index + 1 < len(words) else None
-    return None
 
 
 def parse_options(subcommand: str, args: list[str]) -> tuple[set[str], list[str]]:
@@ -235,27 +162,18 @@ def git_denial(args: list[str]) -> str | None:
     return REASONS[subcommand] if denied else None
 
 
-def command_decision(script: str, depth: int = 0) -> tuple[str, str] | None:
+def command_decision(script: str) -> tuple[str, str] | None:
     """Return the first (decision, reason) for any git invocation in a shell script.
 
     Force pushes get "ask" so the user can approve them; every other match is denied.
     """
-    for words in split_commands(script):
+    for words in walk_commands(script):
         words = unwrap(words)
-        if not words:
-            continue
-        program = PurePath(words[0]).name
-        if program == "git":
+        if words and PurePath(words[0]).name == "git":
             reason = git_denial(words[1:])
             if reason:
                 decision = "ask" if reason == REASONS["push"] else "deny"
                 return decision, f"`{shlex.join(words)}` {reason}."
-        elif program in SHELLS and depth < 3:
-            nested = shell_script(words)
-            if nested:
-                result = command_decision(nested, depth + 1)
-                if result:
-                    return result
     return None
 
 

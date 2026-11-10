@@ -12,7 +12,9 @@ The `settings.json` file is automatically generated from modular JSONC source fi
 - `settings/basics.jsonc` - Basic configuration, environment, status line
 - `settings/hooks.jsonc` - Event hooks configuration
 - `settings/plugins.jsonc` - Enabled plugins
-- `settings/permissions/*.jsonc` - Permission rules organized by category
+- `settings/permissions/*.jsonc` - Permission settings organized by category. Do not add deny or ask rules for Bash,
+  Edit, or Read: one such rule brings back Claude Code's prompt for dangerous `rm` commands. Add the restriction to a
+  `PreToolUse` guard instead (see [hooks/README.md](../hooks/README.md))
 
 ### Generated File (don't edit)
 

@@ -33,7 +33,11 @@
     "enabled": true,
     "mode": "hold",
   },
-  // Start every session in bypass mode, including launches without --dangerously-skip-permissions
+  // Start every session in bypass mode, including launches without --dangerously-skip-permissions.
+  // ~/.zshenv exports CLAUDE_CODE_EVEN_MORE_DANGEROUSLY_SKIP_PERMISSIONS=1, which also skips the prompt for
+  // rm on critical paths. Claude Code reads it from the launch environment only, never from `env` below, and
+  // ignores it once any deny or ask rule names Bash, Edit, or Read. Keep such rules out of settings/: the
+  // PreToolUse guards in hooks.jsonc enforce them instead.
   "permissions": {
     "defaultMode": "bypassPermissions",
   },

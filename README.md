@@ -63,7 +63,8 @@ Settings layout:
 - `basics.jsonc`: core config, env vars, status line
 - `hooks.jsonc`: event hooks
 - `plugins.jsonc`: enabled plugins
-- `permissions/*.jsonc`: permission rules (additional-dirs, bash, read)
+- `permissions/*.jsonc`: additional directories. Deny and ask rules for Bash, Edit, and Read live in `PreToolUse` guards
+  instead, since one such rule brings back the prompt for dangerous `rm` commands
 
 ### Context
 
@@ -111,12 +112,14 @@ Active hooks from `settings/hooks.jsonc`:
   [ai-coord](https://github.com/PaulRBerg/agent-skills/tree/main/toolkit/coord) CLI (`PostToolBatch`, `PostToolUse`,
   `PostToolUseFailure`, `SessionEnd`, `SessionStart`, `Stop`, `SubagentStart`, `SubagentStop`, `UserPromptSubmit`)
 - **ai-notify**: desktop notifications via the external
-  [ai-notify](https://github.com/PaulRBerg/agent-skills/tree/main/toolkit/notify) CLI (`Notification`,
-  `PermissionRequest`, `PreToolUse`, `Stop`, `StopFailure`, `UserPromptSubmit`)
+  [ai-notify](https://github.com/PaulRBerg/agent-skills/tree/main/toolkit/notify) CLI (`Notification`, `PreToolUse`,
+  `Stop`, `StopFailure`, `UserPromptSubmit`)
+- **command_guard.py**: deny system-level commands such as `sudo`, `dd`, and `kill -9` (`PreToolUse`)
 - **copy_prompt_to_clipboard.py**: copy submitted prompts to the macOS clipboard (`UserPromptSubmit`)
 - **git_guard.py**: deny shared-worktree git sweeps and ask before force pushes, with options in any order
   (`PreToolUse`)
-- **guard_rm.py**: ask before recursive `rm` of home-level entries and git repositories (`PreToolUse`)
+- **guard_rm.py**: deny recursive `rm` of system, home-level, and git repository directories (`PreToolUse`)
+- **path_guard.py**: deny reads and edits of secrets and user-owned files (`PreToolUse`)
 
 ### Plugins
 
