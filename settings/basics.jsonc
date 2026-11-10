@@ -2,25 +2,32 @@
   // Basic configuration for Claude Code
   // General settings, environment variables, and UI customization
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "agentPushNotifEnabled": true,
   "alwaysThinkingEnabled": true,
   "autoMemoryEnabled": false,
   // Disable the session recap / away summary shown when returning to a session
   "awaySummaryEnabled": false,
   // We need to set this because 0doesn't work
   "cleanupPeriodDays": 9999,
+  "editorMode": "vim",
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
-  "model": "opus",
+  "model": "fable",
   "modelSettings": {
+    "claude-fable-5-2": {
+      "effortLevel": "high",
+    },
     "claude-opus-5-5": {
       "effortLevel": "high",
     },
   },
+  "remoteControlAtStartup": false,
   "showClearContextOnPlanAccept": true,
   "skillListingBudgetFraction": 0.02,
   "skipDangerousModePermissionPrompt": true,
   "spinnerTipsEnabled": true,
+  "teammateMode": "auto",
   "tui": "fullscreen",
   "voice": {
     "enabled": true,
