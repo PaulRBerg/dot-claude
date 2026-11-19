@@ -13,7 +13,7 @@
   "enableAllProjectMcpServers": true,
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
-  "model": "opus",
+  "model": "fable",
   "modelSettings": {
     "claude-fable-5-2": {
       "effortLevel": "high",
