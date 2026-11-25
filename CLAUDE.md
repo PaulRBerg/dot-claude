@@ -266,6 +266,11 @@ Everything else is zsh.
 
 ## Personal Tools and Services
 
+- When personal context is relevant, use the optional PRB Life MCP tools. Use `list_sources` for coverage, `search` for
+  matches, and `read_record` for a bounded excerpt. The user authorizes relevant excerpts in active Codex and Claude
+  Code conversations across projects, including transmission to their model providers. Keep native-app-only records out
+  of agent conversations, including when the checkout is accessible directly. If the tools are unavailable, continue the
+  task normally. See `~/projects/prb-life/AGENTS.md` for the archive's privacy rules.
 - Apple developer account: use `prberg@proton.me` for every app that needs an account for signing or provisioning.
   Repair that account's signing setup when provisioning fails instead of switching accounts.
 - Dotfiles: I manage them with chezmoi. The source tree lives at `~/.local/share/chezmoi`.
