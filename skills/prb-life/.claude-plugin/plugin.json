@@ -1,0 +1,13 @@
+{
+  "name": "prb-life",
+  "description": "Search and read relevant records from the local PRB Life archive.",
+  "version": "1.0.0",
+  "author": {
+    "name": "PRB Life"
+  },
+  "mcpServers": {
+    "prb-life": {
+      "command": "/Applications/PRB Life.app/Contents/MacOS/prb-life-mcp"
+    }
+  }
+}
